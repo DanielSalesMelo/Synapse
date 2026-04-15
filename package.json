@@ -16,7 +16,8 @@
     "lucide-react": "^0.344.0",
     "clsx": "^2.1.0",
     "tailwind-merge": "^2.2.1",
-    "@auth0/auth0-react": "^2.2.4"
+    "@auth0/auth0-react": "^2.2.4",
+    "wouter": "^3.3.5"
   },
   "devDependencies": {
     "prisma": "^5.10.0",
