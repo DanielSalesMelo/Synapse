@@ -48,7 +48,7 @@ async function runMigrations() {
 }
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = Number(process.env.PORT) || 8080;
 
 // 1. Helmet — headers de segurança HTTP
 app.use(

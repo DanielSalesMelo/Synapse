@@ -77656,7 +77656,7 @@ async function runMigrations() {
   }
 }
 var app = (0, import_express.default)();
-var port = process.env.PORT || 3e3;
+var port = Number(process.env.PORT) || 8080;
 app.use(
   helmet({
     crossOriginEmbedderPolicy: false,
