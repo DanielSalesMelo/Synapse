@@ -1,5 +1,0 @@
-packages:
-  - 'packages/apps/*'
-  - 'packages/services/*'
-  - 'packages/libs/*'
-  - 'packages/shared-libs/*'
