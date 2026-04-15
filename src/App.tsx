@@ -48,6 +48,8 @@ import RelatoriosAvancados from "./pages/RelatoriosAvancados";
 import DrePorPlaca from "./pages/DrePorPlaca";
 import Ajuda from "./pages/Ajuda";
 import IA from "./pages/IA";
+import Recepcao from "./pages/Recepcao";
+import WMS from "./pages/WMS";
 
 function DashboardRoutes() {
   return (
@@ -111,6 +113,16 @@ function DashboardRoutes() {
         <Route path="/import-export" component={ImportExport} />
         <Route path="/ajuda" component={Ajuda} />
         <Route path="/ia" component={IA} />
+
+        {/* Recepção */}
+        <Route path="/recepcao" component={Recepcao} />
+        <Route path="/recepcao/docas" component={Recepcao} />
+
+        {/* WMS */}
+        <Route path="/wms/estoque" component={WMS} />
+        <Route path="/wms/produtos" component={WMS} />
+        <Route path="/wms/movimentacoes" component={WMS} />
+        <Route path="/wms/armazens" component={WMS} />
 
         {/* Master */}
         <Route path="/master/painel" component={PainelMaster} />

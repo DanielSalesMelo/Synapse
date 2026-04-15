@@ -22,6 +22,8 @@ import { empresasRouter } from "./routers/empresas";
 import { licenciamentoRouter } from "./routers/licenciamento";
 import { documentosRouter } from "./routers/documentos";
 import { iaRouter } from "./routers/ia";
+import { recepcaoRouter } from "./routers/recepcao";
+import { wmsRouter } from "./routers/wms";
 
 export const appRouter = router({
   system: systemRouter,
@@ -46,6 +48,8 @@ export const appRouter = router({
   licenciamento: licenciamentoRouter,
   documentos: documentosRouter,
   ia: iaRouter,
+  recepcao: recepcaoRouter,
+  wms: wmsRouter,
 });
 
 export type AppRouter = typeof appRouter;

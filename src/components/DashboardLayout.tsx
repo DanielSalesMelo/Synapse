@@ -15,6 +15,7 @@ import {
   Navigation, AlertTriangle, FileText, Bell, Calendar, Gauge,
   ClipboardList, BookOpen, Shield, Settings, Star, ChevronLeft,
   ChevronRight, Calculator, MessageSquare, Scale, FileSpreadsheet, HelpCircle, Brain,
+  PackageCheck, Warehouse, Package, ArrowLeftRight,
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useViewAs } from "@/contexts/ViewAsContext";
@@ -100,6 +101,22 @@ const getMenuGroups = (t: any): MenuGroup[] => [
       { icon: Wallet, label: t("pages.adiantamentos"), path: "/financeiro/adiantamentos" },
       { icon: BarChart3, label: t("pages.custos_operacionais"), path: "/custos" },
       { icon: Calculator, label: "DRE por Placa", path: "/financeiro/dre" },
+    ],
+  },
+  {
+    label: "Recepção",
+    items: [
+      { icon: PackageCheck, label: "Recebimentos", path: "/recepcao" },
+      { icon: Package, label: "Docas", path: "/recepcao/docas" },
+    ],
+  },
+  {
+    label: "WMS",
+    items: [
+      { icon: Warehouse, label: "Estoque", path: "/wms/estoque" },
+      { icon: Package, label: "Produtos", path: "/wms/produtos" },
+      { icon: ArrowLeftRight, label: "Movimentações", path: "/wms/movimentacoes" },
+      { icon: MapPin, label: "Armazéns", path: "/wms/armazens" },
     ],
   },
   {

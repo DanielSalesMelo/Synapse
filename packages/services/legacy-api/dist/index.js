@@ -4,16 +4,10 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
-  get: (a, b2) => (typeof require !== "undefined" ? require : a)[b2]
-}) : x)(function(x) {
-  if (typeof require !== "undefined") return require.apply(this, arguments);
-  throw Error('Dynamic require of "' + x + '" is not supported');
-});
 var __esm = (fn, res) => function __init() {
   return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
 };
-var __commonJS = (cb, mod) => function __require2() {
+var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
 var __export = (target, all3) => {
@@ -39,9 +33,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 
 // node_modules/.pnpm/depd@2.0.0/node_modules/depd/index.js
 var require_depd = __commonJS({
-  "node_modules/.pnpm/depd@2.0.0/node_modules/depd/index.js"(exports, module) {
-    var relative = __require("path").relative;
-    module.exports = depd;
+  "node_modules/.pnpm/depd@2.0.0/node_modules/depd/index.js"(exports2, module2) {
+    var relative = require("path").relative;
+    module2.exports = depd;
     var basePath = process.cwd();
     function containsNamespace(str2, namespace) {
       var vals = str2.split(/[ ,]+/);
@@ -345,11 +339,11 @@ var require_depd = __commonJS({
 
 // node_modules/.pnpm/bytes@3.1.2/node_modules/bytes/index.js
 var require_bytes = __commonJS({
-  "node_modules/.pnpm/bytes@3.1.2/node_modules/bytes/index.js"(exports, module) {
+  "node_modules/.pnpm/bytes@3.1.2/node_modules/bytes/index.js"(exports2, module2) {
     "use strict";
-    module.exports = bytes;
-    module.exports.format = format;
-    module.exports.parse = parse5;
+    module2.exports = bytes;
+    module2.exports.format = format;
+    module2.exports.parse = parse5;
     var formatThousandsRegExp = /\B(?=(\d{3})+(?!\d))/g;
     var formatDecimalsRegExp = /(?:\.0*|(\.[^0]+)0+)$/;
     var map2 = {
@@ -434,7 +428,7 @@ var require_bytes = __commonJS({
 
 // node_modules/.pnpm/content-type@1.0.5/node_modules/content-type/index.js
 var require_content_type = __commonJS({
-  "node_modules/.pnpm/content-type@1.0.5/node_modules/content-type/index.js"(exports) {
+  "node_modules/.pnpm/content-type@1.0.5/node_modules/content-type/index.js"(exports2) {
     "use strict";
     var PARAM_REGEXP = /; *([!#$%&'*+.^_`|~0-9A-Za-z-]+) *= *("(?:[\u000b\u0020\u0021\u0023-\u005b\u005d-\u007e\u0080-\u00ff]|\\[\u000b\u0020-\u00ff])*"|[!#$%&'*+.^_`|~0-9A-Za-z-]+) */g;
     var TEXT_REGEXP = /^[\u000b\u0020-\u007e\u0080-\u00ff]+$/;
@@ -442,8 +436,8 @@ var require_content_type = __commonJS({
     var QESC_REGEXP = /\\([\u000b\u0020-\u00ff])/g;
     var QUOTE_REGEXP = /([\\"])/g;
     var TYPE_REGEXP = /^[!#$%&'*+.^_`|~0-9A-Za-z-]+\/[!#$%&'*+.^_`|~0-9A-Za-z-]+$/;
-    exports.format = format;
-    exports.parse = parse5;
+    exports2.format = format;
+    exports2.parse = parse5;
     function format(obj) {
       if (!obj || typeof obj !== "object") {
         throw new TypeError("argument obj is required");
@@ -538,9 +532,9 @@ var require_content_type = __commonJS({
 
 // node_modules/.pnpm/setprototypeof@1.2.0/node_modules/setprototypeof/index.js
 var require_setprototypeof = __commonJS({
-  "node_modules/.pnpm/setprototypeof@1.2.0/node_modules/setprototypeof/index.js"(exports, module) {
+  "node_modules/.pnpm/setprototypeof@1.2.0/node_modules/setprototypeof/index.js"(exports2, module2) {
     "use strict";
-    module.exports = Object.setPrototypeOf || ({ __proto__: [] } instanceof Array ? setProtoOf : mixinProperties);
+    module2.exports = Object.setPrototypeOf || ({ __proto__: [] } instanceof Array ? setProtoOf : mixinProperties);
     function setProtoOf(obj, proto) {
       obj.__proto__ = proto;
       return obj;
@@ -558,8 +552,8 @@ var require_setprototypeof = __commonJS({
 
 // node_modules/.pnpm/statuses@2.0.2/node_modules/statuses/codes.json
 var require_codes = __commonJS({
-  "node_modules/.pnpm/statuses@2.0.2/node_modules/statuses/codes.json"(exports, module) {
-    module.exports = {
+  "node_modules/.pnpm/statuses@2.0.2/node_modules/statuses/codes.json"(exports2, module2) {
+    module2.exports = {
       "100": "Continue",
       "101": "Switching Protocols",
       "102": "Processing",
@@ -629,10 +623,10 @@ var require_codes = __commonJS({
 
 // node_modules/.pnpm/statuses@2.0.2/node_modules/statuses/index.js
 var require_statuses = __commonJS({
-  "node_modules/.pnpm/statuses@2.0.2/node_modules/statuses/index.js"(exports, module) {
+  "node_modules/.pnpm/statuses@2.0.2/node_modules/statuses/index.js"(exports2, module2) {
     "use strict";
     var codes = require_codes();
-    module.exports = status;
+    module2.exports = status;
     status.message = codes;
     status.code = createMessageToStatusCodeMap(codes);
     status.codes = createStatusCodeList(codes);
@@ -700,9 +694,9 @@ var require_statuses = __commonJS({
 
 // node_modules/.pnpm/inherits@2.0.4/node_modules/inherits/inherits_browser.js
 var require_inherits_browser = __commonJS({
-  "node_modules/.pnpm/inherits@2.0.4/node_modules/inherits/inherits_browser.js"(exports, module) {
+  "node_modules/.pnpm/inherits@2.0.4/node_modules/inherits/inherits_browser.js"(exports2, module2) {
     if (typeof Object.create === "function") {
-      module.exports = function inherits2(ctor, superCtor) {
+      module2.exports = function inherits2(ctor, superCtor) {
         if (superCtor) {
           ctor.super_ = superCtor;
           ctor.prototype = Object.create(superCtor.prototype, {
@@ -716,7 +710,7 @@ var require_inherits_browser = __commonJS({
         }
       };
     } else {
-      module.exports = function inherits2(ctor, superCtor) {
+      module2.exports = function inherits2(ctor, superCtor) {
         if (superCtor) {
           ctor.super_ = superCtor;
           var TempCtor = function() {
@@ -732,13 +726,13 @@ var require_inherits_browser = __commonJS({
 
 // node_modules/.pnpm/inherits@2.0.4/node_modules/inherits/inherits.js
 var require_inherits = __commonJS({
-  "node_modules/.pnpm/inherits@2.0.4/node_modules/inherits/inherits.js"(exports, module) {
+  "node_modules/.pnpm/inherits@2.0.4/node_modules/inherits/inherits.js"(exports2, module2) {
     try {
-      util3 = __require("util");
+      util3 = require("util");
       if (typeof util3.inherits !== "function") throw "";
-      module.exports = util3.inherits;
+      module2.exports = util3.inherits;
     } catch (e) {
-      module.exports = require_inherits_browser();
+      module2.exports = require_inherits_browser();
     }
     var util3;
   }
@@ -746,9 +740,9 @@ var require_inherits = __commonJS({
 
 // node_modules/.pnpm/toidentifier@1.0.1/node_modules/toidentifier/index.js
 var require_toidentifier = __commonJS({
-  "node_modules/.pnpm/toidentifier@1.0.1/node_modules/toidentifier/index.js"(exports, module) {
+  "node_modules/.pnpm/toidentifier@1.0.1/node_modules/toidentifier/index.js"(exports2, module2) {
     "use strict";
-    module.exports = toIdentifier;
+    module2.exports = toIdentifier;
     function toIdentifier(str2) {
       return str2.split(" ").map(function(token) {
         return token.slice(0, 1).toUpperCase() + token.slice(1);
@@ -759,17 +753,17 @@ var require_toidentifier = __commonJS({
 
 // node_modules/.pnpm/http-errors@2.0.1/node_modules/http-errors/index.js
 var require_http_errors = __commonJS({
-  "node_modules/.pnpm/http-errors@2.0.1/node_modules/http-errors/index.js"(exports, module) {
+  "node_modules/.pnpm/http-errors@2.0.1/node_modules/http-errors/index.js"(exports2, module2) {
     "use strict";
     var deprecate = require_depd()("http-errors");
     var setPrototypeOf = require_setprototypeof();
     var statuses = require_statuses();
     var inherits2 = require_inherits();
     var toIdentifier = require_toidentifier();
-    module.exports = createError;
-    module.exports.HttpError = createHttpErrorConstructor();
-    module.exports.isHttpError = createIsHttpErrorFunction(module.exports.HttpError);
-    populateConstructorExports(module.exports, statuses.codes, module.exports.HttpError);
+    module2.exports = createError;
+    module2.exports.HttpError = createHttpErrorConstructor();
+    module2.exports.isHttpError = createIsHttpErrorFunction(module2.exports.HttpError);
+    populateConstructorExports(module2.exports, statuses.codes, module2.exports.HttpError);
     function codeClass(status) {
       return Number(String(status).charAt(0) + "00");
     }
@@ -897,7 +891,7 @@ var require_http_errors = __commonJS({
         Object.defineProperty(func, "name", desc3);
       }
     }
-    function populateConstructorExports(exports2, codes, HttpError2) {
+    function populateConstructorExports(exports3, codes, HttpError2) {
       codes.forEach(function forEachCode(code) {
         var CodeError;
         var name2 = toIdentifier(statuses.message[code]);
@@ -910,8 +904,8 @@ var require_http_errors = __commonJS({
             break;
         }
         if (CodeError) {
-          exports2[code] = CodeError;
-          exports2[name2] = CodeError;
+          exports3[code] = CodeError;
+          exports3[name2] = CodeError;
         }
       });
     }
@@ -923,13 +917,13 @@ var require_http_errors = __commonJS({
 
 // node_modules/.pnpm/ms@2.0.0/node_modules/ms/index.js
 var require_ms = __commonJS({
-  "node_modules/.pnpm/ms@2.0.0/node_modules/ms/index.js"(exports, module) {
+  "node_modules/.pnpm/ms@2.0.0/node_modules/ms/index.js"(exports2, module2) {
     var s = 1e3;
     var m = s * 60;
     var h = m * 60;
     var d = h * 24;
     var y = d * 365.25;
-    module.exports = function(val, options) {
+    module2.exports = function(val, options) {
       options = options || {};
       var type = typeof val;
       if (type === "string" && val.length > 0) {
@@ -1025,16 +1019,16 @@ var require_ms = __commonJS({
 
 // node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/debug.js
 var require_debug = __commonJS({
-  "node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/debug.js"(exports, module) {
-    exports = module.exports = createDebug.debug = createDebug["default"] = createDebug;
-    exports.coerce = coerce;
-    exports.disable = disable;
-    exports.enable = enable;
-    exports.enabled = enabled;
-    exports.humanize = require_ms();
-    exports.names = [];
-    exports.skips = [];
-    exports.formatters = {};
+  "node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/debug.js"(exports2, module2) {
+    exports2 = module2.exports = createDebug.debug = createDebug["default"] = createDebug;
+    exports2.coerce = coerce;
+    exports2.disable = disable;
+    exports2.enable = enable;
+    exports2.enabled = enabled;
+    exports2.humanize = require_ms();
+    exports2.names = [];
+    exports2.skips = [];
+    exports2.formatters = {};
     var prevTime;
     function selectColor(namespace) {
       var hash2 = 0, i;
@@ -1042,7 +1036,7 @@ var require_debug = __commonJS({
         hash2 = (hash2 << 5) - hash2 + namespace.charCodeAt(i);
         hash2 |= 0;
       }
-      return exports.colors[Math.abs(hash2) % exports.colors.length];
+      return exports2.colors[Math.abs(hash2) % exports2.colors.length];
     }
     function createDebug(namespace) {
       function debug() {
@@ -1058,7 +1052,7 @@ var require_debug = __commonJS({
         for (var i = 0; i < args.length; i++) {
           args[i] = arguments[i];
         }
-        args[0] = exports.coerce(args[0]);
+        args[0] = exports2.coerce(args[0]);
         if ("string" !== typeof args[0]) {
           args.unshift("%O");
         }
@@ -1066,7 +1060,7 @@ var require_debug = __commonJS({
         args[0] = args[0].replace(/%([a-zA-Z%])/g, function(match, format) {
           if (match === "%%") return match;
           index++;
-          var formatter = exports.formatters[format];
+          var formatter = exports2.formatters[format];
           if ("function" === typeof formatter) {
             var val = args[index];
             match = formatter.call(self2, val);
@@ -1075,47 +1069,47 @@ var require_debug = __commonJS({
           }
           return match;
         });
-        exports.formatArgs.call(self2, args);
-        var logFn = debug.log || exports.log || console.log.bind(console);
+        exports2.formatArgs.call(self2, args);
+        var logFn = debug.log || exports2.log || console.log.bind(console);
         logFn.apply(self2, args);
       }
       debug.namespace = namespace;
-      debug.enabled = exports.enabled(namespace);
-      debug.useColors = exports.useColors();
+      debug.enabled = exports2.enabled(namespace);
+      debug.useColors = exports2.useColors();
       debug.color = selectColor(namespace);
-      if ("function" === typeof exports.init) {
-        exports.init(debug);
+      if ("function" === typeof exports2.init) {
+        exports2.init(debug);
       }
       return debug;
     }
     function enable(namespaces) {
-      exports.save(namespaces);
-      exports.names = [];
-      exports.skips = [];
+      exports2.save(namespaces);
+      exports2.names = [];
+      exports2.skips = [];
       var split = (typeof namespaces === "string" ? namespaces : "").split(/[\s,]+/);
       var len = split.length;
       for (var i = 0; i < len; i++) {
         if (!split[i]) continue;
         namespaces = split[i].replace(/\*/g, ".*?");
         if (namespaces[0] === "-") {
-          exports.skips.push(new RegExp("^" + namespaces.substr(1) + "$"));
+          exports2.skips.push(new RegExp("^" + namespaces.substr(1) + "$"));
         } else {
-          exports.names.push(new RegExp("^" + namespaces + "$"));
+          exports2.names.push(new RegExp("^" + namespaces + "$"));
         }
       }
     }
     function disable() {
-      exports.enable("");
+      exports2.enable("");
     }
     function enabled(name2) {
       var i, len;
-      for (i = 0, len = exports.skips.length; i < len; i++) {
-        if (exports.skips[i].test(name2)) {
+      for (i = 0, len = exports2.skips.length; i < len; i++) {
+        if (exports2.skips[i].test(name2)) {
           return false;
         }
       }
-      for (i = 0, len = exports.names.length; i < len; i++) {
-        if (exports.names[i].test(name2)) {
+      for (i = 0, len = exports2.names.length; i < len; i++) {
+        if (exports2.names[i].test(name2)) {
           return true;
         }
       }
@@ -1130,15 +1124,15 @@ var require_debug = __commonJS({
 
 // node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/browser.js
 var require_browser = __commonJS({
-  "node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/browser.js"(exports, module) {
-    exports = module.exports = require_debug();
-    exports.log = log;
-    exports.formatArgs = formatArgs;
-    exports.save = save;
-    exports.load = load;
-    exports.useColors = useColors;
-    exports.storage = "undefined" != typeof chrome && "undefined" != typeof chrome.storage ? chrome.storage.local : localstorage();
-    exports.colors = [
+  "node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/browser.js"(exports2, module2) {
+    exports2 = module2.exports = require_debug();
+    exports2.log = log;
+    exports2.formatArgs = formatArgs;
+    exports2.save = save;
+    exports2.load = load;
+    exports2.useColors = useColors;
+    exports2.storage = "undefined" != typeof chrome && "undefined" != typeof chrome.storage ? chrome.storage.local : localstorage();
+    exports2.colors = [
       "lightseagreen",
       "forestgreen",
       "goldenrod",
@@ -1156,7 +1150,7 @@ var require_browser = __commonJS({
       typeof navigator !== "undefined" && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31 || // double check webkit in userAgent just in case we are in a worker
       typeof navigator !== "undefined" && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/);
     }
-    exports.formatters.j = function(v) {
+    exports2.formatters.j = function(v) {
       try {
         return JSON.stringify(v);
       } catch (err) {
@@ -1165,7 +1159,7 @@ var require_browser = __commonJS({
     };
     function formatArgs(args) {
       var useColors2 = this.useColors;
-      args[0] = (useColors2 ? "%c" : "") + this.namespace + (useColors2 ? " %c" : " ") + args[0] + (useColors2 ? "%c " : " ") + "+" + exports.humanize(this.diff);
+      args[0] = (useColors2 ? "%c" : "") + this.namespace + (useColors2 ? " %c" : " ") + args[0] + (useColors2 ? "%c " : " ") + "+" + exports2.humanize(this.diff);
       if (!useColors2) return;
       var c = "color: " + this.color;
       args.splice(1, 0, c, "color: inherit");
@@ -1186,9 +1180,9 @@ var require_browser = __commonJS({
     function save(namespaces) {
       try {
         if (null == namespaces) {
-          exports.storage.removeItem("debug");
+          exports2.storage.removeItem("debug");
         } else {
-          exports.storage.debug = namespaces;
+          exports2.storage.debug = namespaces;
         }
       } catch (e) {
       }
@@ -1196,7 +1190,7 @@ var require_browser = __commonJS({
     function load() {
       var r;
       try {
-        r = exports.storage.debug;
+        r = exports2.storage.debug;
       } catch (e) {
       }
       if (!r && typeof process !== "undefined" && "env" in process) {
@@ -1204,7 +1198,7 @@ var require_browser = __commonJS({
       }
       return r;
     }
-    exports.enable(load());
+    exports2.enable(load());
     function localstorage() {
       try {
         return window.localStorage;
@@ -1216,18 +1210,18 @@ var require_browser = __commonJS({
 
 // node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/node.js
 var require_node = __commonJS({
-  "node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/node.js"(exports, module) {
-    var tty = __require("tty");
-    var util3 = __require("util");
-    exports = module.exports = require_debug();
-    exports.init = init;
-    exports.log = log;
-    exports.formatArgs = formatArgs;
-    exports.save = save;
-    exports.load = load;
-    exports.useColors = useColors;
-    exports.colors = [6, 2, 3, 4, 5, 1];
-    exports.inspectOpts = Object.keys(process.env).filter(function(key) {
+  "node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/node.js"(exports2, module2) {
+    var tty = require("tty");
+    var util3 = require("util");
+    exports2 = module2.exports = require_debug();
+    exports2.init = init;
+    exports2.log = log;
+    exports2.formatArgs = formatArgs;
+    exports2.save = save;
+    exports2.load = load;
+    exports2.useColors = useColors;
+    exports2.colors = [6, 2, 3, 4, 5, 1];
+    exports2.inspectOpts = Object.keys(process.env).filter(function(key) {
       return /^debug_/i.test(key);
     }).reduce(function(obj, key) {
       var prop = key.substring(6).toLowerCase().replace(/_([a-z])/g, function(_, k) {
@@ -1248,15 +1242,15 @@ var require_node = __commonJS({
     }
     var stream4 = 1 === fd ? process.stdout : 2 === fd ? process.stderr : createWritableStdioStream(fd);
     function useColors() {
-      return "colors" in exports.inspectOpts ? Boolean(exports.inspectOpts.colors) : tty.isatty(fd);
+      return "colors" in exports2.inspectOpts ? Boolean(exports2.inspectOpts.colors) : tty.isatty(fd);
     }
-    exports.formatters.o = function(v) {
+    exports2.formatters.o = function(v) {
       this.inspectOpts.colors = this.useColors;
       return util3.inspect(v, this.inspectOpts).split("\n").map(function(str2) {
         return str2.trim();
       }).join(" ");
     };
-    exports.formatters.O = function(v) {
+    exports2.formatters.O = function(v) {
       this.inspectOpts.colors = this.useColors;
       return util3.inspect(v, this.inspectOpts);
     };
@@ -1267,7 +1261,7 @@ var require_node = __commonJS({
         var c = this.color;
         var prefix = "  \x1B[3" + c + ";1m" + name2 + " \x1B[0m";
         args[0] = prefix + args[0].split("\n").join("\n" + prefix);
-        args.push("\x1B[3" + c + "m+" + exports.humanize(this.diff) + "\x1B[0m");
+        args.push("\x1B[3" + c + "m+" + exports2.humanize(this.diff) + "\x1B[0m");
       } else {
         args[0] = (/* @__PURE__ */ new Date()).toUTCString() + " " + name2 + " " + args[0];
       }
@@ -1297,13 +1291,13 @@ var require_node = __commonJS({
           }
           break;
         case "FILE":
-          var fs2 = __require("fs");
+          var fs2 = require("fs");
           stream5 = new fs2.SyncWriteStream(fd2, { autoClose: false });
           stream5._type = "fs";
           break;
         case "PIPE":
         case "TCP":
-          var net2 = __require("net");
+          var net2 = require("net");
           stream5 = new net2.Socket({
             fd: fd2,
             readable: false,
@@ -1325,35 +1319,35 @@ var require_node = __commonJS({
     }
     function init(debug) {
       debug.inspectOpts = {};
-      var keys = Object.keys(exports.inspectOpts);
+      var keys = Object.keys(exports2.inspectOpts);
       for (var i = 0; i < keys.length; i++) {
-        debug.inspectOpts[keys[i]] = exports.inspectOpts[keys[i]];
+        debug.inspectOpts[keys[i]] = exports2.inspectOpts[keys[i]];
       }
     }
-    exports.enable(load());
+    exports2.enable(load());
   }
 });
 
 // node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/index.js
 var require_src = __commonJS({
-  "node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/index.js"(exports, module) {
+  "node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/index.js"(exports2, module2) {
     if (typeof process !== "undefined" && process.type === "renderer") {
-      module.exports = require_browser();
+      module2.exports = require_browser();
     } else {
-      module.exports = require_node();
+      module2.exports = require_node();
     }
   }
 });
 
 // node_modules/.pnpm/destroy@1.2.0/node_modules/destroy/index.js
 var require_destroy = __commonJS({
-  "node_modules/.pnpm/destroy@1.2.0/node_modules/destroy/index.js"(exports, module) {
+  "node_modules/.pnpm/destroy@1.2.0/node_modules/destroy/index.js"(exports2, module2) {
     "use strict";
-    var EventEmitter2 = __require("events").EventEmitter;
-    var ReadStream = __require("fs").ReadStream;
-    var Stream4 = __require("stream");
-    var Zlib = __require("zlib");
-    module.exports = destroy;
+    var EventEmitter2 = require("events").EventEmitter;
+    var ReadStream = require("fs").ReadStream;
+    var Stream4 = require("stream");
+    var Zlib = require("zlib");
+    module2.exports = destroy;
     function destroy(stream4, suppress) {
       if (isFsReadStream(stream4)) {
         destroyReadStream(stream4);
@@ -1434,9 +1428,9 @@ var require_destroy = __commonJS({
 
 // node_modules/.pnpm/safer-buffer@2.1.2/node_modules/safer-buffer/safer.js
 var require_safer = __commonJS({
-  "node_modules/.pnpm/safer-buffer@2.1.2/node_modules/safer-buffer/safer.js"(exports, module) {
+  "node_modules/.pnpm/safer-buffer@2.1.2/node_modules/safer-buffer/safer.js"(exports2, module2) {
     "use strict";
-    var buffer2 = __require("buffer");
+    var buffer2 = require("buffer");
     var Buffer2 = buffer2.Buffer;
     var safer = {};
     var key;
@@ -1496,16 +1490,16 @@ var require_safer = __commonJS({
         safer.constants.MAX_STRING_LENGTH = safer.kStringMaxLength;
       }
     }
-    module.exports = safer;
+    module2.exports = safer;
   }
 });
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/bom-handling.js
 var require_bom_handling = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/bom-handling.js"(exports) {
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/bom-handling.js"(exports2) {
     "use strict";
     var BOMChar = "\uFEFF";
-    exports.PrependBOM = PrependBOMWrapper;
+    exports2.PrependBOM = PrependBOMWrapper;
     function PrependBOMWrapper(encoder, options) {
       this.encoder = encoder;
       this.addBOM = true;
@@ -1520,7 +1514,7 @@ var require_bom_handling = __commonJS({
     PrependBOMWrapper.prototype.end = function() {
       return this.encoder.end();
     };
-    exports.StripBOM = StripBOMWrapper;
+    exports2.StripBOM = StripBOMWrapper;
     function StripBOMWrapper(decoder, options) {
       this.decoder = decoder;
       this.pass = false;
@@ -1546,10 +1540,10 @@ var require_bom_handling = __commonJS({
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/internal.js
 var require_internal = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/internal.js"(exports, module) {
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/internal.js"(exports2, module2) {
     "use strict";
     var Buffer2 = require_safer().Buffer;
-    module.exports = {
+    module2.exports = {
       // Encodings
       utf8: { type: "_internal", bomAware: true },
       cesu8: { type: "_internal", bomAware: true },
@@ -1578,7 +1572,7 @@ var require_internal = __commonJS({
     }
     InternalCodec.prototype.encoder = InternalEncoder;
     InternalCodec.prototype.decoder = InternalDecoder;
-    var StringDecoder = __require("string_decoder").StringDecoder;
+    var StringDecoder = require("string_decoder").StringDecoder;
     if (!StringDecoder.prototype.end)
       StringDecoder.prototype.end = function() {
       };
@@ -1690,10 +1684,10 @@ var require_internal = __commonJS({
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/utf16.js
 var require_utf16 = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/utf16.js"(exports) {
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/utf16.js"(exports2) {
     "use strict";
     var Buffer2 = require_safer().Buffer;
-    exports.utf16be = Utf16BECodec;
+    exports2.utf16be = Utf16BECodec;
     function Utf16BECodec() {
     }
     Utf16BECodec.prototype.encoder = Utf16BEEncoder;
@@ -1734,7 +1728,7 @@ var require_utf16 = __commonJS({
     };
     Utf16BEDecoder.prototype.end = function() {
     };
-    exports.utf16 = Utf16Codec;
+    exports2.utf16 = Utf16Codec;
     function Utf16Codec(codecOptions, iconv) {
       this.iconv = iconv;
     }
@@ -1806,11 +1800,11 @@ var require_utf16 = __commonJS({
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/utf7.js
 var require_utf7 = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/utf7.js"(exports) {
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/utf7.js"(exports2) {
     "use strict";
     var Buffer2 = require_safer().Buffer;
-    exports.utf7 = Utf7Codec;
-    exports.unicode11utf7 = "utf7";
+    exports2.utf7 = Utf7Codec;
+    exports2.unicode11utf7 = "utf7";
     function Utf7Codec(codecOptions, iconv) {
       this.iconv = iconv;
     }
@@ -1887,7 +1881,7 @@ var require_utf7 = __commonJS({
       this.base64Accum = "";
       return res;
     };
-    exports.utf7imap = Utf7IMAPCodec;
+    exports2.utf7imap = Utf7IMAPCodec;
     function Utf7IMAPCodec(codecOptions, iconv) {
       this.iconv = iconv;
     }
@@ -2007,10 +2001,10 @@ var require_utf7 = __commonJS({
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/sbcs-codec.js
 var require_sbcs_codec = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/sbcs-codec.js"(exports) {
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/sbcs-codec.js"(exports2) {
     "use strict";
     var Buffer2 = require_safer().Buffer;
-    exports._sbcs = SBCSCodec;
+    exports2._sbcs = SBCSCodec;
     function SBCSCodec(codecOptions, iconv) {
       if (!codecOptions)
         throw new Error("SBCS codec is called without the data.");
@@ -2063,9 +2057,9 @@ var require_sbcs_codec = __commonJS({
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/sbcs-data.js
 var require_sbcs_data = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/sbcs-data.js"(exports, module) {
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/sbcs-data.js"(exports2, module2) {
     "use strict";
-    module.exports = {
+    module2.exports = {
       // Not supported by iconv, not sure why.
       "10029": "maccenteuro",
       "maccenteuro": {
@@ -2212,9 +2206,9 @@ var require_sbcs_data = __commonJS({
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/sbcs-data-generated.js
 var require_sbcs_data_generated = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/sbcs-data-generated.js"(exports, module) {
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/sbcs-data-generated.js"(exports2, module2) {
     "use strict";
-    module.exports = {
+    module2.exports = {
       "437": "cp437",
       "737": "cp737",
       "775": "cp775",
@@ -2667,10 +2661,10 @@ var require_sbcs_data_generated = __commonJS({
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/dbcs-codec.js
 var require_dbcs_codec = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/dbcs-codec.js"(exports) {
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/dbcs-codec.js"(exports2) {
     "use strict";
     var Buffer2 = require_safer().Buffer;
-    exports._dbcs = DBCSCodec;
+    exports2._dbcs = DBCSCodec;
     var UNASSIGNED = -1;
     var GB18030_CODE = -2;
     var SEQ_START = -10;
@@ -3048,8 +3042,8 @@ var require_dbcs_codec = __commonJS({
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/shiftjis.json
 var require_shiftjis = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/shiftjis.json"(exports, module) {
-    module.exports = [
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/shiftjis.json"(exports2, module2) {
+    module2.exports = [
       ["0", "\0", 128],
       ["a1", "\uFF61", 62],
       ["8140", "\u3000\u3001\u3002\uFF0C\uFF0E\u30FB\uFF1A\uFF1B\uFF1F\uFF01\u309B\u309C\xB4\uFF40\xA8\uFF3E\uFFE3\uFF3F\u30FD\u30FE\u309D\u309E\u3003\u4EDD\u3005\u3006\u3007\u30FC\u2015\u2010\uFF0F\uFF3C\uFF5E\u2225\uFF5C\u2026\u2025\u2018\u2019\u201C\u201D\uFF08\uFF09\u3014\u3015\uFF3B\uFF3D\uFF5B\uFF5D\u3008", 9, "\uFF0B\uFF0D\xB1\xD7"],
@@ -3179,8 +3173,8 @@ var require_shiftjis = __commonJS({
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/eucjp.json
 var require_eucjp = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/eucjp.json"(exports, module) {
-    module.exports = [
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/eucjp.json"(exports2, module2) {
+    module2.exports = [
       ["0", "\0", 127],
       ["8ea1", "\uFF61", 62],
       ["a1a1", "\u3000\u3001\u3002\uFF0C\uFF0E\u30FB\uFF1A\uFF1B\uFF1F\uFF01\u309B\u309C\xB4\uFF40\xA8\uFF3E\uFFE3\uFF3F\u30FD\u30FE\u309D\u309E\u3003\u4EDD\u3005\u3006\u3007\u30FC\u2015\u2010\uFF0F\uFF3C\uFF5E\u2225\uFF5C\u2026\u2025\u2018\u2019\u201C\u201D\uFF08\uFF09\u3014\u3015\uFF3B\uFF3D\uFF5B\uFF5D\u3008", 9, "\uFF0B\uFF0D\xB1\xD7\xF7\uFF1D\u2260\uFF1C\uFF1E\u2266\u2267\u221E\u2234\u2642\u2640\xB0\u2032\u2033\u2103\uFFE5\uFF04\uFFE0\uFFE1\uFF05\uFF03\uFF06\uFF0A\uFF20\xA7\u2606\u2605\u25CB\u25CF\u25CE\u25C7"],
@@ -3367,8 +3361,8 @@ var require_eucjp = __commonJS({
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/cp936.json
 var require_cp936 = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/cp936.json"(exports, module) {
-    module.exports = [
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/cp936.json"(exports2, module2) {
+    module2.exports = [
       ["0", "\0", 127, "\u20AC"],
       ["8140", "\u4E02\u4E04\u4E05\u4E06\u4E0F\u4E12\u4E17\u4E1F\u4E20\u4E21\u4E23\u4E26\u4E29\u4E2E\u4E2F\u4E31\u4E33\u4E35\u4E37\u4E3C\u4E40\u4E41\u4E42\u4E44\u4E46\u4E4A\u4E51\u4E55\u4E57\u4E5A\u4E5B\u4E62\u4E63\u4E64\u4E65\u4E67\u4E68\u4E6A", 5, "\u4E72\u4E74", 9, "\u4E7F", 6, "\u4E87\u4E8A"],
       ["8180", "\u4E90\u4E96\u4E97\u4E99\u4E9C\u4E9D\u4E9E\u4EA3\u4EAA\u4EAF\u4EB0\u4EB1\u4EB4\u4EB6\u4EB7\u4EB8\u4EB9\u4EBC\u4EBD\u4EBE\u4EC8\u4ECC\u4ECF\u4ED0\u4ED2\u4EDA\u4EDB\u4EDC\u4EE0\u4EE2\u4EE6\u4EE7\u4EE9\u4EED\u4EEE\u4EEF\u4EF1\u4EF4\u4EF8\u4EF9\u4EFA\u4EFC\u4EFE\u4F00\u4F02", 6, "\u4F0B\u4F0C\u4F12", 4, "\u4F1C\u4F1D\u4F21\u4F23\u4F28\u4F29\u4F2C\u4F2D\u4F2E\u4F31\u4F33\u4F35\u4F37\u4F39\u4F3B\u4F3E", 4, "\u4F44\u4F45\u4F47", 5, "\u4F52\u4F54\u4F56\u4F61\u4F62\u4F66\u4F68\u4F6A\u4F6B\u4F6D\u4F6E\u4F71\u4F72\u4F75\u4F77\u4F78\u4F79\u4F7A\u4F7D\u4F80\u4F81\u4F82\u4F85\u4F86\u4F87\u4F8A\u4F8C\u4F8E\u4F90\u4F92\u4F93\u4F95\u4F96\u4F98\u4F99\u4F9A\u4F9C\u4F9E\u4F9F\u4FA1\u4FA2"],
@@ -3637,8 +3631,8 @@ var require_cp936 = __commonJS({
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/gbk-added.json
 var require_gbk_added = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/gbk-added.json"(exports, module) {
-    module.exports = [
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/gbk-added.json"(exports2, module2) {
+    module2.exports = [
       ["a140", "\uE4C6", 62],
       ["a180", "\uE505", 32],
       ["a240", "\uE526", 62],
@@ -3698,15 +3692,15 @@ var require_gbk_added = __commonJS({
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/gb18030-ranges.json
 var require_gb18030_ranges = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/gb18030-ranges.json"(exports, module) {
-    module.exports = { uChars: [128, 165, 169, 178, 184, 216, 226, 235, 238, 244, 248, 251, 253, 258, 276, 284, 300, 325, 329, 334, 364, 463, 465, 467, 469, 471, 473, 475, 477, 506, 594, 610, 712, 716, 730, 930, 938, 962, 970, 1026, 1104, 1106, 8209, 8215, 8218, 8222, 8231, 8241, 8244, 8246, 8252, 8365, 8452, 8454, 8458, 8471, 8482, 8556, 8570, 8596, 8602, 8713, 8720, 8722, 8726, 8731, 8737, 8740, 8742, 8748, 8751, 8760, 8766, 8777, 8781, 8787, 8802, 8808, 8816, 8854, 8858, 8870, 8896, 8979, 9322, 9372, 9548, 9588, 9616, 9622, 9634, 9652, 9662, 9672, 9676, 9680, 9702, 9735, 9738, 9793, 9795, 11906, 11909, 11913, 11917, 11928, 11944, 11947, 11951, 11956, 11960, 11964, 11979, 12284, 12292, 12312, 12319, 12330, 12351, 12436, 12447, 12535, 12543, 12586, 12842, 12850, 12964, 13200, 13215, 13218, 13253, 13263, 13267, 13270, 13384, 13428, 13727, 13839, 13851, 14617, 14703, 14801, 14816, 14964, 15183, 15471, 15585, 16471, 16736, 17208, 17325, 17330, 17374, 17623, 17997, 18018, 18212, 18218, 18301, 18318, 18760, 18811, 18814, 18820, 18823, 18844, 18848, 18872, 19576, 19620, 19738, 19887, 40870, 59244, 59336, 59367, 59413, 59417, 59423, 59431, 59437, 59443, 59452, 59460, 59478, 59493, 63789, 63866, 63894, 63976, 63986, 64016, 64018, 64021, 64025, 64034, 64037, 64042, 65074, 65093, 65107, 65112, 65127, 65132, 65375, 65510, 65536], gbChars: [0, 36, 38, 45, 50, 81, 89, 95, 96, 100, 103, 104, 105, 109, 126, 133, 148, 172, 175, 179, 208, 306, 307, 308, 309, 310, 311, 312, 313, 341, 428, 443, 544, 545, 558, 741, 742, 749, 750, 805, 819, 820, 7922, 7924, 7925, 7927, 7934, 7943, 7944, 7945, 7950, 8062, 8148, 8149, 8152, 8164, 8174, 8236, 8240, 8262, 8264, 8374, 8380, 8381, 8384, 8388, 8390, 8392, 8393, 8394, 8396, 8401, 8406, 8416, 8419, 8424, 8437, 8439, 8445, 8482, 8485, 8496, 8521, 8603, 8936, 8946, 9046, 9050, 9063, 9066, 9076, 9092, 9100, 9108, 9111, 9113, 9131, 9162, 9164, 9218, 9219, 11329, 11331, 11334, 11336, 11346, 11361, 11363, 11366, 11370, 11372, 11375, 11389, 11682, 11686, 11687, 11692, 11694, 11714, 11716, 11723, 11725, 11730, 11736, 11982, 11989, 12102, 12336, 12348, 12350, 12384, 12393, 12395, 12397, 12510, 12553, 12851, 12962, 12973, 13738, 13823, 13919, 13933, 14080, 14298, 14585, 14698, 15583, 15847, 16318, 16434, 16438, 16481, 16729, 17102, 17122, 17315, 17320, 17402, 17418, 17859, 17909, 17911, 17915, 17916, 17936, 17939, 17961, 18664, 18703, 18814, 18962, 19043, 33469, 33470, 33471, 33484, 33485, 33490, 33497, 33501, 33505, 33513, 33520, 33536, 33550, 37845, 37921, 37948, 38029, 38038, 38064, 38065, 38066, 38069, 38075, 38076, 38078, 39108, 39109, 39113, 39114, 39115, 39116, 39265, 39394, 189e3] };
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/gb18030-ranges.json"(exports2, module2) {
+    module2.exports = { uChars: [128, 165, 169, 178, 184, 216, 226, 235, 238, 244, 248, 251, 253, 258, 276, 284, 300, 325, 329, 334, 364, 463, 465, 467, 469, 471, 473, 475, 477, 506, 594, 610, 712, 716, 730, 930, 938, 962, 970, 1026, 1104, 1106, 8209, 8215, 8218, 8222, 8231, 8241, 8244, 8246, 8252, 8365, 8452, 8454, 8458, 8471, 8482, 8556, 8570, 8596, 8602, 8713, 8720, 8722, 8726, 8731, 8737, 8740, 8742, 8748, 8751, 8760, 8766, 8777, 8781, 8787, 8802, 8808, 8816, 8854, 8858, 8870, 8896, 8979, 9322, 9372, 9548, 9588, 9616, 9622, 9634, 9652, 9662, 9672, 9676, 9680, 9702, 9735, 9738, 9793, 9795, 11906, 11909, 11913, 11917, 11928, 11944, 11947, 11951, 11956, 11960, 11964, 11979, 12284, 12292, 12312, 12319, 12330, 12351, 12436, 12447, 12535, 12543, 12586, 12842, 12850, 12964, 13200, 13215, 13218, 13253, 13263, 13267, 13270, 13384, 13428, 13727, 13839, 13851, 14617, 14703, 14801, 14816, 14964, 15183, 15471, 15585, 16471, 16736, 17208, 17325, 17330, 17374, 17623, 17997, 18018, 18212, 18218, 18301, 18318, 18760, 18811, 18814, 18820, 18823, 18844, 18848, 18872, 19576, 19620, 19738, 19887, 40870, 59244, 59336, 59367, 59413, 59417, 59423, 59431, 59437, 59443, 59452, 59460, 59478, 59493, 63789, 63866, 63894, 63976, 63986, 64016, 64018, 64021, 64025, 64034, 64037, 64042, 65074, 65093, 65107, 65112, 65127, 65132, 65375, 65510, 65536], gbChars: [0, 36, 38, 45, 50, 81, 89, 95, 96, 100, 103, 104, 105, 109, 126, 133, 148, 172, 175, 179, 208, 306, 307, 308, 309, 310, 311, 312, 313, 341, 428, 443, 544, 545, 558, 741, 742, 749, 750, 805, 819, 820, 7922, 7924, 7925, 7927, 7934, 7943, 7944, 7945, 7950, 8062, 8148, 8149, 8152, 8164, 8174, 8236, 8240, 8262, 8264, 8374, 8380, 8381, 8384, 8388, 8390, 8392, 8393, 8394, 8396, 8401, 8406, 8416, 8419, 8424, 8437, 8439, 8445, 8482, 8485, 8496, 8521, 8603, 8936, 8946, 9046, 9050, 9063, 9066, 9076, 9092, 9100, 9108, 9111, 9113, 9131, 9162, 9164, 9218, 9219, 11329, 11331, 11334, 11336, 11346, 11361, 11363, 11366, 11370, 11372, 11375, 11389, 11682, 11686, 11687, 11692, 11694, 11714, 11716, 11723, 11725, 11730, 11736, 11982, 11989, 12102, 12336, 12348, 12350, 12384, 12393, 12395, 12397, 12510, 12553, 12851, 12962, 12973, 13738, 13823, 13919, 13933, 14080, 14298, 14585, 14698, 15583, 15847, 16318, 16434, 16438, 16481, 16729, 17102, 17122, 17315, 17320, 17402, 17418, 17859, 17909, 17911, 17915, 17916, 17936, 17939, 17961, 18664, 18703, 18814, 18962, 19043, 33469, 33470, 33471, 33484, 33485, 33490, 33497, 33501, 33505, 33513, 33520, 33536, 33550, 37845, 37921, 37948, 38029, 38038, 38064, 38065, 38066, 38069, 38075, 38076, 38078, 39108, 39109, 39113, 39114, 39115, 39116, 39265, 39394, 189e3] };
   }
 });
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/cp949.json
 var require_cp949 = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/cp949.json"(exports, module) {
-    module.exports = [
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/cp949.json"(exports2, module2) {
+    module2.exports = [
       ["0", "\0", 127],
       ["8141", "\uAC02\uAC03\uAC05\uAC06\uAC0B", 4, "\uAC18\uAC1E\uAC1F\uAC21\uAC22\uAC23\uAC25", 6, "\uAC2E\uAC32\uAC33\uAC34"],
       ["8161", "\uAC35\uAC36\uAC37\uAC3A\uAC3B\uAC3D\uAC3E\uAC3F\uAC41", 9, "\uAC4C\uAC4E", 5, "\uAC55"],
@@ -3984,8 +3978,8 @@ var require_cp949 = __commonJS({
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/cp950.json
 var require_cp950 = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/cp950.json"(exports, module) {
-    module.exports = [
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/cp950.json"(exports2, module2) {
+    module2.exports = [
       ["0", "\0", 127],
       ["a140", "\u3000\uFF0C\u3001\u3002\uFF0E\u2027\uFF1B\uFF1A\uFF1F\uFF01\uFE30\u2026\u2025\uFE50\uFE51\uFE52\xB7\uFE54\uFE55\uFE56\uFE57\uFF5C\u2013\uFE31\u2014\uFE33\u2574\uFE34\uFE4F\uFF08\uFF09\uFE35\uFE36\uFF5B\uFF5D\uFE37\uFE38\u3014\u3015\uFE39\uFE3A\u3010\u3011\uFE3B\uFE3C\u300A\u300B\uFE3D\uFE3E\u3008\u3009\uFE3F\uFE40\u300C\u300D\uFE41\uFE42\u300E\u300F\uFE43\uFE44\uFE59\uFE5A"],
       ["a1a1", "\uFE5B\uFE5C\uFE5D\uFE5E\u2018\u2019\u201C\u201D\u301D\u301E\u2035\u2032\uFF03\uFF06\uFF0A\u203B\xA7\u3003\u25CB\u25CF\u25B3\u25B2\u25CE\u2606\u2605\u25C7\u25C6\u25A1\u25A0\u25BD\u25BC\u32A3\u2105\xAF\uFFE3\uFF3F\u02CD\uFE49\uFE4A\uFE4D\uFE4E\uFE4B\uFE4C\uFE5F\uFE60\uFE61\uFF0B\uFF0D\xD7\xF7\xB1\u221A\uFF1C\uFF1E\uFF1D\u2266\u2267\u2260\u221E\u2252\u2261\uFE62", 4, "\uFF5E\u2229\u222A\u22A5\u2220\u221F\u22BF\u33D2\u33D1\u222B\u222E\u2235\u2234\u2640\u2642\u2295\u2299\u2191\u2193\u2190\u2192\u2196\u2197\u2199\u2198\u2225\u2223\uFF0F"],
@@ -4167,8 +4161,8 @@ var require_cp950 = __commonJS({
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/big5-added.json
 var require_big5_added = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/big5-added.json"(exports, module) {
-    module.exports = [
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/big5-added.json"(exports2, module2) {
+    module2.exports = [
       ["8740", "\u43F0\u4C32\u4603\u45A6\u4578\u{27267}\u4D77\u45B3\u{27CB1}\u4CE2\u{27CC5}\u3B95\u4736\u4744\u4C47\u4C40\u{242BF}\u{23617}\u{27352}\u{26E8B}\u{270D2}\u4C57\u{2A351}\u474F\u45DA\u4C85\u{27C6C}\u4D07\u4AA4\u46A1\u{26B23}\u7225\u{25A54}\u{21A63}\u{23E06}\u{23F61}\u664D\u56FB"],
       ["8767", "\u7D95\u591D\u{28BB9}\u3DF4\u9734\u{27BEF}\u5BDB\u{21D5E}\u5AA4\u3625\u{29EB0}\u5AD1\u5BB7\u5CFC\u676E\u8593\u{29945}\u7461\u749D\u3875\u{21D53}\u{2369E}\u{26021}\u3EEC"],
       ["87a1", "\u{258DE}\u3AF5\u7AFC\u9F97\u{24161}\u{2890D}\u{231EA}\u{20A8A}\u{2325E}\u430A\u8484\u9F96\u942F\u4930\u8613\u5896\u974A\u9218\u79D0\u7A32\u6660\u6A29\u889D\u744C\u7BC5\u6782\u7A2C\u524F\u9046\u34E6\u73C4\u{25DB9}\u74C6\u9FC7\u57B3\u492F\u544C\u4131\u{2368E}\u5818\u7A72\u{27B65}\u8B8F\u46AE\u{26E88}\u4181\u{25D99}\u7BAE\u{224BC}\u9FC8\u{224C1}\u{224C9}\u{224CC}\u9FC9\u8504\u{235BB}\u40B4\u9FCA\u44E1\u{2ADFF}\u62C1\u706E\u9FCB"],
@@ -4295,9 +4289,9 @@ var require_big5_added = __commonJS({
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/dbcs-data.js
 var require_dbcs_data = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/dbcs-data.js"(exports, module) {
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/dbcs-data.js"(exports2, module2) {
     "use strict";
-    module.exports = {
+    module2.exports = {
       // == Japanese/ShiftJIS ====================================================
       // All japanese encodings are based on JIS X set of standards:
       // JIS X 0201 - Single-byte encoding of ASCII + ¥ + Kana chars at 0xA1-0xDF.
@@ -4470,7 +4464,7 @@ var require_dbcs_data = __commonJS({
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/index.js
 var require_encodings = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/index.js"(exports, module) {
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/index.js"(exports2, module2) {
     "use strict";
     var modules = [
       require_internal(),
@@ -4483,12 +4477,12 @@ var require_encodings = __commonJS({
       require_dbcs_data()
     ];
     for (i = 0; i < modules.length; i++) {
-      module = modules[i];
-      for (enc in module)
-        if (Object.prototype.hasOwnProperty.call(module, enc))
-          exports[enc] = module[enc];
+      module2 = modules[i];
+      for (enc in module2)
+        if (Object.prototype.hasOwnProperty.call(module2, enc))
+          exports2[enc] = module2[enc];
     }
-    var module;
+    var module2;
     var enc;
     var i;
   }
@@ -4496,11 +4490,11 @@ var require_encodings = __commonJS({
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/streams.js
 var require_streams = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/streams.js"(exports, module) {
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/streams.js"(exports2, module2) {
     "use strict";
-    var Buffer2 = __require("buffer").Buffer;
-    var Transform = __require("stream").Transform;
-    module.exports = function(iconv) {
+    var Buffer2 = require("buffer").Buffer;
+    var Transform = require("stream").Transform;
+    module2.exports = function(iconv) {
       iconv.encodeStream = function encodeStream(encoding, options) {
         return new IconvLiteEncoderStream(iconv.getEncoder(encoding, options), options);
       };
@@ -4597,10 +4591,10 @@ var require_streams = __commonJS({
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/extend-node.js
 var require_extend_node = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/extend-node.js"(exports, module) {
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/extend-node.js"(exports2, module2) {
     "use strict";
-    var Buffer2 = __require("buffer").Buffer;
-    module.exports = function(iconv) {
+    var Buffer2 = require("buffer").Buffer;
+    module2.exports = function(iconv) {
       var original = void 0;
       iconv.supportsNodeEncodingsExtension = !(Buffer2.from || new Buffer2(0) instanceof Uint8Array);
       iconv.extendNodeEncodings = function extendNodeEncodings() {
@@ -4626,7 +4620,7 @@ var require_extend_node = __commonJS({
         Buffer2.isNativeEncoding = function(enc) {
           return enc && nodeNativeEncodings[enc.toLowerCase()];
         };
-        var SlowBuffer = __require("buffer").SlowBuffer;
+        var SlowBuffer = require("buffer").SlowBuffer;
         original.SlowBufferToString = SlowBuffer.prototype.toString;
         SlowBuffer.prototype.toString = function(encoding, start, end) {
           encoding = String(encoding || "utf8").toLowerCase();
@@ -4724,7 +4718,7 @@ var require_extend_node = __commonJS({
           return length;
         };
         if (iconv.supportsStreams) {
-          var Readable2 = __require("stream").Readable;
+          var Readable2 = require("stream").Readable;
           original.ReadableSetEncoding = Readable2.prototype.setEncoding;
           Readable2.prototype.setEncoding = function setEncoding(enc, options) {
             this._readableState.decoder = iconv.getDecoder(enc, options);
@@ -4739,7 +4733,7 @@ var require_extend_node = __commonJS({
         if (!original)
           throw new Error("require('iconv-lite').undoExtendNodeEncodings(): Nothing to undo; extendNodeEncodings() is not called.");
         delete Buffer2.isNativeEncoding;
-        var SlowBuffer = __require("buffer").SlowBuffer;
+        var SlowBuffer = require("buffer").SlowBuffer;
         SlowBuffer.prototype.toString = original.SlowBufferToString;
         SlowBuffer.prototype.write = original.SlowBufferWrite;
         Buffer2.isEncoding = original.BufferIsEncoding;
@@ -4747,7 +4741,7 @@ var require_extend_node = __commonJS({
         Buffer2.prototype.toString = original.BufferToString;
         Buffer2.prototype.write = original.BufferWrite;
         if (iconv.supportsStreams) {
-          var Readable2 = __require("stream").Readable;
+          var Readable2 = require("stream").Readable;
           Readable2.prototype.setEncoding = original.ReadableSetEncoding;
           delete Readable2.prototype.collect;
         }
@@ -4759,11 +4753,11 @@ var require_extend_node = __commonJS({
 
 // node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/index.js
 var require_lib = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/index.js"(exports, module) {
+  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/index.js"(exports2, module2) {
     "use strict";
     var Buffer2 = require_safer().Buffer;
     var bomHandling = require_bom_handling();
-    var iconv = module.exports;
+    var iconv = module2.exports;
     iconv.encodings = null;
     iconv.defaultCharUnicode = "\uFFFD";
     iconv.defaultCharSingleByte = "?";
@@ -4862,9 +4856,9 @@ var require_lib = __commonJS({
 
 // node_modules/.pnpm/unpipe@1.0.0/node_modules/unpipe/index.js
 var require_unpipe = __commonJS({
-  "node_modules/.pnpm/unpipe@1.0.0/node_modules/unpipe/index.js"(exports, module) {
+  "node_modules/.pnpm/unpipe@1.0.0/node_modules/unpipe/index.js"(exports2, module2) {
     "use strict";
-    module.exports = unpipe;
+    module2.exports = unpipe;
     function hasPipeDataListeners(stream4) {
       var listeners = stream4.listeners("data");
       for (var i = 0; i < listeners.length; i++) {
@@ -4900,14 +4894,14 @@ var require_unpipe = __commonJS({
 
 // node_modules/.pnpm/raw-body@2.5.3/node_modules/raw-body/index.js
 var require_raw_body = __commonJS({
-  "node_modules/.pnpm/raw-body@2.5.3/node_modules/raw-body/index.js"(exports, module) {
+  "node_modules/.pnpm/raw-body@2.5.3/node_modules/raw-body/index.js"(exports2, module2) {
     "use strict";
     var asyncHooks = tryRequireAsyncHooks();
     var bytes = require_bytes();
     var createError = require_http_errors();
     var iconv = require_lib();
     var unpipe = require_unpipe();
-    module.exports = getRawBody;
+    module2.exports = getRawBody;
     var ICONV_ENCODING_MESSAGE_REGEXP = /^Encoding not recognized: /;
     function getDecoder(encoding) {
       if (!encoding) return null;
@@ -5069,7 +5063,7 @@ var require_raw_body = __commonJS({
     }
     function tryRequireAsyncHooks() {
       try {
-        return __require("async_hooks");
+        return require("async_hooks");
       } catch (e) {
         return {};
       }
@@ -5089,9 +5083,9 @@ var require_raw_body = __commonJS({
 
 // node_modules/.pnpm/ee-first@1.1.1/node_modules/ee-first/index.js
 var require_ee_first = __commonJS({
-  "node_modules/.pnpm/ee-first@1.1.1/node_modules/ee-first/index.js"(exports, module) {
+  "node_modules/.pnpm/ee-first@1.1.1/node_modules/ee-first/index.js"(exports2, module2) {
     "use strict";
-    module.exports = first;
+    module2.exports = first;
     function first(stuff, done) {
       if (!Array.isArray(stuff))
         throw new TypeError("arg must be an array of [ee, events...] arrays");
@@ -5145,10 +5139,10 @@ var require_ee_first = __commonJS({
 
 // node_modules/.pnpm/on-finished@2.4.1/node_modules/on-finished/index.js
 var require_on_finished = __commonJS({
-  "node_modules/.pnpm/on-finished@2.4.1/node_modules/on-finished/index.js"(exports, module) {
+  "node_modules/.pnpm/on-finished@2.4.1/node_modules/on-finished/index.js"(exports2, module2) {
     "use strict";
-    module.exports = onFinished;
-    module.exports.isFinished = isFinished;
+    module2.exports = onFinished;
+    module2.exports.isFinished = isFinished;
     var asyncHooks = tryRequireAsyncHooks();
     var first = require_ee_first();
     var defer = typeof setImmediate === "function" ? setImmediate : function(fn) {
@@ -5229,7 +5223,7 @@ var require_on_finished = __commonJS({
     }
     function tryRequireAsyncHooks() {
       try {
-        return __require("async_hooks");
+        return require("async_hooks");
       } catch (e) {
         return {};
       }
@@ -5249,7 +5243,7 @@ var require_on_finished = __commonJS({
 
 // node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/read.js
 var require_read = __commonJS({
-  "node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/read.js"(exports, module) {
+  "node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/read.js"(exports2, module2) {
     "use strict";
     var createError = require_http_errors();
     var destroy = require_destroy();
@@ -5257,8 +5251,8 @@ var require_read = __commonJS({
     var iconv = require_lib();
     var onFinished = require_on_finished();
     var unpipe = require_unpipe();
-    var zlib2 = __require("zlib");
-    module.exports = read;
+    var zlib2 = require("zlib");
+    module2.exports = read;
     function read(req, res, next, parse5, debug, options) {
       var length;
       var opts = options;
@@ -5376,7 +5370,7 @@ var require_read = __commonJS({
 
 // node_modules/.pnpm/media-typer@0.3.0/node_modules/media-typer/index.js
 var require_media_typer = __commonJS({
-  "node_modules/.pnpm/media-typer@0.3.0/node_modules/media-typer/index.js"(exports) {
+  "node_modules/.pnpm/media-typer@0.3.0/node_modules/media-typer/index.js"(exports2) {
     var paramRegExp = /; *([!#$%&'\*\+\-\.0-9A-Z\^_`a-z\|~]+) *= *("(?:[ !\u0023-\u005b\u005d-\u007e\u0080-\u00ff]|\\[\u0020-\u007e])*"|[!#$%&'\*\+\-\.0-9A-Z\^_`a-z\|~]+) */g;
     var textRegExp = /^[\u0020-\u007e\u0080-\u00ff]+$/;
     var tokenRegExp = /^[!#$%&'\*\+\-\.0-9A-Z\^_`a-z\|~]+$/;
@@ -5385,8 +5379,8 @@ var require_media_typer = __commonJS({
     var subtypeNameRegExp = /^[A-Za-z0-9][A-Za-z0-9!#$&^_.-]{0,126}$/;
     var typeNameRegExp = /^[A-Za-z0-9][A-Za-z0-9!#$&^_-]{0,126}$/;
     var typeRegExp = /^ *([A-Za-z0-9][A-Za-z0-9!#$&^_-]{0,126})\/([A-Za-z0-9][A-Za-z0-9!#$&^_.+-]{0,126}) *$/;
-    exports.format = format;
-    exports.parse = parse5;
+    exports2.format = format;
+    exports2.parse = parse5;
     function format(obj) {
       if (!obj || typeof obj !== "object") {
         throw new TypeError("argument obj is required");
@@ -5500,8 +5494,8 @@ var require_media_typer = __commonJS({
 
 // node_modules/.pnpm/mime-db@1.52.0/node_modules/mime-db/db.json
 var require_db = __commonJS({
-  "node_modules/.pnpm/mime-db@1.52.0/node_modules/mime-db/db.json"(exports, module) {
-    module.exports = {
+  "node_modules/.pnpm/mime-db@1.52.0/node_modules/mime-db/db.json"(exports2, module2) {
+    module2.exports = {
       "application/1d-interleaved-parityfec": {
         source: "iana"
       },
@@ -14025,27 +14019,27 @@ var require_db = __commonJS({
 
 // node_modules/.pnpm/mime-db@1.52.0/node_modules/mime-db/index.js
 var require_mime_db = __commonJS({
-  "node_modules/.pnpm/mime-db@1.52.0/node_modules/mime-db/index.js"(exports, module) {
-    module.exports = require_db();
+  "node_modules/.pnpm/mime-db@1.52.0/node_modules/mime-db/index.js"(exports2, module2) {
+    module2.exports = require_db();
   }
 });
 
 // node_modules/.pnpm/mime-types@2.1.35/node_modules/mime-types/index.js
 var require_mime_types = __commonJS({
-  "node_modules/.pnpm/mime-types@2.1.35/node_modules/mime-types/index.js"(exports) {
+  "node_modules/.pnpm/mime-types@2.1.35/node_modules/mime-types/index.js"(exports2) {
     "use strict";
     var db = require_mime_db();
-    var extname = __require("path").extname;
+    var extname = require("path").extname;
     var EXTRACT_TYPE_REGEXP = /^\s*([^;\s]*)(?:;|\s|$)/;
     var TEXT_TYPE_REGEXP = /^text\//i;
-    exports.charset = charset;
-    exports.charsets = { lookup: charset };
-    exports.contentType = contentType;
-    exports.extension = extension;
-    exports.extensions = /* @__PURE__ */ Object.create(null);
-    exports.lookup = lookup;
-    exports.types = /* @__PURE__ */ Object.create(null);
-    populateMaps(exports.extensions, exports.types);
+    exports2.charset = charset;
+    exports2.charsets = { lookup: charset };
+    exports2.contentType = contentType;
+    exports2.extension = extension;
+    exports2.extensions = /* @__PURE__ */ Object.create(null);
+    exports2.lookup = lookup;
+    exports2.types = /* @__PURE__ */ Object.create(null);
+    populateMaps(exports2.extensions, exports2.types);
     function charset(type) {
       if (!type || typeof type !== "string") {
         return false;
@@ -14064,12 +14058,12 @@ var require_mime_types = __commonJS({
       if (!str2 || typeof str2 !== "string") {
         return false;
       }
-      var mime = str2.indexOf("/") === -1 ? exports.lookup(str2) : str2;
+      var mime = str2.indexOf("/") === -1 ? exports2.lookup(str2) : str2;
       if (!mime) {
         return false;
       }
       if (mime.indexOf("charset") === -1) {
-        var charset2 = exports.charset(mime);
+        var charset2 = exports2.charset(mime);
         if (charset2) mime += "; charset=" + charset2.toLowerCase();
       }
       return mime;
@@ -14079,7 +14073,7 @@ var require_mime_types = __commonJS({
         return false;
       }
       var match = EXTRACT_TYPE_REGEXP.exec(type);
-      var exts = match && exports.extensions[match[1].toLowerCase()];
+      var exts = match && exports2.extensions[match[1].toLowerCase()];
       if (!exts || !exts.length) {
         return false;
       }
@@ -14093,7 +14087,7 @@ var require_mime_types = __commonJS({
       if (!extension2) {
         return false;
       }
-      return exports.types[extension2] || false;
+      return exports2.types[extension2] || false;
     }
     function populateMaps(extensions, types2) {
       var preference = ["nginx", "apache", void 0, "iana"];
@@ -14122,15 +14116,15 @@ var require_mime_types = __commonJS({
 
 // node_modules/.pnpm/type-is@1.6.18/node_modules/type-is/index.js
 var require_type_is = __commonJS({
-  "node_modules/.pnpm/type-is@1.6.18/node_modules/type-is/index.js"(exports, module) {
+  "node_modules/.pnpm/type-is@1.6.18/node_modules/type-is/index.js"(exports2, module2) {
     "use strict";
     var typer = require_media_typer();
     var mime = require_mime_types();
-    module.exports = typeofrequest;
-    module.exports.is = typeis;
-    module.exports.hasBody = hasbody;
-    module.exports.normalize = normalize;
-    module.exports.match = mimeMatch;
+    module2.exports = typeofrequest;
+    module2.exports.is = typeis;
+    module2.exports.hasBody = hasbody;
+    module2.exports.normalize = normalize;
+    module2.exports.match = mimeMatch;
     function typeis(value, types_) {
       var i;
       var types2 = types_;
@@ -14227,7 +14221,7 @@ var require_type_is = __commonJS({
 
 // node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/json.js
 var require_json = __commonJS({
-  "node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/json.js"(exports, module) {
+  "node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/json.js"(exports2, module2) {
     "use strict";
     var bytes = require_bytes();
     var contentType = require_content_type();
@@ -14235,7 +14229,7 @@ var require_json = __commonJS({
     var debug = require_src()("body-parser:json");
     var read = require_read();
     var typeis = require_type_is();
-    module.exports = json3;
+    module2.exports = json3;
     var FIRST_CHAR_REGEXP = /^[\x20\x09\x0a\x0d]*([^\x20\x09\x0a\x0d])/;
     var JSON_SYNTAX_CHAR = "#";
     var JSON_SYNTAX_REGEXP = /#+/g;
@@ -14361,13 +14355,13 @@ var require_json = __commonJS({
 
 // node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/raw.js
 var require_raw = __commonJS({
-  "node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/raw.js"(exports, module) {
+  "node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/raw.js"(exports2, module2) {
     "use strict";
     var bytes = require_bytes();
     var debug = require_src()("body-parser:raw");
     var read = require_read();
     var typeis = require_type_is();
-    module.exports = raw;
+    module2.exports = raw;
     function raw(options) {
       var opts = options || {};
       var inflate = opts.inflate !== false;
@@ -14417,14 +14411,14 @@ var require_raw = __commonJS({
 
 // node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/text.js
 var require_text = __commonJS({
-  "node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/text.js"(exports, module) {
+  "node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/text.js"(exports2, module2) {
     "use strict";
     var bytes = require_bytes();
     var contentType = require_content_type();
     var debug = require_src()("body-parser:text");
     var read = require_read();
     var typeis = require_type_is();
-    module.exports = text2;
+    module2.exports = text2;
     function text2(options) {
       var opts = options || {};
       var defaultCharset = opts.defaultCharset || "utf-8";
@@ -14483,22 +14477,22 @@ var require_text = __commonJS({
 
 // node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/type.js
 var require_type = __commonJS({
-  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/type.js"(exports, module) {
+  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/type.js"(exports2, module2) {
     "use strict";
-    module.exports = TypeError;
+    module2.exports = TypeError;
   }
 });
 
 // node_modules/.pnpm/object-inspect@1.13.4/node_modules/object-inspect/util.inspect.js
 var require_util_inspect = __commonJS({
-  "node_modules/.pnpm/object-inspect@1.13.4/node_modules/object-inspect/util.inspect.js"(exports, module) {
-    module.exports = __require("util").inspect;
+  "node_modules/.pnpm/object-inspect@1.13.4/node_modules/object-inspect/util.inspect.js"(exports2, module2) {
+    module2.exports = require("util").inspect;
   }
 });
 
 // node_modules/.pnpm/object-inspect@1.13.4/node_modules/object-inspect/index.js
 var require_object_inspect = __commonJS({
-  "node_modules/.pnpm/object-inspect@1.13.4/node_modules/object-inspect/index.js"(exports, module) {
+  "node_modules/.pnpm/object-inspect@1.13.4/node_modules/object-inspect/index.js"(exports2, module2) {
     var hasMap = typeof Map === "function" && Map.prototype;
     var mapSizeDescriptor = Object.getOwnPropertyDescriptor && hasMap ? Object.getOwnPropertyDescriptor(Map.prototype, "size") : null;
     var mapSize = hasMap && mapSizeDescriptor && typeof mapSizeDescriptor.get === "function" ? mapSizeDescriptor.get : null;
@@ -14563,7 +14557,7 @@ var require_object_inspect = __commonJS({
       "double": /(["\\])/g,
       single: /(['\\])/g
     };
-    module.exports = function inspect_(obj, options, depth, seen) {
+    module2.exports = function inspect_(obj, options, depth, seen) {
       var opts = options || {};
       if (has2(opts, "quoteStyle") && !has2(quotes, opts.quoteStyle)) {
         throw new TypeError('option "quoteStyle" must be "single" or "double"');
@@ -15029,7 +15023,7 @@ var require_object_inspect = __commonJS({
 
 // node_modules/.pnpm/side-channel-list@1.0.0/node_modules/side-channel-list/index.js
 var require_side_channel_list = __commonJS({
-  "node_modules/.pnpm/side-channel-list@1.0.0/node_modules/side-channel-list/index.js"(exports, module) {
+  "node_modules/.pnpm/side-channel-list@1.0.0/node_modules/side-channel-list/index.js"(exports2, module2) {
     "use strict";
     var inspect = require_object_inspect();
     var $TypeError = require_type();
@@ -15080,7 +15074,7 @@ var require_side_channel_list = __commonJS({
         return listGetNode(objects, key, true);
       }
     };
-    module.exports = function getSideChannelList() {
+    module2.exports = function getSideChannelList() {
       var $o;
       var channel = {
         assert: function(key) {
@@ -15123,113 +15117,113 @@ var require_side_channel_list = __commonJS({
 
 // node_modules/.pnpm/es-object-atoms@1.1.1/node_modules/es-object-atoms/index.js
 var require_es_object_atoms = __commonJS({
-  "node_modules/.pnpm/es-object-atoms@1.1.1/node_modules/es-object-atoms/index.js"(exports, module) {
+  "node_modules/.pnpm/es-object-atoms@1.1.1/node_modules/es-object-atoms/index.js"(exports2, module2) {
     "use strict";
-    module.exports = Object;
+    module2.exports = Object;
   }
 });
 
 // node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/index.js
 var require_es_errors = __commonJS({
-  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/index.js"(exports, module) {
+  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/index.js"(exports2, module2) {
     "use strict";
-    module.exports = Error;
+    module2.exports = Error;
   }
 });
 
 // node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/eval.js
 var require_eval = __commonJS({
-  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/eval.js"(exports, module) {
+  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/eval.js"(exports2, module2) {
     "use strict";
-    module.exports = EvalError;
+    module2.exports = EvalError;
   }
 });
 
 // node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/range.js
 var require_range = __commonJS({
-  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/range.js"(exports, module) {
+  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/range.js"(exports2, module2) {
     "use strict";
-    module.exports = RangeError;
+    module2.exports = RangeError;
   }
 });
 
 // node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/ref.js
 var require_ref = __commonJS({
-  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/ref.js"(exports, module) {
+  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/ref.js"(exports2, module2) {
     "use strict";
-    module.exports = ReferenceError;
+    module2.exports = ReferenceError;
   }
 });
 
 // node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/syntax.js
 var require_syntax = __commonJS({
-  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/syntax.js"(exports, module) {
+  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/syntax.js"(exports2, module2) {
     "use strict";
-    module.exports = SyntaxError;
+    module2.exports = SyntaxError;
   }
 });
 
 // node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/uri.js
 var require_uri = __commonJS({
-  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/uri.js"(exports, module) {
+  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/uri.js"(exports2, module2) {
     "use strict";
-    module.exports = URIError;
+    module2.exports = URIError;
   }
 });
 
 // node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/abs.js
 var require_abs = __commonJS({
-  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/abs.js"(exports, module) {
+  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/abs.js"(exports2, module2) {
     "use strict";
-    module.exports = Math.abs;
+    module2.exports = Math.abs;
   }
 });
 
 // node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/floor.js
 var require_floor = __commonJS({
-  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/floor.js"(exports, module) {
+  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/floor.js"(exports2, module2) {
     "use strict";
-    module.exports = Math.floor;
+    module2.exports = Math.floor;
   }
 });
 
 // node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/max.js
 var require_max = __commonJS({
-  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/max.js"(exports, module) {
+  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/max.js"(exports2, module2) {
     "use strict";
-    module.exports = Math.max;
+    module2.exports = Math.max;
   }
 });
 
 // node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/min.js
 var require_min = __commonJS({
-  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/min.js"(exports, module) {
+  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/min.js"(exports2, module2) {
     "use strict";
-    module.exports = Math.min;
+    module2.exports = Math.min;
   }
 });
 
 // node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/pow.js
 var require_pow = __commonJS({
-  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/pow.js"(exports, module) {
+  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/pow.js"(exports2, module2) {
     "use strict";
-    module.exports = Math.pow;
+    module2.exports = Math.pow;
   }
 });
 
 // node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/round.js
 var require_round = __commonJS({
-  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/round.js"(exports, module) {
+  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/round.js"(exports2, module2) {
     "use strict";
-    module.exports = Math.round;
+    module2.exports = Math.round;
   }
 });
 
 // node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/isNaN.js
 var require_isNaN = __commonJS({
-  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/isNaN.js"(exports, module) {
+  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/isNaN.js"(exports2, module2) {
     "use strict";
-    module.exports = Number.isNaN || function isNaN2(a) {
+    module2.exports = Number.isNaN || function isNaN2(a) {
       return a !== a;
     };
   }
@@ -15237,10 +15231,10 @@ var require_isNaN = __commonJS({
 
 // node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/sign.js
 var require_sign = __commonJS({
-  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/sign.js"(exports, module) {
+  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/sign.js"(exports2, module2) {
     "use strict";
     var $isNaN = require_isNaN();
-    module.exports = function sign(number4) {
+    module2.exports = function sign(number4) {
       if ($isNaN(number4) || number4 === 0) {
         return number4;
       }
@@ -15251,15 +15245,15 @@ var require_sign = __commonJS({
 
 // node_modules/.pnpm/gopd@1.2.0/node_modules/gopd/gOPD.js
 var require_gOPD = __commonJS({
-  "node_modules/.pnpm/gopd@1.2.0/node_modules/gopd/gOPD.js"(exports, module) {
+  "node_modules/.pnpm/gopd@1.2.0/node_modules/gopd/gOPD.js"(exports2, module2) {
     "use strict";
-    module.exports = Object.getOwnPropertyDescriptor;
+    module2.exports = Object.getOwnPropertyDescriptor;
   }
 });
 
 // node_modules/.pnpm/gopd@1.2.0/node_modules/gopd/index.js
 var require_gopd = __commonJS({
-  "node_modules/.pnpm/gopd@1.2.0/node_modules/gopd/index.js"(exports, module) {
+  "node_modules/.pnpm/gopd@1.2.0/node_modules/gopd/index.js"(exports2, module2) {
     "use strict";
     var $gOPD = require_gOPD();
     if ($gOPD) {
@@ -15269,13 +15263,13 @@ var require_gopd = __commonJS({
         $gOPD = null;
       }
     }
-    module.exports = $gOPD;
+    module2.exports = $gOPD;
   }
 });
 
 // node_modules/.pnpm/es-define-property@1.0.1/node_modules/es-define-property/index.js
 var require_es_define_property = __commonJS({
-  "node_modules/.pnpm/es-define-property@1.0.1/node_modules/es-define-property/index.js"(exports, module) {
+  "node_modules/.pnpm/es-define-property@1.0.1/node_modules/es-define-property/index.js"(exports2, module2) {
     "use strict";
     var $defineProperty = Object.defineProperty || false;
     if ($defineProperty) {
@@ -15285,15 +15279,15 @@ var require_es_define_property = __commonJS({
         $defineProperty = false;
       }
     }
-    module.exports = $defineProperty;
+    module2.exports = $defineProperty;
   }
 });
 
 // node_modules/.pnpm/has-symbols@1.1.0/node_modules/has-symbols/shams.js
 var require_shams = __commonJS({
-  "node_modules/.pnpm/has-symbols@1.1.0/node_modules/has-symbols/shams.js"(exports, module) {
+  "node_modules/.pnpm/has-symbols@1.1.0/node_modules/has-symbols/shams.js"(exports2, module2) {
     "use strict";
-    module.exports = function hasSymbols() {
+    module2.exports = function hasSymbols() {
       if (typeof Symbol !== "function" || typeof Object.getOwnPropertySymbols !== "function") {
         return false;
       }
@@ -15346,11 +15340,11 @@ var require_shams = __commonJS({
 
 // node_modules/.pnpm/has-symbols@1.1.0/node_modules/has-symbols/index.js
 var require_has_symbols = __commonJS({
-  "node_modules/.pnpm/has-symbols@1.1.0/node_modules/has-symbols/index.js"(exports, module) {
+  "node_modules/.pnpm/has-symbols@1.1.0/node_modules/has-symbols/index.js"(exports2, module2) {
     "use strict";
     var origSymbol = typeof Symbol !== "undefined" && Symbol;
     var hasSymbolSham = require_shams();
-    module.exports = function hasNativeSymbols() {
+    module2.exports = function hasNativeSymbols() {
       if (typeof origSymbol !== "function") {
         return false;
       }
@@ -15370,24 +15364,24 @@ var require_has_symbols = __commonJS({
 
 // node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/Reflect.getPrototypeOf.js
 var require_Reflect_getPrototypeOf = __commonJS({
-  "node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/Reflect.getPrototypeOf.js"(exports, module) {
+  "node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/Reflect.getPrototypeOf.js"(exports2, module2) {
     "use strict";
-    module.exports = typeof Reflect !== "undefined" && Reflect.getPrototypeOf || null;
+    module2.exports = typeof Reflect !== "undefined" && Reflect.getPrototypeOf || null;
   }
 });
 
 // node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/Object.getPrototypeOf.js
 var require_Object_getPrototypeOf = __commonJS({
-  "node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/Object.getPrototypeOf.js"(exports, module) {
+  "node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/Object.getPrototypeOf.js"(exports2, module2) {
     "use strict";
     var $Object = require_es_object_atoms();
-    module.exports = $Object.getPrototypeOf || null;
+    module2.exports = $Object.getPrototypeOf || null;
   }
 });
 
 // node_modules/.pnpm/function-bind@1.1.2/node_modules/function-bind/implementation.js
 var require_implementation = __commonJS({
-  "node_modules/.pnpm/function-bind@1.1.2/node_modules/function-bind/implementation.js"(exports, module) {
+  "node_modules/.pnpm/function-bind@1.1.2/node_modules/function-bind/implementation.js"(exports2, module2) {
     "use strict";
     var ERROR_MESSAGE = "Function.prototype.bind called on incompatible ";
     var toStr = Object.prototype.toString;
@@ -15420,7 +15414,7 @@ var require_implementation = __commonJS({
       }
       return str2;
     };
-    module.exports = function bind2(that) {
+    module2.exports = function bind2(that) {
       var target = this;
       if (typeof target !== "function" || toStr.apply(target) !== funcType) {
         throw new TypeError(ERROR_MESSAGE + target);
@@ -15463,58 +15457,58 @@ var require_implementation = __commonJS({
 
 // node_modules/.pnpm/function-bind@1.1.2/node_modules/function-bind/index.js
 var require_function_bind = __commonJS({
-  "node_modules/.pnpm/function-bind@1.1.2/node_modules/function-bind/index.js"(exports, module) {
+  "node_modules/.pnpm/function-bind@1.1.2/node_modules/function-bind/index.js"(exports2, module2) {
     "use strict";
     var implementation = require_implementation();
-    module.exports = Function.prototype.bind || implementation;
+    module2.exports = Function.prototype.bind || implementation;
   }
 });
 
 // node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/functionCall.js
 var require_functionCall = __commonJS({
-  "node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/functionCall.js"(exports, module) {
+  "node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/functionCall.js"(exports2, module2) {
     "use strict";
-    module.exports = Function.prototype.call;
+    module2.exports = Function.prototype.call;
   }
 });
 
 // node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/functionApply.js
 var require_functionApply = __commonJS({
-  "node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/functionApply.js"(exports, module) {
+  "node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/functionApply.js"(exports2, module2) {
     "use strict";
-    module.exports = Function.prototype.apply;
+    module2.exports = Function.prototype.apply;
   }
 });
 
 // node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/reflectApply.js
 var require_reflectApply = __commonJS({
-  "node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/reflectApply.js"(exports, module) {
+  "node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/reflectApply.js"(exports2, module2) {
     "use strict";
-    module.exports = typeof Reflect !== "undefined" && Reflect && Reflect.apply;
+    module2.exports = typeof Reflect !== "undefined" && Reflect && Reflect.apply;
   }
 });
 
 // node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/actualApply.js
 var require_actualApply = __commonJS({
-  "node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/actualApply.js"(exports, module) {
+  "node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/actualApply.js"(exports2, module2) {
     "use strict";
     var bind2 = require_function_bind();
     var $apply = require_functionApply();
     var $call = require_functionCall();
     var $reflectApply = require_reflectApply();
-    module.exports = $reflectApply || bind2.call($call, $apply);
+    module2.exports = $reflectApply || bind2.call($call, $apply);
   }
 });
 
 // node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/index.js
 var require_call_bind_apply_helpers = __commonJS({
-  "node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/index.js"(exports, module) {
+  "node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/index.js"(exports2, module2) {
     "use strict";
     var bind2 = require_function_bind();
     var $TypeError = require_type();
     var $call = require_functionCall();
     var $actualApply = require_actualApply();
-    module.exports = function callBindBasic(args) {
+    module2.exports = function callBindBasic(args) {
       if (args.length < 1 || typeof args[0] !== "function") {
         throw new $TypeError("a function is required");
       }
@@ -15525,7 +15519,7 @@ var require_call_bind_apply_helpers = __commonJS({
 
 // node_modules/.pnpm/dunder-proto@1.0.1/node_modules/dunder-proto/get.js
 var require_get = __commonJS({
-  "node_modules/.pnpm/dunder-proto@1.0.1/node_modules/dunder-proto/get.js"(exports, module) {
+  "node_modules/.pnpm/dunder-proto@1.0.1/node_modules/dunder-proto/get.js"(exports2, module2) {
     "use strict";
     var callBind = require_call_bind_apply_helpers();
     var gOPD = require_gopd();
@@ -15545,7 +15539,7 @@ var require_get = __commonJS({
     );
     var $Object = Object;
     var $getPrototypeOf = $Object.getPrototypeOf;
-    module.exports = desc3 && typeof desc3.get === "function" ? callBind([desc3.get]) : typeof $getPrototypeOf === "function" ? (
+    module2.exports = desc3 && typeof desc3.get === "function" ? callBind([desc3.get]) : typeof $getPrototypeOf === "function" ? (
       /** @type {import('./get')} */
       function getDunder(value) {
         return $getPrototypeOf(value == null ? value : $Object(value));
@@ -15556,12 +15550,12 @@ var require_get = __commonJS({
 
 // node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/index.js
 var require_get_proto = __commonJS({
-  "node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/index.js"(exports, module) {
+  "node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/index.js"(exports2, module2) {
     "use strict";
     var reflectGetProto = require_Reflect_getPrototypeOf();
     var originalGetProto = require_Object_getPrototypeOf();
     var getDunderProto = require_get();
-    module.exports = reflectGetProto ? function getProto(O) {
+    module2.exports = reflectGetProto ? function getProto(O) {
       return reflectGetProto(O);
     } : originalGetProto ? function getProto(O) {
       if (!O || typeof O !== "object" && typeof O !== "function") {
@@ -15576,18 +15570,18 @@ var require_get_proto = __commonJS({
 
 // node_modules/.pnpm/hasown@2.0.2/node_modules/hasown/index.js
 var require_hasown = __commonJS({
-  "node_modules/.pnpm/hasown@2.0.2/node_modules/hasown/index.js"(exports, module) {
+  "node_modules/.pnpm/hasown@2.0.2/node_modules/hasown/index.js"(exports2, module2) {
     "use strict";
     var call = Function.prototype.call;
     var $hasOwn = Object.prototype.hasOwnProperty;
     var bind2 = require_function_bind();
-    module.exports = bind2.call(call, $hasOwn);
+    module2.exports = bind2.call(call, $hasOwn);
   }
 });
 
 // node_modules/.pnpm/get-intrinsic@1.3.0/node_modules/get-intrinsic/index.js
 var require_get_intrinsic = __commonJS({
-  "node_modules/.pnpm/get-intrinsic@1.3.0/node_modules/get-intrinsic/index.js"(exports, module) {
+  "node_modules/.pnpm/get-intrinsic@1.3.0/node_modules/get-intrinsic/index.js"(exports2, module2) {
     "use strict";
     var undefined2;
     var $Object = require_es_object_atoms();
@@ -15852,7 +15846,7 @@ var require_get_intrinsic = __commonJS({
       }
       throw new $SyntaxError("intrinsic " + name2 + " does not exist!");
     };
-    module.exports = function GetIntrinsic(name2, allowMissing) {
+    module2.exports = function GetIntrinsic(name2, allowMissing) {
       if (typeof name2 !== "string" || name2.length === 0) {
         throw new $TypeError("intrinsic name must be a non-empty string");
       }
@@ -15918,12 +15912,12 @@ var require_get_intrinsic = __commonJS({
 
 // node_modules/.pnpm/call-bound@1.0.4/node_modules/call-bound/index.js
 var require_call_bound = __commonJS({
-  "node_modules/.pnpm/call-bound@1.0.4/node_modules/call-bound/index.js"(exports, module) {
+  "node_modules/.pnpm/call-bound@1.0.4/node_modules/call-bound/index.js"(exports2, module2) {
     "use strict";
     var GetIntrinsic = require_get_intrinsic();
     var callBindBasic = require_call_bind_apply_helpers();
     var $indexOf = callBindBasic([GetIntrinsic("%String.prototype.indexOf%")]);
-    module.exports = function callBoundIntrinsic(name2, allowMissing) {
+    module2.exports = function callBoundIntrinsic(name2, allowMissing) {
       var intrinsic = (
         /** @type {(this: unknown, ...args: unknown[]) => unknown} */
         GetIntrinsic(name2, !!allowMissing)
@@ -15941,7 +15935,7 @@ var require_call_bound = __commonJS({
 
 // node_modules/.pnpm/side-channel-map@1.0.1/node_modules/side-channel-map/index.js
 var require_side_channel_map = __commonJS({
-  "node_modules/.pnpm/side-channel-map@1.0.1/node_modules/side-channel-map/index.js"(exports, module) {
+  "node_modules/.pnpm/side-channel-map@1.0.1/node_modules/side-channel-map/index.js"(exports2, module2) {
     "use strict";
     var GetIntrinsic = require_get_intrinsic();
     var callBound = require_call_bound();
@@ -15953,7 +15947,7 @@ var require_side_channel_map = __commonJS({
     var $mapHas = callBound("Map.prototype.has", true);
     var $mapDelete = callBound("Map.prototype.delete", true);
     var $mapSize = callBound("Map.prototype.size", true);
-    module.exports = !!$Map && /** @type {Exclude<import('.'), false>} */
+    module2.exports = !!$Map && /** @type {Exclude<import('.'), false>} */
     function getSideChannelMap() {
       var $m;
       var channel = {
@@ -15997,7 +15991,7 @@ var require_side_channel_map = __commonJS({
 
 // node_modules/.pnpm/side-channel-weakmap@1.0.2/node_modules/side-channel-weakmap/index.js
 var require_side_channel_weakmap = __commonJS({
-  "node_modules/.pnpm/side-channel-weakmap@1.0.2/node_modules/side-channel-weakmap/index.js"(exports, module) {
+  "node_modules/.pnpm/side-channel-weakmap@1.0.2/node_modules/side-channel-weakmap/index.js"(exports2, module2) {
     "use strict";
     var GetIntrinsic = require_get_intrinsic();
     var callBound = require_call_bound();
@@ -16009,7 +16003,7 @@ var require_side_channel_weakmap = __commonJS({
     var $weakMapSet = callBound("WeakMap.prototype.set", true);
     var $weakMapHas = callBound("WeakMap.prototype.has", true);
     var $weakMapDelete = callBound("WeakMap.prototype.delete", true);
-    module.exports = $WeakMap ? (
+    module2.exports = $WeakMap ? (
       /** @type {Exclude<import('.'), false>} */
       function getSideChannelWeakMap() {
         var $wm;
@@ -16070,7 +16064,7 @@ var require_side_channel_weakmap = __commonJS({
 
 // node_modules/.pnpm/side-channel@1.1.0/node_modules/side-channel/index.js
 var require_side_channel = __commonJS({
-  "node_modules/.pnpm/side-channel@1.1.0/node_modules/side-channel/index.js"(exports, module) {
+  "node_modules/.pnpm/side-channel@1.1.0/node_modules/side-channel/index.js"(exports2, module2) {
     "use strict";
     var $TypeError = require_type();
     var inspect = require_object_inspect();
@@ -16078,7 +16072,7 @@ var require_side_channel = __commonJS({
     var getSideChannelMap = require_side_channel_map();
     var getSideChannelWeakMap = require_side_channel_weakmap();
     var makeChannel = getSideChannelWeakMap || getSideChannelMap || getSideChannelList;
-    module.exports = function getSideChannel() {
+    module2.exports = function getSideChannel() {
       var $channelData;
       var channel = {
         assert: function(key) {
@@ -16109,7 +16103,7 @@ var require_side_channel = __commonJS({
 
 // node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/formats.js
 var require_formats = __commonJS({
-  "node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/formats.js"(exports, module) {
+  "node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/formats.js"(exports2, module2) {
     "use strict";
     var replace = String.prototype.replace;
     var percentTwenties = /%20/g;
@@ -16117,7 +16111,7 @@ var require_formats = __commonJS({
       RFC1738: "RFC1738",
       RFC3986: "RFC3986"
     };
-    module.exports = {
+    module2.exports = {
       "default": Format.RFC3986,
       formatters: {
         RFC1738: function(value) {
@@ -16135,7 +16129,7 @@ var require_formats = __commonJS({
 
 // node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/utils.js
 var require_utils = __commonJS({
-  "node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/utils.js"(exports, module) {
+  "node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/utils.js"(exports2, module2) {
     "use strict";
     var formats = require_formats();
     var getSideChannel = require_side_channel();
@@ -16378,7 +16372,7 @@ var require_utils = __commonJS({
       }
       return fn(val);
     };
-    module.exports = {
+    module2.exports = {
       arrayToObject: arrayToObject2,
       assign,
       combine,
@@ -16397,7 +16391,7 @@ var require_utils = __commonJS({
 
 // node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/stringify.js
 var require_stringify = __commonJS({
-  "node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/stringify.js"(exports, module) {
+  "node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/stringify.js"(exports2, module2) {
     "use strict";
     var getSideChannel = require_side_channel();
     var utils = require_utils();
@@ -16612,7 +16606,7 @@ var require_stringify = __commonJS({
         strictNullHandling: typeof opts.strictNullHandling === "boolean" ? opts.strictNullHandling : defaults3.strictNullHandling
       };
     };
-    module.exports = function(object2, opts) {
+    module2.exports = function(object2, opts) {
       var obj = object2;
       var options = normalizeStringifyOptions(opts);
       var objKeys;
@@ -16680,7 +16674,7 @@ var require_stringify = __commonJS({
 
 // node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/parse.js
 var require_parse = __commonJS({
-  "node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/parse.js"(exports, module) {
+  "node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/parse.js"(exports2, module2) {
     "use strict";
     var utils = require_utils();
     var has2 = Object.prototype.hasOwnProperty;
@@ -16954,7 +16948,7 @@ var require_parse = __commonJS({
         throwOnLimitExceeded: typeof opts.throwOnLimitExceeded === "boolean" ? opts.throwOnLimitExceeded : false
       };
     };
-    module.exports = function(str2, opts) {
+    module2.exports = function(str2, opts) {
       var options = normalizeParseOptions(opts);
       if (str2 === "" || str2 === null || typeof str2 === "undefined") {
         return options.plainObjects ? { __proto__: null } : {};
@@ -16977,12 +16971,12 @@ var require_parse = __commonJS({
 
 // node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/index.js
 var require_lib2 = __commonJS({
-  "node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/index.js"(exports, module) {
+  "node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/index.js"(exports2, module2) {
     "use strict";
     var stringify4 = require_stringify();
     var parse5 = require_parse();
     var formats = require_formats();
-    module.exports = {
+    module2.exports = {
       formats,
       parse: parse5,
       stringify: stringify4
@@ -16992,7 +16986,7 @@ var require_lib2 = __commonJS({
 
 // node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/urlencoded.js
 var require_urlencoded = __commonJS({
-  "node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/urlencoded.js"(exports, module) {
+  "node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/urlencoded.js"(exports2, module2) {
     "use strict";
     var bytes = require_bytes();
     var contentType = require_content_type();
@@ -17001,7 +16995,7 @@ var require_urlencoded = __commonJS({
     var deprecate = require_depd()("body-parser");
     var read = require_read();
     var typeis = require_type_is();
-    module.exports = urlencoded;
+    module2.exports = urlencoded;
     var parsers2 = /* @__PURE__ */ Object.create(null);
     function urlencoded(options) {
       var opts = options || {};
@@ -17128,7 +17122,7 @@ var require_urlencoded = __commonJS({
           mod = require_lib2();
           break;
         case "querystring":
-          mod = __require("querystring");
+          mod = require("querystring");
           break;
       }
       parsers2[name2] = mod;
@@ -17165,30 +17159,30 @@ var require_urlencoded = __commonJS({
 
 // node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/index.js
 var require_body_parser = __commonJS({
-  "node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/index.js"(exports, module) {
+  "node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/index.js"(exports2, module2) {
     "use strict";
     var deprecate = require_depd()("body-parser");
     var parsers2 = /* @__PURE__ */ Object.create(null);
-    exports = module.exports = deprecate.function(
+    exports2 = module2.exports = deprecate.function(
       bodyParser,
       "bodyParser: use individual json/urlencoded middlewares"
     );
-    Object.defineProperty(exports, "json", {
+    Object.defineProperty(exports2, "json", {
       configurable: true,
       enumerable: true,
       get: createParserGetter("json")
     });
-    Object.defineProperty(exports, "raw", {
+    Object.defineProperty(exports2, "raw", {
       configurable: true,
       enumerable: true,
       get: createParserGetter("raw")
     });
-    Object.defineProperty(exports, "text", {
+    Object.defineProperty(exports2, "text", {
       configurable: true,
       enumerable: true,
       get: createParserGetter("text")
     });
-    Object.defineProperty(exports, "urlencoded", {
+    Object.defineProperty(exports2, "urlencoded", {
       configurable: true,
       enumerable: true,
       get: createParserGetter("urlencoded")
@@ -17202,8 +17196,8 @@ var require_body_parser = __commonJS({
           writable: true
         }
       });
-      var _urlencoded = exports.urlencoded(opts);
-      var _json = exports.json(opts);
+      var _urlencoded = exports2.urlencoded(opts);
+      var _json = exports2.json(opts);
       return function bodyParser2(req, res, next) {
         _json(req, res, function(err) {
           if (err) return next(err);
@@ -17242,9 +17236,9 @@ var require_body_parser = __commonJS({
 
 // node_modules/.pnpm/merge-descriptors@1.0.3/node_modules/merge-descriptors/index.js
 var require_merge_descriptors = __commonJS({
-  "node_modules/.pnpm/merge-descriptors@1.0.3/node_modules/merge-descriptors/index.js"(exports, module) {
+  "node_modules/.pnpm/merge-descriptors@1.0.3/node_modules/merge-descriptors/index.js"(exports2, module2) {
     "use strict";
-    module.exports = merge3;
+    module2.exports = merge3;
     var hasOwnProperty2 = Object.prototype.hasOwnProperty;
     function merge3(dest, src, redefine) {
       if (!dest) {
@@ -17270,9 +17264,9 @@ var require_merge_descriptors = __commonJS({
 
 // node_modules/.pnpm/encodeurl@2.0.0/node_modules/encodeurl/index.js
 var require_encodeurl = __commonJS({
-  "node_modules/.pnpm/encodeurl@2.0.0/node_modules/encodeurl/index.js"(exports, module) {
+  "node_modules/.pnpm/encodeurl@2.0.0/node_modules/encodeurl/index.js"(exports2, module2) {
     "use strict";
-    module.exports = encodeUrl;
+    module2.exports = encodeUrl;
     var ENCODE_CHARS_REGEXP = /(?:[^\x21\x23-\x3B\x3D\x3F-\x5F\x61-\x7A\x7C\x7E]|%(?:[^0-9A-Fa-f]|[0-9A-Fa-f][^0-9A-Fa-f]|$))+/g;
     var UNMATCHED_SURROGATE_PAIR_REGEXP = /(^|[^\uD800-\uDBFF])[\uDC00-\uDFFF]|[\uD800-\uDBFF]([^\uDC00-\uDFFF]|$)/g;
     var UNMATCHED_SURROGATE_PAIR_REPLACE = "$1\uFFFD$2";
@@ -17284,10 +17278,10 @@ var require_encodeurl = __commonJS({
 
 // node_modules/.pnpm/escape-html@1.0.3/node_modules/escape-html/index.js
 var require_escape_html = __commonJS({
-  "node_modules/.pnpm/escape-html@1.0.3/node_modules/escape-html/index.js"(exports, module) {
+  "node_modules/.pnpm/escape-html@1.0.3/node_modules/escape-html/index.js"(exports2, module2) {
     "use strict";
     var matchHtmlRegExp = /["'&<>]/;
-    module.exports = escapeHtml;
+    module2.exports = escapeHtml;
     function escapeHtml(string4) {
       var str2 = "" + string4;
       var match = matchHtmlRegExp.exec(str2);
@@ -17331,13 +17325,13 @@ var require_escape_html = __commonJS({
 
 // node_modules/.pnpm/parseurl@1.3.3/node_modules/parseurl/index.js
 var require_parseurl = __commonJS({
-  "node_modules/.pnpm/parseurl@1.3.3/node_modules/parseurl/index.js"(exports, module) {
+  "node_modules/.pnpm/parseurl@1.3.3/node_modules/parseurl/index.js"(exports2, module2) {
     "use strict";
-    var url3 = __require("url");
+    var url3 = require("url");
     var parse5 = url3.parse;
     var Url = url3.Url;
-    module.exports = parseurl;
-    module.exports.original = originalurl;
+    module2.exports = parseurl;
+    module2.exports.original = originalurl;
     function parseurl(req) {
       var url4 = req.url;
       if (url4 === void 0) {
@@ -17415,7 +17409,7 @@ var require_parseurl = __commonJS({
 
 // node_modules/.pnpm/finalhandler@1.3.2/node_modules/finalhandler/index.js
 var require_finalhandler = __commonJS({
-  "node_modules/.pnpm/finalhandler@1.3.2/node_modules/finalhandler/index.js"(exports, module) {
+  "node_modules/.pnpm/finalhandler@1.3.2/node_modules/finalhandler/index.js"(exports2, module2) {
     "use strict";
     var debug = require_src()("finalhandler");
     var encodeUrl = require_encodeurl();
@@ -17434,7 +17428,7 @@ var require_finalhandler = __commonJS({
       var body = escapeHtml(message).replace(NEWLINE_REGEXP, "<br>").replace(DOUBLE_SPACE_REGEXP, " &nbsp;");
       return '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>Error</title>\n</head>\n<body>\n<pre>' + body + "</pre>\n</body>\n</html>\n";
     }
-    module.exports = finalhandler;
+    module2.exports = finalhandler;
     function finalhandler(req, res, options) {
       var opts = options || {};
       var env = opts.env || process.env.NODE_ENV || "development";
@@ -17565,9 +17559,9 @@ var require_finalhandler = __commonJS({
 
 // node_modules/.pnpm/array-flatten@1.1.1/node_modules/array-flatten/array-flatten.js
 var require_array_flatten = __commonJS({
-  "node_modules/.pnpm/array-flatten@1.1.1/node_modules/array-flatten/array-flatten.js"(exports, module) {
+  "node_modules/.pnpm/array-flatten@1.1.1/node_modules/array-flatten/array-flatten.js"(exports2, module2) {
     "use strict";
-    module.exports = arrayFlatten;
+    module2.exports = arrayFlatten;
     function flattenWithDepth(array2, result, depth) {
       for (var i = 0; i < array2.length; i++) {
         var value = array2[i];
@@ -17601,8 +17595,8 @@ var require_array_flatten = __commonJS({
 
 // node_modules/.pnpm/path-to-regexp@0.1.13/node_modules/path-to-regexp/index.js
 var require_path_to_regexp = __commonJS({
-  "node_modules/.pnpm/path-to-regexp@0.1.13/node_modules/path-to-regexp/index.js"(exports, module) {
-    module.exports = pathToRegexp;
+  "node_modules/.pnpm/path-to-regexp@0.1.13/node_modules/path-to-regexp/index.js"(exports2, module2) {
+    module2.exports = pathToRegexp;
     var MATCHING_GROUP_REGEXP = /\\.|\((?:\?<(.*?)>)?(?!\?)/g;
     function pathToRegexp(path3, keys, options) {
       options = options || {};
@@ -17710,12 +17704,12 @@ var require_path_to_regexp = __commonJS({
 
 // node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js
 var require_layer = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js"(exports, module) {
+  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js"(exports2, module2) {
     "use strict";
     var pathRegexp = require_path_to_regexp();
     var debug = require_src()("express:router:layer");
     var hasOwnProperty2 = Object.prototype.hasOwnProperty;
-    module.exports = Layer;
+    module2.exports = Layer;
     function Layer(path3, options, fn) {
       if (!(this instanceof Layer)) {
         return new Layer(path3, options, fn);
@@ -17805,10 +17799,10 @@ var require_layer = __commonJS({
 
 // node_modules/.pnpm/methods@1.1.2/node_modules/methods/index.js
 var require_methods = __commonJS({
-  "node_modules/.pnpm/methods@1.1.2/node_modules/methods/index.js"(exports, module) {
+  "node_modules/.pnpm/methods@1.1.2/node_modules/methods/index.js"(exports2, module2) {
     "use strict";
-    var http3 = __require("http");
-    module.exports = getCurrentNodeMethods() || getBasicNodeMethods();
+    var http3 = require("http");
+    module2.exports = getCurrentNodeMethods() || getBasicNodeMethods();
     function getCurrentNodeMethods() {
       return http3.METHODS && http3.METHODS.map(function lowerCaseMethod(method) {
         return method.toLowerCase();
@@ -17849,7 +17843,7 @@ var require_methods = __commonJS({
 
 // node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js
 var require_route = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js"(exports, module) {
+  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js"(exports2, module2) {
     "use strict";
     var debug = require_src()("express:router:route");
     var flatten = require_array_flatten();
@@ -17857,7 +17851,7 @@ var require_route = __commonJS({
     var methods = require_methods();
     var slice = Array.prototype.slice;
     var toString3 = Object.prototype.toString;
-    module.exports = Route;
+    module2.exports = Route;
     function Route(path3) {
       this.path = path3;
       this.stack = [];
@@ -17961,8 +17955,8 @@ var require_route = __commonJS({
 
 // node_modules/.pnpm/utils-merge@1.0.1/node_modules/utils-merge/index.js
 var require_utils_merge = __commonJS({
-  "node_modules/.pnpm/utils-merge@1.0.1/node_modules/utils-merge/index.js"(exports, module) {
-    exports = module.exports = function(a, b2) {
+  "node_modules/.pnpm/utils-merge@1.0.1/node_modules/utils-merge/index.js"(exports2, module2) {
+    exports2 = module2.exports = function(a, b2) {
       if (a && b2) {
         for (var key in b2) {
           a[key] = b2[key];
@@ -17975,7 +17969,7 @@ var require_utils_merge = __commonJS({
 
 // node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js
 var require_router = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js"(exports, module) {
+  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js"(exports2, module2) {
     "use strict";
     var Route = require_route();
     var Layer = require_layer();
@@ -17989,7 +17983,7 @@ var require_router = __commonJS({
     var objectRegExp = /^\[object (\S+)\]$/;
     var slice = Array.prototype.slice;
     var toString3 = Object.prototype.toString;
-    var proto = module.exports = function(options) {
+    var proto = module2.exports = function(options) {
       var opts = options || {};
       function router2(req, res, next) {
         router2.handle(req, res, next);
@@ -18358,10 +18352,10 @@ var require_router = __commonJS({
 
 // node_modules/.pnpm/express@4.22.1/node_modules/express/lib/middleware/init.js
 var require_init = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/middleware/init.js"(exports) {
+  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/middleware/init.js"(exports2) {
     "use strict";
     var setPrototypeOf = require_setprototypeof();
-    exports.init = function(app2) {
+    exports2.init = function(app2) {
       return function expressInit(req, res, next) {
         if (app2.enabled("x-powered-by")) res.setHeader("X-Powered-By", "Express");
         req.res = res;
@@ -18378,12 +18372,12 @@ var require_init = __commonJS({
 
 // node_modules/.pnpm/express@4.22.1/node_modules/express/lib/middleware/query.js
 var require_query = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/middleware/query.js"(exports, module) {
+  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/middleware/query.js"(exports2, module2) {
     "use strict";
     var merge3 = require_utils_merge();
     var parseUrl3 = require_parseurl();
     var qs = require_lib2();
-    module.exports = function query(options) {
+    module2.exports = function query(options) {
       var opts = merge3({}, options);
       var queryparse = qs.parse;
       if (typeof options === "function") {
@@ -18406,17 +18400,17 @@ var require_query = __commonJS({
 
 // node_modules/.pnpm/express@4.22.1/node_modules/express/lib/view.js
 var require_view = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/view.js"(exports, module) {
+  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/view.js"(exports2, module2) {
     "use strict";
     var debug = require_src()("express:view");
-    var path3 = __require("path");
-    var fs2 = __require("fs");
+    var path3 = require("path");
+    var fs2 = require("fs");
     var dirname = path3.dirname;
     var basename = path3.basename;
     var extname = path3.extname;
     var join = path3.join;
     var resolve = path3.resolve;
-    module.exports = View2;
+    module2.exports = View2;
     function View2(name2, options) {
       var opts = options || {};
       this.defaultEngine = opts.defaultEngine;
@@ -18434,7 +18428,7 @@ var require_view = __commonJS({
       if (!opts.engines[this.ext]) {
         var mod = this.ext.slice(1);
         debug('require "%s"', mod);
-        var fn = __require(mod).__express;
+        var fn = require(mod).__express;
         if (typeof fn !== "function") {
           throw new Error('Module "' + mod + '" does not provide a view engine.');
         }
@@ -18486,8 +18480,8 @@ var require_view = __commonJS({
 
 // node_modules/.pnpm/safe-buffer@5.2.1/node_modules/safe-buffer/index.js
 var require_safe_buffer = __commonJS({
-  "node_modules/.pnpm/safe-buffer@5.2.1/node_modules/safe-buffer/index.js"(exports, module) {
-    var buffer2 = __require("buffer");
+  "node_modules/.pnpm/safe-buffer@5.2.1/node_modules/safe-buffer/index.js"(exports2, module2) {
+    var buffer2 = require("buffer");
     var Buffer2 = buffer2.Buffer;
     function copyProps(src, dst) {
       for (var key in src) {
@@ -18495,10 +18489,10 @@ var require_safe_buffer = __commonJS({
       }
     }
     if (Buffer2.from && Buffer2.alloc && Buffer2.allocUnsafe && Buffer2.allocUnsafeSlow) {
-      module.exports = buffer2;
+      module2.exports = buffer2;
     } else {
-      copyProps(buffer2, exports);
-      exports.Buffer = SafeBuffer;
+      copyProps(buffer2, exports2);
+      exports2.Buffer = SafeBuffer;
     }
     function SafeBuffer(arg, encodingOrOffset, length) {
       return Buffer2(arg, encodingOrOffset, length);
@@ -18544,11 +18538,11 @@ var require_safe_buffer = __commonJS({
 
 // node_modules/.pnpm/content-disposition@0.5.4/node_modules/content-disposition/index.js
 var require_content_disposition = __commonJS({
-  "node_modules/.pnpm/content-disposition@0.5.4/node_modules/content-disposition/index.js"(exports, module) {
+  "node_modules/.pnpm/content-disposition@0.5.4/node_modules/content-disposition/index.js"(exports2, module2) {
     "use strict";
-    module.exports = contentDisposition;
-    module.exports.parse = parse5;
-    var basename = __require("path").basename;
+    module2.exports = contentDisposition;
+    module2.exports.parse = parse5;
+    var basename = require("path").basename;
     var Buffer2 = require_safe_buffer().Buffer;
     var ENCODE_URL_ATTR_CHAR_REGEXP = /[\x00-\x20"'()*,/:;<=>?@[\\\]{}\x7f]/g;
     var HEX_ESCAPE_REGEXP = /%[0-9A-Fa-f]{2}/;
@@ -18707,11 +18701,11 @@ var require_content_disposition = __commonJS({
 
 // node_modules/.pnpm/etag@1.8.1/node_modules/etag/index.js
 var require_etag = __commonJS({
-  "node_modules/.pnpm/etag@1.8.1/node_modules/etag/index.js"(exports, module) {
+  "node_modules/.pnpm/etag@1.8.1/node_modules/etag/index.js"(exports2, module2) {
     "use strict";
-    module.exports = etag;
-    var crypto4 = __require("crypto");
-    var Stats = __require("fs").Stats;
+    module2.exports = etag;
+    var crypto4 = require("crypto");
+    var Stats = require("fs").Stats;
     var toString3 = Object.prototype.toString;
     function entitytag(entity) {
       if (entity.length === 0) {
@@ -18749,10 +18743,10 @@ var require_etag = __commonJS({
 
 // node_modules/.pnpm/fresh@0.5.2/node_modules/fresh/index.js
 var require_fresh = __commonJS({
-  "node_modules/.pnpm/fresh@0.5.2/node_modules/fresh/index.js"(exports, module) {
+  "node_modules/.pnpm/fresh@0.5.2/node_modules/fresh/index.js"(exports2, module2) {
     "use strict";
     var CACHE_CONTROL_NO_CACHE_REGEXP = /(?:^|,)\s*?no-cache\s*?(?:,|$)/;
-    module.exports = fresh;
+    module2.exports = fresh;
     function fresh(reqHeaders, resHeaders) {
       var modifiedSince = reqHeaders["if-modified-since"];
       var noneMatch = reqHeaders["if-none-match"];
@@ -18822,16 +18816,16 @@ var require_fresh = __commonJS({
 
 // node_modules/.pnpm/mime@1.6.0/node_modules/mime/types.json
 var require_types = __commonJS({
-  "node_modules/.pnpm/mime@1.6.0/node_modules/mime/types.json"(exports, module) {
-    module.exports = { "application/andrew-inset": ["ez"], "application/applixware": ["aw"], "application/atom+xml": ["atom"], "application/atomcat+xml": ["atomcat"], "application/atomsvc+xml": ["atomsvc"], "application/bdoc": ["bdoc"], "application/ccxml+xml": ["ccxml"], "application/cdmi-capability": ["cdmia"], "application/cdmi-container": ["cdmic"], "application/cdmi-domain": ["cdmid"], "application/cdmi-object": ["cdmio"], "application/cdmi-queue": ["cdmiq"], "application/cu-seeme": ["cu"], "application/dash+xml": ["mpd"], "application/davmount+xml": ["davmount"], "application/docbook+xml": ["dbk"], "application/dssc+der": ["dssc"], "application/dssc+xml": ["xdssc"], "application/ecmascript": ["ecma"], "application/emma+xml": ["emma"], "application/epub+zip": ["epub"], "application/exi": ["exi"], "application/font-tdpfr": ["pfr"], "application/font-woff": [], "application/font-woff2": [], "application/geo+json": ["geojson"], "application/gml+xml": ["gml"], "application/gpx+xml": ["gpx"], "application/gxf": ["gxf"], "application/gzip": ["gz"], "application/hyperstudio": ["stk"], "application/inkml+xml": ["ink", "inkml"], "application/ipfix": ["ipfix"], "application/java-archive": ["jar", "war", "ear"], "application/java-serialized-object": ["ser"], "application/java-vm": ["class"], "application/javascript": ["js", "mjs"], "application/json": ["json", "map"], "application/json5": ["json5"], "application/jsonml+json": ["jsonml"], "application/ld+json": ["jsonld"], "application/lost+xml": ["lostxml"], "application/mac-binhex40": ["hqx"], "application/mac-compactpro": ["cpt"], "application/mads+xml": ["mads"], "application/manifest+json": ["webmanifest"], "application/marc": ["mrc"], "application/marcxml+xml": ["mrcx"], "application/mathematica": ["ma", "nb", "mb"], "application/mathml+xml": ["mathml"], "application/mbox": ["mbox"], "application/mediaservercontrol+xml": ["mscml"], "application/metalink+xml": ["metalink"], "application/metalink4+xml": ["meta4"], "application/mets+xml": ["mets"], "application/mods+xml": ["mods"], "application/mp21": ["m21", "mp21"], "application/mp4": ["mp4s", "m4p"], "application/msword": ["doc", "dot"], "application/mxf": ["mxf"], "application/octet-stream": ["bin", "dms", "lrf", "mar", "so", "dist", "distz", "pkg", "bpk", "dump", "elc", "deploy", "exe", "dll", "deb", "dmg", "iso", "img", "msi", "msp", "msm", "buffer"], "application/oda": ["oda"], "application/oebps-package+xml": ["opf"], "application/ogg": ["ogx"], "application/omdoc+xml": ["omdoc"], "application/onenote": ["onetoc", "onetoc2", "onetmp", "onepkg"], "application/oxps": ["oxps"], "application/patch-ops-error+xml": ["xer"], "application/pdf": ["pdf"], "application/pgp-encrypted": ["pgp"], "application/pgp-signature": ["asc", "sig"], "application/pics-rules": ["prf"], "application/pkcs10": ["p10"], "application/pkcs7-mime": ["p7m", "p7c"], "application/pkcs7-signature": ["p7s"], "application/pkcs8": ["p8"], "application/pkix-attr-cert": ["ac"], "application/pkix-cert": ["cer"], "application/pkix-crl": ["crl"], "application/pkix-pkipath": ["pkipath"], "application/pkixcmp": ["pki"], "application/pls+xml": ["pls"], "application/postscript": ["ai", "eps", "ps"], "application/prs.cww": ["cww"], "application/pskc+xml": ["pskcxml"], "application/raml+yaml": ["raml"], "application/rdf+xml": ["rdf"], "application/reginfo+xml": ["rif"], "application/relax-ng-compact-syntax": ["rnc"], "application/resource-lists+xml": ["rl"], "application/resource-lists-diff+xml": ["rld"], "application/rls-services+xml": ["rs"], "application/rpki-ghostbusters": ["gbr"], "application/rpki-manifest": ["mft"], "application/rpki-roa": ["roa"], "application/rsd+xml": ["rsd"], "application/rss+xml": ["rss"], "application/rtf": ["rtf"], "application/sbml+xml": ["sbml"], "application/scvp-cv-request": ["scq"], "application/scvp-cv-response": ["scs"], "application/scvp-vp-request": ["spq"], "application/scvp-vp-response": ["spp"], "application/sdp": ["sdp"], "application/set-payment-initiation": ["setpay"], "application/set-registration-initiation": ["setreg"], "application/shf+xml": ["shf"], "application/smil+xml": ["smi", "smil"], "application/sparql-query": ["rq"], "application/sparql-results+xml": ["srx"], "application/srgs": ["gram"], "application/srgs+xml": ["grxml"], "application/sru+xml": ["sru"], "application/ssdl+xml": ["ssdl"], "application/ssml+xml": ["ssml"], "application/tei+xml": ["tei", "teicorpus"], "application/thraud+xml": ["tfi"], "application/timestamped-data": ["tsd"], "application/vnd.3gpp.pic-bw-large": ["plb"], "application/vnd.3gpp.pic-bw-small": ["psb"], "application/vnd.3gpp.pic-bw-var": ["pvb"], "application/vnd.3gpp2.tcap": ["tcap"], "application/vnd.3m.post-it-notes": ["pwn"], "application/vnd.accpac.simply.aso": ["aso"], "application/vnd.accpac.simply.imp": ["imp"], "application/vnd.acucobol": ["acu"], "application/vnd.acucorp": ["atc", "acutc"], "application/vnd.adobe.air-application-installer-package+zip": ["air"], "application/vnd.adobe.formscentral.fcdt": ["fcdt"], "application/vnd.adobe.fxp": ["fxp", "fxpl"], "application/vnd.adobe.xdp+xml": ["xdp"], "application/vnd.adobe.xfdf": ["xfdf"], "application/vnd.ahead.space": ["ahead"], "application/vnd.airzip.filesecure.azf": ["azf"], "application/vnd.airzip.filesecure.azs": ["azs"], "application/vnd.amazon.ebook": ["azw"], "application/vnd.americandynamics.acc": ["acc"], "application/vnd.amiga.ami": ["ami"], "application/vnd.android.package-archive": ["apk"], "application/vnd.anser-web-certificate-issue-initiation": ["cii"], "application/vnd.anser-web-funds-transfer-initiation": ["fti"], "application/vnd.antix.game-component": ["atx"], "application/vnd.apple.installer+xml": ["mpkg"], "application/vnd.apple.mpegurl": ["m3u8"], "application/vnd.apple.pkpass": ["pkpass"], "application/vnd.aristanetworks.swi": ["swi"], "application/vnd.astraea-software.iota": ["iota"], "application/vnd.audiograph": ["aep"], "application/vnd.blueice.multipass": ["mpm"], "application/vnd.bmi": ["bmi"], "application/vnd.businessobjects": ["rep"], "application/vnd.chemdraw+xml": ["cdxml"], "application/vnd.chipnuts.karaoke-mmd": ["mmd"], "application/vnd.cinderella": ["cdy"], "application/vnd.claymore": ["cla"], "application/vnd.cloanto.rp9": ["rp9"], "application/vnd.clonk.c4group": ["c4g", "c4d", "c4f", "c4p", "c4u"], "application/vnd.cluetrust.cartomobile-config": ["c11amc"], "application/vnd.cluetrust.cartomobile-config-pkg": ["c11amz"], "application/vnd.commonspace": ["csp"], "application/vnd.contact.cmsg": ["cdbcmsg"], "application/vnd.cosmocaller": ["cmc"], "application/vnd.crick.clicker": ["clkx"], "application/vnd.crick.clicker.keyboard": ["clkk"], "application/vnd.crick.clicker.palette": ["clkp"], "application/vnd.crick.clicker.template": ["clkt"], "application/vnd.crick.clicker.wordbank": ["clkw"], "application/vnd.criticaltools.wbs+xml": ["wbs"], "application/vnd.ctc-posml": ["pml"], "application/vnd.cups-ppd": ["ppd"], "application/vnd.curl.car": ["car"], "application/vnd.curl.pcurl": ["pcurl"], "application/vnd.dart": ["dart"], "application/vnd.data-vision.rdz": ["rdz"], "application/vnd.dece.data": ["uvf", "uvvf", "uvd", "uvvd"], "application/vnd.dece.ttml+xml": ["uvt", "uvvt"], "application/vnd.dece.unspecified": ["uvx", "uvvx"], "application/vnd.dece.zip": ["uvz", "uvvz"], "application/vnd.denovo.fcselayout-link": ["fe_launch"], "application/vnd.dna": ["dna"], "application/vnd.dolby.mlp": ["mlp"], "application/vnd.dpgraph": ["dpg"], "application/vnd.dreamfactory": ["dfac"], "application/vnd.ds-keypoint": ["kpxx"], "application/vnd.dvb.ait": ["ait"], "application/vnd.dvb.service": ["svc"], "application/vnd.dynageo": ["geo"], "application/vnd.ecowin.chart": ["mag"], "application/vnd.enliven": ["nml"], "application/vnd.epson.esf": ["esf"], "application/vnd.epson.msf": ["msf"], "application/vnd.epson.quickanime": ["qam"], "application/vnd.epson.salt": ["slt"], "application/vnd.epson.ssf": ["ssf"], "application/vnd.eszigno3+xml": ["es3", "et3"], "application/vnd.ezpix-album": ["ez2"], "application/vnd.ezpix-package": ["ez3"], "application/vnd.fdf": ["fdf"], "application/vnd.fdsn.mseed": ["mseed"], "application/vnd.fdsn.seed": ["seed", "dataless"], "application/vnd.flographit": ["gph"], "application/vnd.fluxtime.clip": ["ftc"], "application/vnd.framemaker": ["fm", "frame", "maker", "book"], "application/vnd.frogans.fnc": ["fnc"], "application/vnd.frogans.ltf": ["ltf"], "application/vnd.fsc.weblaunch": ["fsc"], "application/vnd.fujitsu.oasys": ["oas"], "application/vnd.fujitsu.oasys2": ["oa2"], "application/vnd.fujitsu.oasys3": ["oa3"], "application/vnd.fujitsu.oasysgp": ["fg5"], "application/vnd.fujitsu.oasysprs": ["bh2"], "application/vnd.fujixerox.ddd": ["ddd"], "application/vnd.fujixerox.docuworks": ["xdw"], "application/vnd.fujixerox.docuworks.binder": ["xbd"], "application/vnd.fuzzysheet": ["fzs"], "application/vnd.genomatix.tuxedo": ["txd"], "application/vnd.geogebra.file": ["ggb"], "application/vnd.geogebra.tool": ["ggt"], "application/vnd.geometry-explorer": ["gex", "gre"], "application/vnd.geonext": ["gxt"], "application/vnd.geoplan": ["g2w"], "application/vnd.geospace": ["g3w"], "application/vnd.gmx": ["gmx"], "application/vnd.google-apps.document": ["gdoc"], "application/vnd.google-apps.presentation": ["gslides"], "application/vnd.google-apps.spreadsheet": ["gsheet"], "application/vnd.google-earth.kml+xml": ["kml"], "application/vnd.google-earth.kmz": ["kmz"], "application/vnd.grafeq": ["gqf", "gqs"], "application/vnd.groove-account": ["gac"], "application/vnd.groove-help": ["ghf"], "application/vnd.groove-identity-message": ["gim"], "application/vnd.groove-injector": ["grv"], "application/vnd.groove-tool-message": ["gtm"], "application/vnd.groove-tool-template": ["tpl"], "application/vnd.groove-vcard": ["vcg"], "application/vnd.hal+xml": ["hal"], "application/vnd.handheld-entertainment+xml": ["zmm"], "application/vnd.hbci": ["hbci"], "application/vnd.hhe.lesson-player": ["les"], "application/vnd.hp-hpgl": ["hpgl"], "application/vnd.hp-hpid": ["hpid"], "application/vnd.hp-hps": ["hps"], "application/vnd.hp-jlyt": ["jlt"], "application/vnd.hp-pcl": ["pcl"], "application/vnd.hp-pclxl": ["pclxl"], "application/vnd.hydrostatix.sof-data": ["sfd-hdstx"], "application/vnd.ibm.minipay": ["mpy"], "application/vnd.ibm.modcap": ["afp", "listafp", "list3820"], "application/vnd.ibm.rights-management": ["irm"], "application/vnd.ibm.secure-container": ["sc"], "application/vnd.iccprofile": ["icc", "icm"], "application/vnd.igloader": ["igl"], "application/vnd.immervision-ivp": ["ivp"], "application/vnd.immervision-ivu": ["ivu"], "application/vnd.insors.igm": ["igm"], "application/vnd.intercon.formnet": ["xpw", "xpx"], "application/vnd.intergeo": ["i2g"], "application/vnd.intu.qbo": ["qbo"], "application/vnd.intu.qfx": ["qfx"], "application/vnd.ipunplugged.rcprofile": ["rcprofile"], "application/vnd.irepository.package+xml": ["irp"], "application/vnd.is-xpr": ["xpr"], "application/vnd.isac.fcs": ["fcs"], "application/vnd.jam": ["jam"], "application/vnd.jcp.javame.midlet-rms": ["rms"], "application/vnd.jisp": ["jisp"], "application/vnd.joost.joda-archive": ["joda"], "application/vnd.kahootz": ["ktz", "ktr"], "application/vnd.kde.karbon": ["karbon"], "application/vnd.kde.kchart": ["chrt"], "application/vnd.kde.kformula": ["kfo"], "application/vnd.kde.kivio": ["flw"], "application/vnd.kde.kontour": ["kon"], "application/vnd.kde.kpresenter": ["kpr", "kpt"], "application/vnd.kde.kspread": ["ksp"], "application/vnd.kde.kword": ["kwd", "kwt"], "application/vnd.kenameaapp": ["htke"], "application/vnd.kidspiration": ["kia"], "application/vnd.kinar": ["kne", "knp"], "application/vnd.koan": ["skp", "skd", "skt", "skm"], "application/vnd.kodak-descriptor": ["sse"], "application/vnd.las.las+xml": ["lasxml"], "application/vnd.llamagraphics.life-balance.desktop": ["lbd"], "application/vnd.llamagraphics.life-balance.exchange+xml": ["lbe"], "application/vnd.lotus-1-2-3": ["123"], "application/vnd.lotus-approach": ["apr"], "application/vnd.lotus-freelance": ["pre"], "application/vnd.lotus-notes": ["nsf"], "application/vnd.lotus-organizer": ["org"], "application/vnd.lotus-screencam": ["scm"], "application/vnd.lotus-wordpro": ["lwp"], "application/vnd.macports.portpkg": ["portpkg"], "application/vnd.mcd": ["mcd"], "application/vnd.medcalcdata": ["mc1"], "application/vnd.mediastation.cdkey": ["cdkey"], "application/vnd.mfer": ["mwf"], "application/vnd.mfmp": ["mfm"], "application/vnd.micrografx.flo": ["flo"], "application/vnd.micrografx.igx": ["igx"], "application/vnd.mif": ["mif"], "application/vnd.mobius.daf": ["daf"], "application/vnd.mobius.dis": ["dis"], "application/vnd.mobius.mbk": ["mbk"], "application/vnd.mobius.mqy": ["mqy"], "application/vnd.mobius.msl": ["msl"], "application/vnd.mobius.plc": ["plc"], "application/vnd.mobius.txf": ["txf"], "application/vnd.mophun.application": ["mpn"], "application/vnd.mophun.certificate": ["mpc"], "application/vnd.mozilla.xul+xml": ["xul"], "application/vnd.ms-artgalry": ["cil"], "application/vnd.ms-cab-compressed": ["cab"], "application/vnd.ms-excel": ["xls", "xlm", "xla", "xlc", "xlt", "xlw"], "application/vnd.ms-excel.addin.macroenabled.12": ["xlam"], "application/vnd.ms-excel.sheet.binary.macroenabled.12": ["xlsb"], "application/vnd.ms-excel.sheet.macroenabled.12": ["xlsm"], "application/vnd.ms-excel.template.macroenabled.12": ["xltm"], "application/vnd.ms-fontobject": ["eot"], "application/vnd.ms-htmlhelp": ["chm"], "application/vnd.ms-ims": ["ims"], "application/vnd.ms-lrm": ["lrm"], "application/vnd.ms-officetheme": ["thmx"], "application/vnd.ms-outlook": ["msg"], "application/vnd.ms-pki.seccat": ["cat"], "application/vnd.ms-pki.stl": ["stl"], "application/vnd.ms-powerpoint": ["ppt", "pps", "pot"], "application/vnd.ms-powerpoint.addin.macroenabled.12": ["ppam"], "application/vnd.ms-powerpoint.presentation.macroenabled.12": ["pptm"], "application/vnd.ms-powerpoint.slide.macroenabled.12": ["sldm"], "application/vnd.ms-powerpoint.slideshow.macroenabled.12": ["ppsm"], "application/vnd.ms-powerpoint.template.macroenabled.12": ["potm"], "application/vnd.ms-project": ["mpp", "mpt"], "application/vnd.ms-word.document.macroenabled.12": ["docm"], "application/vnd.ms-word.template.macroenabled.12": ["dotm"], "application/vnd.ms-works": ["wps", "wks", "wcm", "wdb"], "application/vnd.ms-wpl": ["wpl"], "application/vnd.ms-xpsdocument": ["xps"], "application/vnd.mseq": ["mseq"], "application/vnd.musician": ["mus"], "application/vnd.muvee.style": ["msty"], "application/vnd.mynfc": ["taglet"], "application/vnd.neurolanguage.nlu": ["nlu"], "application/vnd.nitf": ["ntf", "nitf"], "application/vnd.noblenet-directory": ["nnd"], "application/vnd.noblenet-sealer": ["nns"], "application/vnd.noblenet-web": ["nnw"], "application/vnd.nokia.n-gage.data": ["ngdat"], "application/vnd.nokia.n-gage.symbian.install": ["n-gage"], "application/vnd.nokia.radio-preset": ["rpst"], "application/vnd.nokia.radio-presets": ["rpss"], "application/vnd.novadigm.edm": ["edm"], "application/vnd.novadigm.edx": ["edx"], "application/vnd.novadigm.ext": ["ext"], "application/vnd.oasis.opendocument.chart": ["odc"], "application/vnd.oasis.opendocument.chart-template": ["otc"], "application/vnd.oasis.opendocument.database": ["odb"], "application/vnd.oasis.opendocument.formula": ["odf"], "application/vnd.oasis.opendocument.formula-template": ["odft"], "application/vnd.oasis.opendocument.graphics": ["odg"], "application/vnd.oasis.opendocument.graphics-template": ["otg"], "application/vnd.oasis.opendocument.image": ["odi"], "application/vnd.oasis.opendocument.image-template": ["oti"], "application/vnd.oasis.opendocument.presentation": ["odp"], "application/vnd.oasis.opendocument.presentation-template": ["otp"], "application/vnd.oasis.opendocument.spreadsheet": ["ods"], "application/vnd.oasis.opendocument.spreadsheet-template": ["ots"], "application/vnd.oasis.opendocument.text": ["odt"], "application/vnd.oasis.opendocument.text-master": ["odm"], "application/vnd.oasis.opendocument.text-template": ["ott"], "application/vnd.oasis.opendocument.text-web": ["oth"], "application/vnd.olpc-sugar": ["xo"], "application/vnd.oma.dd2+xml": ["dd2"], "application/vnd.openofficeorg.extension": ["oxt"], "application/vnd.openxmlformats-officedocument.presentationml.presentation": ["pptx"], "application/vnd.openxmlformats-officedocument.presentationml.slide": ["sldx"], "application/vnd.openxmlformats-officedocument.presentationml.slideshow": ["ppsx"], "application/vnd.openxmlformats-officedocument.presentationml.template": ["potx"], "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": ["xlsx"], "application/vnd.openxmlformats-officedocument.spreadsheetml.template": ["xltx"], "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ["docx"], "application/vnd.openxmlformats-officedocument.wordprocessingml.template": ["dotx"], "application/vnd.osgeo.mapguide.package": ["mgp"], "application/vnd.osgi.dp": ["dp"], "application/vnd.osgi.subsystem": ["esa"], "application/vnd.palm": ["pdb", "pqa", "oprc"], "application/vnd.pawaafile": ["paw"], "application/vnd.pg.format": ["str"], "application/vnd.pg.osasli": ["ei6"], "application/vnd.picsel": ["efif"], "application/vnd.pmi.widget": ["wg"], "application/vnd.pocketlearn": ["plf"], "application/vnd.powerbuilder6": ["pbd"], "application/vnd.previewsystems.box": ["box"], "application/vnd.proteus.magazine": ["mgz"], "application/vnd.publishare-delta-tree": ["qps"], "application/vnd.pvi.ptid1": ["ptid"], "application/vnd.quark.quarkxpress": ["qxd", "qxt", "qwd", "qwt", "qxl", "qxb"], "application/vnd.realvnc.bed": ["bed"], "application/vnd.recordare.musicxml": ["mxl"], "application/vnd.recordare.musicxml+xml": ["musicxml"], "application/vnd.rig.cryptonote": ["cryptonote"], "application/vnd.rim.cod": ["cod"], "application/vnd.rn-realmedia": ["rm"], "application/vnd.rn-realmedia-vbr": ["rmvb"], "application/vnd.route66.link66+xml": ["link66"], "application/vnd.sailingtracker.track": ["st"], "application/vnd.seemail": ["see"], "application/vnd.sema": ["sema"], "application/vnd.semd": ["semd"], "application/vnd.semf": ["semf"], "application/vnd.shana.informed.formdata": ["ifm"], "application/vnd.shana.informed.formtemplate": ["itp"], "application/vnd.shana.informed.interchange": ["iif"], "application/vnd.shana.informed.package": ["ipk"], "application/vnd.simtech-mindmapper": ["twd", "twds"], "application/vnd.smaf": ["mmf"], "application/vnd.smart.teacher": ["teacher"], "application/vnd.solent.sdkm+xml": ["sdkm", "sdkd"], "application/vnd.spotfire.dxp": ["dxp"], "application/vnd.spotfire.sfs": ["sfs"], "application/vnd.stardivision.calc": ["sdc"], "application/vnd.stardivision.draw": ["sda"], "application/vnd.stardivision.impress": ["sdd"], "application/vnd.stardivision.math": ["smf"], "application/vnd.stardivision.writer": ["sdw", "vor"], "application/vnd.stardivision.writer-global": ["sgl"], "application/vnd.stepmania.package": ["smzip"], "application/vnd.stepmania.stepchart": ["sm"], "application/vnd.sun.wadl+xml": ["wadl"], "application/vnd.sun.xml.calc": ["sxc"], "application/vnd.sun.xml.calc.template": ["stc"], "application/vnd.sun.xml.draw": ["sxd"], "application/vnd.sun.xml.draw.template": ["std"], "application/vnd.sun.xml.impress": ["sxi"], "application/vnd.sun.xml.impress.template": ["sti"], "application/vnd.sun.xml.math": ["sxm"], "application/vnd.sun.xml.writer": ["sxw"], "application/vnd.sun.xml.writer.global": ["sxg"], "application/vnd.sun.xml.writer.template": ["stw"], "application/vnd.sus-calendar": ["sus", "susp"], "application/vnd.svd": ["svd"], "application/vnd.symbian.install": ["sis", "sisx"], "application/vnd.syncml+xml": ["xsm"], "application/vnd.syncml.dm+wbxml": ["bdm"], "application/vnd.syncml.dm+xml": ["xdm"], "application/vnd.tao.intent-module-archive": ["tao"], "application/vnd.tcpdump.pcap": ["pcap", "cap", "dmp"], "application/vnd.tmobile-livetv": ["tmo"], "application/vnd.trid.tpt": ["tpt"], "application/vnd.triscape.mxs": ["mxs"], "application/vnd.trueapp": ["tra"], "application/vnd.ufdl": ["ufd", "ufdl"], "application/vnd.uiq.theme": ["utz"], "application/vnd.umajin": ["umj"], "application/vnd.unity": ["unityweb"], "application/vnd.uoml+xml": ["uoml"], "application/vnd.vcx": ["vcx"], "application/vnd.visio": ["vsd", "vst", "vss", "vsw"], "application/vnd.visionary": ["vis"], "application/vnd.vsf": ["vsf"], "application/vnd.wap.wbxml": ["wbxml"], "application/vnd.wap.wmlc": ["wmlc"], "application/vnd.wap.wmlscriptc": ["wmlsc"], "application/vnd.webturbo": ["wtb"], "application/vnd.wolfram.player": ["nbp"], "application/vnd.wordperfect": ["wpd"], "application/vnd.wqd": ["wqd"], "application/vnd.wt.stf": ["stf"], "application/vnd.xara": ["xar"], "application/vnd.xfdl": ["xfdl"], "application/vnd.yamaha.hv-dic": ["hvd"], "application/vnd.yamaha.hv-script": ["hvs"], "application/vnd.yamaha.hv-voice": ["hvp"], "application/vnd.yamaha.openscoreformat": ["osf"], "application/vnd.yamaha.openscoreformat.osfpvg+xml": ["osfpvg"], "application/vnd.yamaha.smaf-audio": ["saf"], "application/vnd.yamaha.smaf-phrase": ["spf"], "application/vnd.yellowriver-custom-menu": ["cmp"], "application/vnd.zul": ["zir", "zirz"], "application/vnd.zzazz.deck+xml": ["zaz"], "application/voicexml+xml": ["vxml"], "application/wasm": ["wasm"], "application/widget": ["wgt"], "application/winhlp": ["hlp"], "application/wsdl+xml": ["wsdl"], "application/wspolicy+xml": ["wspolicy"], "application/x-7z-compressed": ["7z"], "application/x-abiword": ["abw"], "application/x-ace-compressed": ["ace"], "application/x-apple-diskimage": [], "application/x-arj": ["arj"], "application/x-authorware-bin": ["aab", "x32", "u32", "vox"], "application/x-authorware-map": ["aam"], "application/x-authorware-seg": ["aas"], "application/x-bcpio": ["bcpio"], "application/x-bdoc": [], "application/x-bittorrent": ["torrent"], "application/x-blorb": ["blb", "blorb"], "application/x-bzip": ["bz"], "application/x-bzip2": ["bz2", "boz"], "application/x-cbr": ["cbr", "cba", "cbt", "cbz", "cb7"], "application/x-cdlink": ["vcd"], "application/x-cfs-compressed": ["cfs"], "application/x-chat": ["chat"], "application/x-chess-pgn": ["pgn"], "application/x-chrome-extension": ["crx"], "application/x-cocoa": ["cco"], "application/x-conference": ["nsc"], "application/x-cpio": ["cpio"], "application/x-csh": ["csh"], "application/x-debian-package": ["udeb"], "application/x-dgc-compressed": ["dgc"], "application/x-director": ["dir", "dcr", "dxr", "cst", "cct", "cxt", "w3d", "fgd", "swa"], "application/x-doom": ["wad"], "application/x-dtbncx+xml": ["ncx"], "application/x-dtbook+xml": ["dtb"], "application/x-dtbresource+xml": ["res"], "application/x-dvi": ["dvi"], "application/x-envoy": ["evy"], "application/x-eva": ["eva"], "application/x-font-bdf": ["bdf"], "application/x-font-ghostscript": ["gsf"], "application/x-font-linux-psf": ["psf"], "application/x-font-pcf": ["pcf"], "application/x-font-snf": ["snf"], "application/x-font-type1": ["pfa", "pfb", "pfm", "afm"], "application/x-freearc": ["arc"], "application/x-futuresplash": ["spl"], "application/x-gca-compressed": ["gca"], "application/x-glulx": ["ulx"], "application/x-gnumeric": ["gnumeric"], "application/x-gramps-xml": ["gramps"], "application/x-gtar": ["gtar"], "application/x-hdf": ["hdf"], "application/x-httpd-php": ["php"], "application/x-install-instructions": ["install"], "application/x-iso9660-image": [], "application/x-java-archive-diff": ["jardiff"], "application/x-java-jnlp-file": ["jnlp"], "application/x-latex": ["latex"], "application/x-lua-bytecode": ["luac"], "application/x-lzh-compressed": ["lzh", "lha"], "application/x-makeself": ["run"], "application/x-mie": ["mie"], "application/x-mobipocket-ebook": ["prc", "mobi"], "application/x-ms-application": ["application"], "application/x-ms-shortcut": ["lnk"], "application/x-ms-wmd": ["wmd"], "application/x-ms-wmz": ["wmz"], "application/x-ms-xbap": ["xbap"], "application/x-msaccess": ["mdb"], "application/x-msbinder": ["obd"], "application/x-mscardfile": ["crd"], "application/x-msclip": ["clp"], "application/x-msdos-program": [], "application/x-msdownload": ["com", "bat"], "application/x-msmediaview": ["mvb", "m13", "m14"], "application/x-msmetafile": ["wmf", "emf", "emz"], "application/x-msmoney": ["mny"], "application/x-mspublisher": ["pub"], "application/x-msschedule": ["scd"], "application/x-msterminal": ["trm"], "application/x-mswrite": ["wri"], "application/x-netcdf": ["nc", "cdf"], "application/x-ns-proxy-autoconfig": ["pac"], "application/x-nzb": ["nzb"], "application/x-perl": ["pl", "pm"], "application/x-pilot": [], "application/x-pkcs12": ["p12", "pfx"], "application/x-pkcs7-certificates": ["p7b", "spc"], "application/x-pkcs7-certreqresp": ["p7r"], "application/x-rar-compressed": ["rar"], "application/x-redhat-package-manager": ["rpm"], "application/x-research-info-systems": ["ris"], "application/x-sea": ["sea"], "application/x-sh": ["sh"], "application/x-shar": ["shar"], "application/x-shockwave-flash": ["swf"], "application/x-silverlight-app": ["xap"], "application/x-sql": ["sql"], "application/x-stuffit": ["sit"], "application/x-stuffitx": ["sitx"], "application/x-subrip": ["srt"], "application/x-sv4cpio": ["sv4cpio"], "application/x-sv4crc": ["sv4crc"], "application/x-t3vm-image": ["t3"], "application/x-tads": ["gam"], "application/x-tar": ["tar"], "application/x-tcl": ["tcl", "tk"], "application/x-tex": ["tex"], "application/x-tex-tfm": ["tfm"], "application/x-texinfo": ["texinfo", "texi"], "application/x-tgif": ["obj"], "application/x-ustar": ["ustar"], "application/x-virtualbox-hdd": ["hdd"], "application/x-virtualbox-ova": ["ova"], "application/x-virtualbox-ovf": ["ovf"], "application/x-virtualbox-vbox": ["vbox"], "application/x-virtualbox-vbox-extpack": ["vbox-extpack"], "application/x-virtualbox-vdi": ["vdi"], "application/x-virtualbox-vhd": ["vhd"], "application/x-virtualbox-vmdk": ["vmdk"], "application/x-wais-source": ["src"], "application/x-web-app-manifest+json": ["webapp"], "application/x-x509-ca-cert": ["der", "crt", "pem"], "application/x-xfig": ["fig"], "application/x-xliff+xml": ["xlf"], "application/x-xpinstall": ["xpi"], "application/x-xz": ["xz"], "application/x-zmachine": ["z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8"], "application/xaml+xml": ["xaml"], "application/xcap-diff+xml": ["xdf"], "application/xenc+xml": ["xenc"], "application/xhtml+xml": ["xhtml", "xht"], "application/xml": ["xml", "xsl", "xsd", "rng"], "application/xml-dtd": ["dtd"], "application/xop+xml": ["xop"], "application/xproc+xml": ["xpl"], "application/xslt+xml": ["xslt"], "application/xspf+xml": ["xspf"], "application/xv+xml": ["mxml", "xhvml", "xvml", "xvm"], "application/yang": ["yang"], "application/yin+xml": ["yin"], "application/zip": ["zip"], "audio/3gpp": [], "audio/adpcm": ["adp"], "audio/basic": ["au", "snd"], "audio/midi": ["mid", "midi", "kar", "rmi"], "audio/mp3": [], "audio/mp4": ["m4a", "mp4a"], "audio/mpeg": ["mpga", "mp2", "mp2a", "mp3", "m2a", "m3a"], "audio/ogg": ["oga", "ogg", "spx"], "audio/s3m": ["s3m"], "audio/silk": ["sil"], "audio/vnd.dece.audio": ["uva", "uvva"], "audio/vnd.digital-winds": ["eol"], "audio/vnd.dra": ["dra"], "audio/vnd.dts": ["dts"], "audio/vnd.dts.hd": ["dtshd"], "audio/vnd.lucent.voice": ["lvp"], "audio/vnd.ms-playready.media.pya": ["pya"], "audio/vnd.nuera.ecelp4800": ["ecelp4800"], "audio/vnd.nuera.ecelp7470": ["ecelp7470"], "audio/vnd.nuera.ecelp9600": ["ecelp9600"], "audio/vnd.rip": ["rip"], "audio/wav": ["wav"], "audio/wave": [], "audio/webm": ["weba"], "audio/x-aac": ["aac"], "audio/x-aiff": ["aif", "aiff", "aifc"], "audio/x-caf": ["caf"], "audio/x-flac": ["flac"], "audio/x-m4a": [], "audio/x-matroska": ["mka"], "audio/x-mpegurl": ["m3u"], "audio/x-ms-wax": ["wax"], "audio/x-ms-wma": ["wma"], "audio/x-pn-realaudio": ["ram", "ra"], "audio/x-pn-realaudio-plugin": ["rmp"], "audio/x-realaudio": [], "audio/x-wav": [], "audio/xm": ["xm"], "chemical/x-cdx": ["cdx"], "chemical/x-cif": ["cif"], "chemical/x-cmdf": ["cmdf"], "chemical/x-cml": ["cml"], "chemical/x-csml": ["csml"], "chemical/x-xyz": ["xyz"], "font/collection": ["ttc"], "font/otf": ["otf"], "font/ttf": ["ttf"], "font/woff": ["woff"], "font/woff2": ["woff2"], "image/apng": ["apng"], "image/bmp": ["bmp"], "image/cgm": ["cgm"], "image/g3fax": ["g3"], "image/gif": ["gif"], "image/ief": ["ief"], "image/jp2": ["jp2", "jpg2"], "image/jpeg": ["jpeg", "jpg", "jpe"], "image/jpm": ["jpm"], "image/jpx": ["jpx", "jpf"], "image/ktx": ["ktx"], "image/png": ["png"], "image/prs.btif": ["btif"], "image/sgi": ["sgi"], "image/svg+xml": ["svg", "svgz"], "image/tiff": ["tiff", "tif"], "image/vnd.adobe.photoshop": ["psd"], "image/vnd.dece.graphic": ["uvi", "uvvi", "uvg", "uvvg"], "image/vnd.djvu": ["djvu", "djv"], "image/vnd.dvb.subtitle": [], "image/vnd.dwg": ["dwg"], "image/vnd.dxf": ["dxf"], "image/vnd.fastbidsheet": ["fbs"], "image/vnd.fpx": ["fpx"], "image/vnd.fst": ["fst"], "image/vnd.fujixerox.edmics-mmr": ["mmr"], "image/vnd.fujixerox.edmics-rlc": ["rlc"], "image/vnd.ms-modi": ["mdi"], "image/vnd.ms-photo": ["wdp"], "image/vnd.net-fpx": ["npx"], "image/vnd.wap.wbmp": ["wbmp"], "image/vnd.xiff": ["xif"], "image/webp": ["webp"], "image/x-3ds": ["3ds"], "image/x-cmu-raster": ["ras"], "image/x-cmx": ["cmx"], "image/x-freehand": ["fh", "fhc", "fh4", "fh5", "fh7"], "image/x-icon": ["ico"], "image/x-jng": ["jng"], "image/x-mrsid-image": ["sid"], "image/x-ms-bmp": [], "image/x-pcx": ["pcx"], "image/x-pict": ["pic", "pct"], "image/x-portable-anymap": ["pnm"], "image/x-portable-bitmap": ["pbm"], "image/x-portable-graymap": ["pgm"], "image/x-portable-pixmap": ["ppm"], "image/x-rgb": ["rgb"], "image/x-tga": ["tga"], "image/x-xbitmap": ["xbm"], "image/x-xpixmap": ["xpm"], "image/x-xwindowdump": ["xwd"], "message/rfc822": ["eml", "mime"], "model/gltf+json": ["gltf"], "model/gltf-binary": ["glb"], "model/iges": ["igs", "iges"], "model/mesh": ["msh", "mesh", "silo"], "model/vnd.collada+xml": ["dae"], "model/vnd.dwf": ["dwf"], "model/vnd.gdl": ["gdl"], "model/vnd.gtw": ["gtw"], "model/vnd.mts": ["mts"], "model/vnd.vtu": ["vtu"], "model/vrml": ["wrl", "vrml"], "model/x3d+binary": ["x3db", "x3dbz"], "model/x3d+vrml": ["x3dv", "x3dvz"], "model/x3d+xml": ["x3d", "x3dz"], "text/cache-manifest": ["appcache", "manifest"], "text/calendar": ["ics", "ifb"], "text/coffeescript": ["coffee", "litcoffee"], "text/css": ["css"], "text/csv": ["csv"], "text/hjson": ["hjson"], "text/html": ["html", "htm", "shtml"], "text/jade": ["jade"], "text/jsx": ["jsx"], "text/less": ["less"], "text/markdown": ["markdown", "md"], "text/mathml": ["mml"], "text/n3": ["n3"], "text/plain": ["txt", "text", "conf", "def", "list", "log", "in", "ini"], "text/prs.lines.tag": ["dsc"], "text/richtext": ["rtx"], "text/rtf": [], "text/sgml": ["sgml", "sgm"], "text/slim": ["slim", "slm"], "text/stylus": ["stylus", "styl"], "text/tab-separated-values": ["tsv"], "text/troff": ["t", "tr", "roff", "man", "me", "ms"], "text/turtle": ["ttl"], "text/uri-list": ["uri", "uris", "urls"], "text/vcard": ["vcard"], "text/vnd.curl": ["curl"], "text/vnd.curl.dcurl": ["dcurl"], "text/vnd.curl.mcurl": ["mcurl"], "text/vnd.curl.scurl": ["scurl"], "text/vnd.dvb.subtitle": ["sub"], "text/vnd.fly": ["fly"], "text/vnd.fmi.flexstor": ["flx"], "text/vnd.graphviz": ["gv"], "text/vnd.in3d.3dml": ["3dml"], "text/vnd.in3d.spot": ["spot"], "text/vnd.sun.j2me.app-descriptor": ["jad"], "text/vnd.wap.wml": ["wml"], "text/vnd.wap.wmlscript": ["wmls"], "text/vtt": ["vtt"], "text/x-asm": ["s", "asm"], "text/x-c": ["c", "cc", "cxx", "cpp", "h", "hh", "dic"], "text/x-component": ["htc"], "text/x-fortran": ["f", "for", "f77", "f90"], "text/x-handlebars-template": ["hbs"], "text/x-java-source": ["java"], "text/x-lua": ["lua"], "text/x-markdown": ["mkd"], "text/x-nfo": ["nfo"], "text/x-opml": ["opml"], "text/x-org": [], "text/x-pascal": ["p", "pas"], "text/x-processing": ["pde"], "text/x-sass": ["sass"], "text/x-scss": ["scss"], "text/x-setext": ["etx"], "text/x-sfv": ["sfv"], "text/x-suse-ymp": ["ymp"], "text/x-uuencode": ["uu"], "text/x-vcalendar": ["vcs"], "text/x-vcard": ["vcf"], "text/xml": [], "text/yaml": ["yaml", "yml"], "video/3gpp": ["3gp", "3gpp"], "video/3gpp2": ["3g2"], "video/h261": ["h261"], "video/h263": ["h263"], "video/h264": ["h264"], "video/jpeg": ["jpgv"], "video/jpm": ["jpgm"], "video/mj2": ["mj2", "mjp2"], "video/mp2t": ["ts"], "video/mp4": ["mp4", "mp4v", "mpg4"], "video/mpeg": ["mpeg", "mpg", "mpe", "m1v", "m2v"], "video/ogg": ["ogv"], "video/quicktime": ["qt", "mov"], "video/vnd.dece.hd": ["uvh", "uvvh"], "video/vnd.dece.mobile": ["uvm", "uvvm"], "video/vnd.dece.pd": ["uvp", "uvvp"], "video/vnd.dece.sd": ["uvs", "uvvs"], "video/vnd.dece.video": ["uvv", "uvvv"], "video/vnd.dvb.file": ["dvb"], "video/vnd.fvt": ["fvt"], "video/vnd.mpegurl": ["mxu", "m4u"], "video/vnd.ms-playready.media.pyv": ["pyv"], "video/vnd.uvvu.mp4": ["uvu", "uvvu"], "video/vnd.vivo": ["viv"], "video/webm": ["webm"], "video/x-f4v": ["f4v"], "video/x-fli": ["fli"], "video/x-flv": ["flv"], "video/x-m4v": ["m4v"], "video/x-matroska": ["mkv", "mk3d", "mks"], "video/x-mng": ["mng"], "video/x-ms-asf": ["asf", "asx"], "video/x-ms-vob": ["vob"], "video/x-ms-wm": ["wm"], "video/x-ms-wmv": ["wmv"], "video/x-ms-wmx": ["wmx"], "video/x-ms-wvx": ["wvx"], "video/x-msvideo": ["avi"], "video/x-sgi-movie": ["movie"], "video/x-smv": ["smv"], "x-conference/x-cooltalk": ["ice"] };
+  "node_modules/.pnpm/mime@1.6.0/node_modules/mime/types.json"(exports2, module2) {
+    module2.exports = { "application/andrew-inset": ["ez"], "application/applixware": ["aw"], "application/atom+xml": ["atom"], "application/atomcat+xml": ["atomcat"], "application/atomsvc+xml": ["atomsvc"], "application/bdoc": ["bdoc"], "application/ccxml+xml": ["ccxml"], "application/cdmi-capability": ["cdmia"], "application/cdmi-container": ["cdmic"], "application/cdmi-domain": ["cdmid"], "application/cdmi-object": ["cdmio"], "application/cdmi-queue": ["cdmiq"], "application/cu-seeme": ["cu"], "application/dash+xml": ["mpd"], "application/davmount+xml": ["davmount"], "application/docbook+xml": ["dbk"], "application/dssc+der": ["dssc"], "application/dssc+xml": ["xdssc"], "application/ecmascript": ["ecma"], "application/emma+xml": ["emma"], "application/epub+zip": ["epub"], "application/exi": ["exi"], "application/font-tdpfr": ["pfr"], "application/font-woff": [], "application/font-woff2": [], "application/geo+json": ["geojson"], "application/gml+xml": ["gml"], "application/gpx+xml": ["gpx"], "application/gxf": ["gxf"], "application/gzip": ["gz"], "application/hyperstudio": ["stk"], "application/inkml+xml": ["ink", "inkml"], "application/ipfix": ["ipfix"], "application/java-archive": ["jar", "war", "ear"], "application/java-serialized-object": ["ser"], "application/java-vm": ["class"], "application/javascript": ["js", "mjs"], "application/json": ["json", "map"], "application/json5": ["json5"], "application/jsonml+json": ["jsonml"], "application/ld+json": ["jsonld"], "application/lost+xml": ["lostxml"], "application/mac-binhex40": ["hqx"], "application/mac-compactpro": ["cpt"], "application/mads+xml": ["mads"], "application/manifest+json": ["webmanifest"], "application/marc": ["mrc"], "application/marcxml+xml": ["mrcx"], "application/mathematica": ["ma", "nb", "mb"], "application/mathml+xml": ["mathml"], "application/mbox": ["mbox"], "application/mediaservercontrol+xml": ["mscml"], "application/metalink+xml": ["metalink"], "application/metalink4+xml": ["meta4"], "application/mets+xml": ["mets"], "application/mods+xml": ["mods"], "application/mp21": ["m21", "mp21"], "application/mp4": ["mp4s", "m4p"], "application/msword": ["doc", "dot"], "application/mxf": ["mxf"], "application/octet-stream": ["bin", "dms", "lrf", "mar", "so", "dist", "distz", "pkg", "bpk", "dump", "elc", "deploy", "exe", "dll", "deb", "dmg", "iso", "img", "msi", "msp", "msm", "buffer"], "application/oda": ["oda"], "application/oebps-package+xml": ["opf"], "application/ogg": ["ogx"], "application/omdoc+xml": ["omdoc"], "application/onenote": ["onetoc", "onetoc2", "onetmp", "onepkg"], "application/oxps": ["oxps"], "application/patch-ops-error+xml": ["xer"], "application/pdf": ["pdf"], "application/pgp-encrypted": ["pgp"], "application/pgp-signature": ["asc", "sig"], "application/pics-rules": ["prf"], "application/pkcs10": ["p10"], "application/pkcs7-mime": ["p7m", "p7c"], "application/pkcs7-signature": ["p7s"], "application/pkcs8": ["p8"], "application/pkix-attr-cert": ["ac"], "application/pkix-cert": ["cer"], "application/pkix-crl": ["crl"], "application/pkix-pkipath": ["pkipath"], "application/pkixcmp": ["pki"], "application/pls+xml": ["pls"], "application/postscript": ["ai", "eps", "ps"], "application/prs.cww": ["cww"], "application/pskc+xml": ["pskcxml"], "application/raml+yaml": ["raml"], "application/rdf+xml": ["rdf"], "application/reginfo+xml": ["rif"], "application/relax-ng-compact-syntax": ["rnc"], "application/resource-lists+xml": ["rl"], "application/resource-lists-diff+xml": ["rld"], "application/rls-services+xml": ["rs"], "application/rpki-ghostbusters": ["gbr"], "application/rpki-manifest": ["mft"], "application/rpki-roa": ["roa"], "application/rsd+xml": ["rsd"], "application/rss+xml": ["rss"], "application/rtf": ["rtf"], "application/sbml+xml": ["sbml"], "application/scvp-cv-request": ["scq"], "application/scvp-cv-response": ["scs"], "application/scvp-vp-request": ["spq"], "application/scvp-vp-response": ["spp"], "application/sdp": ["sdp"], "application/set-payment-initiation": ["setpay"], "application/set-registration-initiation": ["setreg"], "application/shf+xml": ["shf"], "application/smil+xml": ["smi", "smil"], "application/sparql-query": ["rq"], "application/sparql-results+xml": ["srx"], "application/srgs": ["gram"], "application/srgs+xml": ["grxml"], "application/sru+xml": ["sru"], "application/ssdl+xml": ["ssdl"], "application/ssml+xml": ["ssml"], "application/tei+xml": ["tei", "teicorpus"], "application/thraud+xml": ["tfi"], "application/timestamped-data": ["tsd"], "application/vnd.3gpp.pic-bw-large": ["plb"], "application/vnd.3gpp.pic-bw-small": ["psb"], "application/vnd.3gpp.pic-bw-var": ["pvb"], "application/vnd.3gpp2.tcap": ["tcap"], "application/vnd.3m.post-it-notes": ["pwn"], "application/vnd.accpac.simply.aso": ["aso"], "application/vnd.accpac.simply.imp": ["imp"], "application/vnd.acucobol": ["acu"], "application/vnd.acucorp": ["atc", "acutc"], "application/vnd.adobe.air-application-installer-package+zip": ["air"], "application/vnd.adobe.formscentral.fcdt": ["fcdt"], "application/vnd.adobe.fxp": ["fxp", "fxpl"], "application/vnd.adobe.xdp+xml": ["xdp"], "application/vnd.adobe.xfdf": ["xfdf"], "application/vnd.ahead.space": ["ahead"], "application/vnd.airzip.filesecure.azf": ["azf"], "application/vnd.airzip.filesecure.azs": ["azs"], "application/vnd.amazon.ebook": ["azw"], "application/vnd.americandynamics.acc": ["acc"], "application/vnd.amiga.ami": ["ami"], "application/vnd.android.package-archive": ["apk"], "application/vnd.anser-web-certificate-issue-initiation": ["cii"], "application/vnd.anser-web-funds-transfer-initiation": ["fti"], "application/vnd.antix.game-component": ["atx"], "application/vnd.apple.installer+xml": ["mpkg"], "application/vnd.apple.mpegurl": ["m3u8"], "application/vnd.apple.pkpass": ["pkpass"], "application/vnd.aristanetworks.swi": ["swi"], "application/vnd.astraea-software.iota": ["iota"], "application/vnd.audiograph": ["aep"], "application/vnd.blueice.multipass": ["mpm"], "application/vnd.bmi": ["bmi"], "application/vnd.businessobjects": ["rep"], "application/vnd.chemdraw+xml": ["cdxml"], "application/vnd.chipnuts.karaoke-mmd": ["mmd"], "application/vnd.cinderella": ["cdy"], "application/vnd.claymore": ["cla"], "application/vnd.cloanto.rp9": ["rp9"], "application/vnd.clonk.c4group": ["c4g", "c4d", "c4f", "c4p", "c4u"], "application/vnd.cluetrust.cartomobile-config": ["c11amc"], "application/vnd.cluetrust.cartomobile-config-pkg": ["c11amz"], "application/vnd.commonspace": ["csp"], "application/vnd.contact.cmsg": ["cdbcmsg"], "application/vnd.cosmocaller": ["cmc"], "application/vnd.crick.clicker": ["clkx"], "application/vnd.crick.clicker.keyboard": ["clkk"], "application/vnd.crick.clicker.palette": ["clkp"], "application/vnd.crick.clicker.template": ["clkt"], "application/vnd.crick.clicker.wordbank": ["clkw"], "application/vnd.criticaltools.wbs+xml": ["wbs"], "application/vnd.ctc-posml": ["pml"], "application/vnd.cups-ppd": ["ppd"], "application/vnd.curl.car": ["car"], "application/vnd.curl.pcurl": ["pcurl"], "application/vnd.dart": ["dart"], "application/vnd.data-vision.rdz": ["rdz"], "application/vnd.dece.data": ["uvf", "uvvf", "uvd", "uvvd"], "application/vnd.dece.ttml+xml": ["uvt", "uvvt"], "application/vnd.dece.unspecified": ["uvx", "uvvx"], "application/vnd.dece.zip": ["uvz", "uvvz"], "application/vnd.denovo.fcselayout-link": ["fe_launch"], "application/vnd.dna": ["dna"], "application/vnd.dolby.mlp": ["mlp"], "application/vnd.dpgraph": ["dpg"], "application/vnd.dreamfactory": ["dfac"], "application/vnd.ds-keypoint": ["kpxx"], "application/vnd.dvb.ait": ["ait"], "application/vnd.dvb.service": ["svc"], "application/vnd.dynageo": ["geo"], "application/vnd.ecowin.chart": ["mag"], "application/vnd.enliven": ["nml"], "application/vnd.epson.esf": ["esf"], "application/vnd.epson.msf": ["msf"], "application/vnd.epson.quickanime": ["qam"], "application/vnd.epson.salt": ["slt"], "application/vnd.epson.ssf": ["ssf"], "application/vnd.eszigno3+xml": ["es3", "et3"], "application/vnd.ezpix-album": ["ez2"], "application/vnd.ezpix-package": ["ez3"], "application/vnd.fdf": ["fdf"], "application/vnd.fdsn.mseed": ["mseed"], "application/vnd.fdsn.seed": ["seed", "dataless"], "application/vnd.flographit": ["gph"], "application/vnd.fluxtime.clip": ["ftc"], "application/vnd.framemaker": ["fm", "frame", "maker", "book"], "application/vnd.frogans.fnc": ["fnc"], "application/vnd.frogans.ltf": ["ltf"], "application/vnd.fsc.weblaunch": ["fsc"], "application/vnd.fujitsu.oasys": ["oas"], "application/vnd.fujitsu.oasys2": ["oa2"], "application/vnd.fujitsu.oasys3": ["oa3"], "application/vnd.fujitsu.oasysgp": ["fg5"], "application/vnd.fujitsu.oasysprs": ["bh2"], "application/vnd.fujixerox.ddd": ["ddd"], "application/vnd.fujixerox.docuworks": ["xdw"], "application/vnd.fujixerox.docuworks.binder": ["xbd"], "application/vnd.fuzzysheet": ["fzs"], "application/vnd.genomatix.tuxedo": ["txd"], "application/vnd.geogebra.file": ["ggb"], "application/vnd.geogebra.tool": ["ggt"], "application/vnd.geometry-explorer": ["gex", "gre"], "application/vnd.geonext": ["gxt"], "application/vnd.geoplan": ["g2w"], "application/vnd.geospace": ["g3w"], "application/vnd.gmx": ["gmx"], "application/vnd.google-apps.document": ["gdoc"], "application/vnd.google-apps.presentation": ["gslides"], "application/vnd.google-apps.spreadsheet": ["gsheet"], "application/vnd.google-earth.kml+xml": ["kml"], "application/vnd.google-earth.kmz": ["kmz"], "application/vnd.grafeq": ["gqf", "gqs"], "application/vnd.groove-account": ["gac"], "application/vnd.groove-help": ["ghf"], "application/vnd.groove-identity-message": ["gim"], "application/vnd.groove-injector": ["grv"], "application/vnd.groove-tool-message": ["gtm"], "application/vnd.groove-tool-template": ["tpl"], "application/vnd.groove-vcard": ["vcg"], "application/vnd.hal+xml": ["hal"], "application/vnd.handheld-entertainment+xml": ["zmm"], "application/vnd.hbci": ["hbci"], "application/vnd.hhe.lesson-player": ["les"], "application/vnd.hp-hpgl": ["hpgl"], "application/vnd.hp-hpid": ["hpid"], "application/vnd.hp-hps": ["hps"], "application/vnd.hp-jlyt": ["jlt"], "application/vnd.hp-pcl": ["pcl"], "application/vnd.hp-pclxl": ["pclxl"], "application/vnd.hydrostatix.sof-data": ["sfd-hdstx"], "application/vnd.ibm.minipay": ["mpy"], "application/vnd.ibm.modcap": ["afp", "listafp", "list3820"], "application/vnd.ibm.rights-management": ["irm"], "application/vnd.ibm.secure-container": ["sc"], "application/vnd.iccprofile": ["icc", "icm"], "application/vnd.igloader": ["igl"], "application/vnd.immervision-ivp": ["ivp"], "application/vnd.immervision-ivu": ["ivu"], "application/vnd.insors.igm": ["igm"], "application/vnd.intercon.formnet": ["xpw", "xpx"], "application/vnd.intergeo": ["i2g"], "application/vnd.intu.qbo": ["qbo"], "application/vnd.intu.qfx": ["qfx"], "application/vnd.ipunplugged.rcprofile": ["rcprofile"], "application/vnd.irepository.package+xml": ["irp"], "application/vnd.is-xpr": ["xpr"], "application/vnd.isac.fcs": ["fcs"], "application/vnd.jam": ["jam"], "application/vnd.jcp.javame.midlet-rms": ["rms"], "application/vnd.jisp": ["jisp"], "application/vnd.joost.joda-archive": ["joda"], "application/vnd.kahootz": ["ktz", "ktr"], "application/vnd.kde.karbon": ["karbon"], "application/vnd.kde.kchart": ["chrt"], "application/vnd.kde.kformula": ["kfo"], "application/vnd.kde.kivio": ["flw"], "application/vnd.kde.kontour": ["kon"], "application/vnd.kde.kpresenter": ["kpr", "kpt"], "application/vnd.kde.kspread": ["ksp"], "application/vnd.kde.kword": ["kwd", "kwt"], "application/vnd.kenameaapp": ["htke"], "application/vnd.kidspiration": ["kia"], "application/vnd.kinar": ["kne", "knp"], "application/vnd.koan": ["skp", "skd", "skt", "skm"], "application/vnd.kodak-descriptor": ["sse"], "application/vnd.las.las+xml": ["lasxml"], "application/vnd.llamagraphics.life-balance.desktop": ["lbd"], "application/vnd.llamagraphics.life-balance.exchange+xml": ["lbe"], "application/vnd.lotus-1-2-3": ["123"], "application/vnd.lotus-approach": ["apr"], "application/vnd.lotus-freelance": ["pre"], "application/vnd.lotus-notes": ["nsf"], "application/vnd.lotus-organizer": ["org"], "application/vnd.lotus-screencam": ["scm"], "application/vnd.lotus-wordpro": ["lwp"], "application/vnd.macports.portpkg": ["portpkg"], "application/vnd.mcd": ["mcd"], "application/vnd.medcalcdata": ["mc1"], "application/vnd.mediastation.cdkey": ["cdkey"], "application/vnd.mfer": ["mwf"], "application/vnd.mfmp": ["mfm"], "application/vnd.micrografx.flo": ["flo"], "application/vnd.micrografx.igx": ["igx"], "application/vnd.mif": ["mif"], "application/vnd.mobius.daf": ["daf"], "application/vnd.mobius.dis": ["dis"], "application/vnd.mobius.mbk": ["mbk"], "application/vnd.mobius.mqy": ["mqy"], "application/vnd.mobius.msl": ["msl"], "application/vnd.mobius.plc": ["plc"], "application/vnd.mobius.txf": ["txf"], "application/vnd.mophun.application": ["mpn"], "application/vnd.mophun.certificate": ["mpc"], "application/vnd.mozilla.xul+xml": ["xul"], "application/vnd.ms-artgalry": ["cil"], "application/vnd.ms-cab-compressed": ["cab"], "application/vnd.ms-excel": ["xls", "xlm", "xla", "xlc", "xlt", "xlw"], "application/vnd.ms-excel.addin.macroenabled.12": ["xlam"], "application/vnd.ms-excel.sheet.binary.macroenabled.12": ["xlsb"], "application/vnd.ms-excel.sheet.macroenabled.12": ["xlsm"], "application/vnd.ms-excel.template.macroenabled.12": ["xltm"], "application/vnd.ms-fontobject": ["eot"], "application/vnd.ms-htmlhelp": ["chm"], "application/vnd.ms-ims": ["ims"], "application/vnd.ms-lrm": ["lrm"], "application/vnd.ms-officetheme": ["thmx"], "application/vnd.ms-outlook": ["msg"], "application/vnd.ms-pki.seccat": ["cat"], "application/vnd.ms-pki.stl": ["stl"], "application/vnd.ms-powerpoint": ["ppt", "pps", "pot"], "application/vnd.ms-powerpoint.addin.macroenabled.12": ["ppam"], "application/vnd.ms-powerpoint.presentation.macroenabled.12": ["pptm"], "application/vnd.ms-powerpoint.slide.macroenabled.12": ["sldm"], "application/vnd.ms-powerpoint.slideshow.macroenabled.12": ["ppsm"], "application/vnd.ms-powerpoint.template.macroenabled.12": ["potm"], "application/vnd.ms-project": ["mpp", "mpt"], "application/vnd.ms-word.document.macroenabled.12": ["docm"], "application/vnd.ms-word.template.macroenabled.12": ["dotm"], "application/vnd.ms-works": ["wps", "wks", "wcm", "wdb"], "application/vnd.ms-wpl": ["wpl"], "application/vnd.ms-xpsdocument": ["xps"], "application/vnd.mseq": ["mseq"], "application/vnd.musician": ["mus"], "application/vnd.muvee.style": ["msty"], "application/vnd.mynfc": ["taglet"], "application/vnd.neurolanguage.nlu": ["nlu"], "application/vnd.nitf": ["ntf", "nitf"], "application/vnd.noblenet-directory": ["nnd"], "application/vnd.noblenet-sealer": ["nns"], "application/vnd.noblenet-web": ["nnw"], "application/vnd.nokia.n-gage.data": ["ngdat"], "application/vnd.nokia.n-gage.symbian.install": ["n-gage"], "application/vnd.nokia.radio-preset": ["rpst"], "application/vnd.nokia.radio-presets": ["rpss"], "application/vnd.novadigm.edm": ["edm"], "application/vnd.novadigm.edx": ["edx"], "application/vnd.novadigm.ext": ["ext"], "application/vnd.oasis.opendocument.chart": ["odc"], "application/vnd.oasis.opendocument.chart-template": ["otc"], "application/vnd.oasis.opendocument.database": ["odb"], "application/vnd.oasis.opendocument.formula": ["odf"], "application/vnd.oasis.opendocument.formula-template": ["odft"], "application/vnd.oasis.opendocument.graphics": ["odg"], "application/vnd.oasis.opendocument.graphics-template": ["otg"], "application/vnd.oasis.opendocument.image": ["odi"], "application/vnd.oasis.opendocument.image-template": ["oti"], "application/vnd.oasis.opendocument.presentation": ["odp"], "application/vnd.oasis.opendocument.presentation-template": ["otp"], "application/vnd.oasis.opendocument.spreadsheet": ["ods"], "application/vnd.oasis.opendocument.spreadsheet-template": ["ots"], "application/vnd.oasis.opendocument.text": ["odt"], "application/vnd.oasis.opendocument.text-master": ["odm"], "application/vnd.oasis.opendocument.text-template": ["ott"], "application/vnd.oasis.opendocument.text-web": ["oth"], "application/vnd.olpc-sugar": ["xo"], "application/vnd.oma.dd2+xml": ["dd2"], "application/vnd.openofficeorg.extension": ["oxt"], "application/vnd.openxmlformats-officedocument.presentationml.presentation": ["pptx"], "application/vnd.openxmlformats-officedocument.presentationml.slide": ["sldx"], "application/vnd.openxmlformats-officedocument.presentationml.slideshow": ["ppsx"], "application/vnd.openxmlformats-officedocument.presentationml.template": ["potx"], "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": ["xlsx"], "application/vnd.openxmlformats-officedocument.spreadsheetml.template": ["xltx"], "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ["docx"], "application/vnd.openxmlformats-officedocument.wordprocessingml.template": ["dotx"], "application/vnd.osgeo.mapguide.package": ["mgp"], "application/vnd.osgi.dp": ["dp"], "application/vnd.osgi.subsystem": ["esa"], "application/vnd.palm": ["pdb", "pqa", "oprc"], "application/vnd.pawaafile": ["paw"], "application/vnd.pg.format": ["str"], "application/vnd.pg.osasli": ["ei6"], "application/vnd.picsel": ["efif"], "application/vnd.pmi.widget": ["wg"], "application/vnd.pocketlearn": ["plf"], "application/vnd.powerbuilder6": ["pbd"], "application/vnd.previewsystems.box": ["box"], "application/vnd.proteus.magazine": ["mgz"], "application/vnd.publishare-delta-tree": ["qps"], "application/vnd.pvi.ptid1": ["ptid"], "application/vnd.quark.quarkxpress": ["qxd", "qxt", "qwd", "qwt", "qxl", "qxb"], "application/vnd.realvnc.bed": ["bed"], "application/vnd.recordare.musicxml": ["mxl"], "application/vnd.recordare.musicxml+xml": ["musicxml"], "application/vnd.rig.cryptonote": ["cryptonote"], "application/vnd.rim.cod": ["cod"], "application/vnd.rn-realmedia": ["rm"], "application/vnd.rn-realmedia-vbr": ["rmvb"], "application/vnd.route66.link66+xml": ["link66"], "application/vnd.sailingtracker.track": ["st"], "application/vnd.seemail": ["see"], "application/vnd.sema": ["sema"], "application/vnd.semd": ["semd"], "application/vnd.semf": ["semf"], "application/vnd.shana.informed.formdata": ["ifm"], "application/vnd.shana.informed.formtemplate": ["itp"], "application/vnd.shana.informed.interchange": ["iif"], "application/vnd.shana.informed.package": ["ipk"], "application/vnd.simtech-mindmapper": ["twd", "twds"], "application/vnd.smaf": ["mmf"], "application/vnd.smart.teacher": ["teacher"], "application/vnd.solent.sdkm+xml": ["sdkm", "sdkd"], "application/vnd.spotfire.dxp": ["dxp"], "application/vnd.spotfire.sfs": ["sfs"], "application/vnd.stardivision.calc": ["sdc"], "application/vnd.stardivision.draw": ["sda"], "application/vnd.stardivision.impress": ["sdd"], "application/vnd.stardivision.math": ["smf"], "application/vnd.stardivision.writer": ["sdw", "vor"], "application/vnd.stardivision.writer-global": ["sgl"], "application/vnd.stepmania.package": ["smzip"], "application/vnd.stepmania.stepchart": ["sm"], "application/vnd.sun.wadl+xml": ["wadl"], "application/vnd.sun.xml.calc": ["sxc"], "application/vnd.sun.xml.calc.template": ["stc"], "application/vnd.sun.xml.draw": ["sxd"], "application/vnd.sun.xml.draw.template": ["std"], "application/vnd.sun.xml.impress": ["sxi"], "application/vnd.sun.xml.impress.template": ["sti"], "application/vnd.sun.xml.math": ["sxm"], "application/vnd.sun.xml.writer": ["sxw"], "application/vnd.sun.xml.writer.global": ["sxg"], "application/vnd.sun.xml.writer.template": ["stw"], "application/vnd.sus-calendar": ["sus", "susp"], "application/vnd.svd": ["svd"], "application/vnd.symbian.install": ["sis", "sisx"], "application/vnd.syncml+xml": ["xsm"], "application/vnd.syncml.dm+wbxml": ["bdm"], "application/vnd.syncml.dm+xml": ["xdm"], "application/vnd.tao.intent-module-archive": ["tao"], "application/vnd.tcpdump.pcap": ["pcap", "cap", "dmp"], "application/vnd.tmobile-livetv": ["tmo"], "application/vnd.trid.tpt": ["tpt"], "application/vnd.triscape.mxs": ["mxs"], "application/vnd.trueapp": ["tra"], "application/vnd.ufdl": ["ufd", "ufdl"], "application/vnd.uiq.theme": ["utz"], "application/vnd.umajin": ["umj"], "application/vnd.unity": ["unityweb"], "application/vnd.uoml+xml": ["uoml"], "application/vnd.vcx": ["vcx"], "application/vnd.visio": ["vsd", "vst", "vss", "vsw"], "application/vnd.visionary": ["vis"], "application/vnd.vsf": ["vsf"], "application/vnd.wap.wbxml": ["wbxml"], "application/vnd.wap.wmlc": ["wmlc"], "application/vnd.wap.wmlscriptc": ["wmlsc"], "application/vnd.webturbo": ["wtb"], "application/vnd.wolfram.player": ["nbp"], "application/vnd.wordperfect": ["wpd"], "application/vnd.wqd": ["wqd"], "application/vnd.wt.stf": ["stf"], "application/vnd.xara": ["xar"], "application/vnd.xfdl": ["xfdl"], "application/vnd.yamaha.hv-dic": ["hvd"], "application/vnd.yamaha.hv-script": ["hvs"], "application/vnd.yamaha.hv-voice": ["hvp"], "application/vnd.yamaha.openscoreformat": ["osf"], "application/vnd.yamaha.openscoreformat.osfpvg+xml": ["osfpvg"], "application/vnd.yamaha.smaf-audio": ["saf"], "application/vnd.yamaha.smaf-phrase": ["spf"], "application/vnd.yellowriver-custom-menu": ["cmp"], "application/vnd.zul": ["zir", "zirz"], "application/vnd.zzazz.deck+xml": ["zaz"], "application/voicexml+xml": ["vxml"], "application/wasm": ["wasm"], "application/widget": ["wgt"], "application/winhlp": ["hlp"], "application/wsdl+xml": ["wsdl"], "application/wspolicy+xml": ["wspolicy"], "application/x-7z-compressed": ["7z"], "application/x-abiword": ["abw"], "application/x-ace-compressed": ["ace"], "application/x-apple-diskimage": [], "application/x-arj": ["arj"], "application/x-authorware-bin": ["aab", "x32", "u32", "vox"], "application/x-authorware-map": ["aam"], "application/x-authorware-seg": ["aas"], "application/x-bcpio": ["bcpio"], "application/x-bdoc": [], "application/x-bittorrent": ["torrent"], "application/x-blorb": ["blb", "blorb"], "application/x-bzip": ["bz"], "application/x-bzip2": ["bz2", "boz"], "application/x-cbr": ["cbr", "cba", "cbt", "cbz", "cb7"], "application/x-cdlink": ["vcd"], "application/x-cfs-compressed": ["cfs"], "application/x-chat": ["chat"], "application/x-chess-pgn": ["pgn"], "application/x-chrome-extension": ["crx"], "application/x-cocoa": ["cco"], "application/x-conference": ["nsc"], "application/x-cpio": ["cpio"], "application/x-csh": ["csh"], "application/x-debian-package": ["udeb"], "application/x-dgc-compressed": ["dgc"], "application/x-director": ["dir", "dcr", "dxr", "cst", "cct", "cxt", "w3d", "fgd", "swa"], "application/x-doom": ["wad"], "application/x-dtbncx+xml": ["ncx"], "application/x-dtbook+xml": ["dtb"], "application/x-dtbresource+xml": ["res"], "application/x-dvi": ["dvi"], "application/x-envoy": ["evy"], "application/x-eva": ["eva"], "application/x-font-bdf": ["bdf"], "application/x-font-ghostscript": ["gsf"], "application/x-font-linux-psf": ["psf"], "application/x-font-pcf": ["pcf"], "application/x-font-snf": ["snf"], "application/x-font-type1": ["pfa", "pfb", "pfm", "afm"], "application/x-freearc": ["arc"], "application/x-futuresplash": ["spl"], "application/x-gca-compressed": ["gca"], "application/x-glulx": ["ulx"], "application/x-gnumeric": ["gnumeric"], "application/x-gramps-xml": ["gramps"], "application/x-gtar": ["gtar"], "application/x-hdf": ["hdf"], "application/x-httpd-php": ["php"], "application/x-install-instructions": ["install"], "application/x-iso9660-image": [], "application/x-java-archive-diff": ["jardiff"], "application/x-java-jnlp-file": ["jnlp"], "application/x-latex": ["latex"], "application/x-lua-bytecode": ["luac"], "application/x-lzh-compressed": ["lzh", "lha"], "application/x-makeself": ["run"], "application/x-mie": ["mie"], "application/x-mobipocket-ebook": ["prc", "mobi"], "application/x-ms-application": ["application"], "application/x-ms-shortcut": ["lnk"], "application/x-ms-wmd": ["wmd"], "application/x-ms-wmz": ["wmz"], "application/x-ms-xbap": ["xbap"], "application/x-msaccess": ["mdb"], "application/x-msbinder": ["obd"], "application/x-mscardfile": ["crd"], "application/x-msclip": ["clp"], "application/x-msdos-program": [], "application/x-msdownload": ["com", "bat"], "application/x-msmediaview": ["mvb", "m13", "m14"], "application/x-msmetafile": ["wmf", "emf", "emz"], "application/x-msmoney": ["mny"], "application/x-mspublisher": ["pub"], "application/x-msschedule": ["scd"], "application/x-msterminal": ["trm"], "application/x-mswrite": ["wri"], "application/x-netcdf": ["nc", "cdf"], "application/x-ns-proxy-autoconfig": ["pac"], "application/x-nzb": ["nzb"], "application/x-perl": ["pl", "pm"], "application/x-pilot": [], "application/x-pkcs12": ["p12", "pfx"], "application/x-pkcs7-certificates": ["p7b", "spc"], "application/x-pkcs7-certreqresp": ["p7r"], "application/x-rar-compressed": ["rar"], "application/x-redhat-package-manager": ["rpm"], "application/x-research-info-systems": ["ris"], "application/x-sea": ["sea"], "application/x-sh": ["sh"], "application/x-shar": ["shar"], "application/x-shockwave-flash": ["swf"], "application/x-silverlight-app": ["xap"], "application/x-sql": ["sql"], "application/x-stuffit": ["sit"], "application/x-stuffitx": ["sitx"], "application/x-subrip": ["srt"], "application/x-sv4cpio": ["sv4cpio"], "application/x-sv4crc": ["sv4crc"], "application/x-t3vm-image": ["t3"], "application/x-tads": ["gam"], "application/x-tar": ["tar"], "application/x-tcl": ["tcl", "tk"], "application/x-tex": ["tex"], "application/x-tex-tfm": ["tfm"], "application/x-texinfo": ["texinfo", "texi"], "application/x-tgif": ["obj"], "application/x-ustar": ["ustar"], "application/x-virtualbox-hdd": ["hdd"], "application/x-virtualbox-ova": ["ova"], "application/x-virtualbox-ovf": ["ovf"], "application/x-virtualbox-vbox": ["vbox"], "application/x-virtualbox-vbox-extpack": ["vbox-extpack"], "application/x-virtualbox-vdi": ["vdi"], "application/x-virtualbox-vhd": ["vhd"], "application/x-virtualbox-vmdk": ["vmdk"], "application/x-wais-source": ["src"], "application/x-web-app-manifest+json": ["webapp"], "application/x-x509-ca-cert": ["der", "crt", "pem"], "application/x-xfig": ["fig"], "application/x-xliff+xml": ["xlf"], "application/x-xpinstall": ["xpi"], "application/x-xz": ["xz"], "application/x-zmachine": ["z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8"], "application/xaml+xml": ["xaml"], "application/xcap-diff+xml": ["xdf"], "application/xenc+xml": ["xenc"], "application/xhtml+xml": ["xhtml", "xht"], "application/xml": ["xml", "xsl", "xsd", "rng"], "application/xml-dtd": ["dtd"], "application/xop+xml": ["xop"], "application/xproc+xml": ["xpl"], "application/xslt+xml": ["xslt"], "application/xspf+xml": ["xspf"], "application/xv+xml": ["mxml", "xhvml", "xvml", "xvm"], "application/yang": ["yang"], "application/yin+xml": ["yin"], "application/zip": ["zip"], "audio/3gpp": [], "audio/adpcm": ["adp"], "audio/basic": ["au", "snd"], "audio/midi": ["mid", "midi", "kar", "rmi"], "audio/mp3": [], "audio/mp4": ["m4a", "mp4a"], "audio/mpeg": ["mpga", "mp2", "mp2a", "mp3", "m2a", "m3a"], "audio/ogg": ["oga", "ogg", "spx"], "audio/s3m": ["s3m"], "audio/silk": ["sil"], "audio/vnd.dece.audio": ["uva", "uvva"], "audio/vnd.digital-winds": ["eol"], "audio/vnd.dra": ["dra"], "audio/vnd.dts": ["dts"], "audio/vnd.dts.hd": ["dtshd"], "audio/vnd.lucent.voice": ["lvp"], "audio/vnd.ms-playready.media.pya": ["pya"], "audio/vnd.nuera.ecelp4800": ["ecelp4800"], "audio/vnd.nuera.ecelp7470": ["ecelp7470"], "audio/vnd.nuera.ecelp9600": ["ecelp9600"], "audio/vnd.rip": ["rip"], "audio/wav": ["wav"], "audio/wave": [], "audio/webm": ["weba"], "audio/x-aac": ["aac"], "audio/x-aiff": ["aif", "aiff", "aifc"], "audio/x-caf": ["caf"], "audio/x-flac": ["flac"], "audio/x-m4a": [], "audio/x-matroska": ["mka"], "audio/x-mpegurl": ["m3u"], "audio/x-ms-wax": ["wax"], "audio/x-ms-wma": ["wma"], "audio/x-pn-realaudio": ["ram", "ra"], "audio/x-pn-realaudio-plugin": ["rmp"], "audio/x-realaudio": [], "audio/x-wav": [], "audio/xm": ["xm"], "chemical/x-cdx": ["cdx"], "chemical/x-cif": ["cif"], "chemical/x-cmdf": ["cmdf"], "chemical/x-cml": ["cml"], "chemical/x-csml": ["csml"], "chemical/x-xyz": ["xyz"], "font/collection": ["ttc"], "font/otf": ["otf"], "font/ttf": ["ttf"], "font/woff": ["woff"], "font/woff2": ["woff2"], "image/apng": ["apng"], "image/bmp": ["bmp"], "image/cgm": ["cgm"], "image/g3fax": ["g3"], "image/gif": ["gif"], "image/ief": ["ief"], "image/jp2": ["jp2", "jpg2"], "image/jpeg": ["jpeg", "jpg", "jpe"], "image/jpm": ["jpm"], "image/jpx": ["jpx", "jpf"], "image/ktx": ["ktx"], "image/png": ["png"], "image/prs.btif": ["btif"], "image/sgi": ["sgi"], "image/svg+xml": ["svg", "svgz"], "image/tiff": ["tiff", "tif"], "image/vnd.adobe.photoshop": ["psd"], "image/vnd.dece.graphic": ["uvi", "uvvi", "uvg", "uvvg"], "image/vnd.djvu": ["djvu", "djv"], "image/vnd.dvb.subtitle": [], "image/vnd.dwg": ["dwg"], "image/vnd.dxf": ["dxf"], "image/vnd.fastbidsheet": ["fbs"], "image/vnd.fpx": ["fpx"], "image/vnd.fst": ["fst"], "image/vnd.fujixerox.edmics-mmr": ["mmr"], "image/vnd.fujixerox.edmics-rlc": ["rlc"], "image/vnd.ms-modi": ["mdi"], "image/vnd.ms-photo": ["wdp"], "image/vnd.net-fpx": ["npx"], "image/vnd.wap.wbmp": ["wbmp"], "image/vnd.xiff": ["xif"], "image/webp": ["webp"], "image/x-3ds": ["3ds"], "image/x-cmu-raster": ["ras"], "image/x-cmx": ["cmx"], "image/x-freehand": ["fh", "fhc", "fh4", "fh5", "fh7"], "image/x-icon": ["ico"], "image/x-jng": ["jng"], "image/x-mrsid-image": ["sid"], "image/x-ms-bmp": [], "image/x-pcx": ["pcx"], "image/x-pict": ["pic", "pct"], "image/x-portable-anymap": ["pnm"], "image/x-portable-bitmap": ["pbm"], "image/x-portable-graymap": ["pgm"], "image/x-portable-pixmap": ["ppm"], "image/x-rgb": ["rgb"], "image/x-tga": ["tga"], "image/x-xbitmap": ["xbm"], "image/x-xpixmap": ["xpm"], "image/x-xwindowdump": ["xwd"], "message/rfc822": ["eml", "mime"], "model/gltf+json": ["gltf"], "model/gltf-binary": ["glb"], "model/iges": ["igs", "iges"], "model/mesh": ["msh", "mesh", "silo"], "model/vnd.collada+xml": ["dae"], "model/vnd.dwf": ["dwf"], "model/vnd.gdl": ["gdl"], "model/vnd.gtw": ["gtw"], "model/vnd.mts": ["mts"], "model/vnd.vtu": ["vtu"], "model/vrml": ["wrl", "vrml"], "model/x3d+binary": ["x3db", "x3dbz"], "model/x3d+vrml": ["x3dv", "x3dvz"], "model/x3d+xml": ["x3d", "x3dz"], "text/cache-manifest": ["appcache", "manifest"], "text/calendar": ["ics", "ifb"], "text/coffeescript": ["coffee", "litcoffee"], "text/css": ["css"], "text/csv": ["csv"], "text/hjson": ["hjson"], "text/html": ["html", "htm", "shtml"], "text/jade": ["jade"], "text/jsx": ["jsx"], "text/less": ["less"], "text/markdown": ["markdown", "md"], "text/mathml": ["mml"], "text/n3": ["n3"], "text/plain": ["txt", "text", "conf", "def", "list", "log", "in", "ini"], "text/prs.lines.tag": ["dsc"], "text/richtext": ["rtx"], "text/rtf": [], "text/sgml": ["sgml", "sgm"], "text/slim": ["slim", "slm"], "text/stylus": ["stylus", "styl"], "text/tab-separated-values": ["tsv"], "text/troff": ["t", "tr", "roff", "man", "me", "ms"], "text/turtle": ["ttl"], "text/uri-list": ["uri", "uris", "urls"], "text/vcard": ["vcard"], "text/vnd.curl": ["curl"], "text/vnd.curl.dcurl": ["dcurl"], "text/vnd.curl.mcurl": ["mcurl"], "text/vnd.curl.scurl": ["scurl"], "text/vnd.dvb.subtitle": ["sub"], "text/vnd.fly": ["fly"], "text/vnd.fmi.flexstor": ["flx"], "text/vnd.graphviz": ["gv"], "text/vnd.in3d.3dml": ["3dml"], "text/vnd.in3d.spot": ["spot"], "text/vnd.sun.j2me.app-descriptor": ["jad"], "text/vnd.wap.wml": ["wml"], "text/vnd.wap.wmlscript": ["wmls"], "text/vtt": ["vtt"], "text/x-asm": ["s", "asm"], "text/x-c": ["c", "cc", "cxx", "cpp", "h", "hh", "dic"], "text/x-component": ["htc"], "text/x-fortran": ["f", "for", "f77", "f90"], "text/x-handlebars-template": ["hbs"], "text/x-java-source": ["java"], "text/x-lua": ["lua"], "text/x-markdown": ["mkd"], "text/x-nfo": ["nfo"], "text/x-opml": ["opml"], "text/x-org": [], "text/x-pascal": ["p", "pas"], "text/x-processing": ["pde"], "text/x-sass": ["sass"], "text/x-scss": ["scss"], "text/x-setext": ["etx"], "text/x-sfv": ["sfv"], "text/x-suse-ymp": ["ymp"], "text/x-uuencode": ["uu"], "text/x-vcalendar": ["vcs"], "text/x-vcard": ["vcf"], "text/xml": [], "text/yaml": ["yaml", "yml"], "video/3gpp": ["3gp", "3gpp"], "video/3gpp2": ["3g2"], "video/h261": ["h261"], "video/h263": ["h263"], "video/h264": ["h264"], "video/jpeg": ["jpgv"], "video/jpm": ["jpgm"], "video/mj2": ["mj2", "mjp2"], "video/mp2t": ["ts"], "video/mp4": ["mp4", "mp4v", "mpg4"], "video/mpeg": ["mpeg", "mpg", "mpe", "m1v", "m2v"], "video/ogg": ["ogv"], "video/quicktime": ["qt", "mov"], "video/vnd.dece.hd": ["uvh", "uvvh"], "video/vnd.dece.mobile": ["uvm", "uvvm"], "video/vnd.dece.pd": ["uvp", "uvvp"], "video/vnd.dece.sd": ["uvs", "uvvs"], "video/vnd.dece.video": ["uvv", "uvvv"], "video/vnd.dvb.file": ["dvb"], "video/vnd.fvt": ["fvt"], "video/vnd.mpegurl": ["mxu", "m4u"], "video/vnd.ms-playready.media.pyv": ["pyv"], "video/vnd.uvvu.mp4": ["uvu", "uvvu"], "video/vnd.vivo": ["viv"], "video/webm": ["webm"], "video/x-f4v": ["f4v"], "video/x-fli": ["fli"], "video/x-flv": ["flv"], "video/x-m4v": ["m4v"], "video/x-matroska": ["mkv", "mk3d", "mks"], "video/x-mng": ["mng"], "video/x-ms-asf": ["asf", "asx"], "video/x-ms-vob": ["vob"], "video/x-ms-wm": ["wm"], "video/x-ms-wmv": ["wmv"], "video/x-ms-wmx": ["wmx"], "video/x-ms-wvx": ["wvx"], "video/x-msvideo": ["avi"], "video/x-sgi-movie": ["movie"], "video/x-smv": ["smv"], "x-conference/x-cooltalk": ["ice"] };
   }
 });
 
 // node_modules/.pnpm/mime@1.6.0/node_modules/mime/mime.js
 var require_mime = __commonJS({
-  "node_modules/.pnpm/mime@1.6.0/node_modules/mime/mime.js"(exports, module) {
-    var path3 = __require("path");
-    var fs2 = __require("fs");
+  "node_modules/.pnpm/mime@1.6.0/node_modules/mime/mime.js"(exports2, module2) {
+    var path3 = require("path");
+    var fs2 = require("fs");
     function Mime() {
       this.types = /* @__PURE__ */ Object.create(null);
       this.extensions = /* @__PURE__ */ Object.create(null);
@@ -18877,20 +18871,20 @@ var require_mime = __commonJS({
         return /^text\/|^application\/(javascript|json)/.test(mimeType) ? "UTF-8" : fallback;
       }
     };
-    module.exports = mime;
+    module2.exports = mime;
   }
 });
 
 // node_modules/.pnpm/ms@2.1.3/node_modules/ms/index.js
 var require_ms2 = __commonJS({
-  "node_modules/.pnpm/ms@2.1.3/node_modules/ms/index.js"(exports, module) {
+  "node_modules/.pnpm/ms@2.1.3/node_modules/ms/index.js"(exports2, module2) {
     var s = 1e3;
     var m = s * 60;
     var h = m * 60;
     var d = h * 24;
     var w = d * 7;
     var y = d * 365.25;
-    module.exports = function(val, options) {
+    module2.exports = function(val, options) {
       options = options || {};
       var type = typeof val;
       if (type === "string" && val.length > 0) {
@@ -18999,9 +18993,9 @@ var require_ms2 = __commonJS({
 
 // node_modules/.pnpm/range-parser@1.2.1/node_modules/range-parser/index.js
 var require_range_parser = __commonJS({
-  "node_modules/.pnpm/range-parser@1.2.1/node_modules/range-parser/index.js"(exports, module) {
+  "node_modules/.pnpm/range-parser@1.2.1/node_modules/range-parser/index.js"(exports2, module2) {
     "use strict";
-    module.exports = rangeParser;
+    module2.exports = rangeParser;
     function rangeParser(size2, str2, options) {
       if (typeof str2 !== "string") {
         throw new TypeError("argument str must be a string");
@@ -19080,7 +19074,7 @@ var require_range_parser = __commonJS({
 
 // node_modules/.pnpm/send@0.19.2/node_modules/send/index.js
 var require_send = __commonJS({
-  "node_modules/.pnpm/send@0.19.2/node_modules/send/index.js"(exports, module) {
+  "node_modules/.pnpm/send@0.19.2/node_modules/send/index.js"(exports2, module2) {
     "use strict";
     var createError = require_http_errors();
     var debug = require_src()("send");
@@ -19090,15 +19084,15 @@ var require_send = __commonJS({
     var escapeHtml = require_escape_html();
     var etag = require_etag();
     var fresh = require_fresh();
-    var fs2 = __require("fs");
+    var fs2 = require("fs");
     var mime = require_mime();
     var ms = require_ms2();
     var onFinished = require_on_finished();
     var parseRange = require_range_parser();
-    var path3 = __require("path");
+    var path3 = require("path");
     var statuses = require_statuses();
-    var Stream4 = __require("stream");
-    var util3 = __require("util");
+    var Stream4 = require("stream");
+    var util3 = require("util");
     var extname = path3.extname;
     var join = path3.join;
     var normalize = path3.normalize;
@@ -19107,8 +19101,8 @@ var require_send = __commonJS({
     var BYTES_RANGE_REGEXP = /^ *bytes=/;
     var MAX_MAXAGE = 60 * 60 * 24 * 365 * 1e3;
     var UP_PATH_REGEXP = /(?:^|[\\/])\.\.(?:[\\/]|$)/;
-    module.exports = send;
-    module.exports.mime = mime;
+    module2.exports = send;
+    module2.exports.mime = mime;
     function send(req, path4, options) {
       return new SendStream(req, path4, options);
     }
@@ -19625,9 +19619,9 @@ var require_send = __commonJS({
 
 // node_modules/.pnpm/forwarded@0.2.0/node_modules/forwarded/index.js
 var require_forwarded = __commonJS({
-  "node_modules/.pnpm/forwarded@0.2.0/node_modules/forwarded/index.js"(exports, module) {
+  "node_modules/.pnpm/forwarded@0.2.0/node_modules/forwarded/index.js"(exports2, module2) {
     "use strict";
-    module.exports = forwarded;
+    module2.exports = forwarded;
     function forwarded(req) {
       if (!req) {
         throw new TypeError("argument req is required");
@@ -19672,13 +19666,13 @@ var require_forwarded = __commonJS({
 
 // node_modules/.pnpm/ipaddr.js@1.9.1/node_modules/ipaddr.js/lib/ipaddr.js
 var require_ipaddr = __commonJS({
-  "node_modules/.pnpm/ipaddr.js@1.9.1/node_modules/ipaddr.js/lib/ipaddr.js"(exports, module) {
+  "node_modules/.pnpm/ipaddr.js@1.9.1/node_modules/ipaddr.js/lib/ipaddr.js"(exports2, module2) {
     (function() {
       var expandIPv6, ipaddr, ipv4Part, ipv4Regexes, ipv6Part, ipv6Regexes, matchCIDR, root, zoneIndex;
       ipaddr = {};
       root = this;
-      if (typeof module !== "undefined" && module !== null && module.exports) {
-        module.exports = ipaddr;
+      if (typeof module2 !== "undefined" && module2 !== null && module2.exports) {
+        module2.exports = ipaddr;
       } else {
         root["ipaddr"] = ipaddr;
       }
@@ -20288,17 +20282,17 @@ var require_ipaddr = __commonJS({
           return addr;
         }
       };
-    }).call(exports);
+    }).call(exports2);
   }
 });
 
 // node_modules/.pnpm/proxy-addr@2.0.7/node_modules/proxy-addr/index.js
 var require_proxy_addr = __commonJS({
-  "node_modules/.pnpm/proxy-addr@2.0.7/node_modules/proxy-addr/index.js"(exports, module) {
+  "node_modules/.pnpm/proxy-addr@2.0.7/node_modules/proxy-addr/index.js"(exports2, module2) {
     "use strict";
-    module.exports = proxyaddr;
-    module.exports.all = alladdrs;
-    module.exports.compile = compile;
+    module2.exports = proxyaddr;
+    module2.exports.all = alladdrs;
+    module2.exports.compile = compile;
     var forwarded = require_forwarded();
     var ipaddr = require_ipaddr();
     var DIGIT_REGEXP = /^[0-9]+$/;
@@ -20453,7 +20447,7 @@ var require_proxy_addr = __commonJS({
 
 // node_modules/.pnpm/express@4.22.1/node_modules/express/lib/utils.js
 var require_utils2 = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/utils.js"(exports) {
+  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/utils.js"(exports2) {
     "use strict";
     var Buffer2 = require_safe_buffer().Buffer;
     var contentDisposition = require_content_disposition();
@@ -20464,29 +20458,29 @@ var require_utils2 = __commonJS({
     var etag = require_etag();
     var proxyaddr = require_proxy_addr();
     var qs = require_lib2();
-    var querystring = __require("querystring");
-    exports.etag = createETagGenerator({ weak: false });
-    exports.wetag = createETagGenerator({ weak: true });
-    exports.isAbsolute = function(path3) {
+    var querystring = require("querystring");
+    exports2.etag = createETagGenerator({ weak: false });
+    exports2.wetag = createETagGenerator({ weak: true });
+    exports2.isAbsolute = function(path3) {
       if ("/" === path3[0]) return true;
       if (":" === path3[1] && ("\\" === path3[2] || "/" === path3[2])) return true;
       if ("\\\\" === path3.substring(0, 2)) return true;
     };
-    exports.flatten = deprecate.function(
+    exports2.flatten = deprecate.function(
       flatten,
       "utils.flatten: use array-flatten npm module instead"
     );
-    exports.normalizeType = function(type) {
+    exports2.normalizeType = function(type) {
       return ~type.indexOf("/") ? acceptParams(type) : { value: mime.lookup(type), params: {} };
     };
-    exports.normalizeTypes = function(types2) {
+    exports2.normalizeTypes = function(types2) {
       var ret = [];
       for (var i = 0; i < types2.length; ++i) {
-        ret.push(exports.normalizeType(types2[i]));
+        ret.push(exports2.normalizeType(types2[i]));
       }
       return ret;
     };
-    exports.contentDisposition = deprecate.function(
+    exports2.contentDisposition = deprecate.function(
       contentDisposition,
       "utils.contentDisposition: use content-disposition npm module instead"
     );
@@ -20503,7 +20497,7 @@ var require_utils2 = __commonJS({
       }
       return ret;
     }
-    exports.compileETag = function(val) {
+    exports2.compileETag = function(val) {
       var fn;
       if (typeof val === "function") {
         return val;
@@ -20511,19 +20505,19 @@ var require_utils2 = __commonJS({
       switch (val) {
         case true:
         case "weak":
-          fn = exports.wetag;
+          fn = exports2.wetag;
           break;
         case false:
           break;
         case "strong":
-          fn = exports.etag;
+          fn = exports2.etag;
           break;
         default:
           throw new TypeError("unknown value for etag function: " + val);
       }
       return fn;
     };
-    exports.compileQueryParser = function compileQueryParser(val) {
+    exports2.compileQueryParser = function compileQueryParser(val) {
       var fn;
       if (typeof val === "function") {
         return val;
@@ -20544,7 +20538,7 @@ var require_utils2 = __commonJS({
       }
       return fn;
     };
-    exports.compileTrust = function(val) {
+    exports2.compileTrust = function(val) {
       if (typeof val === "function") return val;
       if (val === true) {
         return function() {
@@ -20563,7 +20557,7 @@ var require_utils2 = __commonJS({
       }
       return proxyaddr.compile(val || []);
     };
-    exports.setCharset = function setCharset(type, charset) {
+    exports2.setCharset = function setCharset(type, charset) {
       if (!type || !charset) {
         return type;
       }
@@ -20590,7 +20584,7 @@ var require_utils2 = __commonJS({
 
 // node_modules/.pnpm/express@4.22.1/node_modules/express/lib/application.js
 var require_application = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/application.js"(exports, module) {
+  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/application.js"(exports2, module2) {
     "use strict";
     var finalhandler = require_finalhandler();
     var Router = require_router();
@@ -20599,18 +20593,18 @@ var require_application = __commonJS({
     var query = require_query();
     var debug = require_src()("express:application");
     var View2 = require_view();
-    var http3 = __require("http");
+    var http3 = require("http");
     var compileETag = require_utils2().compileETag;
     var compileQueryParser = require_utils2().compileQueryParser;
     var compileTrust = require_utils2().compileTrust;
     var deprecate = require_depd()("express");
     var flatten = require_array_flatten();
     var merge3 = require_utils_merge();
-    var resolve = __require("path").resolve;
+    var resolve = require("path").resolve;
     var setPrototypeOf = require_setprototypeof();
     var hasOwnProperty2 = Object.prototype.hasOwnProperty;
     var slice = Array.prototype.slice;
-    var app2 = exports = module.exports = {};
+    var app2 = exports2 = module2.exports = {};
     var trustProxyDefaultSymbol = "@@symbol:trust_proxy_default";
     app2.init = function init() {
       this.cache = {};
@@ -20866,10 +20860,10 @@ var require_application = __commonJS({
 
 // node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/charset.js
 var require_charset = __commonJS({
-  "node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/charset.js"(exports, module) {
+  "node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/charset.js"(exports2, module2) {
     "use strict";
-    module.exports = preferredCharsets;
-    module.exports.preferredCharsets = preferredCharsets;
+    module2.exports = preferredCharsets;
+    module2.exports.preferredCharsets = preferredCharsets;
     var simpleCharsetRegExp = /^\s*([^\s;]+)\s*(?:;(.*))?$/;
     function parseAcceptCharset(accept) {
       var accepts = accept.split(",");
@@ -20953,10 +20947,10 @@ var require_charset = __commonJS({
 
 // node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/encoding.js
 var require_encoding = __commonJS({
-  "node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/encoding.js"(exports, module) {
+  "node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/encoding.js"(exports2, module2) {
     "use strict";
-    module.exports = preferredEncodings;
-    module.exports.preferredEncodings = preferredEncodings;
+    module2.exports = preferredEncodings;
+    module2.exports.preferredEncodings = preferredEncodings;
     var simpleEncodingRegExp = /^\s*([^\s;]+)\s*(?:;(.*))?$/;
     function parseAcceptEncoding(accept) {
       var accepts = accept.split(",");
@@ -21051,10 +21045,10 @@ var require_encoding = __commonJS({
 
 // node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/language.js
 var require_language = __commonJS({
-  "node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/language.js"(exports, module) {
+  "node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/language.js"(exports2, module2) {
     "use strict";
-    module.exports = preferredLanguages;
-    module.exports.preferredLanguages = preferredLanguages;
+    module2.exports = preferredLanguages;
+    module2.exports.preferredLanguages = preferredLanguages;
     var simpleLanguageRegExp = /^\s*([^\s\-;]+)(?:-([^\s;]+))?\s*(?:;(.*))?$/;
     function parseAcceptLanguage(accept) {
       var accepts = accept.split(",");
@@ -21146,10 +21140,10 @@ var require_language = __commonJS({
 
 // node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/mediaType.js
 var require_mediaType = __commonJS({
-  "node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/mediaType.js"(exports, module) {
+  "node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/mediaType.js"(exports2, module2) {
     "use strict";
-    module.exports = preferredMediaTypes;
-    module.exports.preferredMediaTypes = preferredMediaTypes;
+    module2.exports = preferredMediaTypes;
+    module2.exports.preferredMediaTypes = preferredMediaTypes;
     var simpleMediaTypeRegExp = /^\s*([^\s\/;]+)\/([^;\s]+)\s*(?:;(.*))?$/;
     function parseAccept(accept) {
       var accepts = splitMediaTypes(accept);
@@ -21308,14 +21302,14 @@ var require_mediaType = __commonJS({
 
 // node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/index.js
 var require_negotiator = __commonJS({
-  "node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/index.js"(exports, module) {
+  "node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/index.js"(exports2, module2) {
     "use strict";
     var preferredCharsets = require_charset();
     var preferredEncodings = require_encoding();
     var preferredLanguages = require_language();
     var preferredMediaTypes = require_mediaType();
-    module.exports = Negotiator;
-    module.exports.Negotiator = Negotiator;
+    module2.exports = Negotiator;
+    module2.exports.Negotiator = Negotiator;
     function Negotiator(request) {
       if (!(this instanceof Negotiator)) {
         return new Negotiator(request);
@@ -21363,11 +21357,11 @@ var require_negotiator = __commonJS({
 
 // node_modules/.pnpm/accepts@1.3.8/node_modules/accepts/index.js
 var require_accepts = __commonJS({
-  "node_modules/.pnpm/accepts@1.3.8/node_modules/accepts/index.js"(exports, module) {
+  "node_modules/.pnpm/accepts@1.3.8/node_modules/accepts/index.js"(exports2, module2) {
     "use strict";
     var Negotiator = require_negotiator();
     var mime = require_mime_types();
-    module.exports = Accepts;
+    module2.exports = Accepts;
     function Accepts(req) {
       if (!(this instanceof Accepts)) {
         return new Accepts(req);
@@ -21444,19 +21438,19 @@ var require_accepts = __commonJS({
 
 // node_modules/.pnpm/express@4.22.1/node_modules/express/lib/request.js
 var require_request = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/request.js"(exports, module) {
+  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/request.js"(exports2, module2) {
     "use strict";
     var accepts = require_accepts();
     var deprecate = require_depd()("express");
-    var isIP = __require("net").isIP;
+    var isIP = require("net").isIP;
     var typeis = require_type_is();
-    var http3 = __require("http");
+    var http3 = require("http");
     var fresh = require_fresh();
     var parseRange = require_range_parser();
     var parse5 = require_parseurl();
     var proxyaddr = require_proxy_addr();
     var req = Object.create(http3.IncomingMessage.prototype);
-    module.exports = req;
+    module2.exports = req;
     req.get = req.header = function header(name2) {
       if (!name2) {
         throw new TypeError("name argument is required to req.get");
@@ -21608,17 +21602,17 @@ var require_request = __commonJS({
 
 // node_modules/.pnpm/cookie-signature@1.0.7/node_modules/cookie-signature/index.js
 var require_cookie_signature = __commonJS({
-  "node_modules/.pnpm/cookie-signature@1.0.7/node_modules/cookie-signature/index.js"(exports) {
-    var crypto4 = __require("crypto");
-    exports.sign = function(val, secret) {
+  "node_modules/.pnpm/cookie-signature@1.0.7/node_modules/cookie-signature/index.js"(exports2) {
+    var crypto4 = require("crypto");
+    exports2.sign = function(val, secret) {
       if ("string" !== typeof val) throw new TypeError("Cookie value must be provided as a string.");
       if (null == secret) throw new TypeError("Secret key must be provided.");
       return val + "." + crypto4.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
     };
-    exports.unsign = function(val, secret) {
+    exports2.unsign = function(val, secret) {
       if ("string" !== typeof val) throw new TypeError("Signed cookie string must be provided.");
       if (null == secret) throw new TypeError("Secret key must be provided.");
-      var str2 = val.slice(0, val.lastIndexOf(".")), mac3 = exports.sign(str2, secret);
+      var str2 = val.slice(0, val.lastIndexOf(".")), mac3 = exports2.sign(str2, secret);
       return sha1(mac3) == sha1(val) ? str2 : false;
     };
     function sha1(str2) {
@@ -21629,10 +21623,10 @@ var require_cookie_signature = __commonJS({
 
 // node_modules/.pnpm/cookie@0.7.2/node_modules/cookie/index.js
 var require_cookie = __commonJS({
-  "node_modules/.pnpm/cookie@0.7.2/node_modules/cookie/index.js"(exports) {
+  "node_modules/.pnpm/cookie@0.7.2/node_modules/cookie/index.js"(exports2) {
     "use strict";
-    exports.parse = parse5;
-    exports.serialize = serialize2;
+    exports2.parse = parse5;
+    exports2.serialize = serialize2;
     var __toString = Object.prototype.toString;
     var __hasOwnProperty = Object.prototype.hasOwnProperty;
     var cookieNameRegExp = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
@@ -21795,10 +21789,10 @@ var require_cookie = __commonJS({
 
 // node_modules/.pnpm/vary@1.1.2/node_modules/vary/index.js
 var require_vary = __commonJS({
-  "node_modules/.pnpm/vary@1.1.2/node_modules/vary/index.js"(exports, module) {
+  "node_modules/.pnpm/vary@1.1.2/node_modules/vary/index.js"(exports2, module2) {
     "use strict";
-    module.exports = vary;
-    module.exports.append = append2;
+    module2.exports = vary;
+    module2.exports.append = append2;
     var FIELD_NAME_REGEXP = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
     function append2(header, field) {
       if (typeof header !== "string") {
@@ -21868,7 +21862,7 @@ var require_vary = __commonJS({
 
 // node_modules/.pnpm/express@4.22.1/node_modules/express/lib/response.js
 var require_response = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/response.js"(exports, module) {
+  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/response.js"(exports2, module2) {
     "use strict";
     var Buffer2 = require_safe_buffer().Buffer;
     var contentDisposition = require_content_disposition();
@@ -21876,10 +21870,10 @@ var require_response = __commonJS({
     var deprecate = require_depd()("express");
     var encodeUrl = require_encodeurl();
     var escapeHtml = require_escape_html();
-    var http3 = __require("http");
+    var http3 = require("http");
     var isAbsolute = require_utils2().isAbsolute;
     var onFinished = require_on_finished();
-    var path3 = __require("path");
+    var path3 = require("path");
     var statuses = require_statuses();
     var merge3 = require_utils_merge();
     var sign = require_cookie_signature().sign;
@@ -21893,7 +21887,7 @@ var require_response = __commonJS({
     var resolve = path3.resolve;
     var vary = require_vary();
     var res = Object.create(http3.ServerResponse.prototype);
-    module.exports = res;
+    module2.exports = res;
     var charsetRegExp = /;\s*charset\s*=/;
     res.status = function status(code) {
       if ((typeof code === "string" || Math.floor(code) !== code) && code > 99 && code < 1e3) {
@@ -22410,16 +22404,16 @@ var require_response = __commonJS({
 
 // node_modules/.pnpm/serve-static@1.16.3/node_modules/serve-static/index.js
 var require_serve_static = __commonJS({
-  "node_modules/.pnpm/serve-static@1.16.3/node_modules/serve-static/index.js"(exports, module) {
+  "node_modules/.pnpm/serve-static@1.16.3/node_modules/serve-static/index.js"(exports2, module2) {
     "use strict";
     var encodeUrl = require_encodeurl();
     var escapeHtml = require_escape_html();
     var parseUrl3 = require_parseurl();
-    var resolve = __require("path").resolve;
+    var resolve = require("path").resolve;
     var send = require_send();
-    var url3 = __require("url");
-    module.exports = serveStatic;
-    module.exports.mime = send.mime;
+    var url3 = require("url");
+    module2.exports = serveStatic;
+    module2.exports.mime = send.mime;
     function serveStatic(root, options) {
       if (!root) {
         throw new TypeError("root path required");
@@ -22515,17 +22509,17 @@ var require_serve_static = __commonJS({
 
 // node_modules/.pnpm/express@4.22.1/node_modules/express/lib/express.js
 var require_express = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/express.js"(exports, module) {
+  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/express.js"(exports2, module2) {
     "use strict";
     var bodyParser = require_body_parser();
-    var EventEmitter2 = __require("events").EventEmitter;
+    var EventEmitter2 = require("events").EventEmitter;
     var mixin = require_merge_descriptors();
     var proto = require_application();
     var Route = require_route();
     var Router = require_router();
     var req = require_request();
     var res = require_response();
-    exports = module.exports = createApplication;
+    exports2 = module2.exports = createApplication;
     function createApplication() {
       var app2 = function(req2, res2, next) {
         app2.handle(req2, res2, next);
@@ -22541,17 +22535,17 @@ var require_express = __commonJS({
       app2.init();
       return app2;
     }
-    exports.application = proto;
-    exports.request = req;
-    exports.response = res;
-    exports.Route = Route;
-    exports.Router = Router;
-    exports.json = bodyParser.json;
-    exports.query = require_query();
-    exports.raw = bodyParser.raw;
-    exports.static = require_serve_static();
-    exports.text = bodyParser.text;
-    exports.urlencoded = bodyParser.urlencoded;
+    exports2.application = proto;
+    exports2.request = req;
+    exports2.response = res;
+    exports2.Route = Route;
+    exports2.Router = Router;
+    exports2.json = bodyParser.json;
+    exports2.query = require_query();
+    exports2.raw = bodyParser.raw;
+    exports2.static = require_serve_static();
+    exports2.text = bodyParser.text;
+    exports2.urlencoded = bodyParser.urlencoded;
     var removedMiddlewares = [
       "bodyParser",
       "compress",
@@ -22572,7 +22566,7 @@ var require_express = __commonJS({
       "staticCache"
     ];
     removedMiddlewares.forEach(function(name2) {
-      Object.defineProperty(exports, name2, {
+      Object.defineProperty(exports2, name2, {
         get: function() {
           throw new Error("Most middleware (like " + name2 + ") is no longer bundled with Express and must be installed separately. Please see https://github.com/senchalabs/connect#middleware.");
         },
@@ -22584,16 +22578,16 @@ var require_express = __commonJS({
 
 // node_modules/.pnpm/express@4.22.1/node_modules/express/index.js
 var require_express2 = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/index.js"(exports, module) {
+  "node_modules/.pnpm/express@4.22.1/node_modules/express/index.js"(exports2, module2) {
     "use strict";
-    module.exports = require_express();
+    module2.exports = require_express();
   }
 });
 
 // node_modules/.pnpm/dotenv@16.6.1/node_modules/dotenv/package.json
 var require_package = __commonJS({
-  "node_modules/.pnpm/dotenv@16.6.1/node_modules/dotenv/package.json"(exports, module) {
-    module.exports = {
+  "node_modules/.pnpm/dotenv@16.6.1/node_modules/dotenv/package.json"(exports2, module2) {
+    module2.exports = {
       name: "dotenv",
       version: "16.6.1",
       description: "Loads environment variables from .env file",
@@ -22660,11 +22654,11 @@ var require_package = __commonJS({
 
 // node_modules/.pnpm/dotenv@16.6.1/node_modules/dotenv/lib/main.js
 var require_main = __commonJS({
-  "node_modules/.pnpm/dotenv@16.6.1/node_modules/dotenv/lib/main.js"(exports, module) {
-    var fs2 = __require("fs");
-    var path3 = __require("path");
-    var os2 = __require("os");
-    var crypto4 = __require("crypto");
+  "node_modules/.pnpm/dotenv@16.6.1/node_modules/dotenv/lib/main.js"(exports2, module2) {
+    var fs2 = require("fs");
+    var path3 = require("path");
+    var os2 = require("os");
+    var crypto4 = require("crypto");
     var packageJson = require_package();
     var version3 = packageJson.version;
     var LINE = /(?:^|^)\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|$)/mg;
@@ -22937,14 +22931,14 @@ var require_main = __commonJS({
       parse: parse5,
       populate
     };
-    module.exports.configDotenv = DotenvModule.configDotenv;
-    module.exports._configVault = DotenvModule._configVault;
-    module.exports._parseVault = DotenvModule._parseVault;
-    module.exports.config = DotenvModule.config;
-    module.exports.decrypt = DotenvModule.decrypt;
-    module.exports.parse = DotenvModule.parse;
-    module.exports.populate = DotenvModule.populate;
-    module.exports = DotenvModule;
+    module2.exports.configDotenv = DotenvModule.configDotenv;
+    module2.exports._configVault = DotenvModule._configVault;
+    module2.exports._parseVault = DotenvModule._parseVault;
+    module2.exports.config = DotenvModule.config;
+    module2.exports.decrypt = DotenvModule.decrypt;
+    module2.exports.parse = DotenvModule.parse;
+    module2.exports.populate = DotenvModule.populate;
+    module2.exports = DotenvModule;
   }
 });
 
@@ -31267,6 +31261,7 @@ __export(schema_exports, {
   acertosCarga: () => acertosCarga,
   acidentes: () => acidentes,
   adiantamentos: () => adiantamentos,
+  armazens: () => armazens,
   auditLog: () => auditLog,
   carregamentos: () => carregamentos,
   categoriaContaPagarEnum: () => categoriaContaPagarEnum,
@@ -31283,22 +31278,34 @@ __export(schema_exports, {
   contasReceber: () => contasReceber,
   controleTanque: () => controleTanque,
   despesasViagem: () => despesasViagem,
+  docas: () => docas,
   documentos: () => documentos,
   empresas: () => empresas,
+  estoque: () => estoque,
   formaPagamentoEnum: () => formaPagamentoEnum,
   formaPagamentoSaasEnum: () => formaPagamentoSaasEnum,
   funcaoEnum: () => funcaoEnum,
   funcionarios: () => funcionarios,
   historicoPneus: () => historicoPneus,
+  iaAgenteSetorEnum: () => iaAgenteSetorEnum,
+  iaAgentes: () => iaAgentes,
+  iaConhecimento: () => iaConhecimento,
+  iaMensagens: () => iaMensagens,
+  iaSessoes: () => iaSessoes,
   itemChecklistEnum: () => itemChecklistEnum,
   itensCarregamento: () => itensCarregamento,
+  itensRecebimento: () => itensRecebimento,
   licencas: () => licencas,
+  localizacoes: () => localizacoes,
   manutencoes: () => manutencoes,
+  movimentacoesEstoque: () => movimentacoesEstoque,
   notasFiscaisViagem: () => notasFiscaisViagem,
   operacaoTanqueEnum: () => operacaoTanqueEnum,
   planoCodEnum: () => planoCodEnum,
   planos: () => planos,
   pneus: () => pneus,
+  produtos: () => produtos,
+  recebimentos: () => recebimentos,
   statusAcertoCargaEnum: () => statusAcertoCargaEnum,
   statusAcidenteEnum: () => statusAcidenteEnum,
   statusAdiantamentoEnum: () => statusAdiantamentoEnum,
@@ -31306,9 +31313,11 @@ __export(schema_exports, {
   statusCobrancaEnum: () => statusCobrancaEnum,
   statusContaPagarEnum: () => statusContaPagarEnum,
   statusContaReceberEnum: () => statusContaReceberEnum,
+  statusItemRecebimentoEnum: () => statusItemRecebimentoEnum,
   statusLicencaEnum: () => statusLicencaEnum,
   statusNfEnum: () => statusNfEnum,
   statusPneuEnum: () => statusPneuEnum,
+  statusRecebimentoEnum: () => statusRecebimentoEnum,
   statusViagemEnum: () => statusViagemEnum,
   tipoAbastecimentoEnum: () => tipoAbastecimentoEnum,
   tipoChecklistEnum: () => tipoChecklistEnum,
@@ -31320,6 +31329,8 @@ __export(schema_exports, {
   tipoDocumentoEnum: () => tipoDocumentoEnum,
   tipoEmpresaEnum: () => tipoEmpresaEnum,
   tipoManutencaoEnum: () => tipoManutencaoEnum,
+  tipoMovimentacaoEnum: () => tipoMovimentacaoEnum,
+  tipoRecebimentoEnum: () => tipoRecebimentoEnum,
   tipoTanqueEnum: () => tipoTanqueEnum,
   tipoVeiculoEnum: () => tipoVeiculoEnum,
   tipoViagemEnum: () => tipoViagemEnum,
@@ -31329,7 +31340,7 @@ __export(schema_exports, {
   veiculos: () => veiculos,
   viagens: () => viagens
 });
-var userRoleEnum, funcaoEnum, tipoContratoEnum, tipoCobrancaEnum, tipoContaEnum, tipoVeiculoEnum, tipoCombustivelEnum, tipoAbastecimentoEnum, tipoManutencaoEnum, tipoViagemEnum, statusViagemEnum, tipoDespesaEnum, turnoEnum, tipoChecklistEnum, itemChecklistEnum, categoriaContaPagarEnum, statusContaPagarEnum, categoriaContaReceberEnum, statusContaReceberEnum, formaPagamentoEnum, statusAdiantamentoEnum, tipoTanqueEnum, operacaoTanqueEnum, statusAcidenteEnum, chatRoleEnum, chatMessageTypeEnum, tipoEmpresaEnum, users, empresas, funcionarios, veiculos, abastecimentos, manutencoes, viagens, despesasViagem, checklists, contasPagar, contasReceber, adiantamentos, controleTanque, auditLog, acidentes, chatConversations, chatMembers, chatMessages, statusNfEnum, notasFiscaisViagem, statusAcertoCargaEnum, acertosCarga, statusCarregamentoEnum, carregamentos, itensCarregamento, planoCodEnum, statusLicencaEnum, cicloCobrancaEnum, statusCobrancaEnum, formaPagamentoSaasEnum, planos, licencas, cobrancas, statusPneuEnum, pneus, historicoPneus, tipoDocumentoEnum, documentos;
+var userRoleEnum, funcaoEnum, tipoContratoEnum, tipoCobrancaEnum, tipoContaEnum, tipoVeiculoEnum, tipoCombustivelEnum, tipoAbastecimentoEnum, tipoManutencaoEnum, tipoViagemEnum, statusViagemEnum, tipoDespesaEnum, turnoEnum, tipoChecklistEnum, itemChecklistEnum, categoriaContaPagarEnum, statusContaPagarEnum, categoriaContaReceberEnum, statusContaReceberEnum, formaPagamentoEnum, statusAdiantamentoEnum, tipoTanqueEnum, operacaoTanqueEnum, statusAcidenteEnum, chatRoleEnum, chatMessageTypeEnum, tipoEmpresaEnum, users, empresas, funcionarios, veiculos, abastecimentos, manutencoes, viagens, despesasViagem, checklists, contasPagar, contasReceber, adiantamentos, controleTanque, auditLog, acidentes, chatConversations, chatMembers, chatMessages, statusNfEnum, notasFiscaisViagem, statusAcertoCargaEnum, acertosCarga, statusCarregamentoEnum, carregamentos, itensCarregamento, planoCodEnum, statusLicencaEnum, cicloCobrancaEnum, statusCobrancaEnum, formaPagamentoSaasEnum, planos, licencas, cobrancas, statusPneuEnum, pneus, historicoPneus, tipoDocumentoEnum, documentos, statusRecebimentoEnum, tipoRecebimentoEnum, recebimentos, statusItemRecebimentoEnum, itensRecebimento, tipoMovimentacaoEnum, armazens, docas, localizacoes, produtos, estoque, movimentacoesEstoque, iaAgenteSetorEnum, iaAgentes, iaSessoes, iaMensagens, iaConhecimento;
 var init_schema2 = __esm({
   "drizzle/schema.ts"() {
     init_pg_core();
@@ -32117,27 +32128,285 @@ var init_schema2 = __esm({
       deletedAt: timestamp("deletedAt"),
       deletedBy: integer2("deletedBy")
     });
+    statusRecebimentoEnum = pgEnum("status_recebimento", [
+      "aguardando",
+      "em_conferencia",
+      "conferido",
+      "divergencia",
+      "recusado",
+      "finalizado"
+    ]);
+    tipoRecebimentoEnum = pgEnum("tipo_recebimento", [
+      "nf_entrada",
+      "devolucao",
+      "transferencia",
+      "bonificacao",
+      "outro"
+    ]);
+    recebimentos = pgTable("recebimentos", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      // Identificação
+      numero: varchar("numero", { length: 50 }).notNull(),
+      // Número interno do recebimento
+      tipo: tipoRecebimentoEnum("tipo").notNull().default("nf_entrada"),
+      status: statusRecebimentoEnum("status").notNull().default("aguardando"),
+      // Fornecedor / Origem
+      fornecedorNome: varchar("fornecedorNome", { length: 255 }),
+      fornecedorCnpj: varchar("fornecedorCnpj", { length: 18 }),
+      origemCidade: varchar("origemCidade", { length: 100 }),
+      origemEstado: varchar("origemEstado", { length: 2 }),
+      // Nota Fiscal
+      nfNumero: varchar("nfNumero", { length: 50 }),
+      nfSerie: varchar("nfSerie", { length: 10 }),
+      nfChave: varchar("nfChave", { length: 50 }),
+      nfValorTotal: decimal("nfValorTotal", { precision: 12, scale: 2 }),
+      nfDataEmissao: date5("nfDataEmissao"),
+      // Transporte
+      transportadoraNome: varchar("transportadoraNome", { length: 255 }),
+      veiculoPlaca: varchar("veiculoPlaca", { length: 10 }),
+      motoristaId: integer2("motoristaId"),
+      // Doca / Armazém
+      docaId: integer2("docaId"),
+      armazemId: integer2("armazemId"),
+      // Datas
+      dataAgendamento: timestamp("dataAgendamento"),
+      dataChegada: timestamp("dataChegada"),
+      dataInicio: timestamp("dataInicio"),
+      dataFim: timestamp("dataFim"),
+      // Conferência
+      conferenteId: integer2("conferenteId"),
+      observacoes: text("observacoes"),
+      observacoesDivergencia: text("observacoesDivergencia"),
+      // Totais conferidos
+      totalItensEsperados: integer2("totalItensEsperados").default(0),
+      totalItensRecebidos: integer2("totalItensRecebidos").default(0),
+      totalItensComDivergencia: integer2("totalItensComDivergencia").default(0),
+      createdBy: integer2("createdBy"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+      deletedAt: timestamp("deletedAt")
+    });
+    statusItemRecebimentoEnum = pgEnum("status_item_recebimento", [
+      "pendente",
+      "conferido",
+      "divergencia_quantidade",
+      "divergencia_qualidade",
+      "recusado"
+    ]);
+    itensRecebimento = pgTable("itens_recebimento", {
+      id: serial("id").primaryKey(),
+      recebimentoId: integer2("recebimentoId").notNull(),
+      empresaId: integer2("empresaId").notNull(),
+      // Produto
+      codigoProduto: varchar("codigoProduto", { length: 100 }),
+      descricaoProduto: varchar("descricaoProduto", { length: 255 }).notNull(),
+      unidade: varchar("unidade", { length: 20 }),
+      ean: varchar("ean", { length: 20 }),
+      // Quantidades
+      quantidadeEsperada: decimal("quantidadeEsperada", { precision: 10, scale: 3 }).notNull(),
+      quantidadeRecebida: decimal("quantidadeRecebida", { precision: 10, scale: 3 }),
+      quantidadeDivergente: decimal("quantidadeDivergente", { precision: 10, scale: 3 }),
+      // Valores
+      valorUnitario: decimal("valorUnitario", { precision: 10, scale: 4 }),
+      valorTotal: decimal("valorTotal", { precision: 12, scale: 2 }),
+      // Localização no armazém
+      localizacao: varchar("localizacao", { length: 50 }),
+      // ex: A-01-01
+      status: statusItemRecebimentoEnum("status").notNull().default("pendente"),
+      observacoes: text("observacoes"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull()
+    });
+    tipoMovimentacaoEnum = pgEnum("tipo_movimentacao_estoque", [
+      "entrada",
+      "saida",
+      "transferencia",
+      "ajuste",
+      "inventario",
+      "devolucao"
+    ]);
+    armazens = pgTable("armazens", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      nome: varchar("nome", { length: 100 }).notNull(),
+      codigo: varchar("codigo", { length: 20 }),
+      descricao: text("descricao"),
+      endereco: text("endereco"),
+      capacidadeTotal: decimal("capacidadeTotal", { precision: 10, scale: 2 }),
+      unidadeCapacidade: varchar("unidadeCapacidade", { length: 20 }).default("m\xB2"),
+      ativo: boolean4("ativo").default(true).notNull(),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+      deletedAt: timestamp("deletedAt")
+    });
+    docas = pgTable("docas", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      armazemId: integer2("armazemId").notNull(),
+      nome: varchar("nome", { length: 50 }).notNull(),
+      codigo: varchar("codigo", { length: 20 }),
+      tipo: varchar("tipo", { length: 20 }).default("recebimento"),
+      // recebimento | expedicao | misto
+      ativo: boolean4("ativo").default(true).notNull(),
+      createdAt: timestamp("createdAt").defaultNow().notNull()
+    });
+    localizacoes = pgTable("localizacoes", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      armazemId: integer2("armazemId").notNull(),
+      codigo: varchar("codigo", { length: 30 }).notNull(),
+      // ex: A-01-01-01 (corredor-bloco-prateleira-posição)
+      corredor: varchar("corredor", { length: 10 }),
+      bloco: varchar("bloco", { length: 10 }),
+      prateleira: varchar("prateleira", { length: 10 }),
+      posicao: varchar("posicao", { length: 10 }),
+      tipo: varchar("tipo", { length: 20 }).default("padrao"),
+      // padrao | picking | bulk | refrigerado
+      capacidade: decimal("capacidade", { precision: 8, scale: 2 }),
+      ocupado: boolean4("ocupado").default(false).notNull(),
+      ativo: boolean4("ativo").default(true).notNull(),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull()
+    });
+    produtos = pgTable("produtos", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      codigo: varchar("codigo", { length: 100 }).notNull(),
+      ean: varchar("ean", { length: 20 }),
+      descricao: varchar("descricao", { length: 255 }).notNull(),
+      unidade: varchar("unidade", { length: 20 }).notNull().default("UN"),
+      categoria: varchar("categoria", { length: 100 }),
+      marca: varchar("marca", { length: 100 }),
+      pesoUnitario: decimal("pesoUnitario", { precision: 8, scale: 3 }),
+      volumeUnitario: decimal("volumeUnitario", { precision: 8, scale: 3 }),
+      estoqueMinimo: decimal("estoqueMinimo", { precision: 10, scale: 3 }).default("0"),
+      estoqueMaximo: decimal("estoqueMaximo", { precision: 10, scale: 3 }),
+      localizacaoPadrao: varchar("localizacaoPadrao", { length: 30 }),
+      ativo: boolean4("ativo").default(true).notNull(),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+      deletedAt: timestamp("deletedAt")
+    });
+    estoque = pgTable("estoque", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      produtoId: integer2("produtoId").notNull(),
+      localizacaoId: integer2("localizacaoId"),
+      armazemId: integer2("armazemId").notNull(),
+      quantidade: decimal("quantidade", { precision: 12, scale: 3 }).notNull().default("0"),
+      quantidadeReservada: decimal("quantidadeReservada", { precision: 12, scale: 3 }).default("0"),
+      lote: varchar("lote", { length: 50 }),
+      dataValidade: date5("dataValidade"),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull()
+    });
+    movimentacoesEstoque = pgTable("movimentacoes_estoque", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      produtoId: integer2("produtoId").notNull(),
+      armazemId: integer2("armazemId").notNull(),
+      localizacaoOrigemId: integer2("localizacaoOrigemId"),
+      localizacaoDestinoId: integer2("localizacaoDestinoId"),
+      tipo: tipoMovimentacaoEnum("tipo").notNull(),
+      quantidade: decimal("quantidade", { precision: 12, scale: 3 }).notNull(),
+      saldoAnterior: decimal("saldoAnterior", { precision: 12, scale: 3 }),
+      saldoAtual: decimal("saldoAtual", { precision: 12, scale: 3 }),
+      lote: varchar("lote", { length: 50 }),
+      documento: varchar("documento", { length: 100 }),
+      // NF, pedido, etc.
+      recebimentoId: integer2("recebimentoId"),
+      observacoes: text("observacoes"),
+      operadorId: integer2("operadorId"),
+      createdAt: timestamp("createdAt").defaultNow().notNull()
+    });
+    iaAgenteSetorEnum = pgEnum("ia_agente_setor", [
+      "master",
+      "financeiro",
+      "frota",
+      "motorista",
+      "manutencao",
+      "juridico",
+      "operacional",
+      "rh",
+      "recepcao",
+      "wms",
+      "custom"
+    ]);
+    iaAgentes = pgTable("ia_agentes", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      nome: varchar("nome", { length: 100 }).notNull(),
+      setor: iaAgenteSetorEnum("setor").notNull().default("custom"),
+      descricao: text("descricao"),
+      avatar: varchar("avatar", { length: 10 }).default("\u{1F916}"),
+      systemPrompt: text("systemPrompt").notNull(),
+      instrucoes: text("instrucoes"),
+      contextoEmpresa: text("contextoEmpresa"),
+      temperatura: varchar("temperatura", { length: 5 }).default("0.7"),
+      modelo: varchar("modelo", { length: 50 }).default("gpt-4o-mini"),
+      ativo: boolean4("ativo").default(true).notNull(),
+      isMaster: boolean4("isMaster").default(false).notNull(),
+      usarIaExterna: boolean4("usarIaExterna").default(false).notNull(),
+      // false = modo gratuito
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+      deletedAt: timestamp("deletedAt")
+    });
+    iaSessoes = pgTable("ia_sessoes", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      usuarioId: integer2("usuarioId").notNull(),
+      agenteId: integer2("agenteId").notNull(),
+      titulo: varchar("titulo", { length: 200 }).default("Nova conversa"),
+      resumo: text("resumo"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+      deletedAt: timestamp("deletedAt")
+    });
+    iaMensagens = pgTable("ia_mensagens", {
+      id: serial("id").primaryKey(),
+      sessaoId: integer2("sessaoId").notNull(),
+      empresaId: integer2("empresaId").notNull(),
+      role: varchar("role", { length: 20 }).notNull(),
+      conteudo: text("conteudo").notNull(),
+      tokens: integer2("tokens"),
+      createdAt: timestamp("createdAt").defaultNow().notNull()
+    });
+    iaConhecimento = pgTable("ia_conhecimento", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      agenteId: integer2("agenteId"),
+      titulo: varchar("titulo", { length: 200 }).notNull(),
+      conteudo: text("conteudo").notNull(),
+      categoria: varchar("categoria", { length: 100 }),
+      tags: text("tags"),
+      ativo: boolean4("ativo").default(true).notNull(),
+      createdBy: integer2("createdBy"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+      deletedAt: timestamp("deletedAt")
+    });
   }
 });
 
 // node_modules/.pnpm/bcryptjs@2.4.3/node_modules/bcryptjs/dist/bcrypt.js
 var require_bcrypt = __commonJS({
-  "node_modules/.pnpm/bcryptjs@2.4.3/node_modules/bcryptjs/dist/bcrypt.js"(exports, module) {
+  "node_modules/.pnpm/bcryptjs@2.4.3/node_modules/bcryptjs/dist/bcrypt.js"(exports2, module2) {
     (function(global2, factory2) {
       if (typeof define === "function" && define["amd"])
         define([], factory2);
-      else if (typeof __require === "function" && typeof module === "object" && module && module["exports"])
-        module["exports"] = factory2();
+      else if (typeof require === "function" && typeof module2 === "object" && module2 && module2["exports"])
+        module2["exports"] = factory2();
       else
         (global2["dcodeIO"] = global2["dcodeIO"] || {})["bcrypt"] = factory2();
-    })(exports, function() {
+    })(exports2, function() {
       "use strict";
       var bcrypt2 = {};
       var randomFallback = null;
       function random(len) {
-        if (typeof module !== "undefined" && module && module["exports"])
+        if (typeof module2 !== "undefined" && module2 && module2["exports"])
           try {
-            return __require("crypto")["randomBytes"](len);
+            return require("crypto")["randomBytes"](len);
           } catch (e) {
           }
         try {
@@ -33933,17 +34202,17 @@ var require_bcrypt = __commonJS({
 
 // node_modules/.pnpm/bcryptjs@2.4.3/node_modules/bcryptjs/index.js
 var require_bcryptjs = __commonJS({
-  "node_modules/.pnpm/bcryptjs@2.4.3/node_modules/bcryptjs/index.js"(exports, module) {
-    module.exports = require_bcrypt();
+  "node_modules/.pnpm/bcryptjs@2.4.3/node_modules/bcryptjs/index.js"(exports2, module2) {
+    module2.exports = require_bcrypt();
   }
 });
 
 // node_modules/.pnpm/delayed-stream@1.0.0/node_modules/delayed-stream/lib/delayed_stream.js
 var require_delayed_stream = __commonJS({
-  "node_modules/.pnpm/delayed-stream@1.0.0/node_modules/delayed-stream/lib/delayed_stream.js"(exports, module) {
-    var Stream4 = __require("stream").Stream;
-    var util3 = __require("util");
-    module.exports = DelayedStream;
+  "node_modules/.pnpm/delayed-stream@1.0.0/node_modules/delayed-stream/lib/delayed_stream.js"(exports2, module2) {
+    var Stream4 = require("stream").Stream;
+    var util3 = require("util");
+    module2.exports = DelayedStream;
     function DelayedStream() {
       this.source = null;
       this.dataSize = 0;
@@ -34031,11 +34300,11 @@ var require_delayed_stream = __commonJS({
 
 // node_modules/.pnpm/combined-stream@1.0.8/node_modules/combined-stream/lib/combined_stream.js
 var require_combined_stream = __commonJS({
-  "node_modules/.pnpm/combined-stream@1.0.8/node_modules/combined-stream/lib/combined_stream.js"(exports, module) {
-    var util3 = __require("util");
-    var Stream4 = __require("stream").Stream;
+  "node_modules/.pnpm/combined-stream@1.0.8/node_modules/combined-stream/lib/combined_stream.js"(exports2, module2) {
+    var util3 = require("util");
+    var Stream4 = require("stream").Stream;
     var DelayedStream = require_delayed_stream();
-    module.exports = CombinedStream;
+    module2.exports = CombinedStream;
     function CombinedStream() {
       this.writable = false;
       this.readable = true;
@@ -34200,8 +34469,8 @@ var require_combined_stream = __commonJS({
 
 // node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/defer.js
 var require_defer = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/defer.js"(exports, module) {
-    module.exports = defer;
+  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/defer.js"(exports2, module2) {
+    module2.exports = defer;
     function defer(fn) {
       var nextTick = typeof setImmediate == "function" ? setImmediate : typeof process == "object" && typeof process.nextTick == "function" ? process.nextTick : null;
       if (nextTick) {
@@ -34215,9 +34484,9 @@ var require_defer = __commonJS({
 
 // node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/async.js
 var require_async = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/async.js"(exports, module) {
+  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/async.js"(exports2, module2) {
     var defer = require_defer();
-    module.exports = async;
+    module2.exports = async;
     function async(callback) {
       var isAsync = false;
       defer(function() {
@@ -34238,8 +34507,8 @@ var require_async = __commonJS({
 
 // node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/abort.js
 var require_abort = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/abort.js"(exports, module) {
-    module.exports = abort;
+  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/abort.js"(exports2, module2) {
+    module2.exports = abort;
     function abort(state) {
       Object.keys(state.jobs).forEach(clean.bind(state));
       state.jobs = {};
@@ -34254,10 +34523,10 @@ var require_abort = __commonJS({
 
 // node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/iterate.js
 var require_iterate = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/iterate.js"(exports, module) {
+  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/iterate.js"(exports2, module2) {
     var async = require_async();
     var abort = require_abort();
-    module.exports = iterate;
+    module2.exports = iterate;
     function iterate(list, iterator2, state, callback) {
       var key = state["keyedList"] ? state["keyedList"][state.index] : state.index;
       state.jobs[key] = runJob(iterator2, key, list[key], function(error48, output) {
@@ -34287,8 +34556,8 @@ var require_iterate = __commonJS({
 
 // node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/state.js
 var require_state = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/state.js"(exports, module) {
-    module.exports = state;
+  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/state.js"(exports2, module2) {
+    module2.exports = state;
     function state(list, sortMethod) {
       var isNamedList = !Array.isArray(list), initState = {
         index: 0,
@@ -34309,10 +34578,10 @@ var require_state = __commonJS({
 
 // node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/terminator.js
 var require_terminator = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/terminator.js"(exports, module) {
+  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/terminator.js"(exports2, module2) {
     var abort = require_abort();
     var async = require_async();
-    module.exports = terminator;
+    module2.exports = terminator;
     function terminator(callback) {
       if (!Object.keys(this.jobs).length) {
         return;
@@ -34326,11 +34595,11 @@ var require_terminator = __commonJS({
 
 // node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/parallel.js
 var require_parallel = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/parallel.js"(exports, module) {
+  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/parallel.js"(exports2, module2) {
     var iterate = require_iterate();
     var initState = require_state();
     var terminator = require_terminator();
-    module.exports = parallel;
+    module2.exports = parallel;
     function parallel(list, iterator2, callback) {
       var state = initState(list);
       while (state.index < (state["keyedList"] || list).length) {
@@ -34353,13 +34622,13 @@ var require_parallel = __commonJS({
 
 // node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/serialOrdered.js
 var require_serialOrdered = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/serialOrdered.js"(exports, module) {
+  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/serialOrdered.js"(exports2, module2) {
     var iterate = require_iterate();
     var initState = require_state();
     var terminator = require_terminator();
-    module.exports = serialOrdered;
-    module.exports.ascending = ascending;
-    module.exports.descending = descending;
+    module2.exports = serialOrdered;
+    module2.exports.ascending = ascending;
+    module2.exports.descending = descending;
     function serialOrdered(list, iterator2, sortMethod, callback) {
       var state = initState(list, sortMethod);
       iterate(list, iterator2, state, function iteratorHandler(error48, result) {
@@ -34387,9 +34656,9 @@ var require_serialOrdered = __commonJS({
 
 // node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/serial.js
 var require_serial = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/serial.js"(exports, module) {
+  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/serial.js"(exports2, module2) {
     var serialOrdered = require_serialOrdered();
-    module.exports = serial2;
+    module2.exports = serial2;
     function serial2(list, iterator2, callback) {
       return serialOrdered(list, iterator2, null, callback);
     }
@@ -34398,8 +34667,8 @@ var require_serial = __commonJS({
 
 // node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/index.js
 var require_asynckit = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/index.js"(exports, module) {
-    module.exports = {
+  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/index.js"(exports2, module2) {
+    module2.exports = {
       parallel: require_parallel(),
       serial: require_serial(),
       serialOrdered: require_serialOrdered()
@@ -34409,10 +34678,10 @@ var require_asynckit = __commonJS({
 
 // node_modules/.pnpm/has-tostringtag@1.0.2/node_modules/has-tostringtag/shams.js
 var require_shams2 = __commonJS({
-  "node_modules/.pnpm/has-tostringtag@1.0.2/node_modules/has-tostringtag/shams.js"(exports, module) {
+  "node_modules/.pnpm/has-tostringtag@1.0.2/node_modules/has-tostringtag/shams.js"(exports2, module2) {
     "use strict";
     var hasSymbols = require_shams();
-    module.exports = function hasToStringTagShams() {
+    module2.exports = function hasToStringTagShams() {
       return hasSymbols() && !!Symbol.toStringTag;
     };
   }
@@ -34420,7 +34689,7 @@ var require_shams2 = __commonJS({
 
 // node_modules/.pnpm/es-set-tostringtag@2.1.0/node_modules/es-set-tostringtag/index.js
 var require_es_set_tostringtag = __commonJS({
-  "node_modules/.pnpm/es-set-tostringtag@2.1.0/node_modules/es-set-tostringtag/index.js"(exports, module) {
+  "node_modules/.pnpm/es-set-tostringtag@2.1.0/node_modules/es-set-tostringtag/index.js"(exports2, module2) {
     "use strict";
     var GetIntrinsic = require_get_intrinsic();
     var $defineProperty = GetIntrinsic("%Object.defineProperty%", true);
@@ -34428,7 +34697,7 @@ var require_es_set_tostringtag = __commonJS({
     var hasOwn2 = require_hasown();
     var $TypeError = require_type();
     var toStringTag2 = hasToStringTag ? Symbol.toStringTag : null;
-    module.exports = function setToStringTag(object2, value) {
+    module2.exports = function setToStringTag(object2, value) {
       var overrideIfSet = arguments.length > 2 && !!arguments[2] && arguments[2].force;
       var nonConfigurable = arguments.length > 2 && !!arguments[2] && arguments[2].nonConfigurable;
       if (typeof overrideIfSet !== "undefined" && typeof overrideIfSet !== "boolean" || typeof nonConfigurable !== "undefined" && typeof nonConfigurable !== "boolean") {
@@ -34452,9 +34721,9 @@ var require_es_set_tostringtag = __commonJS({
 
 // node_modules/.pnpm/form-data@4.0.5/node_modules/form-data/lib/populate.js
 var require_populate = __commonJS({
-  "node_modules/.pnpm/form-data@4.0.5/node_modules/form-data/lib/populate.js"(exports, module) {
+  "node_modules/.pnpm/form-data@4.0.5/node_modules/form-data/lib/populate.js"(exports2, module2) {
     "use strict";
-    module.exports = function(dst, src) {
+    module2.exports = function(dst, src) {
       Object.keys(src).forEach(function(prop) {
         dst[prop] = dst[prop] || src[prop];
       });
@@ -34465,17 +34734,17 @@ var require_populate = __commonJS({
 
 // node_modules/.pnpm/form-data@4.0.5/node_modules/form-data/lib/form_data.js
 var require_form_data = __commonJS({
-  "node_modules/.pnpm/form-data@4.0.5/node_modules/form-data/lib/form_data.js"(exports, module) {
+  "node_modules/.pnpm/form-data@4.0.5/node_modules/form-data/lib/form_data.js"(exports2, module2) {
     "use strict";
     var CombinedStream = require_combined_stream();
-    var util3 = __require("util");
-    var path3 = __require("path");
-    var http3 = __require("http");
-    var https2 = __require("https");
-    var parseUrl3 = __require("url").parse;
-    var fs2 = __require("fs");
-    var Stream4 = __require("stream").Stream;
-    var crypto4 = __require("crypto");
+    var util3 = require("util");
+    var path3 = require("path");
+    var http3 = require("http");
+    var https2 = require("https");
+    var parseUrl3 = require("url").parse;
+    var fs2 = require("fs");
+    var Stream4 = require("stream").Stream;
+    var crypto4 = require("crypto");
     var mime = require_mime_types();
     var asynckit = require_asynckit();
     var setToStringTag = require_es_set_tostringtag();
@@ -34778,15 +35047,15 @@ var require_form_data = __commonJS({
       return "[object FormData]";
     };
     setToStringTag(FormData3.prototype, "FormData");
-    module.exports = FormData3;
+    module2.exports = FormData3;
   }
 });
 
 // node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/debug.js
 var require_debug2 = __commonJS({
-  "node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/debug.js"(exports, module) {
+  "node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/debug.js"(exports2, module2) {
     var debug;
-    module.exports = function() {
+    module2.exports = function() {
       if (!debug) {
         try {
           debug = require_src()("follow-redirects");
@@ -34804,13 +35073,13 @@ var require_debug2 = __commonJS({
 
 // node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/index.js
 var require_follow_redirects = __commonJS({
-  "node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/index.js"(exports, module) {
-    var url3 = __require("url");
+  "node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/index.js"(exports2, module2) {
+    var url3 = require("url");
     var URL2 = url3.URL;
-    var http3 = __require("http");
-    var https2 = __require("https");
-    var Writable = __require("stream").Writable;
-    var assert2 = __require("assert");
+    var http3 = require("http");
+    var https2 = require("https");
+    var Writable = require("stream").Writable;
+    var assert2 = require("assert");
     var debug = require_debug2();
     (function detectUnsupportedEnvironment() {
       var looksLikeNode = typeof process !== "undefined";
@@ -35150,7 +35419,7 @@ var require_follow_redirects = __commonJS({
       this._performRequest();
     };
     function wrap(protocols) {
-      var exports2 = {
+      var exports3 = {
         maxRedirects: 21,
         maxBodyLength: 10 * 1024 * 1024
       };
@@ -35158,7 +35427,7 @@ var require_follow_redirects = __commonJS({
       Object.keys(protocols).forEach(function(scheme) {
         var protocol = scheme + ":";
         var nativeProtocol = nativeProtocols[protocol] = protocols[scheme];
-        var wrappedProtocol = exports2[scheme] = Object.create(nativeProtocol);
+        var wrappedProtocol = exports3[scheme] = Object.create(nativeProtocol);
         function request(input, options, callback) {
           if (isURL2(input)) {
             input = spreadUrlObject(input);
@@ -35174,8 +35443,8 @@ var require_follow_redirects = __commonJS({
             options = null;
           }
           options = Object.assign({
-            maxRedirects: exports2.maxRedirects,
-            maxBodyLength: exports2.maxBodyLength
+            maxRedirects: exports3.maxRedirects,
+            maxBodyLength: exports3.maxBodyLength
           }, input, options);
           options.nativeProtocols = nativeProtocols;
           if (!isString3(options.host) && !isString3(options.hostname)) {
@@ -35195,7 +35464,7 @@ var require_follow_redirects = __commonJS({
           get: { value: get, configurable: true, enumerable: true, writable: true }
         });
       });
-      return exports2;
+      return exports3;
     }
     function noop6() {
     }
@@ -35293,17 +35562,17 @@ var require_follow_redirects = __commonJS({
     function isURL2(value) {
       return URL2 && value instanceof URL2;
     }
-    module.exports = wrap({ http: http3, https: https2 });
-    module.exports.wrap = wrap;
+    module2.exports = wrap({ http: http3, https: https2 });
+    module2.exports.wrap = wrap;
   }
 });
 
 // node_modules/cookie/index.js
 var require_cookie2 = __commonJS({
-  "node_modules/cookie/index.js"(exports) {
+  "node_modules/cookie/index.js"(exports2) {
     "use strict";
-    exports.parse = parse5;
-    exports.serialize = serialize2;
+    exports2.parse = parse5;
+    exports2.serialize = serialize2;
     var __toString = Object.prototype.toString;
     var __hasOwnProperty = Object.prototype.hasOwnProperty;
     var cookieNameRegExp = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
@@ -35466,10 +35735,10 @@ var require_cookie2 = __commonJS({
 
 // node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/data-stream.js
 var require_data_stream = __commonJS({
-  "node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/data-stream.js"(exports, module) {
+  "node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/data-stream.js"(exports2, module2) {
     var Buffer2 = require_safe_buffer().Buffer;
-    var Stream4 = __require("stream");
-    var util3 = __require("util");
+    var Stream4 = require("stream");
+    var util3 = require("util");
     function DataStream(data) {
       this.buffer = null;
       this.writable = true;
@@ -35508,13 +35777,13 @@ var require_data_stream = __commonJS({
       this.writable = false;
       this.readable = false;
     };
-    module.exports = DataStream;
+    module2.exports = DataStream;
   }
 });
 
 // node_modules/.pnpm/ecdsa-sig-formatter@1.0.11/node_modules/ecdsa-sig-formatter/src/param-bytes-for-alg.js
 var require_param_bytes_for_alg = __commonJS({
-  "node_modules/.pnpm/ecdsa-sig-formatter@1.0.11/node_modules/ecdsa-sig-formatter/src/param-bytes-for-alg.js"(exports, module) {
+  "node_modules/.pnpm/ecdsa-sig-formatter@1.0.11/node_modules/ecdsa-sig-formatter/src/param-bytes-for-alg.js"(exports2, module2) {
     "use strict";
     function getParamSize(keySize) {
       var result = (keySize / 8 | 0) + (keySize % 8 === 0 ? 0 : 1);
@@ -35532,13 +35801,13 @@ var require_param_bytes_for_alg = __commonJS({
       }
       throw new Error('Unknown algorithm "' + alg + '"');
     }
-    module.exports = getParamBytesForAlg;
+    module2.exports = getParamBytesForAlg;
   }
 });
 
 // node_modules/.pnpm/ecdsa-sig-formatter@1.0.11/node_modules/ecdsa-sig-formatter/src/ecdsa-sig-formatter.js
 var require_ecdsa_sig_formatter = __commonJS({
-  "node_modules/.pnpm/ecdsa-sig-formatter@1.0.11/node_modules/ecdsa-sig-formatter/src/ecdsa-sig-formatter.js"(exports, module) {
+  "node_modules/.pnpm/ecdsa-sig-formatter@1.0.11/node_modules/ecdsa-sig-formatter/src/ecdsa-sig-formatter.js"(exports2, module2) {
     "use strict";
     var Buffer2 = require_safe_buffer().Buffer;
     var getParamBytesForAlg = require_param_bytes_for_alg();
@@ -35669,7 +35938,7 @@ var require_ecdsa_sig_formatter = __commonJS({
       }
       return dst;
     }
-    module.exports = {
+    module2.exports = {
       derToJose,
       joseToDer
     };
@@ -35678,11 +35947,11 @@ var require_ecdsa_sig_formatter = __commonJS({
 
 // node_modules/.pnpm/buffer-equal-constant-time@1.0.1/node_modules/buffer-equal-constant-time/index.js
 var require_buffer_equal_constant_time = __commonJS({
-  "node_modules/.pnpm/buffer-equal-constant-time@1.0.1/node_modules/buffer-equal-constant-time/index.js"(exports, module) {
+  "node_modules/.pnpm/buffer-equal-constant-time@1.0.1/node_modules/buffer-equal-constant-time/index.js"(exports2, module2) {
     "use strict";
-    var Buffer2 = __require("buffer").Buffer;
-    var SlowBuffer = __require("buffer").SlowBuffer;
-    module.exports = bufferEq;
+    var Buffer2 = require("buffer").Buffer;
+    var SlowBuffer = require("buffer").SlowBuffer;
+    module2.exports = bufferEq;
     function bufferEq(a, b2) {
       if (!Buffer2.isBuffer(a) || !Buffer2.isBuffer(b2)) {
         return false;
@@ -35712,11 +35981,11 @@ var require_buffer_equal_constant_time = __commonJS({
 
 // node_modules/.pnpm/jwa@2.0.1/node_modules/jwa/index.js
 var require_jwa = __commonJS({
-  "node_modules/.pnpm/jwa@2.0.1/node_modules/jwa/index.js"(exports, module) {
+  "node_modules/.pnpm/jwa@2.0.1/node_modules/jwa/index.js"(exports2, module2) {
     var Buffer2 = require_safe_buffer().Buffer;
-    var crypto4 = __require("crypto");
+    var crypto4 = require("crypto");
     var formatEcdsa = require_ecdsa_sig_formatter();
-    var util3 = __require("util");
+    var util3 = require("util");
     var MSG_INVALID_ALGORITHM = '"%s" is not a valid algorithm.\n  Supported algorithms are:\n  "HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "PS256", "PS384", "PS512", "ES256", "ES384", "ES512" and "none".';
     var MSG_INVALID_SECRET = "secret must be a string or buffer";
     var MSG_INVALID_VERIFIER_KEY = "key must be a string or a buffer";
@@ -35906,7 +36175,7 @@ var require_jwa = __commonJS({
         return signature === "";
       };
     }
-    module.exports = function jwa(algorithm) {
+    module2.exports = function jwa(algorithm) {
       var signerFactories = {
         hs: createHmacSigner,
         rs: createKeySigner,
@@ -35936,9 +36205,9 @@ var require_jwa = __commonJS({
 
 // node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/tostring.js
 var require_tostring = __commonJS({
-  "node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/tostring.js"(exports, module) {
-    var Buffer2 = __require("buffer").Buffer;
-    module.exports = function toString3(obj) {
+  "node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/tostring.js"(exports2, module2) {
+    var Buffer2 = require("buffer").Buffer;
+    module2.exports = function toString3(obj) {
       if (typeof obj === "string")
         return obj;
       if (typeof obj === "number" || Buffer2.isBuffer(obj))
@@ -35950,13 +36219,13 @@ var require_tostring = __commonJS({
 
 // node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/sign-stream.js
 var require_sign_stream = __commonJS({
-  "node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/sign-stream.js"(exports, module) {
+  "node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/sign-stream.js"(exports2, module2) {
     var Buffer2 = require_safe_buffer().Buffer;
     var DataStream = require_data_stream();
     var jwa = require_jwa();
-    var Stream4 = __require("stream");
+    var Stream4 = require("stream");
     var toString3 = require_tostring();
-    var util3 = __require("util");
+    var util3 = require("util");
     function base64url3(string4, encoding) {
       return Buffer2.from(string4, encoding).toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
     }
@@ -36019,19 +36288,19 @@ var require_sign_stream = __commonJS({
       }
     };
     SignStream.sign = jwsSign;
-    module.exports = SignStream;
+    module2.exports = SignStream;
   }
 });
 
 // node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/verify-stream.js
 var require_verify_stream = __commonJS({
-  "node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/verify-stream.js"(exports, module) {
+  "node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/verify-stream.js"(exports2, module2) {
     var Buffer2 = require_safe_buffer().Buffer;
     var DataStream = require_data_stream();
     var jwa = require_jwa();
-    var Stream4 = __require("stream");
+    var Stream4 = require("stream");
     var toString3 = require_tostring();
-    var util3 = __require("util");
+    var util3 = require("util");
     var JWS_REGEX = /^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/;
     function isObject4(thing) {
       return Object.prototype.toString.call(thing) === "[object Object]";
@@ -36134,13 +36403,13 @@ var require_verify_stream = __commonJS({
     VerifyStream.decode = jwsDecode;
     VerifyStream.isValid = isValidJws;
     VerifyStream.verify = jwsVerify;
-    module.exports = VerifyStream;
+    module2.exports = VerifyStream;
   }
 });
 
 // node_modules/.pnpm/jws@4.0.1/node_modules/jws/index.js
 var require_jws = __commonJS({
-  "node_modules/.pnpm/jws@4.0.1/node_modules/jws/index.js"(exports) {
+  "node_modules/.pnpm/jws@4.0.1/node_modules/jws/index.js"(exports2) {
     var SignStream = require_sign_stream();
     var VerifyStream = require_verify_stream();
     var ALGORITHMS = [
@@ -36157,15 +36426,15 @@ var require_jws = __commonJS({
       "ES384",
       "ES512"
     ];
-    exports.ALGORITHMS = ALGORITHMS;
-    exports.sign = SignStream.sign;
-    exports.verify = VerifyStream.verify;
-    exports.decode = VerifyStream.decode;
-    exports.isValid = VerifyStream.isValid;
-    exports.createSign = function createSign(opts) {
+    exports2.ALGORITHMS = ALGORITHMS;
+    exports2.sign = SignStream.sign;
+    exports2.verify = VerifyStream.verify;
+    exports2.decode = VerifyStream.decode;
+    exports2.isValid = VerifyStream.isValid;
+    exports2.createSign = function createSign(opts) {
       return new SignStream(opts);
     };
-    exports.createVerify = function createVerify(opts) {
+    exports2.createVerify = function createVerify(opts) {
       return new VerifyStream(opts);
     };
   }
@@ -36173,9 +36442,9 @@ var require_jws = __commonJS({
 
 // node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/decode.js
 var require_decode = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/decode.js"(exports, module) {
+  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/decode.js"(exports2, module2) {
     var jws = require_jws();
-    module.exports = function(jwt3, options) {
+    module2.exports = function(jwt3, options) {
       options = options || {};
       var decoded = jws.decode(jwt3, options);
       if (!decoded) {
@@ -36205,7 +36474,7 @@ var require_decode = __commonJS({
 
 // node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/JsonWebTokenError.js
 var require_JsonWebTokenError = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/JsonWebTokenError.js"(exports, module) {
+  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/JsonWebTokenError.js"(exports2, module2) {
     var JsonWebTokenError = function(message, error48) {
       Error.call(this, message);
       if (Error.captureStackTrace) {
@@ -36217,13 +36486,13 @@ var require_JsonWebTokenError = __commonJS({
     };
     JsonWebTokenError.prototype = Object.create(Error.prototype);
     JsonWebTokenError.prototype.constructor = JsonWebTokenError;
-    module.exports = JsonWebTokenError;
+    module2.exports = JsonWebTokenError;
   }
 });
 
 // node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/NotBeforeError.js
 var require_NotBeforeError = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/NotBeforeError.js"(exports, module) {
+  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/NotBeforeError.js"(exports2, module2) {
     var JsonWebTokenError = require_JsonWebTokenError();
     var NotBeforeError = function(message, date6) {
       JsonWebTokenError.call(this, message);
@@ -36232,13 +36501,13 @@ var require_NotBeforeError = __commonJS({
     };
     NotBeforeError.prototype = Object.create(JsonWebTokenError.prototype);
     NotBeforeError.prototype.constructor = NotBeforeError;
-    module.exports = NotBeforeError;
+    module2.exports = NotBeforeError;
   }
 });
 
 // node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/TokenExpiredError.js
 var require_TokenExpiredError = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/TokenExpiredError.js"(exports, module) {
+  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/TokenExpiredError.js"(exports2, module2) {
     var JsonWebTokenError = require_JsonWebTokenError();
     var TokenExpiredError = function(message, expiredAt) {
       JsonWebTokenError.call(this, message);
@@ -36247,15 +36516,15 @@ var require_TokenExpiredError = __commonJS({
     };
     TokenExpiredError.prototype = Object.create(JsonWebTokenError.prototype);
     TokenExpiredError.prototype.constructor = TokenExpiredError;
-    module.exports = TokenExpiredError;
+    module2.exports = TokenExpiredError;
   }
 });
 
 // node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/timespan.js
 var require_timespan = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/timespan.js"(exports, module) {
+  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/timespan.js"(exports2, module2) {
     var ms = require_ms2();
-    module.exports = function(time4, iat) {
+    module2.exports = function(time4, iat) {
       var timestamp2 = iat || Math.floor(Date.now() / 1e3);
       if (typeof time4 === "string") {
         var milliseconds = ms(time4);
@@ -36274,7 +36543,7 @@ var require_timespan = __commonJS({
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/constants.js
 var require_constants = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/constants.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/constants.js"(exports2, module2) {
     "use strict";
     var SEMVER_SPEC_VERSION = "2.0.0";
     var MAX_LENGTH = 256;
@@ -36291,7 +36560,7 @@ var require_constants = __commonJS({
       "prepatch",
       "prerelease"
     ];
-    module.exports = {
+    module2.exports = {
       MAX_LENGTH,
       MAX_SAFE_COMPONENT_LENGTH,
       MAX_SAFE_BUILD_LENGTH,
@@ -36306,17 +36575,17 @@ var require_constants = __commonJS({
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/debug.js
 var require_debug3 = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/debug.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/debug.js"(exports2, module2) {
     "use strict";
     var debug = typeof process === "object" && process.env && process.env.NODE_DEBUG && /\bsemver\b/i.test(process.env.NODE_DEBUG) ? (...args) => console.error("SEMVER", ...args) : () => {
     };
-    module.exports = debug;
+    module2.exports = debug;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/re.js
 var require_re = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/re.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/re.js"(exports2, module2) {
     "use strict";
     var {
       MAX_SAFE_COMPONENT_LENGTH,
@@ -36324,12 +36593,12 @@ var require_re = __commonJS({
       MAX_LENGTH
     } = require_constants();
     var debug = require_debug3();
-    exports = module.exports = {};
-    var re = exports.re = [];
-    var safeRe = exports.safeRe = [];
-    var src = exports.src = [];
-    var safeSrc = exports.safeSrc = [];
-    var t2 = exports.t = {};
+    exports2 = module2.exports = {};
+    var re = exports2.re = [];
+    var safeRe = exports2.safeRe = [];
+    var src = exports2.src = [];
+    var safeSrc = exports2.safeSrc = [];
+    var t2 = exports2.t = {};
     var R = 0;
     var LETTERDASHNUMBER = "[a-zA-Z0-9-]";
     var safeRegexReplacements = [
@@ -36382,18 +36651,18 @@ var require_re = __commonJS({
     createToken("COERCERTLFULL", src[t2.COERCEFULL], true);
     createToken("LONETILDE", "(?:~>?)");
     createToken("TILDETRIM", `(\\s*)${src[t2.LONETILDE]}\\s+`, true);
-    exports.tildeTrimReplace = "$1~";
+    exports2.tildeTrimReplace = "$1~";
     createToken("TILDE", `^${src[t2.LONETILDE]}${src[t2.XRANGEPLAIN]}$`);
     createToken("TILDELOOSE", `^${src[t2.LONETILDE]}${src[t2.XRANGEPLAINLOOSE]}$`);
     createToken("LONECARET", "(?:\\^)");
     createToken("CARETTRIM", `(\\s*)${src[t2.LONECARET]}\\s+`, true);
-    exports.caretTrimReplace = "$1^";
+    exports2.caretTrimReplace = "$1^";
     createToken("CARET", `^${src[t2.LONECARET]}${src[t2.XRANGEPLAIN]}$`);
     createToken("CARETLOOSE", `^${src[t2.LONECARET]}${src[t2.XRANGEPLAINLOOSE]}$`);
     createToken("COMPARATORLOOSE", `^${src[t2.GTLT]}\\s*(${src[t2.LOOSEPLAIN]})$|^$`);
     createToken("COMPARATOR", `^${src[t2.GTLT]}\\s*(${src[t2.FULLPLAIN]})$|^$`);
     createToken("COMPARATORTRIM", `(\\s*)${src[t2.GTLT]}\\s*(${src[t2.LOOSEPLAIN]}|${src[t2.XRANGEPLAIN]})`, true);
-    exports.comparatorTrimReplace = "$1$2$3";
+    exports2.comparatorTrimReplace = "$1$2$3";
     createToken("HYPHENRANGE", `^\\s*(${src[t2.XRANGEPLAIN]})\\s+-\\s+(${src[t2.XRANGEPLAIN]})\\s*$`);
     createToken("HYPHENRANGELOOSE", `^\\s*(${src[t2.XRANGEPLAINLOOSE]})\\s+-\\s+(${src[t2.XRANGEPLAINLOOSE]})\\s*$`);
     createToken("STAR", "(<|>)?=?\\s*\\*");
@@ -36404,7 +36673,7 @@ var require_re = __commonJS({
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/parse-options.js
 var require_parse_options = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/parse-options.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/parse-options.js"(exports2, module2) {
     "use strict";
     var looseOption = Object.freeze({ loose: true });
     var emptyOpts = Object.freeze({});
@@ -36417,13 +36686,13 @@ var require_parse_options = __commonJS({
       }
       return options;
     };
-    module.exports = parseOptions2;
+    module2.exports = parseOptions2;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/identifiers.js
 var require_identifiers = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/identifiers.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/identifiers.js"(exports2, module2) {
     "use strict";
     var numeric2 = /^[0-9]+$/;
     var compareIdentifiers = (a, b2) => {
@@ -36439,7 +36708,7 @@ var require_identifiers = __commonJS({
       return a === b2 ? 0 : anum && !bnum ? -1 : bnum && !anum ? 1 : a < b2 ? -1 : 1;
     };
     var rcompareIdentifiers = (a, b2) => compareIdentifiers(b2, a);
-    module.exports = {
+    module2.exports = {
       compareIdentifiers,
       rcompareIdentifiers
     };
@@ -36448,7 +36717,7 @@ var require_identifiers = __commonJS({
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/classes/semver.js
 var require_semver = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/classes/semver.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/classes/semver.js"(exports2, module2) {
     "use strict";
     var debug = require_debug3();
     var { MAX_LENGTH, MAX_SAFE_INTEGER } = require_constants();
@@ -36721,13 +36990,13 @@ var require_semver = __commonJS({
         return this;
       }
     };
-    module.exports = SemVer;
+    module2.exports = SemVer;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/parse.js
 var require_parse2 = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/parse.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/parse.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var parse5 = (version3, options, throwErrors = false) => {
@@ -36743,39 +37012,39 @@ var require_parse2 = __commonJS({
         throw er;
       }
     };
-    module.exports = parse5;
+    module2.exports = parse5;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/valid.js
 var require_valid = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/valid.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/valid.js"(exports2, module2) {
     "use strict";
     var parse5 = require_parse2();
     var valid = (version3, options) => {
       const v = parse5(version3, options);
       return v ? v.version : null;
     };
-    module.exports = valid;
+    module2.exports = valid;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/clean.js
 var require_clean = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/clean.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/clean.js"(exports2, module2) {
     "use strict";
     var parse5 = require_parse2();
     var clean = (version3, options) => {
       const s = parse5(version3.trim().replace(/^[=v]+/, ""), options);
       return s ? s.version : null;
     };
-    module.exports = clean;
+    module2.exports = clean;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/inc.js
 var require_inc = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/inc.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/inc.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var inc = (version3, release, options, identifier, identifierBase) => {
@@ -36793,13 +37062,13 @@ var require_inc = __commonJS({
         return null;
       }
     };
-    module.exports = inc;
+    module2.exports = inc;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/diff.js
 var require_diff = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/diff.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/diff.js"(exports2, module2) {
     "use strict";
     var parse5 = require_parse2();
     var diff = (version1, version22) => {
@@ -36837,86 +37106,86 @@ var require_diff = __commonJS({
       }
       return "prerelease";
     };
-    module.exports = diff;
+    module2.exports = diff;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/major.js
 var require_major = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/major.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/major.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var major = (a, loose) => new SemVer(a, loose).major;
-    module.exports = major;
+    module2.exports = major;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/minor.js
 var require_minor = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/minor.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/minor.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var minor = (a, loose) => new SemVer(a, loose).minor;
-    module.exports = minor;
+    module2.exports = minor;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/patch.js
 var require_patch = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/patch.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/patch.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var patch = (a, loose) => new SemVer(a, loose).patch;
-    module.exports = patch;
+    module2.exports = patch;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/prerelease.js
 var require_prerelease = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/prerelease.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/prerelease.js"(exports2, module2) {
     "use strict";
     var parse5 = require_parse2();
     var prerelease = (version3, options) => {
       const parsed = parse5(version3, options);
       return parsed && parsed.prerelease.length ? parsed.prerelease : null;
     };
-    module.exports = prerelease;
+    module2.exports = prerelease;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/compare.js
 var require_compare = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/compare.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/compare.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var compare = (a, b2, loose) => new SemVer(a, loose).compare(new SemVer(b2, loose));
-    module.exports = compare;
+    module2.exports = compare;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/rcompare.js
 var require_rcompare = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/rcompare.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/rcompare.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var rcompare = (a, b2, loose) => compare(b2, a, loose);
-    module.exports = rcompare;
+    module2.exports = rcompare;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/compare-loose.js
 var require_compare_loose = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/compare-loose.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/compare-loose.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var compareLoose = (a, b2) => compare(a, b2, true);
-    module.exports = compareLoose;
+    module2.exports = compareLoose;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/compare-build.js
 var require_compare_build = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/compare-build.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/compare-build.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var compareBuild = (a, b2, loose) => {
@@ -36924,100 +37193,100 @@ var require_compare_build = __commonJS({
       const versionB = new SemVer(b2, loose);
       return versionA.compare(versionB) || versionA.compareBuild(versionB);
     };
-    module.exports = compareBuild;
+    module2.exports = compareBuild;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/sort.js
 var require_sort = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/sort.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/sort.js"(exports2, module2) {
     "use strict";
     var compareBuild = require_compare_build();
     var sort = (list, loose) => list.sort((a, b2) => compareBuild(a, b2, loose));
-    module.exports = sort;
+    module2.exports = sort;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/rsort.js
 var require_rsort = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/rsort.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/rsort.js"(exports2, module2) {
     "use strict";
     var compareBuild = require_compare_build();
     var rsort = (list, loose) => list.sort((a, b2) => compareBuild(b2, a, loose));
-    module.exports = rsort;
+    module2.exports = rsort;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/gt.js
 var require_gt = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/gt.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/gt.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var gt2 = (a, b2, loose) => compare(a, b2, loose) > 0;
-    module.exports = gt2;
+    module2.exports = gt2;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/lt.js
 var require_lt = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/lt.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/lt.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
-    var lt2 = (a, b2, loose) => compare(a, b2, loose) < 0;
-    module.exports = lt2;
+    var lt3 = (a, b2, loose) => compare(a, b2, loose) < 0;
+    module2.exports = lt3;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/eq.js
 var require_eq = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/eq.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/eq.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var eq2 = (a, b2, loose) => compare(a, b2, loose) === 0;
-    module.exports = eq2;
+    module2.exports = eq2;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/neq.js
 var require_neq = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/neq.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/neq.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var neq = (a, b2, loose) => compare(a, b2, loose) !== 0;
-    module.exports = neq;
+    module2.exports = neq;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/gte.js
 var require_gte = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/gte.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/gte.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var gte2 = (a, b2, loose) => compare(a, b2, loose) >= 0;
-    module.exports = gte2;
+    module2.exports = gte2;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/lte.js
 var require_lte = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/lte.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/lte.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
-    var lte3 = (a, b2, loose) => compare(a, b2, loose) <= 0;
-    module.exports = lte3;
+    var lte4 = (a, b2, loose) => compare(a, b2, loose) <= 0;
+    module2.exports = lte4;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/cmp.js
 var require_cmp = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/cmp.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/cmp.js"(exports2, module2) {
     "use strict";
     var eq2 = require_eq();
     var neq = require_neq();
     var gt2 = require_gt();
     var gte2 = require_gte();
-    var lt2 = require_lt();
-    var lte3 = require_lte();
+    var lt3 = require_lt();
+    var lte4 = require_lte();
     var cmp = (a, op, b2, loose) => {
       switch (op) {
         case "===":
@@ -37047,20 +37316,20 @@ var require_cmp = __commonJS({
         case ">=":
           return gte2(a, b2, loose);
         case "<":
-          return lt2(a, b2, loose);
+          return lt3(a, b2, loose);
         case "<=":
-          return lte3(a, b2, loose);
+          return lte4(a, b2, loose);
         default:
           throw new TypeError(`Invalid operator: ${op}`);
       }
     };
-    module.exports = cmp;
+    module2.exports = cmp;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/coerce.js
 var require_coerce = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/coerce.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/coerce.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var parse5 = require_parse2();
@@ -37100,13 +37369,13 @@ var require_coerce = __commonJS({
       const build = options.includePrerelease && match[6] ? `+${match[6]}` : "";
       return parse5(`${major}.${minor}.${patch}${prerelease}${build}`, options);
     };
-    module.exports = coerce;
+    module2.exports = coerce;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/lrucache.js
 var require_lrucache = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/lrucache.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/lrucache.js"(exports2, module2) {
     "use strict";
     var LRUCache = class {
       constructor() {
@@ -37138,13 +37407,13 @@ var require_lrucache = __commonJS({
         return this;
       }
     };
-    module.exports = LRUCache;
+    module2.exports = LRUCache;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/classes/range.js
 var require_range2 = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/classes/range.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/classes/range.js"(exports2, module2) {
     "use strict";
     var SPACE_CHARACTERS = /\s+/g;
     var Range = class _Range {
@@ -37285,7 +37554,7 @@ var require_range2 = __commonJS({
         return false;
       }
     };
-    module.exports = Range;
+    module2.exports = Range;
     var LRU = require_lrucache();
     var cache = new LRU();
     var parseOptions2 = require_parse_options();
@@ -37521,7 +37790,7 @@ var require_range2 = __commonJS({
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/classes/comparator.js
 var require_comparator = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/classes/comparator.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/classes/comparator.js"(exports2, module2) {
     "use strict";
     var ANY = /* @__PURE__ */ Symbol("SemVer ANY");
     var Comparator = class _Comparator {
@@ -37622,7 +37891,7 @@ var require_comparator = __commonJS({
         return false;
       }
     };
-    module.exports = Comparator;
+    module2.exports = Comparator;
     var parseOptions2 = require_parse_options();
     var { safeRe: re, t: t2 } = require_re();
     var cmp = require_cmp();
@@ -37634,7 +37903,7 @@ var require_comparator = __commonJS({
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/satisfies.js
 var require_satisfies = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/satisfies.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/satisfies.js"(exports2, module2) {
     "use strict";
     var Range = require_range2();
     var satisfies = (version3, range, options) => {
@@ -37645,23 +37914,23 @@ var require_satisfies = __commonJS({
       }
       return range.test(version3);
     };
-    module.exports = satisfies;
+    module2.exports = satisfies;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/to-comparators.js
 var require_to_comparators = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/to-comparators.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/to-comparators.js"(exports2, module2) {
     "use strict";
     var Range = require_range2();
     var toComparators = (range, options) => new Range(range, options).set.map((comp) => comp.map((c) => c.value).join(" ").trim().split(" "));
-    module.exports = toComparators;
+    module2.exports = toComparators;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/max-satisfying.js
 var require_max_satisfying = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/max-satisfying.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/max-satisfying.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var Range = require_range2();
@@ -37684,13 +37953,13 @@ var require_max_satisfying = __commonJS({
       });
       return max2;
     };
-    module.exports = maxSatisfying;
+    module2.exports = maxSatisfying;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/min-satisfying.js
 var require_min_satisfying = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/min-satisfying.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/min-satisfying.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var Range = require_range2();
@@ -37713,13 +37982,13 @@ var require_min_satisfying = __commonJS({
       });
       return min2;
     };
-    module.exports = minSatisfying;
+    module2.exports = minSatisfying;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/min-version.js
 var require_min_version = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/min-version.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/min-version.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var Range = require_range2();
@@ -37772,13 +38041,13 @@ var require_min_version = __commonJS({
       }
       return null;
     };
-    module.exports = minVersion;
+    module2.exports = minVersion;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/valid.js
 var require_valid2 = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/valid.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/valid.js"(exports2, module2) {
     "use strict";
     var Range = require_range2();
     var validRange = (range, options) => {
@@ -37788,13 +38057,13 @@ var require_valid2 = __commonJS({
         return null;
       }
     };
-    module.exports = validRange;
+    module2.exports = validRange;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/outside.js
 var require_outside = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/outside.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/outside.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var Comparator = require_comparator();
@@ -37802,8 +38071,8 @@ var require_outside = __commonJS({
     var Range = require_range2();
     var satisfies = require_satisfies();
     var gt2 = require_gt();
-    var lt2 = require_lt();
-    var lte3 = require_lte();
+    var lt3 = require_lt();
+    var lte4 = require_lte();
     var gte2 = require_gte();
     var outside = (version3, range, hilo, options) => {
       version3 = new SemVer(version3, options);
@@ -37812,13 +38081,13 @@ var require_outside = __commonJS({
       switch (hilo) {
         case ">":
           gtfn = gt2;
-          ltefn = lte3;
-          ltfn = lt2;
+          ltefn = lte4;
+          ltfn = lt3;
           comp = ">";
           ecomp = ">=";
           break;
         case "<":
-          gtfn = lt2;
+          gtfn = lt3;
           ltefn = gte2;
           ltfn = gt2;
           comp = "<";
@@ -37857,33 +38126,33 @@ var require_outside = __commonJS({
       }
       return true;
     };
-    module.exports = outside;
+    module2.exports = outside;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/gtr.js
 var require_gtr = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/gtr.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/gtr.js"(exports2, module2) {
     "use strict";
     var outside = require_outside();
     var gtr = (version3, range, options) => outside(version3, range, ">", options);
-    module.exports = gtr;
+    module2.exports = gtr;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/ltr.js
 var require_ltr = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/ltr.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/ltr.js"(exports2, module2) {
     "use strict";
     var outside = require_outside();
     var ltr = (version3, range, options) => outside(version3, range, "<", options);
-    module.exports = ltr;
+    module2.exports = ltr;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/intersects.js
 var require_intersects = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/intersects.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/intersects.js"(exports2, module2) {
     "use strict";
     var Range = require_range2();
     var intersects = (r1, r2, options) => {
@@ -37891,17 +38160,17 @@ var require_intersects = __commonJS({
       r2 = new Range(r2, options);
       return r1.intersects(r2, options);
     };
-    module.exports = intersects;
+    module2.exports = intersects;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/simplify.js
 var require_simplify = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/simplify.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/simplify.js"(exports2, module2) {
     "use strict";
     var satisfies = require_satisfies();
     var compare = require_compare();
-    module.exports = (versions, range, options) => {
+    module2.exports = (versions, range, options) => {
       const set2 = [];
       let first = null;
       let prev = null;
@@ -37947,7 +38216,7 @@ var require_simplify = __commonJS({
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/subset.js
 var require_subset = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/subset.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/subset.js"(exports2, module2) {
     "use strict";
     var Range = require_range2();
     var Comparator = require_comparator();
@@ -37998,12 +38267,12 @@ var require_subset = __commonJS({
         }
       }
       const eqSet = /* @__PURE__ */ new Set();
-      let gt2, lt2;
+      let gt2, lt3;
       for (const c of sub) {
         if (c.operator === ">" || c.operator === ">=") {
           gt2 = higherGT(gt2, c, options);
         } else if (c.operator === "<" || c.operator === "<=") {
-          lt2 = lowerLT(lt2, c, options);
+          lt3 = lowerLT(lt3, c, options);
         } else {
           eqSet.add(c.semver);
         }
@@ -38012,11 +38281,11 @@ var require_subset = __commonJS({
         return null;
       }
       let gtltComp;
-      if (gt2 && lt2) {
-        gtltComp = compare(gt2.semver, lt2.semver, options);
+      if (gt2 && lt3) {
+        gtltComp = compare(gt2.semver, lt3.semver, options);
         if (gtltComp > 0) {
           return null;
-        } else if (gtltComp === 0 && (gt2.operator !== ">=" || lt2.operator !== "<=")) {
+        } else if (gtltComp === 0 && (gt2.operator !== ">=" || lt3.operator !== "<=")) {
           return null;
         }
       }
@@ -38024,7 +38293,7 @@ var require_subset = __commonJS({
         if (gt2 && !satisfies(eq2, String(gt2), options)) {
           return null;
         }
-        if (lt2 && !satisfies(eq2, String(lt2), options)) {
+        if (lt3 && !satisfies(eq2, String(lt3), options)) {
           return null;
         }
         for (const c of dom) {
@@ -38036,9 +38305,9 @@ var require_subset = __commonJS({
       }
       let higher, lower;
       let hasDomLT, hasDomGT;
-      let needDomLTPre = lt2 && !options.includePrerelease && lt2.semver.prerelease.length ? lt2.semver : false;
+      let needDomLTPre = lt3 && !options.includePrerelease && lt3.semver.prerelease.length ? lt3.semver : false;
       let needDomGTPre = gt2 && !options.includePrerelease && gt2.semver.prerelease.length ? gt2.semver : false;
-      if (needDomLTPre && needDomLTPre.prerelease.length === 1 && lt2.operator === "<" && needDomLTPre.prerelease[0] === 0) {
+      if (needDomLTPre && needDomLTPre.prerelease.length === 1 && lt3.operator === "<" && needDomLTPre.prerelease[0] === 0) {
         needDomLTPre = false;
       }
       for (const c of dom) {
@@ -38059,29 +38328,29 @@ var require_subset = __commonJS({
             return false;
           }
         }
-        if (lt2) {
+        if (lt3) {
           if (needDomLTPre) {
             if (c.semver.prerelease && c.semver.prerelease.length && c.semver.major === needDomLTPre.major && c.semver.minor === needDomLTPre.minor && c.semver.patch === needDomLTPre.patch) {
               needDomLTPre = false;
             }
           }
           if (c.operator === "<" || c.operator === "<=") {
-            lower = lowerLT(lt2, c, options);
-            if (lower === c && lower !== lt2) {
+            lower = lowerLT(lt3, c, options);
+            if (lower === c && lower !== lt3) {
               return false;
             }
-          } else if (lt2.operator === "<=" && !satisfies(lt2.semver, String(c), options)) {
+          } else if (lt3.operator === "<=" && !satisfies(lt3.semver, String(c), options)) {
             return false;
           }
         }
-        if (!c.operator && (lt2 || gt2) && gtltComp !== 0) {
+        if (!c.operator && (lt3 || gt2) && gtltComp !== 0) {
           return false;
         }
       }
-      if (gt2 && hasDomLT && !lt2 && gtltComp !== 0) {
+      if (gt2 && hasDomLT && !lt3 && gtltComp !== 0) {
         return false;
       }
-      if (lt2 && hasDomGT && !gt2 && gtltComp !== 0) {
+      if (lt3 && hasDomGT && !gt2 && gtltComp !== 0) {
         return false;
       }
       if (needDomGTPre || needDomLTPre) {
@@ -38103,13 +38372,13 @@ var require_subset = __commonJS({
       const comp = compare(a.semver, b2.semver, options);
       return comp < 0 ? a : comp > 0 ? b2 : b2.operator === "<" && a.operator === "<=" ? b2 : a;
     };
-    module.exports = subset;
+    module2.exports = subset;
   }
 });
 
 // node_modules/.pnpm/semver@7.7.4/node_modules/semver/index.js
 var require_semver2 = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/index.js"(exports, module) {
+  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/index.js"(exports2, module2) {
     "use strict";
     var internalRe = require_re();
     var constants = require_constants();
@@ -38131,11 +38400,11 @@ var require_semver2 = __commonJS({
     var sort = require_sort();
     var rsort = require_rsort();
     var gt2 = require_gt();
-    var lt2 = require_lt();
+    var lt3 = require_lt();
     var eq2 = require_eq();
     var neq = require_neq();
     var gte2 = require_gte();
-    var lte3 = require_lte();
+    var lte4 = require_lte();
     var cmp = require_cmp();
     var coerce = require_coerce();
     var Comparator = require_comparator();
@@ -38152,7 +38421,7 @@ var require_semver2 = __commonJS({
     var intersects = require_intersects();
     var simplifyRange = require_simplify();
     var subset = require_subset();
-    module.exports = {
+    module2.exports = {
       parse: parse5,
       valid,
       clean,
@@ -38169,11 +38438,11 @@ var require_semver2 = __commonJS({
       sort,
       rsort,
       gt: gt2,
-      lt: lt2,
+      lt: lt3,
       eq: eq2,
       neq,
       gte: gte2,
-      lte: lte3,
+      lte: lte4,
       cmp,
       coerce,
       Comparator,
@@ -38204,23 +38473,23 @@ var require_semver2 = __commonJS({
 
 // node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/asymmetricKeyDetailsSupported.js
 var require_asymmetricKeyDetailsSupported = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/asymmetricKeyDetailsSupported.js"(exports, module) {
+  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/asymmetricKeyDetailsSupported.js"(exports2, module2) {
     var semver = require_semver2();
-    module.exports = semver.satisfies(process.version, ">=15.7.0");
+    module2.exports = semver.satisfies(process.version, ">=15.7.0");
   }
 });
 
 // node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/rsaPssKeyDetailsSupported.js
 var require_rsaPssKeyDetailsSupported = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/rsaPssKeyDetailsSupported.js"(exports, module) {
+  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/rsaPssKeyDetailsSupported.js"(exports2, module2) {
     var semver = require_semver2();
-    module.exports = semver.satisfies(process.version, ">=16.9.0");
+    module2.exports = semver.satisfies(process.version, ">=16.9.0");
   }
 });
 
 // node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/validateAsymmetricKey.js
 var require_validateAsymmetricKey = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/validateAsymmetricKey.js"(exports, module) {
+  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/validateAsymmetricKey.js"(exports2, module2) {
     var ASYMMETRIC_KEY_DETAILS_SUPPORTED = require_asymmetricKeyDetailsSupported();
     var RSA_PSS_KEY_DETAILS_SUPPORTED = require_rsaPssKeyDetailsSupported();
     var allowedAlgorithmsForKeys = {
@@ -38233,7 +38502,7 @@ var require_validateAsymmetricKey = __commonJS({
       ES384: "secp384r1",
       ES512: "secp521r1"
     };
-    module.exports = function(algorithm, key) {
+    module2.exports = function(algorithm, key) {
       if (!algorithm || !key) return;
       const keyType = key.asymmetricKeyType;
       if (!keyType) return;
@@ -38273,15 +38542,15 @@ var require_validateAsymmetricKey = __commonJS({
 
 // node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/psSupported.js
 var require_psSupported = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/psSupported.js"(exports, module) {
+  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/psSupported.js"(exports2, module2) {
     var semver = require_semver2();
-    module.exports = semver.satisfies(process.version, "^6.12.0 || >=8.0.0");
+    module2.exports = semver.satisfies(process.version, "^6.12.0 || >=8.0.0");
   }
 });
 
 // node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/verify.js
 var require_verify = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/verify.js"(exports, module) {
+  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/verify.js"(exports2, module2) {
     var JsonWebTokenError = require_JsonWebTokenError();
     var NotBeforeError = require_NotBeforeError();
     var TokenExpiredError = require_TokenExpiredError();
@@ -38290,7 +38559,7 @@ var require_verify = __commonJS({
     var validateAsymmetricKey = require_validateAsymmetricKey();
     var PS_SUPPORTED = require_psSupported();
     var jws = require_jws();
-    var { KeyObject, createSecretKey, createPublicKey } = __require("crypto");
+    var { KeyObject, createSecretKey, createPublicKey } = require("crypto");
     var PUB_KEY_ALGS = ["RS256", "RS384", "RS512"];
     var EC_KEY_ALGS = ["ES256", "ES384", "ES512"];
     var RSA_KEY_ALGS = ["RS256", "RS384", "RS512"];
@@ -38299,7 +38568,7 @@ var require_verify = __commonJS({
       PUB_KEY_ALGS.splice(PUB_KEY_ALGS.length, 0, "PS256", "PS384", "PS512");
       RSA_KEY_ALGS.splice(RSA_KEY_ALGS.length, 0, "PS256", "PS384", "PS512");
     }
-    module.exports = function(jwtString, secretOrPublicKey, options, callback) {
+    module2.exports = function(jwtString, secretOrPublicKey, options, callback) {
       if (typeof options === "function" && !callback) {
         callback = options;
         options = {};
@@ -38496,7 +38765,7 @@ var require_verify = __commonJS({
 
 // node_modules/.pnpm/lodash.includes@4.3.0/node_modules/lodash.includes/index.js
 var require_lodash = __commonJS({
-  "node_modules/.pnpm/lodash.includes@4.3.0/node_modules/lodash.includes/index.js"(exports, module) {
+  "node_modules/.pnpm/lodash.includes@4.3.0/node_modules/lodash.includes/index.js"(exports2, module2) {
     var INFINITY2 = 1 / 0;
     var MAX_SAFE_INTEGER = 9007199254740991;
     var MAX_INTEGER = 17976931348623157e292;
@@ -38674,13 +38943,13 @@ var require_lodash = __commonJS({
     function values2(object2) {
       return object2 ? baseValues(object2, keys(object2)) : [];
     }
-    module.exports = includes2;
+    module2.exports = includes2;
   }
 });
 
 // node_modules/.pnpm/lodash.isboolean@3.0.3/node_modules/lodash.isboolean/index.js
 var require_lodash2 = __commonJS({
-  "node_modules/.pnpm/lodash.isboolean@3.0.3/node_modules/lodash.isboolean/index.js"(exports, module) {
+  "node_modules/.pnpm/lodash.isboolean@3.0.3/node_modules/lodash.isboolean/index.js"(exports2, module2) {
     var boolTag = "[object Boolean]";
     var objectProto = Object.prototype;
     var objectToString = objectProto.toString;
@@ -38690,13 +38959,13 @@ var require_lodash2 = __commonJS({
     function isObjectLike(value) {
       return !!value && typeof value == "object";
     }
-    module.exports = isBoolean3;
+    module2.exports = isBoolean3;
   }
 });
 
 // node_modules/.pnpm/lodash.isinteger@4.0.4/node_modules/lodash.isinteger/index.js
 var require_lodash3 = __commonJS({
-  "node_modules/.pnpm/lodash.isinteger@4.0.4/node_modules/lodash.isinteger/index.js"(exports, module) {
+  "node_modules/.pnpm/lodash.isinteger@4.0.4/node_modules/lodash.isinteger/index.js"(exports2, module2) {
     var INFINITY2 = 1 / 0;
     var MAX_INTEGER = 17976931348623157e292;
     var NAN2 = 0 / 0;
@@ -38754,13 +39023,13 @@ var require_lodash3 = __commonJS({
       var isBinary = reIsBinary.test(value);
       return isBinary || reIsOctal.test(value) ? freeParseInt(value.slice(2), isBinary ? 2 : 8) : reIsBadHex.test(value) ? NAN2 : +value;
     }
-    module.exports = isInteger;
+    module2.exports = isInteger;
   }
 });
 
 // node_modules/.pnpm/lodash.isnumber@3.0.3/node_modules/lodash.isnumber/index.js
 var require_lodash4 = __commonJS({
-  "node_modules/.pnpm/lodash.isnumber@3.0.3/node_modules/lodash.isnumber/index.js"(exports, module) {
+  "node_modules/.pnpm/lodash.isnumber@3.0.3/node_modules/lodash.isnumber/index.js"(exports2, module2) {
     var numberTag = "[object Number]";
     var objectProto = Object.prototype;
     var objectToString = objectProto.toString;
@@ -38770,13 +39039,13 @@ var require_lodash4 = __commonJS({
     function isNumber3(value) {
       return typeof value == "number" || isObjectLike(value) && objectToString.call(value) == numberTag;
     }
-    module.exports = isNumber3;
+    module2.exports = isNumber3;
   }
 });
 
 // node_modules/.pnpm/lodash.isplainobject@4.0.6/node_modules/lodash.isplainobject/index.js
 var require_lodash5 = __commonJS({
-  "node_modules/.pnpm/lodash.isplainobject@4.0.6/node_modules/lodash.isplainobject/index.js"(exports, module) {
+  "node_modules/.pnpm/lodash.isplainobject@4.0.6/node_modules/lodash.isplainobject/index.js"(exports2, module2) {
     var objectTag = "[object Object]";
     function isHostObject(value) {
       var result = false;
@@ -38814,13 +39083,13 @@ var require_lodash5 = __commonJS({
       var Ctor = hasOwnProperty2.call(proto, "constructor") && proto.constructor;
       return typeof Ctor == "function" && Ctor instanceof Ctor && funcToString.call(Ctor) == objectCtorString;
     }
-    module.exports = isPlainObject6;
+    module2.exports = isPlainObject6;
   }
 });
 
 // node_modules/.pnpm/lodash.isstring@4.0.1/node_modules/lodash.isstring/index.js
 var require_lodash6 = __commonJS({
-  "node_modules/.pnpm/lodash.isstring@4.0.1/node_modules/lodash.isstring/index.js"(exports, module) {
+  "node_modules/.pnpm/lodash.isstring@4.0.1/node_modules/lodash.isstring/index.js"(exports2, module2) {
     var stringTag = "[object String]";
     var objectProto = Object.prototype;
     var objectToString = objectProto.toString;
@@ -38831,13 +39100,13 @@ var require_lodash6 = __commonJS({
     function isString3(value) {
       return typeof value == "string" || !isArray5(value) && isObjectLike(value) && objectToString.call(value) == stringTag;
     }
-    module.exports = isString3;
+    module2.exports = isString3;
   }
 });
 
 // node_modules/.pnpm/lodash.once@4.1.1/node_modules/lodash.once/index.js
 var require_lodash7 = __commonJS({
-  "node_modules/.pnpm/lodash.once@4.1.1/node_modules/lodash.once/index.js"(exports, module) {
+  "node_modules/.pnpm/lodash.once@4.1.1/node_modules/lodash.once/index.js"(exports2, module2) {
     var FUNC_ERROR_TEXT = "Expected a function";
     var INFINITY2 = 1 / 0;
     var MAX_INTEGER = 17976931348623157e292;
@@ -38912,13 +39181,13 @@ var require_lodash7 = __commonJS({
       var isBinary = reIsBinary.test(value);
       return isBinary || reIsOctal.test(value) ? freeParseInt(value.slice(2), isBinary ? 2 : 8) : reIsBadHex.test(value) ? NAN2 : +value;
     }
-    module.exports = once2;
+    module2.exports = once2;
   }
 });
 
 // node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/sign.js
 var require_sign2 = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/sign.js"(exports, module) {
+  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/sign.js"(exports2, module2) {
     var timespan = require_timespan();
     var PS_SUPPORTED = require_psSupported();
     var validateAsymmetricKey = require_validateAsymmetricKey();
@@ -38930,7 +39199,7 @@ var require_sign2 = __commonJS({
     var isPlainObject6 = require_lodash5();
     var isString3 = require_lodash6();
     var once2 = require_lodash7();
-    var { KeyObject, createSecretKey, createPrivateKey } = __require("crypto");
+    var { KeyObject, createSecretKey, createPrivateKey } = require("crypto");
     var SUPPORTED_ALGS = ["RS256", "RS384", "RS512", "ES256", "ES384", "ES512", "HS256", "HS384", "HS512", "none"];
     if (PS_SUPPORTED) {
       SUPPORTED_ALGS.splice(3, 0, "PS256", "PS384", "PS512");
@@ -39000,7 +39269,7 @@ var require_sign2 = __commonJS({
       "subject",
       "jwtid"
     ];
-    module.exports = function(payload, secretOrPrivateKey, options, callback) {
+    module2.exports = function(payload, secretOrPrivateKey, options, callback) {
       if (typeof options === "function") {
         callback = options;
         options = {};
@@ -39143,8 +39412,8 @@ var require_sign2 = __commonJS({
 
 // node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/index.js
 var require_jsonwebtoken = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/index.js"(exports, module) {
-    module.exports = {
+  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/index.js"(exports2, module2) {
+    module2.exports = {
       decode: require_decode(),
       verify: require_verify(),
       sign: require_sign2(),
@@ -39155,9 +39424,8193 @@ var require_jsonwebtoken = __commonJS({
   }
 });
 
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/tslib.mjs
+function __classPrivateFieldSet(receiver, state, value, kind, f) {
+  if (kind === "m")
+    throw new TypeError("Private method is not writable");
+  if (kind === "a" && !f)
+    throw new TypeError("Private accessor was defined without a setter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver))
+    throw new TypeError("Cannot write private member to an object whose class did not declare it");
+  return kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value), value;
+}
+function __classPrivateFieldGet(receiver, state, kind, f) {
+  if (kind === "a" && !f)
+    throw new TypeError("Private accessor was defined without a getter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver))
+    throw new TypeError("Cannot read private member from an object whose class did not declare it");
+  return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+}
+var init_tslib = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/tslib.mjs"() {
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/uuid.mjs
+var uuid42;
+var init_uuid2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/uuid.mjs"() {
+    uuid42 = function() {
+      const { crypto: crypto4 } = globalThis;
+      if (crypto4?.randomUUID) {
+        uuid42 = crypto4.randomUUID.bind(crypto4);
+        return crypto4.randomUUID();
+      }
+      const u8 = new Uint8Array(1);
+      const randomByte = crypto4 ? () => crypto4.getRandomValues(u8)[0] : () => Math.random() * 255 & 255;
+      return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) => (+c ^ randomByte() & 15 >> +c / 4).toString(16));
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/errors.mjs
+function isAbortError2(err) {
+  return typeof err === "object" && err !== null && // Spec-compliant fetch implementations
+  ("name" in err && err.name === "AbortError" || // Expo fetch
+  "message" in err && String(err.message).includes("FetchRequestCanceledException"));
+}
+var castToError;
+var init_errors2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/errors.mjs"() {
+    castToError = (err) => {
+      if (err instanceof Error)
+        return err;
+      if (typeof err === "object" && err !== null) {
+        try {
+          if (Object.prototype.toString.call(err) === "[object Error]") {
+            const error48 = new Error(err.message, err.cause ? { cause: err.cause } : {});
+            if (err.stack)
+              error48.stack = err.stack;
+            if (err.cause && !error48.cause)
+              error48.cause = err.cause;
+            if (err.name)
+              error48.name = err.name;
+            return error48;
+          }
+        } catch {
+        }
+        try {
+          return new Error(JSON.stringify(err));
+        } catch {
+        }
+      }
+      return new Error(err);
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/error.mjs
+var OpenAIError, APIError, APIUserAbortError, APIConnectionError, APIConnectionTimeoutError, BadRequestError, AuthenticationError, PermissionDeniedError, NotFoundError, ConflictError, UnprocessableEntityError, RateLimitError, InternalServerError, LengthFinishReasonError, ContentFilterFinishReasonError, InvalidWebhookSignatureError, OAuthError, SubjectTokenProviderError;
+var init_error = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/error.mjs"() {
+    init_errors2();
+    OpenAIError = class extends Error {
+    };
+    APIError = class _APIError extends OpenAIError {
+      constructor(status, error48, message, headers) {
+        super(`${_APIError.makeMessage(status, error48, message)}`);
+        this.status = status;
+        this.headers = headers;
+        this.requestID = headers?.get("x-request-id");
+        this.error = error48;
+        const data = error48;
+        this.code = data?.["code"];
+        this.param = data?.["param"];
+        this.type = data?.["type"];
+      }
+      static makeMessage(status, error48, message) {
+        const msg = error48?.message ? typeof error48.message === "string" ? error48.message : JSON.stringify(error48.message) : error48 ? JSON.stringify(error48) : message;
+        if (status && msg) {
+          return `${status} ${msg}`;
+        }
+        if (status) {
+          return `${status} status code (no body)`;
+        }
+        if (msg) {
+          return msg;
+        }
+        return "(no status code or body)";
+      }
+      static generate(status, errorResponse, message, headers) {
+        if (!status || !headers) {
+          return new APIConnectionError({ message, cause: castToError(errorResponse) });
+        }
+        const error48 = errorResponse?.["error"];
+        if (status === 400) {
+          return new BadRequestError(status, error48, message, headers);
+        }
+        if (status === 401) {
+          return new AuthenticationError(status, error48, message, headers);
+        }
+        if (status === 403) {
+          return new PermissionDeniedError(status, error48, message, headers);
+        }
+        if (status === 404) {
+          return new NotFoundError(status, error48, message, headers);
+        }
+        if (status === 409) {
+          return new ConflictError(status, error48, message, headers);
+        }
+        if (status === 422) {
+          return new UnprocessableEntityError(status, error48, message, headers);
+        }
+        if (status === 429) {
+          return new RateLimitError(status, error48, message, headers);
+        }
+        if (status >= 500) {
+          return new InternalServerError(status, error48, message, headers);
+        }
+        return new _APIError(status, error48, message, headers);
+      }
+    };
+    APIUserAbortError = class extends APIError {
+      constructor({ message } = {}) {
+        super(void 0, void 0, message || "Request was aborted.", void 0);
+      }
+    };
+    APIConnectionError = class extends APIError {
+      constructor({ message, cause }) {
+        super(void 0, void 0, message || "Connection error.", void 0);
+        if (cause)
+          this.cause = cause;
+      }
+    };
+    APIConnectionTimeoutError = class extends APIConnectionError {
+      constructor({ message } = {}) {
+        super({ message: message ?? "Request timed out." });
+      }
+    };
+    BadRequestError = class extends APIError {
+    };
+    AuthenticationError = class extends APIError {
+    };
+    PermissionDeniedError = class extends APIError {
+    };
+    NotFoundError = class extends APIError {
+    };
+    ConflictError = class extends APIError {
+    };
+    UnprocessableEntityError = class extends APIError {
+    };
+    RateLimitError = class extends APIError {
+    };
+    InternalServerError = class extends APIError {
+    };
+    LengthFinishReasonError = class extends OpenAIError {
+      constructor() {
+        super(`Could not parse response content as the length limit was reached`);
+      }
+    };
+    ContentFilterFinishReasonError = class extends OpenAIError {
+      constructor() {
+        super(`Could not parse response content as the request was rejected by the content filter`);
+      }
+    };
+    InvalidWebhookSignatureError = class extends Error {
+      constructor(message) {
+        super(message);
+      }
+    };
+    OAuthError = class extends APIError {
+      constructor(status, error48, headers) {
+        let finalMessage = "OAuth2 authentication error";
+        let error_code = void 0;
+        if (error48 && typeof error48 === "object") {
+          const errorData = error48;
+          error_code = errorData["error"];
+          const description = errorData["error_description"];
+          if (description && typeof description === "string") {
+            finalMessage = description;
+          } else if (error_code) {
+            finalMessage = error_code;
+          }
+        }
+        super(status, error48, finalMessage, headers);
+        this.error_code = error_code;
+      }
+    };
+    SubjectTokenProviderError = class extends OpenAIError {
+      constructor(message, provider, cause) {
+        super(message);
+        this.provider = provider;
+        this.cause = cause;
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/values.mjs
+function maybeObj(x) {
+  if (typeof x !== "object") {
+    return {};
+  }
+  return x ?? {};
+}
+function isEmptyObj(obj) {
+  if (!obj)
+    return true;
+  for (const _k in obj)
+    return false;
+  return true;
+}
+function hasOwn(obj, key) {
+  return Object.prototype.hasOwnProperty.call(obj, key);
+}
+function isObj(obj) {
+  return obj != null && typeof obj === "object" && !Array.isArray(obj);
+}
+var startsWithSchemeRegexp, isAbsoluteURL2, isArray4, isReadonlyArray, validatePositiveInteger, safeJSON;
+var init_values = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/values.mjs"() {
+    init_error();
+    startsWithSchemeRegexp = /^[a-z][a-z0-9+.-]*:/i;
+    isAbsoluteURL2 = (url3) => {
+      return startsWithSchemeRegexp.test(url3);
+    };
+    isArray4 = (val) => (isArray4 = Array.isArray, isArray4(val));
+    isReadonlyArray = isArray4;
+    validatePositiveInteger = (name2, n) => {
+      if (typeof n !== "number" || !Number.isInteger(n)) {
+        throw new OpenAIError(`${name2} must be an integer`);
+      }
+      if (n < 0) {
+        throw new OpenAIError(`${name2} must be a positive integer`);
+      }
+      return n;
+    };
+    safeJSON = (text2) => {
+      try {
+        return JSON.parse(text2);
+      } catch (err) {
+        return void 0;
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/sleep.mjs
+var sleep;
+var init_sleep = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/sleep.mjs"() {
+    sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/version.mjs
+var VERSION3;
+var init_version2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/version.mjs"() {
+    VERSION3 = "6.34.0";
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/detect-platform.mjs
+function getDetectedPlatform() {
+  if (typeof Deno !== "undefined" && Deno.build != null) {
+    return "deno";
+  }
+  if (typeof EdgeRuntime !== "undefined") {
+    return "edge";
+  }
+  if (Object.prototype.toString.call(typeof globalThis.process !== "undefined" ? globalThis.process : 0) === "[object process]") {
+    return "node";
+  }
+  return "unknown";
+}
+function getBrowserInfo() {
+  if (typeof navigator === "undefined" || !navigator) {
+    return null;
+  }
+  const browserPatterns = [
+    { key: "edge", pattern: /Edge(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
+    { key: "ie", pattern: /MSIE(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
+    { key: "ie", pattern: /Trident(?:.*rv\:(\d+)\.(\d+)(?:\.(\d+))?)?/ },
+    { key: "chrome", pattern: /Chrome(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
+    { key: "firefox", pattern: /Firefox(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
+    { key: "safari", pattern: /(?:Version\W+(\d+)\.(\d+)(?:\.(\d+))?)?(?:\W+Mobile\S*)?\W+Safari/ }
+  ];
+  for (const { key, pattern } of browserPatterns) {
+    const match = pattern.exec(navigator.userAgent);
+    if (match) {
+      const major = match[1] || 0;
+      const minor = match[2] || 0;
+      const patch = match[3] || 0;
+      return { browser: key, version: `${major}.${minor}.${patch}` };
+    }
+  }
+  return null;
+}
+var isRunningInBrowser, getPlatformProperties, normalizeArch, normalizePlatform, _platformHeaders, getPlatformHeaders;
+var init_detect_platform = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/detect-platform.mjs"() {
+    init_version2();
+    isRunningInBrowser = () => {
+      return (
+        // @ts-ignore
+        typeof window !== "undefined" && // @ts-ignore
+        typeof window.document !== "undefined" && // @ts-ignore
+        typeof navigator !== "undefined"
+      );
+    };
+    getPlatformProperties = () => {
+      const detectedPlatform = getDetectedPlatform();
+      if (detectedPlatform === "deno") {
+        return {
+          "X-Stainless-Lang": "js",
+          "X-Stainless-Package-Version": VERSION3,
+          "X-Stainless-OS": normalizePlatform(Deno.build.os),
+          "X-Stainless-Arch": normalizeArch(Deno.build.arch),
+          "X-Stainless-Runtime": "deno",
+          "X-Stainless-Runtime-Version": typeof Deno.version === "string" ? Deno.version : Deno.version?.deno ?? "unknown"
+        };
+      }
+      if (typeof EdgeRuntime !== "undefined") {
+        return {
+          "X-Stainless-Lang": "js",
+          "X-Stainless-Package-Version": VERSION3,
+          "X-Stainless-OS": "Unknown",
+          "X-Stainless-Arch": `other:${EdgeRuntime}`,
+          "X-Stainless-Runtime": "edge",
+          "X-Stainless-Runtime-Version": globalThis.process.version
+        };
+      }
+      if (detectedPlatform === "node") {
+        return {
+          "X-Stainless-Lang": "js",
+          "X-Stainless-Package-Version": VERSION3,
+          "X-Stainless-OS": normalizePlatform(globalThis.process.platform ?? "unknown"),
+          "X-Stainless-Arch": normalizeArch(globalThis.process.arch ?? "unknown"),
+          "X-Stainless-Runtime": "node",
+          "X-Stainless-Runtime-Version": globalThis.process.version ?? "unknown"
+        };
+      }
+      const browserInfo = getBrowserInfo();
+      if (browserInfo) {
+        return {
+          "X-Stainless-Lang": "js",
+          "X-Stainless-Package-Version": VERSION3,
+          "X-Stainless-OS": "Unknown",
+          "X-Stainless-Arch": "unknown",
+          "X-Stainless-Runtime": `browser:${browserInfo.browser}`,
+          "X-Stainless-Runtime-Version": browserInfo.version
+        };
+      }
+      return {
+        "X-Stainless-Lang": "js",
+        "X-Stainless-Package-Version": VERSION3,
+        "X-Stainless-OS": "Unknown",
+        "X-Stainless-Arch": "unknown",
+        "X-Stainless-Runtime": "unknown",
+        "X-Stainless-Runtime-Version": "unknown"
+      };
+    };
+    normalizeArch = (arch) => {
+      if (arch === "x32")
+        return "x32";
+      if (arch === "x86_64" || arch === "x64")
+        return "x64";
+      if (arch === "arm")
+        return "arm";
+      if (arch === "aarch64" || arch === "arm64")
+        return "arm64";
+      if (arch)
+        return `other:${arch}`;
+      return "unknown";
+    };
+    normalizePlatform = (platform) => {
+      platform = platform.toLowerCase();
+      if (platform.includes("ios"))
+        return "iOS";
+      if (platform === "android")
+        return "Android";
+      if (platform === "darwin")
+        return "MacOS";
+      if (platform === "win32")
+        return "Windows";
+      if (platform === "freebsd")
+        return "FreeBSD";
+      if (platform === "openbsd")
+        return "OpenBSD";
+      if (platform === "linux")
+        return "Linux";
+      if (platform)
+        return `Other:${platform}`;
+      return "Unknown";
+    };
+    getPlatformHeaders = () => {
+      return _platformHeaders ?? (_platformHeaders = getPlatformProperties());
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/shims.mjs
+function getDefaultFetch() {
+  if (typeof fetch !== "undefined") {
+    return fetch;
+  }
+  throw new Error("`fetch` is not defined as a global; Either pass `fetch` to the client, `new OpenAI({ fetch })` or polyfill the global, `globalThis.fetch = fetch`");
+}
+function makeReadableStream(...args) {
+  const ReadableStream3 = globalThis.ReadableStream;
+  if (typeof ReadableStream3 === "undefined") {
+    throw new Error("`ReadableStream` is not defined as a global; You will need to polyfill it, `globalThis.ReadableStream = ReadableStream`");
+  }
+  return new ReadableStream3(...args);
+}
+function ReadableStreamFrom(iterable) {
+  let iter = Symbol.asyncIterator in iterable ? iterable[Symbol.asyncIterator]() : iterable[Symbol.iterator]();
+  return makeReadableStream({
+    start() {
+    },
+    async pull(controller) {
+      const { done, value } = await iter.next();
+      if (done) {
+        controller.close();
+      } else {
+        controller.enqueue(value);
+      }
+    },
+    async cancel() {
+      await iter.return?.();
+    }
+  });
+}
+function ReadableStreamToAsyncIterable(stream4) {
+  if (stream4[Symbol.asyncIterator])
+    return stream4;
+  const reader = stream4.getReader();
+  return {
+    async next() {
+      try {
+        const result = await reader.read();
+        if (result?.done)
+          reader.releaseLock();
+        return result;
+      } catch (e) {
+        reader.releaseLock();
+        throw e;
+      }
+    },
+    async return() {
+      const cancelPromise = reader.cancel();
+      reader.releaseLock();
+      await cancelPromise;
+      return { done: true, value: void 0 };
+    },
+    [Symbol.asyncIterator]() {
+      return this;
+    }
+  };
+}
+async function CancelReadableStream(stream4) {
+  if (stream4 === null || typeof stream4 !== "object")
+    return;
+  if (stream4[Symbol.asyncIterator]) {
+    await stream4[Symbol.asyncIterator]().return?.();
+    return;
+  }
+  const reader = stream4.getReader();
+  const cancelPromise = reader.cancel();
+  reader.releaseLock();
+  await cancelPromise;
+}
+var init_shims = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/shims.mjs"() {
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/request-options.mjs
+var FallbackEncoder;
+var init_request_options = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/request-options.mjs"() {
+    FallbackEncoder = ({ headers, body }) => {
+      return {
+        bodyHeaders: {
+          "content-type": "application/json"
+        },
+        body: JSON.stringify(body)
+      };
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/qs/formats.mjs
+var default_format, default_formatter, formatters, RFC1738;
+var init_formats = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/qs/formats.mjs"() {
+    default_format = "RFC3986";
+    default_formatter = (v) => String(v);
+    formatters = {
+      RFC1738: (v) => String(v).replace(/%20/g, "+"),
+      RFC3986: default_formatter
+    };
+    RFC1738 = "RFC1738";
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/qs/utils.mjs
+function is_buffer(obj) {
+  if (!obj || typeof obj !== "object") {
+    return false;
+  }
+  return !!(obj.constructor && obj.constructor.isBuffer && obj.constructor.isBuffer(obj));
+}
+function maybe_map(val, fn) {
+  if (isArray4(val)) {
+    const mapped = [];
+    for (let i = 0; i < val.length; i += 1) {
+      mapped.push(fn(val[i]));
+    }
+    return mapped;
+  }
+  return fn(val);
+}
+var has, hex_table, limit, encode5;
+var init_utils5 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/qs/utils.mjs"() {
+    init_formats();
+    init_values();
+    has = (obj, key) => (has = Object.hasOwn ?? Function.prototype.call.bind(Object.prototype.hasOwnProperty), has(obj, key));
+    hex_table = /* @__PURE__ */ (() => {
+      const array2 = [];
+      for (let i = 0; i < 256; ++i) {
+        array2.push("%" + ((i < 16 ? "0" : "") + i.toString(16)).toUpperCase());
+      }
+      return array2;
+    })();
+    limit = 1024;
+    encode5 = (str2, _defaultEncoder, charset, _kind, format) => {
+      if (str2.length === 0) {
+        return str2;
+      }
+      let string4 = str2;
+      if (typeof str2 === "symbol") {
+        string4 = Symbol.prototype.toString.call(str2);
+      } else if (typeof str2 !== "string") {
+        string4 = String(str2);
+      }
+      if (charset === "iso-8859-1") {
+        return escape(string4).replace(/%u[0-9a-f]{4}/gi, function($0) {
+          return "%26%23" + parseInt($0.slice(2), 16) + "%3B";
+        });
+      }
+      let out = "";
+      for (let j = 0; j < string4.length; j += limit) {
+        const segment = string4.length >= limit ? string4.slice(j, j + limit) : string4;
+        const arr = [];
+        for (let i = 0; i < segment.length; ++i) {
+          let c = segment.charCodeAt(i);
+          if (c === 45 || // -
+          c === 46 || // .
+          c === 95 || // _
+          c === 126 || // ~
+          c >= 48 && c <= 57 || // 0-9
+          c >= 65 && c <= 90 || // a-z
+          c >= 97 && c <= 122 || // A-Z
+          format === RFC1738 && (c === 40 || c === 41)) {
+            arr[arr.length] = segment.charAt(i);
+            continue;
+          }
+          if (c < 128) {
+            arr[arr.length] = hex_table[c];
+            continue;
+          }
+          if (c < 2048) {
+            arr[arr.length] = hex_table[192 | c >> 6] + hex_table[128 | c & 63];
+            continue;
+          }
+          if (c < 55296 || c >= 57344) {
+            arr[arr.length] = hex_table[224 | c >> 12] + hex_table[128 | c >> 6 & 63] + hex_table[128 | c & 63];
+            continue;
+          }
+          i += 1;
+          c = 65536 + ((c & 1023) << 10 | segment.charCodeAt(i) & 1023);
+          arr[arr.length] = hex_table[240 | c >> 18] + hex_table[128 | c >> 12 & 63] + hex_table[128 | c >> 6 & 63] + hex_table[128 | c & 63];
+        }
+        out += arr.join("");
+      }
+      return out;
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/qs/stringify.mjs
+function is_non_nullish_primitive(v) {
+  return typeof v === "string" || typeof v === "number" || typeof v === "boolean" || typeof v === "symbol" || typeof v === "bigint";
+}
+function inner_stringify(object2, prefix, generateArrayPrefix, commaRoundTrip, allowEmptyArrays, strictNullHandling, skipNulls, encodeDotInKeys, encoder, filter2, sort, allowDots, serializeDate, format, formatter, encodeValuesOnly, charset, sideChannel) {
+  let obj = object2;
+  let tmp_sc = sideChannel;
+  let step = 0;
+  let find_flag = false;
+  while ((tmp_sc = tmp_sc.get(sentinel)) !== void 0 && !find_flag) {
+    const pos = tmp_sc.get(object2);
+    step += 1;
+    if (typeof pos !== "undefined") {
+      if (pos === step) {
+        throw new RangeError("Cyclic object value");
+      } else {
+        find_flag = true;
+      }
+    }
+    if (typeof tmp_sc.get(sentinel) === "undefined") {
+      step = 0;
+    }
+  }
+  if (typeof filter2 === "function") {
+    obj = filter2(prefix, obj);
+  } else if (obj instanceof Date) {
+    obj = serializeDate?.(obj);
+  } else if (generateArrayPrefix === "comma" && isArray4(obj)) {
+    obj = maybe_map(obj, function(value) {
+      if (value instanceof Date) {
+        return serializeDate?.(value);
+      }
+      return value;
+    });
+  }
+  if (obj === null) {
+    if (strictNullHandling) {
+      return encoder && !encodeValuesOnly ? (
+        // @ts-expect-error
+        encoder(prefix, defaults2.encoder, charset, "key", format)
+      ) : prefix;
+    }
+    obj = "";
+  }
+  if (is_non_nullish_primitive(obj) || is_buffer(obj)) {
+    if (encoder) {
+      const key_value = encodeValuesOnly ? prefix : encoder(prefix, defaults2.encoder, charset, "key", format);
+      return [
+        formatter?.(key_value) + "=" + // @ts-expect-error
+        formatter?.(encoder(obj, defaults2.encoder, charset, "value", format))
+      ];
+    }
+    return [formatter?.(prefix) + "=" + formatter?.(String(obj))];
+  }
+  const values2 = [];
+  if (typeof obj === "undefined") {
+    return values2;
+  }
+  let obj_keys;
+  if (generateArrayPrefix === "comma" && isArray4(obj)) {
+    if (encodeValuesOnly && encoder) {
+      obj = maybe_map(obj, encoder);
+    }
+    obj_keys = [{ value: obj.length > 0 ? obj.join(",") || null : void 0 }];
+  } else if (isArray4(filter2)) {
+    obj_keys = filter2;
+  } else {
+    const keys = Object.keys(obj);
+    obj_keys = sort ? keys.sort(sort) : keys;
+  }
+  const encoded_prefix = encodeDotInKeys ? String(prefix).replace(/\./g, "%2E") : String(prefix);
+  const adjusted_prefix = commaRoundTrip && isArray4(obj) && obj.length === 1 ? encoded_prefix + "[]" : encoded_prefix;
+  if (allowEmptyArrays && isArray4(obj) && obj.length === 0) {
+    return adjusted_prefix + "[]";
+  }
+  for (let j = 0; j < obj_keys.length; ++j) {
+    const key = obj_keys[j];
+    const value = (
+      // @ts-ignore
+      typeof key === "object" && typeof key.value !== "undefined" ? key.value : obj[key]
+    );
+    if (skipNulls && value === null) {
+      continue;
+    }
+    const encoded_key = allowDots && encodeDotInKeys ? key.replace(/\./g, "%2E") : key;
+    const key_prefix = isArray4(obj) ? typeof generateArrayPrefix === "function" ? generateArrayPrefix(adjusted_prefix, encoded_key) : adjusted_prefix : adjusted_prefix + (allowDots ? "." + encoded_key : "[" + encoded_key + "]");
+    sideChannel.set(object2, step);
+    const valueSideChannel = /* @__PURE__ */ new WeakMap();
+    valueSideChannel.set(sentinel, sideChannel);
+    push_to_array(values2, inner_stringify(
+      value,
+      key_prefix,
+      generateArrayPrefix,
+      commaRoundTrip,
+      allowEmptyArrays,
+      strictNullHandling,
+      skipNulls,
+      encodeDotInKeys,
+      // @ts-ignore
+      generateArrayPrefix === "comma" && encodeValuesOnly && isArray4(obj) ? null : encoder,
+      filter2,
+      sort,
+      allowDots,
+      serializeDate,
+      format,
+      formatter,
+      encodeValuesOnly,
+      charset,
+      valueSideChannel
+    ));
+  }
+  return values2;
+}
+function normalize_stringify_options(opts = defaults2) {
+  if (typeof opts.allowEmptyArrays !== "undefined" && typeof opts.allowEmptyArrays !== "boolean") {
+    throw new TypeError("`allowEmptyArrays` option can only be `true` or `false`, when provided");
+  }
+  if (typeof opts.encodeDotInKeys !== "undefined" && typeof opts.encodeDotInKeys !== "boolean") {
+    throw new TypeError("`encodeDotInKeys` option can only be `true` or `false`, when provided");
+  }
+  if (opts.encoder !== null && typeof opts.encoder !== "undefined" && typeof opts.encoder !== "function") {
+    throw new TypeError("Encoder has to be a function.");
+  }
+  const charset = opts.charset || defaults2.charset;
+  if (typeof opts.charset !== "undefined" && opts.charset !== "utf-8" && opts.charset !== "iso-8859-1") {
+    throw new TypeError("The charset option must be either utf-8, iso-8859-1, or undefined");
+  }
+  let format = default_format;
+  if (typeof opts.format !== "undefined") {
+    if (!has(formatters, opts.format)) {
+      throw new TypeError("Unknown format option provided.");
+    }
+    format = opts.format;
+  }
+  const formatter = formatters[format];
+  let filter2 = defaults2.filter;
+  if (typeof opts.filter === "function" || isArray4(opts.filter)) {
+    filter2 = opts.filter;
+  }
+  let arrayFormat;
+  if (opts.arrayFormat && opts.arrayFormat in array_prefix_generators) {
+    arrayFormat = opts.arrayFormat;
+  } else if ("indices" in opts) {
+    arrayFormat = opts.indices ? "indices" : "repeat";
+  } else {
+    arrayFormat = defaults2.arrayFormat;
+  }
+  if ("commaRoundTrip" in opts && typeof opts.commaRoundTrip !== "boolean") {
+    throw new TypeError("`commaRoundTrip` must be a boolean, or absent");
+  }
+  const allowDots = typeof opts.allowDots === "undefined" ? !!opts.encodeDotInKeys === true ? true : defaults2.allowDots : !!opts.allowDots;
+  return {
+    addQueryPrefix: typeof opts.addQueryPrefix === "boolean" ? opts.addQueryPrefix : defaults2.addQueryPrefix,
+    // @ts-ignore
+    allowDots,
+    allowEmptyArrays: typeof opts.allowEmptyArrays === "boolean" ? !!opts.allowEmptyArrays : defaults2.allowEmptyArrays,
+    arrayFormat,
+    charset,
+    charsetSentinel: typeof opts.charsetSentinel === "boolean" ? opts.charsetSentinel : defaults2.charsetSentinel,
+    commaRoundTrip: !!opts.commaRoundTrip,
+    delimiter: typeof opts.delimiter === "undefined" ? defaults2.delimiter : opts.delimiter,
+    encode: typeof opts.encode === "boolean" ? opts.encode : defaults2.encode,
+    encodeDotInKeys: typeof opts.encodeDotInKeys === "boolean" ? opts.encodeDotInKeys : defaults2.encodeDotInKeys,
+    encoder: typeof opts.encoder === "function" ? opts.encoder : defaults2.encoder,
+    encodeValuesOnly: typeof opts.encodeValuesOnly === "boolean" ? opts.encodeValuesOnly : defaults2.encodeValuesOnly,
+    filter: filter2,
+    format,
+    formatter,
+    serializeDate: typeof opts.serializeDate === "function" ? opts.serializeDate : defaults2.serializeDate,
+    skipNulls: typeof opts.skipNulls === "boolean" ? opts.skipNulls : defaults2.skipNulls,
+    // @ts-ignore
+    sort: typeof opts.sort === "function" ? opts.sort : null,
+    strictNullHandling: typeof opts.strictNullHandling === "boolean" ? opts.strictNullHandling : defaults2.strictNullHandling
+  };
+}
+function stringify3(object2, opts = {}) {
+  let obj = object2;
+  const options = normalize_stringify_options(opts);
+  let obj_keys;
+  let filter2;
+  if (typeof options.filter === "function") {
+    filter2 = options.filter;
+    obj = filter2("", obj);
+  } else if (isArray4(options.filter)) {
+    filter2 = options.filter;
+    obj_keys = filter2;
+  }
+  const keys = [];
+  if (typeof obj !== "object" || obj === null) {
+    return "";
+  }
+  const generateArrayPrefix = array_prefix_generators[options.arrayFormat];
+  const commaRoundTrip = generateArrayPrefix === "comma" && options.commaRoundTrip;
+  if (!obj_keys) {
+    obj_keys = Object.keys(obj);
+  }
+  if (options.sort) {
+    obj_keys.sort(options.sort);
+  }
+  const sideChannel = /* @__PURE__ */ new WeakMap();
+  for (let i = 0; i < obj_keys.length; ++i) {
+    const key = obj_keys[i];
+    if (options.skipNulls && obj[key] === null) {
+      continue;
+    }
+    push_to_array(keys, inner_stringify(
+      obj[key],
+      key,
+      // @ts-expect-error
+      generateArrayPrefix,
+      commaRoundTrip,
+      options.allowEmptyArrays,
+      options.strictNullHandling,
+      options.skipNulls,
+      options.encodeDotInKeys,
+      options.encode ? options.encoder : null,
+      options.filter,
+      options.sort,
+      options.allowDots,
+      options.serializeDate,
+      options.format,
+      options.formatter,
+      options.encodeValuesOnly,
+      options.charset,
+      sideChannel
+    ));
+  }
+  const joined = keys.join(options.delimiter);
+  let prefix = options.addQueryPrefix === true ? "?" : "";
+  if (options.charsetSentinel) {
+    if (options.charset === "iso-8859-1") {
+      prefix += "utf8=%26%2310003%3B&";
+    } else {
+      prefix += "utf8=%E2%9C%93&";
+    }
+  }
+  return joined.length > 0 ? prefix + joined : "";
+}
+var array_prefix_generators, push_to_array, toISOString, defaults2, sentinel;
+var init_stringify = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/qs/stringify.mjs"() {
+    init_utils5();
+    init_formats();
+    init_values();
+    array_prefix_generators = {
+      brackets(prefix) {
+        return String(prefix) + "[]";
+      },
+      comma: "comma",
+      indices(prefix, key) {
+        return String(prefix) + "[" + key + "]";
+      },
+      repeat(prefix) {
+        return String(prefix);
+      }
+    };
+    push_to_array = function(arr, value_or_array) {
+      Array.prototype.push.apply(arr, isArray4(value_or_array) ? value_or_array : [value_or_array]);
+    };
+    defaults2 = {
+      addQueryPrefix: false,
+      allowDots: false,
+      allowEmptyArrays: false,
+      arrayFormat: "indices",
+      charset: "utf-8",
+      charsetSentinel: false,
+      delimiter: "&",
+      encode: true,
+      encodeDotInKeys: false,
+      encoder: encode5,
+      encodeValuesOnly: false,
+      format: default_format,
+      formatter: default_formatter,
+      /** @deprecated */
+      indices: false,
+      serializeDate(date6) {
+        return (toISOString ?? (toISOString = Function.prototype.call.bind(Date.prototype.toISOString)))(date6);
+      },
+      skipNulls: false,
+      strictNullHandling: false
+    };
+    sentinel = {};
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/query.mjs
+function stringifyQuery(query) {
+  return stringify3(query, { arrayFormat: "brackets" });
+}
+var init_query2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/query.mjs"() {
+    init_stringify();
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/bytes.mjs
+function concatBytes(buffers) {
+  let length = 0;
+  for (const buffer2 of buffers) {
+    length += buffer2.length;
+  }
+  const output = new Uint8Array(length);
+  let index = 0;
+  for (const buffer2 of buffers) {
+    output.set(buffer2, index);
+    index += buffer2.length;
+  }
+  return output;
+}
+function encodeUTF8(str2) {
+  let encoder;
+  return (encodeUTF8_ ?? (encoder = new globalThis.TextEncoder(), encodeUTF8_ = encoder.encode.bind(encoder)))(str2);
+}
+function decodeUTF8(bytes) {
+  let decoder;
+  return (decodeUTF8_ ?? (decoder = new globalThis.TextDecoder(), decodeUTF8_ = decoder.decode.bind(decoder)))(bytes);
+}
+var encodeUTF8_, decodeUTF8_;
+var init_bytes = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/bytes.mjs"() {
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/decoders/line.mjs
+function findNewlineIndex(buffer2, startIndex) {
+  const newline = 10;
+  const carriage = 13;
+  for (let i = startIndex ?? 0; i < buffer2.length; i++) {
+    if (buffer2[i] === newline) {
+      return { preceding: i, index: i + 1, carriage: false };
+    }
+    if (buffer2[i] === carriage) {
+      return { preceding: i, index: i + 1, carriage: true };
+    }
+  }
+  return null;
+}
+function findDoubleNewlineIndex(buffer2) {
+  const newline = 10;
+  const carriage = 13;
+  for (let i = 0; i < buffer2.length - 1; i++) {
+    if (buffer2[i] === newline && buffer2[i + 1] === newline) {
+      return i + 2;
+    }
+    if (buffer2[i] === carriage && buffer2[i + 1] === carriage) {
+      return i + 2;
+    }
+    if (buffer2[i] === carriage && buffer2[i + 1] === newline && i + 3 < buffer2.length && buffer2[i + 2] === carriage && buffer2[i + 3] === newline) {
+      return i + 4;
+    }
+  }
+  return -1;
+}
+var _LineDecoder_buffer, _LineDecoder_carriageReturnIndex, LineDecoder;
+var init_line2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/decoders/line.mjs"() {
+    init_tslib();
+    init_bytes();
+    LineDecoder = class {
+      constructor() {
+        _LineDecoder_buffer.set(this, void 0);
+        _LineDecoder_carriageReturnIndex.set(this, void 0);
+        __classPrivateFieldSet(this, _LineDecoder_buffer, new Uint8Array(), "f");
+        __classPrivateFieldSet(this, _LineDecoder_carriageReturnIndex, null, "f");
+      }
+      decode(chunk) {
+        if (chunk == null) {
+          return [];
+        }
+        const binaryChunk = chunk instanceof ArrayBuffer ? new Uint8Array(chunk) : typeof chunk === "string" ? encodeUTF8(chunk) : chunk;
+        __classPrivateFieldSet(this, _LineDecoder_buffer, concatBytes([__classPrivateFieldGet(this, _LineDecoder_buffer, "f"), binaryChunk]), "f");
+        const lines = [];
+        let patternIndex;
+        while ((patternIndex = findNewlineIndex(__classPrivateFieldGet(this, _LineDecoder_buffer, "f"), __classPrivateFieldGet(this, _LineDecoder_carriageReturnIndex, "f"))) != null) {
+          if (patternIndex.carriage && __classPrivateFieldGet(this, _LineDecoder_carriageReturnIndex, "f") == null) {
+            __classPrivateFieldSet(this, _LineDecoder_carriageReturnIndex, patternIndex.index, "f");
+            continue;
+          }
+          if (__classPrivateFieldGet(this, _LineDecoder_carriageReturnIndex, "f") != null && (patternIndex.index !== __classPrivateFieldGet(this, _LineDecoder_carriageReturnIndex, "f") + 1 || patternIndex.carriage)) {
+            lines.push(decodeUTF8(__classPrivateFieldGet(this, _LineDecoder_buffer, "f").subarray(0, __classPrivateFieldGet(this, _LineDecoder_carriageReturnIndex, "f") - 1)));
+            __classPrivateFieldSet(this, _LineDecoder_buffer, __classPrivateFieldGet(this, _LineDecoder_buffer, "f").subarray(__classPrivateFieldGet(this, _LineDecoder_carriageReturnIndex, "f")), "f");
+            __classPrivateFieldSet(this, _LineDecoder_carriageReturnIndex, null, "f");
+            continue;
+          }
+          const endIndex = __classPrivateFieldGet(this, _LineDecoder_carriageReturnIndex, "f") !== null ? patternIndex.preceding - 1 : patternIndex.preceding;
+          const line2 = decodeUTF8(__classPrivateFieldGet(this, _LineDecoder_buffer, "f").subarray(0, endIndex));
+          lines.push(line2);
+          __classPrivateFieldSet(this, _LineDecoder_buffer, __classPrivateFieldGet(this, _LineDecoder_buffer, "f").subarray(patternIndex.index), "f");
+          __classPrivateFieldSet(this, _LineDecoder_carriageReturnIndex, null, "f");
+        }
+        return lines;
+      }
+      flush() {
+        if (!__classPrivateFieldGet(this, _LineDecoder_buffer, "f").length) {
+          return [];
+        }
+        return this.decode("\n");
+      }
+    };
+    _LineDecoder_buffer = /* @__PURE__ */ new WeakMap(), _LineDecoder_carriageReturnIndex = /* @__PURE__ */ new WeakMap();
+    LineDecoder.NEWLINE_CHARS = /* @__PURE__ */ new Set(["\n", "\r"]);
+    LineDecoder.NEWLINE_REGEXP = /\r\n|[\n\r]/g;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/log.mjs
+function noop5() {
+}
+function makeLogFn(fnLevel, logger, logLevel) {
+  if (!logger || levelNumbers[fnLevel] > levelNumbers[logLevel]) {
+    return noop5;
+  } else {
+    return logger[fnLevel].bind(logger);
+  }
+}
+function loggerFor(client) {
+  const logger = client.logger;
+  const logLevel = client.logLevel ?? "off";
+  if (!logger) {
+    return noopLogger;
+  }
+  const cachedLogger = cachedLoggers.get(logger);
+  if (cachedLogger && cachedLogger[0] === logLevel) {
+    return cachedLogger[1];
+  }
+  const levelLogger = {
+    error: makeLogFn("error", logger, logLevel),
+    warn: makeLogFn("warn", logger, logLevel),
+    info: makeLogFn("info", logger, logLevel),
+    debug: makeLogFn("debug", logger, logLevel)
+  };
+  cachedLoggers.set(logger, [logLevel, levelLogger]);
+  return levelLogger;
+}
+var levelNumbers, parseLogLevel, noopLogger, cachedLoggers, formatRequestDetails;
+var init_log = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/log.mjs"() {
+    init_values();
+    levelNumbers = {
+      off: 0,
+      error: 200,
+      warn: 300,
+      info: 400,
+      debug: 500
+    };
+    parseLogLevel = (maybeLevel, sourceName, client) => {
+      if (!maybeLevel) {
+        return void 0;
+      }
+      if (hasOwn(levelNumbers, maybeLevel)) {
+        return maybeLevel;
+      }
+      loggerFor(client).warn(`${sourceName} was set to ${JSON.stringify(maybeLevel)}, expected one of ${JSON.stringify(Object.keys(levelNumbers))}`);
+      return void 0;
+    };
+    noopLogger = {
+      error: noop5,
+      warn: noop5,
+      info: noop5,
+      debug: noop5
+    };
+    cachedLoggers = /* @__PURE__ */ new WeakMap();
+    formatRequestDetails = (details) => {
+      if (details.options) {
+        details.options = { ...details.options };
+        delete details.options["headers"];
+      }
+      if (details.headers) {
+        details.headers = Object.fromEntries((details.headers instanceof Headers ? [...details.headers] : Object.entries(details.headers)).map(([name2, value]) => [
+          name2,
+          name2.toLowerCase() === "authorization" || name2.toLowerCase() === "cookie" || name2.toLowerCase() === "set-cookie" ? "***" : value
+        ]));
+      }
+      if ("retryOfRequestLogID" in details) {
+        if (details.retryOfRequestLogID) {
+          details.retryOf = details.retryOfRequestLogID;
+        }
+        delete details.retryOfRequestLogID;
+      }
+      return details;
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/streaming.mjs
+async function* _iterSSEMessages(response, controller) {
+  if (!response.body) {
+    controller.abort();
+    if (typeof globalThis.navigator !== "undefined" && globalThis.navigator.product === "ReactNative") {
+      throw new OpenAIError(`The default react-native fetch implementation does not support streaming. Please use expo/fetch: https://docs.expo.dev/versions/latest/sdk/expo/#expofetch-api`);
+    }
+    throw new OpenAIError(`Attempted to iterate over a response with no body`);
+  }
+  const sseDecoder = new SSEDecoder();
+  const lineDecoder = new LineDecoder();
+  const iter = ReadableStreamToAsyncIterable(response.body);
+  for await (const sseChunk of iterSSEChunks(iter)) {
+    for (const line2 of lineDecoder.decode(sseChunk)) {
+      const sse2 = sseDecoder.decode(line2);
+      if (sse2)
+        yield sse2;
+    }
+  }
+  for (const line2 of lineDecoder.flush()) {
+    const sse2 = sseDecoder.decode(line2);
+    if (sse2)
+      yield sse2;
+  }
+}
+async function* iterSSEChunks(iterator2) {
+  let data = new Uint8Array();
+  for await (const chunk of iterator2) {
+    if (chunk == null) {
+      continue;
+    }
+    const binaryChunk = chunk instanceof ArrayBuffer ? new Uint8Array(chunk) : typeof chunk === "string" ? encodeUTF8(chunk) : chunk;
+    let newData = new Uint8Array(data.length + binaryChunk.length);
+    newData.set(data);
+    newData.set(binaryChunk, data.length);
+    data = newData;
+    let patternIndex;
+    while ((patternIndex = findDoubleNewlineIndex(data)) !== -1) {
+      yield data.slice(0, patternIndex);
+      data = data.slice(patternIndex);
+    }
+  }
+  if (data.length > 0) {
+    yield data;
+  }
+}
+function partition(str2, delimiter) {
+  const index = str2.indexOf(delimiter);
+  if (index !== -1) {
+    return [str2.substring(0, index), delimiter, str2.substring(index + delimiter.length)];
+  }
+  return [str2, "", ""];
+}
+var _Stream_client, Stream3, SSEDecoder;
+var init_streaming = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/streaming.mjs"() {
+    init_tslib();
+    init_error();
+    init_shims();
+    init_line2();
+    init_shims();
+    init_errors2();
+    init_bytes();
+    init_log();
+    init_error();
+    Stream3 = class _Stream {
+      constructor(iterator2, controller, client) {
+        this.iterator = iterator2;
+        _Stream_client.set(this, void 0);
+        this.controller = controller;
+        __classPrivateFieldSet(this, _Stream_client, client, "f");
+      }
+      static fromSSEResponse(response, controller, client, synthesizeEventData) {
+        let consumed = false;
+        const logger = client ? loggerFor(client) : console;
+        async function* iterator2() {
+          if (consumed) {
+            throw new OpenAIError("Cannot iterate over a consumed stream, use `.tee()` to split the stream.");
+          }
+          consumed = true;
+          let done = false;
+          try {
+            for await (const sse2 of _iterSSEMessages(response, controller)) {
+              if (done)
+                continue;
+              if (sse2.data.startsWith("[DONE]")) {
+                done = true;
+                continue;
+              }
+              if (sse2.event === null || !sse2.event.startsWith("thread.")) {
+                let data;
+                try {
+                  data = JSON.parse(sse2.data);
+                } catch (e) {
+                  logger.error(`Could not parse message into JSON:`, sse2.data);
+                  logger.error(`From chunk:`, sse2.raw);
+                  throw e;
+                }
+                if (data && data.error) {
+                  throw new APIError(void 0, data.error, void 0, response.headers);
+                }
+                yield synthesizeEventData ? { event: sse2.event, data } : data;
+              } else {
+                let data;
+                try {
+                  data = JSON.parse(sse2.data);
+                } catch (e) {
+                  console.error(`Could not parse message into JSON:`, sse2.data);
+                  console.error(`From chunk:`, sse2.raw);
+                  throw e;
+                }
+                if (sse2.event == "error") {
+                  throw new APIError(void 0, data.error, data.message, void 0);
+                }
+                yield { event: sse2.event, data };
+              }
+            }
+            done = true;
+          } catch (e) {
+            if (isAbortError2(e))
+              return;
+            throw e;
+          } finally {
+            if (!done)
+              controller.abort();
+          }
+        }
+        return new _Stream(iterator2, controller, client);
+      }
+      /**
+       * Generates a Stream from a newline-separated ReadableStream
+       * where each item is a JSON value.
+       */
+      static fromReadableStream(readableStream, controller, client) {
+        let consumed = false;
+        async function* iterLines() {
+          const lineDecoder = new LineDecoder();
+          const iter = ReadableStreamToAsyncIterable(readableStream);
+          for await (const chunk of iter) {
+            for (const line2 of lineDecoder.decode(chunk)) {
+              yield line2;
+            }
+          }
+          for (const line2 of lineDecoder.flush()) {
+            yield line2;
+          }
+        }
+        async function* iterator2() {
+          if (consumed) {
+            throw new OpenAIError("Cannot iterate over a consumed stream, use `.tee()` to split the stream.");
+          }
+          consumed = true;
+          let done = false;
+          try {
+            for await (const line2 of iterLines()) {
+              if (done)
+                continue;
+              if (line2)
+                yield JSON.parse(line2);
+            }
+            done = true;
+          } catch (e) {
+            if (isAbortError2(e))
+              return;
+            throw e;
+          } finally {
+            if (!done)
+              controller.abort();
+          }
+        }
+        return new _Stream(iterator2, controller, client);
+      }
+      [(_Stream_client = /* @__PURE__ */ new WeakMap(), Symbol.asyncIterator)]() {
+        return this.iterator();
+      }
+      /**
+       * Splits the stream into two streams which can be
+       * independently read from at different speeds.
+       */
+      tee() {
+        const left = [];
+        const right = [];
+        const iterator2 = this.iterator();
+        const teeIterator = (queue) => {
+          return {
+            next: () => {
+              if (queue.length === 0) {
+                const result = iterator2.next();
+                left.push(result);
+                right.push(result);
+              }
+              return queue.shift();
+            }
+          };
+        };
+        return [
+          new _Stream(() => teeIterator(left), this.controller, __classPrivateFieldGet(this, _Stream_client, "f")),
+          new _Stream(() => teeIterator(right), this.controller, __classPrivateFieldGet(this, _Stream_client, "f"))
+        ];
+      }
+      /**
+       * Converts this stream to a newline-separated ReadableStream of
+       * JSON stringified values in the stream
+       * which can be turned back into a Stream with `Stream.fromReadableStream()`.
+       */
+      toReadableStream() {
+        const self2 = this;
+        let iter;
+        return makeReadableStream({
+          async start() {
+            iter = self2[Symbol.asyncIterator]();
+          },
+          async pull(ctrl) {
+            try {
+              const { value, done } = await iter.next();
+              if (done)
+                return ctrl.close();
+              const bytes = encodeUTF8(JSON.stringify(value) + "\n");
+              ctrl.enqueue(bytes);
+            } catch (err) {
+              ctrl.error(err);
+            }
+          },
+          async cancel() {
+            await iter.return?.();
+          }
+        });
+      }
+    };
+    SSEDecoder = class {
+      constructor() {
+        this.event = null;
+        this.data = [];
+        this.chunks = [];
+      }
+      decode(line2) {
+        if (line2.endsWith("\r")) {
+          line2 = line2.substring(0, line2.length - 1);
+        }
+        if (!line2) {
+          if (!this.event && !this.data.length)
+            return null;
+          const sse2 = {
+            event: this.event,
+            data: this.data.join("\n"),
+            raw: this.chunks
+          };
+          this.event = null;
+          this.data = [];
+          this.chunks = [];
+          return sse2;
+        }
+        this.chunks.push(line2);
+        if (line2.startsWith(":")) {
+          return null;
+        }
+        let [fieldname, _, value] = partition(line2, ":");
+        if (value.startsWith(" ")) {
+          value = value.substring(1);
+        }
+        if (fieldname === "event") {
+          this.event = value;
+        } else if (fieldname === "data") {
+          this.data.push(value);
+        }
+        return null;
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/parse.mjs
+async function defaultParseResponse(client, props) {
+  const { response, requestLogID, retryOfRequestLogID, startTime } = props;
+  const body = await (async () => {
+    if (props.options.stream) {
+      loggerFor(client).debug("response", response.status, response.url, response.headers, response.body);
+      if (props.options.__streamClass) {
+        return props.options.__streamClass.fromSSEResponse(response, props.controller, client, props.options.__synthesizeEventData);
+      }
+      return Stream3.fromSSEResponse(response, props.controller, client, props.options.__synthesizeEventData);
+    }
+    if (response.status === 204) {
+      return null;
+    }
+    if (props.options.__binaryResponse) {
+      return response;
+    }
+    const contentType = response.headers.get("content-type");
+    const mediaType = contentType?.split(";")[0]?.trim();
+    const isJSON = mediaType?.includes("application/json") || mediaType?.endsWith("+json");
+    if (isJSON) {
+      const contentLength = response.headers.get("content-length");
+      if (contentLength === "0") {
+        return void 0;
+      }
+      const json3 = await response.json();
+      return addRequestID(json3, response);
+    }
+    const text2 = await response.text();
+    return text2;
+  })();
+  loggerFor(client).debug(`[${requestLogID}] response parsed`, formatRequestDetails({
+    retryOfRequestLogID,
+    url: response.url,
+    status: response.status,
+    body,
+    durationMs: Date.now() - startTime
+  }));
+  return body;
+}
+function addRequestID(value, response) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return value;
+  }
+  return Object.defineProperty(value, "_request_id", {
+    value: response.headers.get("x-request-id"),
+    enumerable: false
+  });
+}
+var init_parse = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/parse.mjs"() {
+    init_streaming();
+    init_log();
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/api-promise.mjs
+var _APIPromise_client, APIPromise;
+var init_api_promise = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/api-promise.mjs"() {
+    init_tslib();
+    init_parse();
+    APIPromise = class _APIPromise extends Promise {
+      constructor(client, responsePromise, parseResponse2 = defaultParseResponse) {
+        super((resolve) => {
+          resolve(null);
+        });
+        this.responsePromise = responsePromise;
+        this.parseResponse = parseResponse2;
+        _APIPromise_client.set(this, void 0);
+        __classPrivateFieldSet(this, _APIPromise_client, client, "f");
+      }
+      _thenUnwrap(transform2) {
+        return new _APIPromise(__classPrivateFieldGet(this, _APIPromise_client, "f"), this.responsePromise, async (client, props) => addRequestID(transform2(await this.parseResponse(client, props), props), props.response));
+      }
+      /**
+       * Gets the raw `Response` instance instead of parsing the response
+       * data.
+       *
+       * If you want to parse the response body but still get the `Response`
+       * instance, you can use {@link withResponse()}.
+       *
+       * 👋 Getting the wrong TypeScript type for `Response`?
+       * Try setting `"moduleResolution": "NodeNext"` or add `"lib": ["DOM"]`
+       * to your `tsconfig.json`.
+       */
+      asResponse() {
+        return this.responsePromise.then((p) => p.response);
+      }
+      /**
+       * Gets the parsed response data, the raw `Response` instance and the ID of the request,
+       * returned via the X-Request-ID header which is useful for debugging requests and reporting
+       * issues to OpenAI.
+       *
+       * If you just want to get the raw `Response` instance without parsing it,
+       * you can use {@link asResponse()}.
+       *
+       * 👋 Getting the wrong TypeScript type for `Response`?
+       * Try setting `"moduleResolution": "NodeNext"` or add `"lib": ["DOM"]`
+       * to your `tsconfig.json`.
+       */
+      async withResponse() {
+        const [data, response] = await Promise.all([this.parse(), this.asResponse()]);
+        return { data, response, request_id: response.headers.get("x-request-id") };
+      }
+      parse() {
+        if (!this.parsedPromise) {
+          this.parsedPromise = this.responsePromise.then((data) => this.parseResponse(__classPrivateFieldGet(this, _APIPromise_client, "f"), data));
+        }
+        return this.parsedPromise;
+      }
+      then(onfulfilled, onrejected) {
+        return this.parse().then(onfulfilled, onrejected);
+      }
+      catch(onrejected) {
+        return this.parse().catch(onrejected);
+      }
+      finally(onfinally) {
+        return this.parse().finally(onfinally);
+      }
+    };
+    _APIPromise_client = /* @__PURE__ */ new WeakMap();
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/pagination.mjs
+var _AbstractPage_client, AbstractPage, PagePromise, Page, CursorPage, ConversationCursorPage;
+var init_pagination = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/pagination.mjs"() {
+    init_tslib();
+    init_error();
+    init_parse();
+    init_api_promise();
+    init_values();
+    AbstractPage = class {
+      constructor(client, response, body, options) {
+        _AbstractPage_client.set(this, void 0);
+        __classPrivateFieldSet(this, _AbstractPage_client, client, "f");
+        this.options = options;
+        this.response = response;
+        this.body = body;
+      }
+      hasNextPage() {
+        const items = this.getPaginatedItems();
+        if (!items.length)
+          return false;
+        return this.nextPageRequestOptions() != null;
+      }
+      async getNextPage() {
+        const nextOptions = this.nextPageRequestOptions();
+        if (!nextOptions) {
+          throw new OpenAIError("No next page expected; please check `.hasNextPage()` before calling `.getNextPage()`.");
+        }
+        return await __classPrivateFieldGet(this, _AbstractPage_client, "f").requestAPIList(this.constructor, nextOptions);
+      }
+      async *iterPages() {
+        let page = this;
+        yield page;
+        while (page.hasNextPage()) {
+          page = await page.getNextPage();
+          yield page;
+        }
+      }
+      async *[(_AbstractPage_client = /* @__PURE__ */ new WeakMap(), Symbol.asyncIterator)]() {
+        for await (const page of this.iterPages()) {
+          for (const item of page.getPaginatedItems()) {
+            yield item;
+          }
+        }
+      }
+    };
+    PagePromise = class extends APIPromise {
+      constructor(client, request, Page2) {
+        super(client, request, async (client2, props) => new Page2(client2, props.response, await defaultParseResponse(client2, props), props.options));
+      }
+      /**
+       * Allow auto-paginating iteration on an unawaited list call, eg:
+       *
+       *    for await (const item of client.items.list()) {
+       *      console.log(item)
+       *    }
+       */
+      async *[Symbol.asyncIterator]() {
+        const page = await this;
+        for await (const item of page) {
+          yield item;
+        }
+      }
+    };
+    Page = class extends AbstractPage {
+      constructor(client, response, body, options) {
+        super(client, response, body, options);
+        this.data = body.data || [];
+        this.object = body.object;
+      }
+      getPaginatedItems() {
+        return this.data ?? [];
+      }
+      nextPageRequestOptions() {
+        return null;
+      }
+    };
+    CursorPage = class extends AbstractPage {
+      constructor(client, response, body, options) {
+        super(client, response, body, options);
+        this.data = body.data || [];
+        this.has_more = body.has_more || false;
+      }
+      getPaginatedItems() {
+        return this.data ?? [];
+      }
+      hasNextPage() {
+        if (this.has_more === false) {
+          return false;
+        }
+        return super.hasNextPage();
+      }
+      nextPageRequestOptions() {
+        const data = this.getPaginatedItems();
+        const id = data[data.length - 1]?.id;
+        if (!id) {
+          return null;
+        }
+        return {
+          ...this.options,
+          query: {
+            ...maybeObj(this.options.query),
+            after: id
+          }
+        };
+      }
+    };
+    ConversationCursorPage = class extends AbstractPage {
+      constructor(client, response, body, options) {
+        super(client, response, body, options);
+        this.data = body.data || [];
+        this.has_more = body.has_more || false;
+        this.last_id = body.last_id || "";
+      }
+      getPaginatedItems() {
+        return this.data ?? [];
+      }
+      hasNextPage() {
+        if (this.has_more === false) {
+          return false;
+        }
+        return super.hasNextPage();
+      }
+      nextPageRequestOptions() {
+        const cursor = this.last_id;
+        if (!cursor) {
+          return null;
+        }
+        return {
+          ...this.options,
+          query: {
+            ...maybeObj(this.options.query),
+            after: cursor
+          }
+        };
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/auth/workload-identity-auth.mjs
+var SUBJECT_TOKEN_TYPES, TOKEN_EXCHANGE_GRANT_TYPE, WorkloadIdentityAuth;
+var init_workload_identity_auth = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/auth/workload-identity-auth.mjs"() {
+    init_shims();
+    init_error();
+    SUBJECT_TOKEN_TYPES = {
+      jwt: "urn:ietf:params:oauth:token-type:jwt",
+      id: "urn:ietf:params:oauth:token-type:id_token"
+    };
+    TOKEN_EXCHANGE_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:token-exchange";
+    WorkloadIdentityAuth = class {
+      constructor(config2, fetch2) {
+        this.cachedToken = null;
+        this.refreshPromise = null;
+        this.tokenExchangeUrl = "https://auth.openai.com/oauth/token";
+        this.config = config2;
+        this.fetch = fetch2 ?? getDefaultFetch();
+      }
+      async getToken() {
+        if (!this.cachedToken || this.isTokenExpired(this.cachedToken)) {
+          if (this.refreshPromise) {
+            return await this.refreshPromise;
+          }
+          this.refreshPromise = this.refreshToken();
+          try {
+            const token = await this.refreshPromise;
+            return token;
+          } finally {
+            this.refreshPromise = null;
+          }
+        }
+        if (this.needsRefresh(this.cachedToken) && !this.refreshPromise) {
+          this.refreshPromise = this.refreshToken().finally(() => {
+            this.refreshPromise = null;
+          });
+        }
+        return this.cachedToken.token;
+      }
+      async refreshToken() {
+        const subjectToken = await this.config.provider.getToken();
+        const response = await this.fetch(this.tokenExchangeUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            grant_type: TOKEN_EXCHANGE_GRANT_TYPE,
+            client_id: this.config.clientId,
+            subject_token: subjectToken,
+            subject_token_type: SUBJECT_TOKEN_TYPES[this.config.provider.tokenType],
+            identity_provider_id: this.config.identityProviderId,
+            service_account_id: this.config.serviceAccountId
+          })
+        });
+        if (!response.ok) {
+          const errorText = await response.text();
+          let body = void 0;
+          try {
+            body = JSON.parse(errorText);
+          } catch {
+          }
+          if (response.status === 400 || response.status === 401 || response.status === 403) {
+            throw new OAuthError(response.status, body, response.headers);
+          }
+          throw APIError.generate(response.status, body, `Token exchange failed with status ${response.status}`, response.headers);
+        }
+        const tokenResponse = await response.json();
+        const expiresIn = tokenResponse.expires_in || 3600;
+        const expiresAt = Date.now() + expiresIn * 1e3;
+        this.cachedToken = {
+          token: tokenResponse.access_token,
+          expiresAt
+        };
+        return tokenResponse.access_token;
+      }
+      isTokenExpired(cachedToken) {
+        return Date.now() >= cachedToken.expiresAt;
+      }
+      needsRefresh(cachedToken) {
+        const bufferSeconds = this.config.refreshBufferSeconds ?? 1200;
+        const bufferMs = bufferSeconds * 1e3;
+        return Date.now() >= cachedToken.expiresAt - bufferMs;
+      }
+      invalidateToken() {
+        this.cachedToken = null;
+        this.refreshPromise = null;
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/uploads.mjs
+function makeFile(fileBits, fileName, options) {
+  checkFileSupport();
+  return new File(fileBits, fileName ?? "unknown_file", options);
+}
+function getName(value) {
+  return (typeof value === "object" && value !== null && ("name" in value && value.name && String(value.name) || "url" in value && value.url && String(value.url) || "filename" in value && value.filename && String(value.filename) || "path" in value && value.path && String(value.path)) || "").split(/[\\/]/).pop() || void 0;
+}
+function supportsFormData(fetchObject) {
+  const fetch2 = typeof fetchObject === "function" ? fetchObject : fetchObject.fetch;
+  const cached2 = supportsFormDataMap.get(fetch2);
+  if (cached2)
+    return cached2;
+  const promise2 = (async () => {
+    try {
+      const FetchResponse = "Response" in fetch2 ? fetch2.Response : (await fetch2("data:,")).constructor;
+      const data = new FormData();
+      if (data.toString() === await new FetchResponse(data).text()) {
+        return false;
+      }
+      return true;
+    } catch {
+      return true;
+    }
+  })();
+  supportsFormDataMap.set(fetch2, promise2);
+  return promise2;
+}
+var checkFileSupport, isAsyncIterable2, maybeMultipartFormRequestOptions, multipartFormRequestOptions, supportsFormDataMap, createForm, isNamedBlob, isUploadable, hasUploadableValue, addFormValue;
+var init_uploads = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/uploads.mjs"() {
+    init_shims();
+    checkFileSupport = () => {
+      if (typeof File === "undefined") {
+        const { process: process3 } = globalThis;
+        const isOldNode = typeof process3?.versions?.node === "string" && parseInt(process3.versions.node.split(".")) < 20;
+        throw new Error("`File` is not defined as a global, which is required for file uploads." + (isOldNode ? " Update to Node 20 LTS or newer, or set `globalThis.File` to `import('node:buffer').File`." : ""));
+      }
+    };
+    isAsyncIterable2 = (value) => value != null && typeof value === "object" && typeof value[Symbol.asyncIterator] === "function";
+    maybeMultipartFormRequestOptions = async (opts, fetch2) => {
+      if (!hasUploadableValue(opts.body))
+        return opts;
+      return { ...opts, body: await createForm(opts.body, fetch2) };
+    };
+    multipartFormRequestOptions = async (opts, fetch2) => {
+      return { ...opts, body: await createForm(opts.body, fetch2) };
+    };
+    supportsFormDataMap = /* @__PURE__ */ new WeakMap();
+    createForm = async (body, fetch2) => {
+      if (!await supportsFormData(fetch2)) {
+        throw new TypeError("The provided fetch function does not support file uploads with the current global FormData class.");
+      }
+      const form = new FormData();
+      await Promise.all(Object.entries(body || {}).map(([key, value]) => addFormValue(form, key, value)));
+      return form;
+    };
+    isNamedBlob = (value) => value instanceof Blob && "name" in value;
+    isUploadable = (value) => typeof value === "object" && value !== null && (value instanceof Response || isAsyncIterable2(value) || isNamedBlob(value));
+    hasUploadableValue = (value) => {
+      if (isUploadable(value))
+        return true;
+      if (Array.isArray(value))
+        return value.some(hasUploadableValue);
+      if (value && typeof value === "object") {
+        for (const k in value) {
+          if (hasUploadableValue(value[k]))
+            return true;
+        }
+      }
+      return false;
+    };
+    addFormValue = async (form, key, value) => {
+      if (value === void 0)
+        return;
+      if (value == null) {
+        throw new TypeError(`Received null for "${key}"; to pass null in FormData, you must use the string 'null'`);
+      }
+      if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+        form.append(key, String(value));
+      } else if (value instanceof Response) {
+        form.append(key, makeFile([await value.blob()], getName(value)));
+      } else if (isAsyncIterable2(value)) {
+        form.append(key, makeFile([await new Response(ReadableStreamFrom(value)).blob()], getName(value)));
+      } else if (isNamedBlob(value)) {
+        form.append(key, value, getName(value));
+      } else if (Array.isArray(value)) {
+        await Promise.all(value.map((entry) => addFormValue(form, key + "[]", entry)));
+      } else if (typeof value === "object") {
+        await Promise.all(Object.entries(value).map(([name2, prop]) => addFormValue(form, `${key}[${name2}]`, prop)));
+      } else {
+        throw new TypeError(`Invalid value given to form, expected a string, number, boolean, object, Array, File or Blob but got ${value} instead`);
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/to-file.mjs
+async function toFile(value, name2, options) {
+  checkFileSupport();
+  value = await value;
+  if (isFileLike(value)) {
+    if (value instanceof File) {
+      return value;
+    }
+    return makeFile([await value.arrayBuffer()], value.name);
+  }
+  if (isResponseLike(value)) {
+    const blob = await value.blob();
+    name2 || (name2 = new URL(value.url).pathname.split(/[\\/]/).pop());
+    return makeFile(await getBytes(blob), name2, options);
+  }
+  const parts = await getBytes(value);
+  name2 || (name2 = getName(value));
+  if (!options?.type) {
+    const type = parts.find((part) => typeof part === "object" && "type" in part && part.type);
+    if (typeof type === "string") {
+      options = { ...options, type };
+    }
+  }
+  return makeFile(parts, name2, options);
+}
+async function getBytes(value) {
+  let parts = [];
+  if (typeof value === "string" || ArrayBuffer.isView(value) || // includes Uint8Array, Buffer, etc.
+  value instanceof ArrayBuffer) {
+    parts.push(value);
+  } else if (isBlobLike(value)) {
+    parts.push(value instanceof Blob ? value : await value.arrayBuffer());
+  } else if (isAsyncIterable2(value)) {
+    for await (const chunk of value) {
+      parts.push(...await getBytes(chunk));
+    }
+  } else {
+    const constructor = value?.constructor?.name;
+    throw new Error(`Unexpected data type: ${typeof value}${constructor ? `; constructor: ${constructor}` : ""}${propsForError(value)}`);
+  }
+  return parts;
+}
+function propsForError(value) {
+  if (typeof value !== "object" || value === null)
+    return "";
+  const props = Object.getOwnPropertyNames(value);
+  return `; props: [${props.map((p) => `"${p}"`).join(", ")}]`;
+}
+var isBlobLike, isFileLike, isResponseLike;
+var init_to_file = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/to-file.mjs"() {
+    init_uploads();
+    init_uploads();
+    isBlobLike = (value) => value != null && typeof value === "object" && typeof value.size === "number" && typeof value.type === "string" && typeof value.text === "function" && typeof value.slice === "function" && typeof value.arrayBuffer === "function";
+    isFileLike = (value) => value != null && typeof value === "object" && typeof value.name === "string" && typeof value.lastModified === "number" && isBlobLike(value);
+    isResponseLike = (value) => value != null && typeof value === "object" && typeof value.url === "string" && typeof value.blob === "function";
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/uploads.mjs
+var init_uploads2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/uploads.mjs"() {
+    init_to_file();
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/resource.mjs
+var APIResource;
+var init_resource = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/resource.mjs"() {
+    APIResource = class {
+      constructor(client) {
+        this._client = client;
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/path.mjs
+function encodeURIPath(str2) {
+  return str2.replace(/[^A-Za-z0-9\-._~!$&'()*+,;=:@]+/g, encodeURIComponent);
+}
+var EMPTY, createPathTagFunction, path2;
+var init_path = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/path.mjs"() {
+    init_error();
+    EMPTY = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.create(null));
+    createPathTagFunction = (pathEncoder = encodeURIPath) => function path3(statics, ...params) {
+      if (statics.length === 1)
+        return statics[0];
+      let postPath = false;
+      const invalidSegments = [];
+      const path4 = statics.reduce((previousValue, currentValue, index) => {
+        if (/[?#]/.test(currentValue)) {
+          postPath = true;
+        }
+        const value = params[index];
+        let encoded = (postPath ? encodeURIComponent : pathEncoder)("" + value);
+        if (index !== params.length && (value == null || typeof value === "object" && // handle values from other realms
+        value.toString === Object.getPrototypeOf(Object.getPrototypeOf(value.hasOwnProperty ?? EMPTY) ?? EMPTY)?.toString)) {
+          encoded = value + "";
+          invalidSegments.push({
+            start: previousValue.length + currentValue.length,
+            length: encoded.length,
+            error: `Value of type ${Object.prototype.toString.call(value).slice(8, -1)} is not a valid path parameter`
+          });
+        }
+        return previousValue + currentValue + (index === params.length ? "" : encoded);
+      }, "");
+      const pathOnly = path4.split(/[?#]/, 1)[0];
+      const invalidSegmentPattern = /(?<=^|\/)(?:\.|%2e){1,2}(?=\/|$)/gi;
+      let match;
+      while ((match = invalidSegmentPattern.exec(pathOnly)) !== null) {
+        invalidSegments.push({
+          start: match.index,
+          length: match[0].length,
+          error: `Value "${match[0]}" can't be safely passed as a path parameter`
+        });
+      }
+      invalidSegments.sort((a, b2) => a.start - b2.start);
+      if (invalidSegments.length > 0) {
+        let lastEnd = 0;
+        const underline = invalidSegments.reduce((acc, segment) => {
+          const spaces = " ".repeat(segment.start - lastEnd);
+          const arrows = "^".repeat(segment.length);
+          lastEnd = segment.start + segment.length;
+          return acc + spaces + arrows;
+        }, "");
+        throw new OpenAIError(`Path parameters result in path with invalid segments:
+${invalidSegments.map((e) => e.error).join("\n")}
+${path4}
+${underline}`);
+      }
+      return path4;
+    };
+    path2 = /* @__PURE__ */ createPathTagFunction(encodeURIPath);
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/completions/messages.mjs
+var Messages;
+var init_messages = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/completions/messages.mjs"() {
+    init_resource();
+    init_pagination();
+    init_path();
+    Messages = class extends APIResource {
+      /**
+       * Get the messages in a stored chat completion. Only Chat Completions that have
+       * been created with the `store` parameter set to `true` will be returned.
+       *
+       * @example
+       * ```ts
+       * // Automatically fetches more pages as needed.
+       * for await (const chatCompletionStoreMessage of client.chat.completions.messages.list(
+       *   'completion_id',
+       * )) {
+       *   // ...
+       * }
+       * ```
+       */
+      list(completionID, query = {}, options) {
+        return this._client.getAPIList(path2`/chat/completions/${completionID}/messages`, CursorPage, { query, ...options });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/error.mjs
+var init_error2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/error.mjs"() {
+    init_error();
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/parser.mjs
+function isChatCompletionFunctionTool(tool) {
+  return tool !== void 0 && "function" in tool && tool.function !== void 0;
+}
+function isAutoParsableResponseFormat(response_format) {
+  return response_format?.["$brand"] === "auto-parseable-response-format";
+}
+function isAutoParsableTool(tool) {
+  return tool?.["$brand"] === "auto-parseable-tool";
+}
+function maybeParseChatCompletion(completion, params) {
+  if (!params || !hasAutoParseableInput(params)) {
+    return {
+      ...completion,
+      choices: completion.choices.map((choice) => {
+        assertToolCallsAreChatCompletionFunctionToolCalls(choice.message.tool_calls);
+        return {
+          ...choice,
+          message: {
+            ...choice.message,
+            parsed: null,
+            ...choice.message.tool_calls ? {
+              tool_calls: choice.message.tool_calls
+            } : void 0
+          }
+        };
+      })
+    };
+  }
+  return parseChatCompletion(completion, params);
+}
+function parseChatCompletion(completion, params) {
+  const choices = completion.choices.map((choice) => {
+    if (choice.finish_reason === "length") {
+      throw new LengthFinishReasonError();
+    }
+    if (choice.finish_reason === "content_filter") {
+      throw new ContentFilterFinishReasonError();
+    }
+    assertToolCallsAreChatCompletionFunctionToolCalls(choice.message.tool_calls);
+    return {
+      ...choice,
+      message: {
+        ...choice.message,
+        ...choice.message.tool_calls ? {
+          tool_calls: choice.message.tool_calls?.map((toolCall) => parseToolCall(params, toolCall)) ?? void 0
+        } : void 0,
+        parsed: choice.message.content && !choice.message.refusal ? parseResponseFormat(params, choice.message.content) : null
+      }
+    };
+  });
+  return { ...completion, choices };
+}
+function parseResponseFormat(params, content) {
+  if (params.response_format?.type !== "json_schema") {
+    return null;
+  }
+  if (params.response_format?.type === "json_schema") {
+    if ("$parseRaw" in params.response_format) {
+      const response_format = params.response_format;
+      return response_format.$parseRaw(content);
+    }
+    return JSON.parse(content);
+  }
+  return null;
+}
+function parseToolCall(params, toolCall) {
+  const inputTool = params.tools?.find((inputTool2) => isChatCompletionFunctionTool(inputTool2) && inputTool2.function?.name === toolCall.function.name);
+  return {
+    ...toolCall,
+    function: {
+      ...toolCall.function,
+      parsed_arguments: isAutoParsableTool(inputTool) ? inputTool.$parseRaw(toolCall.function.arguments) : inputTool?.function.strict ? JSON.parse(toolCall.function.arguments) : null
+    }
+  };
+}
+function shouldParseToolCall(params, toolCall) {
+  if (!params || !("tools" in params) || !params.tools) {
+    return false;
+  }
+  const inputTool = params.tools?.find((inputTool2) => isChatCompletionFunctionTool(inputTool2) && inputTool2.function?.name === toolCall.function.name);
+  return isChatCompletionFunctionTool(inputTool) && (isAutoParsableTool(inputTool) || inputTool?.function.strict || false);
+}
+function hasAutoParseableInput(params) {
+  if (isAutoParsableResponseFormat(params.response_format)) {
+    return true;
+  }
+  return params.tools?.some((t2) => isAutoParsableTool(t2) || t2.type === "function" && t2.function.strict === true) ?? false;
+}
+function assertToolCallsAreChatCompletionFunctionToolCalls(toolCalls) {
+  for (const toolCall of toolCalls || []) {
+    if (toolCall.type !== "function") {
+      throw new OpenAIError(`Currently only \`function\` tool calls are supported; Received \`${toolCall.type}\``);
+    }
+  }
+}
+function validateInputTools(tools) {
+  for (const tool of tools ?? []) {
+    if (tool.type !== "function") {
+      throw new OpenAIError(`Currently only \`function\` tool types support auto-parsing; Received \`${tool.type}\``);
+    }
+    if (tool.function.strict !== true) {
+      throw new OpenAIError(`The \`${tool.function.name}\` tool is not marked with \`strict: true\`. Only strict function tools can be auto-parsed`);
+    }
+  }
+}
+var init_parser = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/parser.mjs"() {
+    init_error2();
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/chatCompletionUtils.mjs
+var isAssistantMessage, isToolMessage;
+var init_chatCompletionUtils = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/chatCompletionUtils.mjs"() {
+    isAssistantMessage = (message) => {
+      return message?.role === "assistant";
+    };
+    isToolMessage = (message) => {
+      return message?.role === "tool";
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/EventStream.mjs
+var _EventStream_instances, _EventStream_connectedPromise, _EventStream_resolveConnectedPromise, _EventStream_rejectConnectedPromise, _EventStream_endPromise, _EventStream_resolveEndPromise, _EventStream_rejectEndPromise, _EventStream_listeners, _EventStream_ended, _EventStream_errored, _EventStream_aborted, _EventStream_catchingPromiseCreated, _EventStream_handleError, EventStream;
+var init_EventStream = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/EventStream.mjs"() {
+    init_tslib();
+    init_error2();
+    EventStream = class {
+      constructor() {
+        _EventStream_instances.add(this);
+        this.controller = new AbortController();
+        _EventStream_connectedPromise.set(this, void 0);
+        _EventStream_resolveConnectedPromise.set(this, () => {
+        });
+        _EventStream_rejectConnectedPromise.set(this, () => {
+        });
+        _EventStream_endPromise.set(this, void 0);
+        _EventStream_resolveEndPromise.set(this, () => {
+        });
+        _EventStream_rejectEndPromise.set(this, () => {
+        });
+        _EventStream_listeners.set(this, {});
+        _EventStream_ended.set(this, false);
+        _EventStream_errored.set(this, false);
+        _EventStream_aborted.set(this, false);
+        _EventStream_catchingPromiseCreated.set(this, false);
+        __classPrivateFieldSet(this, _EventStream_connectedPromise, new Promise((resolve, reject) => {
+          __classPrivateFieldSet(this, _EventStream_resolveConnectedPromise, resolve, "f");
+          __classPrivateFieldSet(this, _EventStream_rejectConnectedPromise, reject, "f");
+        }), "f");
+        __classPrivateFieldSet(this, _EventStream_endPromise, new Promise((resolve, reject) => {
+          __classPrivateFieldSet(this, _EventStream_resolveEndPromise, resolve, "f");
+          __classPrivateFieldSet(this, _EventStream_rejectEndPromise, reject, "f");
+        }), "f");
+        __classPrivateFieldGet(this, _EventStream_connectedPromise, "f").catch(() => {
+        });
+        __classPrivateFieldGet(this, _EventStream_endPromise, "f").catch(() => {
+        });
+      }
+      _run(executor) {
+        setTimeout(() => {
+          executor().then(() => {
+            this._emitFinal();
+            this._emit("end");
+          }, __classPrivateFieldGet(this, _EventStream_instances, "m", _EventStream_handleError).bind(this));
+        }, 0);
+      }
+      _connected() {
+        if (this.ended)
+          return;
+        __classPrivateFieldGet(this, _EventStream_resolveConnectedPromise, "f").call(this);
+        this._emit("connect");
+      }
+      get ended() {
+        return __classPrivateFieldGet(this, _EventStream_ended, "f");
+      }
+      get errored() {
+        return __classPrivateFieldGet(this, _EventStream_errored, "f");
+      }
+      get aborted() {
+        return __classPrivateFieldGet(this, _EventStream_aborted, "f");
+      }
+      abort() {
+        this.controller.abort();
+      }
+      /**
+       * Adds the listener function to the end of the listeners array for the event.
+       * No checks are made to see if the listener has already been added. Multiple calls passing
+       * the same combination of event and listener will result in the listener being added, and
+       * called, multiple times.
+       * @returns this ChatCompletionStream, so that calls can be chained
+       */
+      on(event, listener) {
+        const listeners = __classPrivateFieldGet(this, _EventStream_listeners, "f")[event] || (__classPrivateFieldGet(this, _EventStream_listeners, "f")[event] = []);
+        listeners.push({ listener });
+        return this;
+      }
+      /**
+       * Removes the specified listener from the listener array for the event.
+       * off() will remove, at most, one instance of a listener from the listener array. If any single
+       * listener has been added multiple times to the listener array for the specified event, then
+       * off() must be called multiple times to remove each instance.
+       * @returns this ChatCompletionStream, so that calls can be chained
+       */
+      off(event, listener) {
+        const listeners = __classPrivateFieldGet(this, _EventStream_listeners, "f")[event];
+        if (!listeners)
+          return this;
+        const index = listeners.findIndex((l) => l.listener === listener);
+        if (index >= 0)
+          listeners.splice(index, 1);
+        return this;
+      }
+      /**
+       * Adds a one-time listener function for the event. The next time the event is triggered,
+       * this listener is removed and then invoked.
+       * @returns this ChatCompletionStream, so that calls can be chained
+       */
+      once(event, listener) {
+        const listeners = __classPrivateFieldGet(this, _EventStream_listeners, "f")[event] || (__classPrivateFieldGet(this, _EventStream_listeners, "f")[event] = []);
+        listeners.push({ listener, once: true });
+        return this;
+      }
+      /**
+       * This is similar to `.once()`, but returns a Promise that resolves the next time
+       * the event is triggered, instead of calling a listener callback.
+       * @returns a Promise that resolves the next time given event is triggered,
+       * or rejects if an error is emitted.  (If you request the 'error' event,
+       * returns a promise that resolves with the error).
+       *
+       * Example:
+       *
+       *   const message = await stream.emitted('message') // rejects if the stream errors
+       */
+      emitted(event) {
+        return new Promise((resolve, reject) => {
+          __classPrivateFieldSet(this, _EventStream_catchingPromiseCreated, true, "f");
+          if (event !== "error")
+            this.once("error", reject);
+          this.once(event, resolve);
+        });
+      }
+      async done() {
+        __classPrivateFieldSet(this, _EventStream_catchingPromiseCreated, true, "f");
+        await __classPrivateFieldGet(this, _EventStream_endPromise, "f");
+      }
+      _emit(event, ...args) {
+        if (__classPrivateFieldGet(this, _EventStream_ended, "f")) {
+          return;
+        }
+        if (event === "end") {
+          __classPrivateFieldSet(this, _EventStream_ended, true, "f");
+          __classPrivateFieldGet(this, _EventStream_resolveEndPromise, "f").call(this);
+        }
+        const listeners = __classPrivateFieldGet(this, _EventStream_listeners, "f")[event];
+        if (listeners) {
+          __classPrivateFieldGet(this, _EventStream_listeners, "f")[event] = listeners.filter((l) => !l.once);
+          listeners.forEach(({ listener }) => listener(...args));
+        }
+        if (event === "abort") {
+          const error48 = args[0];
+          if (!__classPrivateFieldGet(this, _EventStream_catchingPromiseCreated, "f") && !listeners?.length) {
+            Promise.reject(error48);
+          }
+          __classPrivateFieldGet(this, _EventStream_rejectConnectedPromise, "f").call(this, error48);
+          __classPrivateFieldGet(this, _EventStream_rejectEndPromise, "f").call(this, error48);
+          this._emit("end");
+          return;
+        }
+        if (event === "error") {
+          const error48 = args[0];
+          if (!__classPrivateFieldGet(this, _EventStream_catchingPromiseCreated, "f") && !listeners?.length) {
+            Promise.reject(error48);
+          }
+          __classPrivateFieldGet(this, _EventStream_rejectConnectedPromise, "f").call(this, error48);
+          __classPrivateFieldGet(this, _EventStream_rejectEndPromise, "f").call(this, error48);
+          this._emit("end");
+        }
+      }
+      _emitFinal() {
+      }
+    };
+    _EventStream_connectedPromise = /* @__PURE__ */ new WeakMap(), _EventStream_resolveConnectedPromise = /* @__PURE__ */ new WeakMap(), _EventStream_rejectConnectedPromise = /* @__PURE__ */ new WeakMap(), _EventStream_endPromise = /* @__PURE__ */ new WeakMap(), _EventStream_resolveEndPromise = /* @__PURE__ */ new WeakMap(), _EventStream_rejectEndPromise = /* @__PURE__ */ new WeakMap(), _EventStream_listeners = /* @__PURE__ */ new WeakMap(), _EventStream_ended = /* @__PURE__ */ new WeakMap(), _EventStream_errored = /* @__PURE__ */ new WeakMap(), _EventStream_aborted = /* @__PURE__ */ new WeakMap(), _EventStream_catchingPromiseCreated = /* @__PURE__ */ new WeakMap(), _EventStream_instances = /* @__PURE__ */ new WeakSet(), _EventStream_handleError = function _EventStream_handleError2(error48) {
+      __classPrivateFieldSet(this, _EventStream_errored, true, "f");
+      if (error48 instanceof Error && error48.name === "AbortError") {
+        error48 = new APIUserAbortError();
+      }
+      if (error48 instanceof APIUserAbortError) {
+        __classPrivateFieldSet(this, _EventStream_aborted, true, "f");
+        return this._emit("abort", error48);
+      }
+      if (error48 instanceof OpenAIError) {
+        return this._emit("error", error48);
+      }
+      if (error48 instanceof Error) {
+        const openAIError = new OpenAIError(error48.message);
+        openAIError.cause = error48;
+        return this._emit("error", openAIError);
+      }
+      return this._emit("error", new OpenAIError(String(error48)));
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/RunnableFunction.mjs
+function isRunnableFunctionWithParse(fn) {
+  return typeof fn.parse === "function";
+}
+var init_RunnableFunction = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/RunnableFunction.mjs"() {
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/AbstractChatCompletionRunner.mjs
+var _AbstractChatCompletionRunner_instances, _AbstractChatCompletionRunner_getFinalContent, _AbstractChatCompletionRunner_getFinalMessage, _AbstractChatCompletionRunner_getFinalFunctionToolCall, _AbstractChatCompletionRunner_getFinalFunctionToolCallResult, _AbstractChatCompletionRunner_calculateTotalUsage, _AbstractChatCompletionRunner_validateParams, _AbstractChatCompletionRunner_stringifyFunctionCallResult, DEFAULT_MAX_CHAT_COMPLETIONS, AbstractChatCompletionRunner;
+var init_AbstractChatCompletionRunner = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/AbstractChatCompletionRunner.mjs"() {
+    init_tslib();
+    init_error2();
+    init_parser();
+    init_chatCompletionUtils();
+    init_EventStream();
+    init_RunnableFunction();
+    DEFAULT_MAX_CHAT_COMPLETIONS = 10;
+    AbstractChatCompletionRunner = class extends EventStream {
+      constructor() {
+        super(...arguments);
+        _AbstractChatCompletionRunner_instances.add(this);
+        this._chatCompletions = [];
+        this.messages = [];
+      }
+      _addChatCompletion(chatCompletion) {
+        this._chatCompletions.push(chatCompletion);
+        this._emit("chatCompletion", chatCompletion);
+        const message = chatCompletion.choices[0]?.message;
+        if (message)
+          this._addMessage(message);
+        return chatCompletion;
+      }
+      _addMessage(message, emit = true) {
+        if (!("content" in message))
+          message.content = null;
+        this.messages.push(message);
+        if (emit) {
+          this._emit("message", message);
+          if (isToolMessage(message) && message.content) {
+            this._emit("functionToolCallResult", message.content);
+          } else if (isAssistantMessage(message) && message.tool_calls) {
+            for (const tool_call of message.tool_calls) {
+              if (tool_call.type === "function") {
+                this._emit("functionToolCall", tool_call.function);
+              }
+            }
+          }
+        }
+      }
+      /**
+       * @returns a promise that resolves with the final ChatCompletion, or rejects
+       * if an error occurred or the stream ended prematurely without producing a ChatCompletion.
+       */
+      async finalChatCompletion() {
+        await this.done();
+        const completion = this._chatCompletions[this._chatCompletions.length - 1];
+        if (!completion)
+          throw new OpenAIError("stream ended without producing a ChatCompletion");
+        return completion;
+      }
+      /**
+       * @returns a promise that resolves with the content of the final ChatCompletionMessage, or rejects
+       * if an error occurred or the stream ended prematurely without producing a ChatCompletionMessage.
+       */
+      async finalContent() {
+        await this.done();
+        return __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalContent).call(this);
+      }
+      /**
+       * @returns a promise that resolves with the the final assistant ChatCompletionMessage response,
+       * or rejects if an error occurred or the stream ended prematurely without producing a ChatCompletionMessage.
+       */
+      async finalMessage() {
+        await this.done();
+        return __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalMessage).call(this);
+      }
+      /**
+       * @returns a promise that resolves with the content of the final FunctionCall, or rejects
+       * if an error occurred or the stream ended prematurely without producing a ChatCompletionMessage.
+       */
+      async finalFunctionToolCall() {
+        await this.done();
+        return __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalFunctionToolCall).call(this);
+      }
+      async finalFunctionToolCallResult() {
+        await this.done();
+        return __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalFunctionToolCallResult).call(this);
+      }
+      async totalUsage() {
+        await this.done();
+        return __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_calculateTotalUsage).call(this);
+      }
+      allChatCompletions() {
+        return [...this._chatCompletions];
+      }
+      _emitFinal() {
+        const completion = this._chatCompletions[this._chatCompletions.length - 1];
+        if (completion)
+          this._emit("finalChatCompletion", completion);
+        const finalMessage = __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalMessage).call(this);
+        if (finalMessage)
+          this._emit("finalMessage", finalMessage);
+        const finalContent = __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalContent).call(this);
+        if (finalContent)
+          this._emit("finalContent", finalContent);
+        const finalFunctionCall = __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalFunctionToolCall).call(this);
+        if (finalFunctionCall)
+          this._emit("finalFunctionToolCall", finalFunctionCall);
+        const finalFunctionCallResult = __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalFunctionToolCallResult).call(this);
+        if (finalFunctionCallResult != null)
+          this._emit("finalFunctionToolCallResult", finalFunctionCallResult);
+        if (this._chatCompletions.some((c) => c.usage)) {
+          this._emit("totalUsage", __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_calculateTotalUsage).call(this));
+        }
+      }
+      async _createChatCompletion(client, params, options) {
+        const signal = options?.signal;
+        if (signal) {
+          if (signal.aborted)
+            this.controller.abort();
+          signal.addEventListener("abort", () => this.controller.abort());
+        }
+        __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_validateParams).call(this, params);
+        const chatCompletion = await client.chat.completions.create({ ...params, stream: false }, { ...options, signal: this.controller.signal });
+        this._connected();
+        return this._addChatCompletion(parseChatCompletion(chatCompletion, params));
+      }
+      async _runChatCompletion(client, params, options) {
+        for (const message of params.messages) {
+          this._addMessage(message, false);
+        }
+        return await this._createChatCompletion(client, params, options);
+      }
+      async _runTools(client, params, options) {
+        const role = "tool";
+        const { tool_choice = "auto", stream: stream4, ...restParams } = params;
+        const singleFunctionToCall = typeof tool_choice !== "string" && tool_choice.type === "function" && tool_choice?.function?.name;
+        const { maxChatCompletions = DEFAULT_MAX_CHAT_COMPLETIONS } = options || {};
+        const inputTools = params.tools.map((tool) => {
+          if (isAutoParsableTool(tool)) {
+            if (!tool.$callback) {
+              throw new OpenAIError("Tool given to `.runTools()` that does not have an associated function");
+            }
+            return {
+              type: "function",
+              function: {
+                function: tool.$callback,
+                name: tool.function.name,
+                description: tool.function.description || "",
+                parameters: tool.function.parameters,
+                parse: tool.$parseRaw,
+                strict: true
+              }
+            };
+          }
+          return tool;
+        });
+        const functionsByName = {};
+        for (const f of inputTools) {
+          if (f.type === "function") {
+            functionsByName[f.function.name || f.function.function.name] = f.function;
+          }
+        }
+        const tools = "tools" in params ? inputTools.map((t2) => t2.type === "function" ? {
+          type: "function",
+          function: {
+            name: t2.function.name || t2.function.function.name,
+            parameters: t2.function.parameters,
+            description: t2.function.description,
+            strict: t2.function.strict
+          }
+        } : t2) : void 0;
+        for (const message of params.messages) {
+          this._addMessage(message, false);
+        }
+        for (let i = 0; i < maxChatCompletions; ++i) {
+          const chatCompletion = await this._createChatCompletion(client, {
+            ...restParams,
+            tool_choice,
+            tools,
+            messages: [...this.messages]
+          }, options);
+          const message = chatCompletion.choices[0]?.message;
+          if (!message) {
+            throw new OpenAIError(`missing message in ChatCompletion response`);
+          }
+          if (!message.tool_calls?.length) {
+            return;
+          }
+          for (const tool_call of message.tool_calls) {
+            if (tool_call.type !== "function")
+              continue;
+            const tool_call_id = tool_call.id;
+            const { name: name2, arguments: args } = tool_call.function;
+            const fn = functionsByName[name2];
+            if (!fn) {
+              const content2 = `Invalid tool_call: ${JSON.stringify(name2)}. Available options are: ${Object.keys(functionsByName).map((name3) => JSON.stringify(name3)).join(", ")}. Please try again`;
+              this._addMessage({ role, tool_call_id, content: content2 });
+              continue;
+            } else if (singleFunctionToCall && singleFunctionToCall !== name2) {
+              const content2 = `Invalid tool_call: ${JSON.stringify(name2)}. ${JSON.stringify(singleFunctionToCall)} requested. Please try again`;
+              this._addMessage({ role, tool_call_id, content: content2 });
+              continue;
+            }
+            let parsed;
+            try {
+              parsed = isRunnableFunctionWithParse(fn) ? await fn.parse(args) : args;
+            } catch (error48) {
+              const content2 = error48 instanceof Error ? error48.message : String(error48);
+              this._addMessage({ role, tool_call_id, content: content2 });
+              continue;
+            }
+            const rawContent = await fn.function(parsed, this);
+            const content = __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_stringifyFunctionCallResult).call(this, rawContent);
+            this._addMessage({ role, tool_call_id, content });
+            if (singleFunctionToCall) {
+              return;
+            }
+          }
+        }
+        return;
+      }
+    };
+    _AbstractChatCompletionRunner_instances = /* @__PURE__ */ new WeakSet(), _AbstractChatCompletionRunner_getFinalContent = function _AbstractChatCompletionRunner_getFinalContent2() {
+      return __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalMessage).call(this).content ?? null;
+    }, _AbstractChatCompletionRunner_getFinalMessage = function _AbstractChatCompletionRunner_getFinalMessage2() {
+      let i = this.messages.length;
+      while (i-- > 0) {
+        const message = this.messages[i];
+        if (isAssistantMessage(message)) {
+          const ret = {
+            ...message,
+            content: message.content ?? null,
+            refusal: message.refusal ?? null
+          };
+          return ret;
+        }
+      }
+      throw new OpenAIError("stream ended without producing a ChatCompletionMessage with role=assistant");
+    }, _AbstractChatCompletionRunner_getFinalFunctionToolCall = function _AbstractChatCompletionRunner_getFinalFunctionToolCall2() {
+      for (let i = this.messages.length - 1; i >= 0; i--) {
+        const message = this.messages[i];
+        if (isAssistantMessage(message) && message?.tool_calls?.length) {
+          return message.tool_calls.filter((x) => x.type === "function").at(-1)?.function;
+        }
+      }
+      return;
+    }, _AbstractChatCompletionRunner_getFinalFunctionToolCallResult = function _AbstractChatCompletionRunner_getFinalFunctionToolCallResult2() {
+      for (let i = this.messages.length - 1; i >= 0; i--) {
+        const message = this.messages[i];
+        if (isToolMessage(message) && message.content != null && typeof message.content === "string" && this.messages.some((x) => x.role === "assistant" && x.tool_calls?.some((y) => y.type === "function" && y.id === message.tool_call_id))) {
+          return message.content;
+        }
+      }
+      return;
+    }, _AbstractChatCompletionRunner_calculateTotalUsage = function _AbstractChatCompletionRunner_calculateTotalUsage2() {
+      const total = {
+        completion_tokens: 0,
+        prompt_tokens: 0,
+        total_tokens: 0
+      };
+      for (const { usage } of this._chatCompletions) {
+        if (usage) {
+          total.completion_tokens += usage.completion_tokens;
+          total.prompt_tokens += usage.prompt_tokens;
+          total.total_tokens += usage.total_tokens;
+        }
+      }
+      return total;
+    }, _AbstractChatCompletionRunner_validateParams = function _AbstractChatCompletionRunner_validateParams2(params) {
+      if (params.n != null && params.n > 1) {
+        throw new OpenAIError("ChatCompletion convenience helpers only support n=1 at this time. To use n>1, please use chat.completions.create() directly.");
+      }
+    }, _AbstractChatCompletionRunner_stringifyFunctionCallResult = function _AbstractChatCompletionRunner_stringifyFunctionCallResult2(rawContent) {
+      return typeof rawContent === "string" ? rawContent : rawContent === void 0 ? "undefined" : JSON.stringify(rawContent);
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionRunner.mjs
+var ChatCompletionRunner;
+var init_ChatCompletionRunner = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionRunner.mjs"() {
+    init_AbstractChatCompletionRunner();
+    init_chatCompletionUtils();
+    ChatCompletionRunner = class _ChatCompletionRunner extends AbstractChatCompletionRunner {
+      static runTools(client, params, options) {
+        const runner = new _ChatCompletionRunner();
+        const opts = {
+          ...options,
+          headers: { ...options?.headers, "X-Stainless-Helper-Method": "runTools" }
+        };
+        runner._run(() => runner._runTools(client, params, opts));
+        return runner;
+      }
+      _addMessage(message, emit = true) {
+        super._addMessage(message, emit);
+        if (isAssistantMessage(message) && message.content) {
+          this._emit("content", message.content);
+        }
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/_vendor/partial-json-parser/parser.mjs
+function parseJSON(jsonString, allowPartial = Allow.ALL) {
+  if (typeof jsonString !== "string") {
+    throw new TypeError(`expecting str, got ${typeof jsonString}`);
+  }
+  if (!jsonString.trim()) {
+    throw new Error(`${jsonString} is empty`);
+  }
+  return _parseJSON(jsonString.trim(), allowPartial);
+}
+var STR, NUM, ARR, OBJ, NULL, BOOL, NAN, INFINITY, MINUS_INFINITY, INF, SPECIAL, ATOM, COLLECTION, ALL, Allow, PartialJSON, MalformedJSON, _parseJSON, partialParse;
+var init_parser2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/_vendor/partial-json-parser/parser.mjs"() {
+    STR = 1;
+    NUM = 2;
+    ARR = 4;
+    OBJ = 8;
+    NULL = 16;
+    BOOL = 32;
+    NAN = 64;
+    INFINITY = 128;
+    MINUS_INFINITY = 256;
+    INF = INFINITY | MINUS_INFINITY;
+    SPECIAL = NULL | BOOL | INF | NAN;
+    ATOM = STR | NUM | SPECIAL;
+    COLLECTION = ARR | OBJ;
+    ALL = ATOM | COLLECTION;
+    Allow = {
+      STR,
+      NUM,
+      ARR,
+      OBJ,
+      NULL,
+      BOOL,
+      NAN,
+      INFINITY,
+      MINUS_INFINITY,
+      INF,
+      SPECIAL,
+      ATOM,
+      COLLECTION,
+      ALL
+    };
+    PartialJSON = class extends Error {
+    };
+    MalformedJSON = class extends Error {
+    };
+    _parseJSON = (jsonString, allow) => {
+      const length = jsonString.length;
+      let index = 0;
+      const markPartialJSON = (msg) => {
+        throw new PartialJSON(`${msg} at position ${index}`);
+      };
+      const throwMalformedError = (msg) => {
+        throw new MalformedJSON(`${msg} at position ${index}`);
+      };
+      const parseAny = () => {
+        skipBlank();
+        if (index >= length)
+          markPartialJSON("Unexpected end of input");
+        if (jsonString[index] === '"')
+          return parseStr();
+        if (jsonString[index] === "{")
+          return parseObj();
+        if (jsonString[index] === "[")
+          return parseArr();
+        if (jsonString.substring(index, index + 4) === "null" || Allow.NULL & allow && length - index < 4 && "null".startsWith(jsonString.substring(index))) {
+          index += 4;
+          return null;
+        }
+        if (jsonString.substring(index, index + 4) === "true" || Allow.BOOL & allow && length - index < 4 && "true".startsWith(jsonString.substring(index))) {
+          index += 4;
+          return true;
+        }
+        if (jsonString.substring(index, index + 5) === "false" || Allow.BOOL & allow && length - index < 5 && "false".startsWith(jsonString.substring(index))) {
+          index += 5;
+          return false;
+        }
+        if (jsonString.substring(index, index + 8) === "Infinity" || Allow.INFINITY & allow && length - index < 8 && "Infinity".startsWith(jsonString.substring(index))) {
+          index += 8;
+          return Infinity;
+        }
+        if (jsonString.substring(index, index + 9) === "-Infinity" || Allow.MINUS_INFINITY & allow && 1 < length - index && length - index < 9 && "-Infinity".startsWith(jsonString.substring(index))) {
+          index += 9;
+          return -Infinity;
+        }
+        if (jsonString.substring(index, index + 3) === "NaN" || Allow.NAN & allow && length - index < 3 && "NaN".startsWith(jsonString.substring(index))) {
+          index += 3;
+          return NaN;
+        }
+        return parseNum();
+      };
+      const parseStr = () => {
+        const start = index;
+        let escape3 = false;
+        index++;
+        while (index < length && (jsonString[index] !== '"' || escape3 && jsonString[index - 1] === "\\")) {
+          escape3 = jsonString[index] === "\\" ? !escape3 : false;
+          index++;
+        }
+        if (jsonString.charAt(index) == '"') {
+          try {
+            return JSON.parse(jsonString.substring(start, ++index - Number(escape3)));
+          } catch (e) {
+            throwMalformedError(String(e));
+          }
+        } else if (Allow.STR & allow) {
+          try {
+            return JSON.parse(jsonString.substring(start, index - Number(escape3)) + '"');
+          } catch (e) {
+            return JSON.parse(jsonString.substring(start, jsonString.lastIndexOf("\\")) + '"');
+          }
+        }
+        markPartialJSON("Unterminated string literal");
+      };
+      const parseObj = () => {
+        index++;
+        skipBlank();
+        const obj = {};
+        try {
+          while (jsonString[index] !== "}") {
+            skipBlank();
+            if (index >= length && Allow.OBJ & allow)
+              return obj;
+            const key = parseStr();
+            skipBlank();
+            index++;
+            try {
+              const value = parseAny();
+              Object.defineProperty(obj, key, { value, writable: true, enumerable: true, configurable: true });
+            } catch (e) {
+              if (Allow.OBJ & allow)
+                return obj;
+              else
+                throw e;
+            }
+            skipBlank();
+            if (jsonString[index] === ",")
+              index++;
+          }
+        } catch (e) {
+          if (Allow.OBJ & allow)
+            return obj;
+          else
+            markPartialJSON("Expected '}' at end of object");
+        }
+        index++;
+        return obj;
+      };
+      const parseArr = () => {
+        index++;
+        const arr = [];
+        try {
+          while (jsonString[index] !== "]") {
+            arr.push(parseAny());
+            skipBlank();
+            if (jsonString[index] === ",") {
+              index++;
+            }
+          }
+        } catch (e) {
+          if (Allow.ARR & allow) {
+            return arr;
+          }
+          markPartialJSON("Expected ']' at end of array");
+        }
+        index++;
+        return arr;
+      };
+      const parseNum = () => {
+        if (index === 0) {
+          if (jsonString === "-" && Allow.NUM & allow)
+            markPartialJSON("Not sure what '-' is");
+          try {
+            return JSON.parse(jsonString);
+          } catch (e) {
+            if (Allow.NUM & allow) {
+              try {
+                if ("." === jsonString[jsonString.length - 1])
+                  return JSON.parse(jsonString.substring(0, jsonString.lastIndexOf(".")));
+                return JSON.parse(jsonString.substring(0, jsonString.lastIndexOf("e")));
+              } catch (e2) {
+              }
+            }
+            throwMalformedError(String(e));
+          }
+        }
+        const start = index;
+        if (jsonString[index] === "-")
+          index++;
+        while (jsonString[index] && !",]}".includes(jsonString[index]))
+          index++;
+        if (index == length && !(Allow.NUM & allow))
+          markPartialJSON("Unterminated number literal");
+        try {
+          return JSON.parse(jsonString.substring(start, index));
+        } catch (e) {
+          if (jsonString.substring(start, index) === "-" && Allow.NUM & allow)
+            markPartialJSON("Not sure what '-' is");
+          try {
+            return JSON.parse(jsonString.substring(start, jsonString.lastIndexOf("e")));
+          } catch (e2) {
+            throwMalformedError(String(e2));
+          }
+        }
+      };
+      const skipBlank = () => {
+        while (index < length && " \n\r	".includes(jsonString[index])) {
+          index++;
+        }
+      };
+      return parseAny();
+    };
+    partialParse = (input) => parseJSON(input, Allow.ALL ^ Allow.NUM);
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/streaming.mjs
+var init_streaming2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/streaming.mjs"() {
+    init_streaming();
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionStream.mjs
+function finalizeChatCompletion(snapshot, params) {
+  const { id, choices, created, model, system_fingerprint, ...rest } = snapshot;
+  const completion = {
+    ...rest,
+    id,
+    choices: choices.map(({ message, finish_reason, index, logprobs, ...choiceRest }) => {
+      if (!finish_reason) {
+        throw new OpenAIError(`missing finish_reason for choice ${index}`);
+      }
+      const { content = null, function_call, tool_calls, ...messageRest } = message;
+      const role = message.role;
+      if (!role) {
+        throw new OpenAIError(`missing role for choice ${index}`);
+      }
+      if (function_call) {
+        const { arguments: args, name: name2 } = function_call;
+        if (args == null) {
+          throw new OpenAIError(`missing function_call.arguments for choice ${index}`);
+        }
+        if (!name2) {
+          throw new OpenAIError(`missing function_call.name for choice ${index}`);
+        }
+        return {
+          ...choiceRest,
+          message: {
+            content,
+            function_call: { arguments: args, name: name2 },
+            role,
+            refusal: message.refusal ?? null
+          },
+          finish_reason,
+          index,
+          logprobs
+        };
+      }
+      if (tool_calls) {
+        return {
+          ...choiceRest,
+          index,
+          finish_reason,
+          logprobs,
+          message: {
+            ...messageRest,
+            role,
+            content,
+            refusal: message.refusal ?? null,
+            tool_calls: tool_calls.map((tool_call, i) => {
+              const { function: fn, type, id: id2, ...toolRest } = tool_call;
+              const { arguments: args, name: name2, ...fnRest } = fn || {};
+              if (id2 == null) {
+                throw new OpenAIError(`missing choices[${index}].tool_calls[${i}].id
+${str(snapshot)}`);
+              }
+              if (type == null) {
+                throw new OpenAIError(`missing choices[${index}].tool_calls[${i}].type
+${str(snapshot)}`);
+              }
+              if (name2 == null) {
+                throw new OpenAIError(`missing choices[${index}].tool_calls[${i}].function.name
+${str(snapshot)}`);
+              }
+              if (args == null) {
+                throw new OpenAIError(`missing choices[${index}].tool_calls[${i}].function.arguments
+${str(snapshot)}`);
+              }
+              return { ...toolRest, id: id2, type, function: { ...fnRest, name: name2, arguments: args } };
+            })
+          }
+        };
+      }
+      return {
+        ...choiceRest,
+        message: { ...messageRest, content, role, refusal: message.refusal ?? null },
+        finish_reason,
+        index,
+        logprobs
+      };
+    }),
+    created,
+    model,
+    object: "chat.completion",
+    ...system_fingerprint ? { system_fingerprint } : {}
+  };
+  return maybeParseChatCompletion(completion, params);
+}
+function str(x) {
+  return JSON.stringify(x);
+}
+function assertIsEmpty(obj) {
+  return;
+}
+function assertNever2(_x) {
+}
+var _ChatCompletionStream_instances, _ChatCompletionStream_params, _ChatCompletionStream_choiceEventStates, _ChatCompletionStream_currentChatCompletionSnapshot, _ChatCompletionStream_beginRequest, _ChatCompletionStream_getChoiceEventState, _ChatCompletionStream_addChunk, _ChatCompletionStream_emitToolCallDoneEvent, _ChatCompletionStream_emitContentDoneEvents, _ChatCompletionStream_endRequest, _ChatCompletionStream_getAutoParseableResponseFormat, _ChatCompletionStream_accumulateChatCompletion, ChatCompletionStream;
+var init_ChatCompletionStream = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionStream.mjs"() {
+    init_tslib();
+    init_parser2();
+    init_error2();
+    init_parser();
+    init_streaming2();
+    init_AbstractChatCompletionRunner();
+    ChatCompletionStream = class _ChatCompletionStream extends AbstractChatCompletionRunner {
+      constructor(params) {
+        super();
+        _ChatCompletionStream_instances.add(this);
+        _ChatCompletionStream_params.set(this, void 0);
+        _ChatCompletionStream_choiceEventStates.set(this, void 0);
+        _ChatCompletionStream_currentChatCompletionSnapshot.set(this, void 0);
+        __classPrivateFieldSet(this, _ChatCompletionStream_params, params, "f");
+        __classPrivateFieldSet(this, _ChatCompletionStream_choiceEventStates, [], "f");
+      }
+      get currentChatCompletionSnapshot() {
+        return __classPrivateFieldGet(this, _ChatCompletionStream_currentChatCompletionSnapshot, "f");
+      }
+      /**
+       * Intended for use on the frontend, consuming a stream produced with
+       * `.toReadableStream()` on the backend.
+       *
+       * Note that messages sent to the model do not appear in `.on('message')`
+       * in this context.
+       */
+      static fromReadableStream(stream4) {
+        const runner = new _ChatCompletionStream(null);
+        runner._run(() => runner._fromReadableStream(stream4));
+        return runner;
+      }
+      static createChatCompletion(client, params, options) {
+        const runner = new _ChatCompletionStream(params);
+        runner._run(() => runner._runChatCompletion(client, { ...params, stream: true }, { ...options, headers: { ...options?.headers, "X-Stainless-Helper-Method": "stream" } }));
+        return runner;
+      }
+      async _createChatCompletion(client, params, options) {
+        super._createChatCompletion;
+        const signal = options?.signal;
+        if (signal) {
+          if (signal.aborted)
+            this.controller.abort();
+          signal.addEventListener("abort", () => this.controller.abort());
+        }
+        __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_beginRequest).call(this);
+        const stream4 = await client.chat.completions.create({ ...params, stream: true }, { ...options, signal: this.controller.signal });
+        this._connected();
+        for await (const chunk of stream4) {
+          __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_addChunk).call(this, chunk);
+        }
+        if (stream4.controller.signal?.aborted) {
+          throw new APIUserAbortError();
+        }
+        return this._addChatCompletion(__classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_endRequest).call(this));
+      }
+      async _fromReadableStream(readableStream, options) {
+        const signal = options?.signal;
+        if (signal) {
+          if (signal.aborted)
+            this.controller.abort();
+          signal.addEventListener("abort", () => this.controller.abort());
+        }
+        __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_beginRequest).call(this);
+        this._connected();
+        const stream4 = Stream3.fromReadableStream(readableStream, this.controller);
+        let chatId;
+        for await (const chunk of stream4) {
+          if (chatId && chatId !== chunk.id) {
+            this._addChatCompletion(__classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_endRequest).call(this));
+          }
+          __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_addChunk).call(this, chunk);
+          chatId = chunk.id;
+        }
+        if (stream4.controller.signal?.aborted) {
+          throw new APIUserAbortError();
+        }
+        return this._addChatCompletion(__classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_endRequest).call(this));
+      }
+      [(_ChatCompletionStream_params = /* @__PURE__ */ new WeakMap(), _ChatCompletionStream_choiceEventStates = /* @__PURE__ */ new WeakMap(), _ChatCompletionStream_currentChatCompletionSnapshot = /* @__PURE__ */ new WeakMap(), _ChatCompletionStream_instances = /* @__PURE__ */ new WeakSet(), _ChatCompletionStream_beginRequest = function _ChatCompletionStream_beginRequest2() {
+        if (this.ended)
+          return;
+        __classPrivateFieldSet(this, _ChatCompletionStream_currentChatCompletionSnapshot, void 0, "f");
+      }, _ChatCompletionStream_getChoiceEventState = function _ChatCompletionStream_getChoiceEventState2(choice) {
+        let state = __classPrivateFieldGet(this, _ChatCompletionStream_choiceEventStates, "f")[choice.index];
+        if (state) {
+          return state;
+        }
+        state = {
+          content_done: false,
+          refusal_done: false,
+          logprobs_content_done: false,
+          logprobs_refusal_done: false,
+          done_tool_calls: /* @__PURE__ */ new Set(),
+          current_tool_call_index: null
+        };
+        __classPrivateFieldGet(this, _ChatCompletionStream_choiceEventStates, "f")[choice.index] = state;
+        return state;
+      }, _ChatCompletionStream_addChunk = function _ChatCompletionStream_addChunk2(chunk) {
+        if (this.ended)
+          return;
+        const completion = __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_accumulateChatCompletion).call(this, chunk);
+        this._emit("chunk", chunk, completion);
+        for (const choice of chunk.choices) {
+          const choiceSnapshot = completion.choices[choice.index];
+          if (choice.delta.content != null && choiceSnapshot.message?.role === "assistant" && choiceSnapshot.message?.content) {
+            this._emit("content", choice.delta.content, choiceSnapshot.message.content);
+            this._emit("content.delta", {
+              delta: choice.delta.content,
+              snapshot: choiceSnapshot.message.content,
+              parsed: choiceSnapshot.message.parsed
+            });
+          }
+          if (choice.delta.refusal != null && choiceSnapshot.message?.role === "assistant" && choiceSnapshot.message?.refusal) {
+            this._emit("refusal.delta", {
+              delta: choice.delta.refusal,
+              snapshot: choiceSnapshot.message.refusal
+            });
+          }
+          if (choice.logprobs?.content != null && choiceSnapshot.message?.role === "assistant") {
+            this._emit("logprobs.content.delta", {
+              content: choice.logprobs?.content,
+              snapshot: choiceSnapshot.logprobs?.content ?? []
+            });
+          }
+          if (choice.logprobs?.refusal != null && choiceSnapshot.message?.role === "assistant") {
+            this._emit("logprobs.refusal.delta", {
+              refusal: choice.logprobs?.refusal,
+              snapshot: choiceSnapshot.logprobs?.refusal ?? []
+            });
+          }
+          const state = __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_getChoiceEventState).call(this, choiceSnapshot);
+          if (choiceSnapshot.finish_reason) {
+            __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_emitContentDoneEvents).call(this, choiceSnapshot);
+            if (state.current_tool_call_index != null) {
+              __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_emitToolCallDoneEvent).call(this, choiceSnapshot, state.current_tool_call_index);
+            }
+          }
+          for (const toolCall of choice.delta.tool_calls ?? []) {
+            if (state.current_tool_call_index !== toolCall.index) {
+              __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_emitContentDoneEvents).call(this, choiceSnapshot);
+              if (state.current_tool_call_index != null) {
+                __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_emitToolCallDoneEvent).call(this, choiceSnapshot, state.current_tool_call_index);
+              }
+            }
+            state.current_tool_call_index = toolCall.index;
+          }
+          for (const toolCallDelta of choice.delta.tool_calls ?? []) {
+            const toolCallSnapshot = choiceSnapshot.message.tool_calls?.[toolCallDelta.index];
+            if (!toolCallSnapshot?.type) {
+              continue;
+            }
+            if (toolCallSnapshot?.type === "function") {
+              this._emit("tool_calls.function.arguments.delta", {
+                name: toolCallSnapshot.function?.name,
+                index: toolCallDelta.index,
+                arguments: toolCallSnapshot.function.arguments,
+                parsed_arguments: toolCallSnapshot.function.parsed_arguments,
+                arguments_delta: toolCallDelta.function?.arguments ?? ""
+              });
+            } else {
+              assertNever2(toolCallSnapshot?.type);
+            }
+          }
+        }
+      }, _ChatCompletionStream_emitToolCallDoneEvent = function _ChatCompletionStream_emitToolCallDoneEvent2(choiceSnapshot, toolCallIndex) {
+        const state = __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_getChoiceEventState).call(this, choiceSnapshot);
+        if (state.done_tool_calls.has(toolCallIndex)) {
+          return;
+        }
+        const toolCallSnapshot = choiceSnapshot.message.tool_calls?.[toolCallIndex];
+        if (!toolCallSnapshot) {
+          throw new Error("no tool call snapshot");
+        }
+        if (!toolCallSnapshot.type) {
+          throw new Error("tool call snapshot missing `type`");
+        }
+        if (toolCallSnapshot.type === "function") {
+          const inputTool = __classPrivateFieldGet(this, _ChatCompletionStream_params, "f")?.tools?.find((tool) => isChatCompletionFunctionTool(tool) && tool.function.name === toolCallSnapshot.function.name);
+          this._emit("tool_calls.function.arguments.done", {
+            name: toolCallSnapshot.function.name,
+            index: toolCallIndex,
+            arguments: toolCallSnapshot.function.arguments,
+            parsed_arguments: isAutoParsableTool(inputTool) ? inputTool.$parseRaw(toolCallSnapshot.function.arguments) : inputTool?.function.strict ? JSON.parse(toolCallSnapshot.function.arguments) : null
+          });
+        } else {
+          assertNever2(toolCallSnapshot.type);
+        }
+      }, _ChatCompletionStream_emitContentDoneEvents = function _ChatCompletionStream_emitContentDoneEvents2(choiceSnapshot) {
+        const state = __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_getChoiceEventState).call(this, choiceSnapshot);
+        if (choiceSnapshot.message.content && !state.content_done) {
+          state.content_done = true;
+          const responseFormat = __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_getAutoParseableResponseFormat).call(this);
+          this._emit("content.done", {
+            content: choiceSnapshot.message.content,
+            parsed: responseFormat ? responseFormat.$parseRaw(choiceSnapshot.message.content) : null
+          });
+        }
+        if (choiceSnapshot.message.refusal && !state.refusal_done) {
+          state.refusal_done = true;
+          this._emit("refusal.done", { refusal: choiceSnapshot.message.refusal });
+        }
+        if (choiceSnapshot.logprobs?.content && !state.logprobs_content_done) {
+          state.logprobs_content_done = true;
+          this._emit("logprobs.content.done", { content: choiceSnapshot.logprobs.content });
+        }
+        if (choiceSnapshot.logprobs?.refusal && !state.logprobs_refusal_done) {
+          state.logprobs_refusal_done = true;
+          this._emit("logprobs.refusal.done", { refusal: choiceSnapshot.logprobs.refusal });
+        }
+      }, _ChatCompletionStream_endRequest = function _ChatCompletionStream_endRequest2() {
+        if (this.ended) {
+          throw new OpenAIError(`stream has ended, this shouldn't happen`);
+        }
+        const snapshot = __classPrivateFieldGet(this, _ChatCompletionStream_currentChatCompletionSnapshot, "f");
+        if (!snapshot) {
+          throw new OpenAIError(`request ended without sending any chunks`);
+        }
+        __classPrivateFieldSet(this, _ChatCompletionStream_currentChatCompletionSnapshot, void 0, "f");
+        __classPrivateFieldSet(this, _ChatCompletionStream_choiceEventStates, [], "f");
+        return finalizeChatCompletion(snapshot, __classPrivateFieldGet(this, _ChatCompletionStream_params, "f"));
+      }, _ChatCompletionStream_getAutoParseableResponseFormat = function _ChatCompletionStream_getAutoParseableResponseFormat2() {
+        const responseFormat = __classPrivateFieldGet(this, _ChatCompletionStream_params, "f")?.response_format;
+        if (isAutoParsableResponseFormat(responseFormat)) {
+          return responseFormat;
+        }
+        return null;
+      }, _ChatCompletionStream_accumulateChatCompletion = function _ChatCompletionStream_accumulateChatCompletion2(chunk) {
+        var _a4, _b, _c, _d;
+        let snapshot = __classPrivateFieldGet(this, _ChatCompletionStream_currentChatCompletionSnapshot, "f");
+        const { choices, ...rest } = chunk;
+        if (!snapshot) {
+          snapshot = __classPrivateFieldSet(this, _ChatCompletionStream_currentChatCompletionSnapshot, {
+            ...rest,
+            choices: []
+          }, "f");
+        } else {
+          Object.assign(snapshot, rest);
+        }
+        for (const { delta, finish_reason, index, logprobs = null, ...other } of chunk.choices) {
+          let choice = snapshot.choices[index];
+          if (!choice) {
+            choice = snapshot.choices[index] = { finish_reason, index, message: {}, logprobs, ...other };
+          }
+          if (logprobs) {
+            if (!choice.logprobs) {
+              choice.logprobs = Object.assign({}, logprobs);
+            } else {
+              const { content: content2, refusal: refusal2, ...rest3 } = logprobs;
+              assertIsEmpty(rest3);
+              Object.assign(choice.logprobs, rest3);
+              if (content2) {
+                (_a4 = choice.logprobs).content ?? (_a4.content = []);
+                choice.logprobs.content.push(...content2);
+              }
+              if (refusal2) {
+                (_b = choice.logprobs).refusal ?? (_b.refusal = []);
+                choice.logprobs.refusal.push(...refusal2);
+              }
+            }
+          }
+          if (finish_reason) {
+            choice.finish_reason = finish_reason;
+            if (__classPrivateFieldGet(this, _ChatCompletionStream_params, "f") && hasAutoParseableInput(__classPrivateFieldGet(this, _ChatCompletionStream_params, "f"))) {
+              if (finish_reason === "length") {
+                throw new LengthFinishReasonError();
+              }
+              if (finish_reason === "content_filter") {
+                throw new ContentFilterFinishReasonError();
+              }
+            }
+          }
+          Object.assign(choice, other);
+          if (!delta)
+            continue;
+          const { content, refusal, function_call, role, tool_calls, ...rest2 } = delta;
+          assertIsEmpty(rest2);
+          Object.assign(choice.message, rest2);
+          if (refusal) {
+            choice.message.refusal = (choice.message.refusal || "") + refusal;
+          }
+          if (role)
+            choice.message.role = role;
+          if (function_call) {
+            if (!choice.message.function_call) {
+              choice.message.function_call = function_call;
+            } else {
+              if (function_call.name)
+                choice.message.function_call.name = function_call.name;
+              if (function_call.arguments) {
+                (_c = choice.message.function_call).arguments ?? (_c.arguments = "");
+                choice.message.function_call.arguments += function_call.arguments;
+              }
+            }
+          }
+          if (content) {
+            choice.message.content = (choice.message.content || "") + content;
+            if (!choice.message.refusal && __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_getAutoParseableResponseFormat).call(this)) {
+              choice.message.parsed = partialParse(choice.message.content);
+            }
+          }
+          if (tool_calls) {
+            if (!choice.message.tool_calls)
+              choice.message.tool_calls = [];
+            for (const { index: index2, id, type, function: fn, ...rest3 } of tool_calls) {
+              const tool_call = (_d = choice.message.tool_calls)[index2] ?? (_d[index2] = {});
+              Object.assign(tool_call, rest3);
+              if (id)
+                tool_call.id = id;
+              if (type)
+                tool_call.type = type;
+              if (fn)
+                tool_call.function ?? (tool_call.function = { name: fn.name ?? "", arguments: "" });
+              if (fn?.name)
+                tool_call.function.name = fn.name;
+              if (fn?.arguments) {
+                tool_call.function.arguments += fn.arguments;
+                if (shouldParseToolCall(__classPrivateFieldGet(this, _ChatCompletionStream_params, "f"), tool_call)) {
+                  tool_call.function.parsed_arguments = partialParse(tool_call.function.arguments);
+                }
+              }
+            }
+          }
+        }
+        return snapshot;
+      }, Symbol.asyncIterator)]() {
+        const pushQueue = [];
+        const readQueue = [];
+        let done = false;
+        this.on("chunk", (chunk) => {
+          const reader = readQueue.shift();
+          if (reader) {
+            reader.resolve(chunk);
+          } else {
+            pushQueue.push(chunk);
+          }
+        });
+        this.on("end", () => {
+          done = true;
+          for (const reader of readQueue) {
+            reader.resolve(void 0);
+          }
+          readQueue.length = 0;
+        });
+        this.on("abort", (err) => {
+          done = true;
+          for (const reader of readQueue) {
+            reader.reject(err);
+          }
+          readQueue.length = 0;
+        });
+        this.on("error", (err) => {
+          done = true;
+          for (const reader of readQueue) {
+            reader.reject(err);
+          }
+          readQueue.length = 0;
+        });
+        return {
+          next: async () => {
+            if (!pushQueue.length) {
+              if (done) {
+                return { value: void 0, done: true };
+              }
+              return new Promise((resolve, reject) => readQueue.push({ resolve, reject })).then((chunk2) => chunk2 ? { value: chunk2, done: false } : { value: void 0, done: true });
+            }
+            const chunk = pushQueue.shift();
+            return { value: chunk, done: false };
+          },
+          return: async () => {
+            this.abort();
+            return { value: void 0, done: true };
+          }
+        };
+      }
+      toReadableStream() {
+        const stream4 = new Stream3(this[Symbol.asyncIterator].bind(this), this.controller);
+        return stream4.toReadableStream();
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionStreamingRunner.mjs
+var ChatCompletionStreamingRunner;
+var init_ChatCompletionStreamingRunner = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionStreamingRunner.mjs"() {
+    init_ChatCompletionStream();
+    ChatCompletionStreamingRunner = class _ChatCompletionStreamingRunner extends ChatCompletionStream {
+      static fromReadableStream(stream4) {
+        const runner = new _ChatCompletionStreamingRunner(null);
+        runner._run(() => runner._fromReadableStream(stream4));
+        return runner;
+      }
+      static runTools(client, params, options) {
+        const runner = new _ChatCompletionStreamingRunner(
+          // @ts-expect-error TODO these types are incompatible
+          params
+        );
+        const opts = {
+          ...options,
+          headers: { ...options?.headers, "X-Stainless-Helper-Method": "runTools" }
+        };
+        runner._run(() => runner._runTools(client, params, opts));
+        return runner;
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/completions/completions.mjs
+var Completions;
+var init_completions = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/completions/completions.mjs"() {
+    init_resource();
+    init_messages();
+    init_messages();
+    init_pagination();
+    init_path();
+    init_ChatCompletionRunner();
+    init_ChatCompletionStreamingRunner();
+    init_ChatCompletionStream();
+    init_parser();
+    init_ChatCompletionStreamingRunner();
+    init_RunnableFunction();
+    init_ChatCompletionStream();
+    init_ChatCompletionRunner();
+    Completions = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.messages = new Messages(this._client);
+      }
+      create(body, options) {
+        return this._client.post("/chat/completions", { body, ...options, stream: body.stream ?? false });
+      }
+      /**
+       * Get a stored chat completion. Only Chat Completions that have been created with
+       * the `store` parameter set to `true` will be returned.
+       *
+       * @example
+       * ```ts
+       * const chatCompletion =
+       *   await client.chat.completions.retrieve('completion_id');
+       * ```
+       */
+      retrieve(completionID, options) {
+        return this._client.get(path2`/chat/completions/${completionID}`, options);
+      }
+      /**
+       * Modify a stored chat completion. Only Chat Completions that have been created
+       * with the `store` parameter set to `true` can be modified. Currently, the only
+       * supported modification is to update the `metadata` field.
+       *
+       * @example
+       * ```ts
+       * const chatCompletion = await client.chat.completions.update(
+       *   'completion_id',
+       *   { metadata: { foo: 'string' } },
+       * );
+       * ```
+       */
+      update(completionID, body, options) {
+        return this._client.post(path2`/chat/completions/${completionID}`, { body, ...options });
+      }
+      /**
+       * List stored Chat Completions. Only Chat Completions that have been stored with
+       * the `store` parameter set to `true` will be returned.
+       *
+       * @example
+       * ```ts
+       * // Automatically fetches more pages as needed.
+       * for await (const chatCompletion of client.chat.completions.list()) {
+       *   // ...
+       * }
+       * ```
+       */
+      list(query = {}, options) {
+        return this._client.getAPIList("/chat/completions", CursorPage, { query, ...options });
+      }
+      /**
+       * Delete a stored chat completion. Only Chat Completions that have been created
+       * with the `store` parameter set to `true` can be deleted.
+       *
+       * @example
+       * ```ts
+       * const chatCompletionDeleted =
+       *   await client.chat.completions.delete('completion_id');
+       * ```
+       */
+      delete(completionID, options) {
+        return this._client.delete(path2`/chat/completions/${completionID}`, options);
+      }
+      parse(body, options) {
+        validateInputTools(body.tools);
+        return this._client.chat.completions.create(body, {
+          ...options,
+          headers: {
+            ...options?.headers,
+            "X-Stainless-Helper-Method": "chat.completions.parse"
+          }
+        })._thenUnwrap((completion) => parseChatCompletion(completion, body));
+      }
+      runTools(body, options) {
+        if (body.stream) {
+          return ChatCompletionStreamingRunner.runTools(this._client, body, options);
+        }
+        return ChatCompletionRunner.runTools(this._client, body, options);
+      }
+      /**
+       * Creates a chat completion stream
+       */
+      stream(body, options) {
+        return ChatCompletionStream.createChatCompletion(this._client, body, options);
+      }
+    };
+    Completions.Messages = Messages;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/chat.mjs
+var Chat;
+var init_chat = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/chat.mjs"() {
+    init_resource();
+    init_completions();
+    init_completions();
+    Chat = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.completions = new Completions(this._client);
+      }
+    };
+    Chat.Completions = Completions;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/completions/index.mjs
+var init_completions2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/completions/index.mjs"() {
+    init_completions();
+    init_completions();
+    init_messages();
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/index.mjs
+var init_chat2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/index.mjs"() {
+    init_chat();
+    init_completions2();
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/shared.mjs
+var init_shared = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/shared.mjs"() {
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/headers.mjs
+function* iterateHeaders(headers) {
+  if (!headers)
+    return;
+  if (brand_privateNullableHeaders in headers) {
+    const { values: values2, nulls } = headers;
+    yield* values2.entries();
+    for (const name2 of nulls) {
+      yield [name2, null];
+    }
+    return;
+  }
+  let shouldClear = false;
+  let iter;
+  if (headers instanceof Headers) {
+    iter = headers.entries();
+  } else if (isReadonlyArray(headers)) {
+    iter = headers;
+  } else {
+    shouldClear = true;
+    iter = Object.entries(headers ?? {});
+  }
+  for (let row of iter) {
+    const name2 = row[0];
+    if (typeof name2 !== "string")
+      throw new TypeError("expected header name to be a string");
+    const values2 = isReadonlyArray(row[1]) ? row[1] : [row[1]];
+    let didClear = false;
+    for (const value of values2) {
+      if (value === void 0)
+        continue;
+      if (shouldClear && !didClear) {
+        didClear = true;
+        yield [name2, null];
+      }
+      yield [name2, value];
+    }
+  }
+}
+var brand_privateNullableHeaders, buildHeaders;
+var init_headers = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/headers.mjs"() {
+    init_values();
+    brand_privateNullableHeaders = /* @__PURE__ */ Symbol("brand.privateNullableHeaders");
+    buildHeaders = (newHeaders) => {
+      const targetHeaders = new Headers();
+      const nullHeaders = /* @__PURE__ */ new Set();
+      for (const headers of newHeaders) {
+        const seenHeaders = /* @__PURE__ */ new Set();
+        for (const [name2, value] of iterateHeaders(headers)) {
+          const lowerName = name2.toLowerCase();
+          if (!seenHeaders.has(lowerName)) {
+            targetHeaders.delete(name2);
+            seenHeaders.add(lowerName);
+          }
+          if (value === null) {
+            targetHeaders.delete(name2);
+            nullHeaders.add(lowerName);
+          } else {
+            targetHeaders.append(name2, value);
+            nullHeaders.delete(lowerName);
+          }
+        }
+      }
+      return { [brand_privateNullableHeaders]: true, values: targetHeaders, nulls: nullHeaders };
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/speech.mjs
+var Speech;
+var init_speech = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/speech.mjs"() {
+    init_resource();
+    init_headers();
+    Speech = class extends APIResource {
+      /**
+       * Generates audio from the input text.
+       *
+       * Returns the audio file content, or a stream of audio events.
+       *
+       * @example
+       * ```ts
+       * const speech = await client.audio.speech.create({
+       *   input: 'input',
+       *   model: 'string',
+       *   voice: 'string',
+       * });
+       *
+       * const content = await speech.blob();
+       * console.log(content);
+       * ```
+       */
+      create(body, options) {
+        return this._client.post("/audio/speech", {
+          body,
+          ...options,
+          headers: buildHeaders([{ Accept: "application/octet-stream" }, options?.headers]),
+          __binaryResponse: true
+        });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/transcriptions.mjs
+var Transcriptions;
+var init_transcriptions = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/transcriptions.mjs"() {
+    init_resource();
+    init_uploads();
+    Transcriptions = class extends APIResource {
+      create(body, options) {
+        return this._client.post("/audio/transcriptions", multipartFormRequestOptions({
+          body,
+          ...options,
+          stream: body.stream ?? false,
+          __metadata: { model: body.model }
+        }, this._client));
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/translations.mjs
+var Translations;
+var init_translations = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/translations.mjs"() {
+    init_resource();
+    init_uploads();
+    Translations = class extends APIResource {
+      create(body, options) {
+        return this._client.post("/audio/translations", multipartFormRequestOptions({ body, ...options, __metadata: { model: body.model } }, this._client));
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/audio.mjs
+var Audio;
+var init_audio = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/audio.mjs"() {
+    init_resource();
+    init_speech();
+    init_speech();
+    init_transcriptions();
+    init_transcriptions();
+    init_translations();
+    init_translations();
+    Audio = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.transcriptions = new Transcriptions(this._client);
+        this.translations = new Translations(this._client);
+        this.speech = new Speech(this._client);
+      }
+    };
+    Audio.Transcriptions = Transcriptions;
+    Audio.Translations = Translations;
+    Audio.Speech = Speech;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/batches.mjs
+var Batches;
+var init_batches = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/batches.mjs"() {
+    init_resource();
+    init_pagination();
+    init_path();
+    Batches = class extends APIResource {
+      /**
+       * Creates and executes a batch from an uploaded file of requests
+       */
+      create(body, options) {
+        return this._client.post("/batches", { body, ...options });
+      }
+      /**
+       * Retrieves a batch.
+       */
+      retrieve(batchID, options) {
+        return this._client.get(path2`/batches/${batchID}`, options);
+      }
+      /**
+       * List your organization's batches.
+       */
+      list(query = {}, options) {
+        return this._client.getAPIList("/batches", CursorPage, { query, ...options });
+      }
+      /**
+       * Cancels an in-progress batch. The batch will be in status `cancelling` for up to
+       * 10 minutes, before changing to `cancelled`, where it will have partial results
+       * (if any) available in the output file.
+       */
+      cancel(batchID, options) {
+        return this._client.post(path2`/batches/${batchID}/cancel`, options);
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/assistants.mjs
+var Assistants;
+var init_assistants = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/assistants.mjs"() {
+    init_resource();
+    init_pagination();
+    init_headers();
+    init_path();
+    Assistants = class extends APIResource {
+      /**
+       * Create an assistant with a model and instructions.
+       *
+       * @deprecated
+       */
+      create(body, options) {
+        return this._client.post("/assistants", {
+          body,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Retrieves an assistant.
+       *
+       * @deprecated
+       */
+      retrieve(assistantID, options) {
+        return this._client.get(path2`/assistants/${assistantID}`, {
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Modifies an assistant.
+       *
+       * @deprecated
+       */
+      update(assistantID, body, options) {
+        return this._client.post(path2`/assistants/${assistantID}`, {
+          body,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Returns a list of assistants.
+       *
+       * @deprecated
+       */
+      list(query = {}, options) {
+        return this._client.getAPIList("/assistants", CursorPage, {
+          query,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Delete an assistant.
+       *
+       * @deprecated
+       */
+      delete(assistantID, options) {
+        return this._client.delete(path2`/assistants/${assistantID}`, {
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/sessions.mjs
+var Sessions;
+var init_sessions = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/sessions.mjs"() {
+    init_resource();
+    init_headers();
+    Sessions = class extends APIResource {
+      /**
+       * Create an ephemeral API token for use in client-side applications with the
+       * Realtime API. Can be configured with the same session parameters as the
+       * `session.update` client event.
+       *
+       * It responds with a session object, plus a `client_secret` key which contains a
+       * usable ephemeral API token that can be used to authenticate browser clients for
+       * the Realtime API.
+       *
+       * @example
+       * ```ts
+       * const session =
+       *   await client.beta.realtime.sessions.create();
+       * ```
+       */
+      create(body, options) {
+        return this._client.post("/realtime/sessions", {
+          body,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/transcription-sessions.mjs
+var TranscriptionSessions;
+var init_transcription_sessions = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/transcription-sessions.mjs"() {
+    init_resource();
+    init_headers();
+    TranscriptionSessions = class extends APIResource {
+      /**
+       * Create an ephemeral API token for use in client-side applications with the
+       * Realtime API specifically for realtime transcriptions. Can be configured with
+       * the same session parameters as the `transcription_session.update` client event.
+       *
+       * It responds with a session object, plus a `client_secret` key which contains a
+       * usable ephemeral API token that can be used to authenticate browser clients for
+       * the Realtime API.
+       *
+       * @example
+       * ```ts
+       * const transcriptionSession =
+       *   await client.beta.realtime.transcriptionSessions.create();
+       * ```
+       */
+      create(body, options) {
+        return this._client.post("/realtime/transcription_sessions", {
+          body,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/realtime.mjs
+var Realtime;
+var init_realtime = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/realtime.mjs"() {
+    init_resource();
+    init_sessions();
+    init_sessions();
+    init_transcription_sessions();
+    init_transcription_sessions();
+    Realtime = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.sessions = new Sessions(this._client);
+        this.transcriptionSessions = new TranscriptionSessions(this._client);
+      }
+    };
+    Realtime.Sessions = Sessions;
+    Realtime.TranscriptionSessions = TranscriptionSessions;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/sessions.mjs
+var Sessions2;
+var init_sessions2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/sessions.mjs"() {
+    init_resource();
+    init_headers();
+    init_path();
+    Sessions2 = class extends APIResource {
+      /**
+       * Create a ChatKit session.
+       *
+       * @example
+       * ```ts
+       * const chatSession =
+       *   await client.beta.chatkit.sessions.create({
+       *     user: 'x',
+       *     workflow: { id: 'id' },
+       *   });
+       * ```
+       */
+      create(body, options) {
+        return this._client.post("/chatkit/sessions", {
+          body,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "chatkit_beta=v1" }, options?.headers])
+        });
+      }
+      /**
+       * Cancel an active ChatKit session and return its most recent metadata.
+       *
+       * Cancelling prevents new requests from using the issued client secret.
+       *
+       * @example
+       * ```ts
+       * const chatSession =
+       *   await client.beta.chatkit.sessions.cancel('cksess_123');
+       * ```
+       */
+      cancel(sessionID, options) {
+        return this._client.post(path2`/chatkit/sessions/${sessionID}/cancel`, {
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "chatkit_beta=v1" }, options?.headers])
+        });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/threads.mjs
+var Threads;
+var init_threads = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/threads.mjs"() {
+    init_resource();
+    init_pagination();
+    init_headers();
+    init_path();
+    Threads = class extends APIResource {
+      /**
+       * Retrieve a ChatKit thread by its identifier.
+       *
+       * @example
+       * ```ts
+       * const chatkitThread =
+       *   await client.beta.chatkit.threads.retrieve('cthr_123');
+       * ```
+       */
+      retrieve(threadID, options) {
+        return this._client.get(path2`/chatkit/threads/${threadID}`, {
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "chatkit_beta=v1" }, options?.headers])
+        });
+      }
+      /**
+       * List ChatKit threads with optional pagination and user filters.
+       *
+       * @example
+       * ```ts
+       * // Automatically fetches more pages as needed.
+       * for await (const chatkitThread of client.beta.chatkit.threads.list()) {
+       *   // ...
+       * }
+       * ```
+       */
+      list(query = {}, options) {
+        return this._client.getAPIList("/chatkit/threads", ConversationCursorPage, {
+          query,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "chatkit_beta=v1" }, options?.headers])
+        });
+      }
+      /**
+       * Delete a ChatKit thread along with its items and stored attachments.
+       *
+       * @example
+       * ```ts
+       * const thread = await client.beta.chatkit.threads.delete(
+       *   'cthr_123',
+       * );
+       * ```
+       */
+      delete(threadID, options) {
+        return this._client.delete(path2`/chatkit/threads/${threadID}`, {
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "chatkit_beta=v1" }, options?.headers])
+        });
+      }
+      /**
+       * List items that belong to a ChatKit thread.
+       *
+       * @example
+       * ```ts
+       * // Automatically fetches more pages as needed.
+       * for await (const thread of client.beta.chatkit.threads.listItems(
+       *   'cthr_123',
+       * )) {
+       *   // ...
+       * }
+       * ```
+       */
+      listItems(threadID, query = {}, options) {
+        return this._client.getAPIList(path2`/chatkit/threads/${threadID}/items`, ConversationCursorPage, { query, ...options, headers: buildHeaders([{ "OpenAI-Beta": "chatkit_beta=v1" }, options?.headers]) });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/chatkit.mjs
+var ChatKit;
+var init_chatkit = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/chatkit.mjs"() {
+    init_resource();
+    init_sessions2();
+    init_sessions2();
+    init_threads();
+    init_threads();
+    ChatKit = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.sessions = new Sessions2(this._client);
+        this.threads = new Threads(this._client);
+      }
+    };
+    ChatKit.Sessions = Sessions2;
+    ChatKit.Threads = Threads;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/messages.mjs
+var Messages2;
+var init_messages2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/messages.mjs"() {
+    init_resource();
+    init_pagination();
+    init_headers();
+    init_path();
+    Messages2 = class extends APIResource {
+      /**
+       * Create a message.
+       *
+       * @deprecated The Assistants API is deprecated in favor of the Responses API
+       */
+      create(threadID, body, options) {
+        return this._client.post(path2`/threads/${threadID}/messages`, {
+          body,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Retrieve a message.
+       *
+       * @deprecated The Assistants API is deprecated in favor of the Responses API
+       */
+      retrieve(messageID, params, options) {
+        const { thread_id } = params;
+        return this._client.get(path2`/threads/${thread_id}/messages/${messageID}`, {
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Modifies a message.
+       *
+       * @deprecated The Assistants API is deprecated in favor of the Responses API
+       */
+      update(messageID, params, options) {
+        const { thread_id, ...body } = params;
+        return this._client.post(path2`/threads/${thread_id}/messages/${messageID}`, {
+          body,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Returns a list of messages for a given thread.
+       *
+       * @deprecated The Assistants API is deprecated in favor of the Responses API
+       */
+      list(threadID, query = {}, options) {
+        return this._client.getAPIList(path2`/threads/${threadID}/messages`, CursorPage, {
+          query,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Deletes a message.
+       *
+       * @deprecated The Assistants API is deprecated in favor of the Responses API
+       */
+      delete(messageID, params, options) {
+        const { thread_id } = params;
+        return this._client.delete(path2`/threads/${thread_id}/messages/${messageID}`, {
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/runs/steps.mjs
+var Steps;
+var init_steps = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/runs/steps.mjs"() {
+    init_resource();
+    init_pagination();
+    init_headers();
+    init_path();
+    Steps = class extends APIResource {
+      /**
+       * Retrieves a run step.
+       *
+       * @deprecated The Assistants API is deprecated in favor of the Responses API
+       */
+      retrieve(stepID, params, options) {
+        const { thread_id, run_id, ...query } = params;
+        return this._client.get(path2`/threads/${thread_id}/runs/${run_id}/steps/${stepID}`, {
+          query,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Returns a list of run steps belonging to a run.
+       *
+       * @deprecated The Assistants API is deprecated in favor of the Responses API
+       */
+      list(runID, params, options) {
+        const { thread_id, ...query } = params;
+        return this._client.getAPIList(path2`/threads/${thread_id}/runs/${runID}/steps`, CursorPage, {
+          query,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/base64.mjs
+var toFloat32Array;
+var init_base64 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/base64.mjs"() {
+    init_error();
+    init_bytes();
+    toFloat32Array = (base64Str) => {
+      if (typeof Buffer !== "undefined") {
+        const buf = Buffer.from(base64Str, "base64");
+        return Array.from(new Float32Array(buf.buffer, buf.byteOffset, buf.length / Float32Array.BYTES_PER_ELEMENT));
+      } else {
+        const binaryStr = atob(base64Str);
+        const len = binaryStr.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+          bytes[i] = binaryStr.charCodeAt(i);
+        }
+        return Array.from(new Float32Array(bytes.buffer));
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/env.mjs
+var readEnv;
+var init_env = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/env.mjs"() {
+    readEnv = (env) => {
+      if (typeof globalThis.process !== "undefined") {
+        return globalThis.process.env?.[env]?.trim() ?? void 0;
+      }
+      if (typeof globalThis.Deno !== "undefined") {
+        return globalThis.Deno.env?.get?.(env)?.trim();
+      }
+      return void 0;
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils.mjs
+var init_utils6 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils.mjs"() {
+    init_values();
+    init_base64();
+    init_env();
+    init_log();
+    init_uuid2();
+    init_sleep();
+    init_query2();
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/AssistantStream.mjs
+function assertNever3(_x) {
+}
+var _AssistantStream_instances, _a2, _AssistantStream_events, _AssistantStream_runStepSnapshots, _AssistantStream_messageSnapshots, _AssistantStream_messageSnapshot, _AssistantStream_finalRun, _AssistantStream_currentContentIndex, _AssistantStream_currentContent, _AssistantStream_currentToolCallIndex, _AssistantStream_currentToolCall, _AssistantStream_currentEvent, _AssistantStream_currentRunSnapshot, _AssistantStream_currentRunStepSnapshot, _AssistantStream_addEvent, _AssistantStream_endRequest, _AssistantStream_handleMessage, _AssistantStream_handleRunStep, _AssistantStream_handleEvent, _AssistantStream_accumulateRunStep, _AssistantStream_accumulateMessage, _AssistantStream_accumulateContent, _AssistantStream_handleRun, AssistantStream;
+var init_AssistantStream = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/AssistantStream.mjs"() {
+    init_tslib();
+    init_streaming2();
+    init_error2();
+    init_EventStream();
+    init_utils6();
+    AssistantStream = class extends EventStream {
+      constructor() {
+        super(...arguments);
+        _AssistantStream_instances.add(this);
+        _AssistantStream_events.set(this, []);
+        _AssistantStream_runStepSnapshots.set(this, {});
+        _AssistantStream_messageSnapshots.set(this, {});
+        _AssistantStream_messageSnapshot.set(this, void 0);
+        _AssistantStream_finalRun.set(this, void 0);
+        _AssistantStream_currentContentIndex.set(this, void 0);
+        _AssistantStream_currentContent.set(this, void 0);
+        _AssistantStream_currentToolCallIndex.set(this, void 0);
+        _AssistantStream_currentToolCall.set(this, void 0);
+        _AssistantStream_currentEvent.set(this, void 0);
+        _AssistantStream_currentRunSnapshot.set(this, void 0);
+        _AssistantStream_currentRunStepSnapshot.set(this, void 0);
+      }
+      [(_AssistantStream_events = /* @__PURE__ */ new WeakMap(), _AssistantStream_runStepSnapshots = /* @__PURE__ */ new WeakMap(), _AssistantStream_messageSnapshots = /* @__PURE__ */ new WeakMap(), _AssistantStream_messageSnapshot = /* @__PURE__ */ new WeakMap(), _AssistantStream_finalRun = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentContentIndex = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentContent = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentToolCallIndex = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentToolCall = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentEvent = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentRunSnapshot = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentRunStepSnapshot = /* @__PURE__ */ new WeakMap(), _AssistantStream_instances = /* @__PURE__ */ new WeakSet(), Symbol.asyncIterator)]() {
+        const pushQueue = [];
+        const readQueue = [];
+        let done = false;
+        this.on("event", (event) => {
+          const reader = readQueue.shift();
+          if (reader) {
+            reader.resolve(event);
+          } else {
+            pushQueue.push(event);
+          }
+        });
+        this.on("end", () => {
+          done = true;
+          for (const reader of readQueue) {
+            reader.resolve(void 0);
+          }
+          readQueue.length = 0;
+        });
+        this.on("abort", (err) => {
+          done = true;
+          for (const reader of readQueue) {
+            reader.reject(err);
+          }
+          readQueue.length = 0;
+        });
+        this.on("error", (err) => {
+          done = true;
+          for (const reader of readQueue) {
+            reader.reject(err);
+          }
+          readQueue.length = 0;
+        });
+        return {
+          next: async () => {
+            if (!pushQueue.length) {
+              if (done) {
+                return { value: void 0, done: true };
+              }
+              return new Promise((resolve, reject) => readQueue.push({ resolve, reject })).then((chunk2) => chunk2 ? { value: chunk2, done: false } : { value: void 0, done: true });
+            }
+            const chunk = pushQueue.shift();
+            return { value: chunk, done: false };
+          },
+          return: async () => {
+            this.abort();
+            return { value: void 0, done: true };
+          }
+        };
+      }
+      static fromReadableStream(stream4) {
+        const runner = new _a2();
+        runner._run(() => runner._fromReadableStream(stream4));
+        return runner;
+      }
+      async _fromReadableStream(readableStream, options) {
+        const signal = options?.signal;
+        if (signal) {
+          if (signal.aborted)
+            this.controller.abort();
+          signal.addEventListener("abort", () => this.controller.abort());
+        }
+        this._connected();
+        const stream4 = Stream3.fromReadableStream(readableStream, this.controller);
+        for await (const event of stream4) {
+          __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_addEvent).call(this, event);
+        }
+        if (stream4.controller.signal?.aborted) {
+          throw new APIUserAbortError();
+        }
+        return this._addRun(__classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_endRequest).call(this));
+      }
+      toReadableStream() {
+        const stream4 = new Stream3(this[Symbol.asyncIterator].bind(this), this.controller);
+        return stream4.toReadableStream();
+      }
+      static createToolAssistantStream(runId, runs, params, options) {
+        const runner = new _a2();
+        runner._run(() => runner._runToolAssistantStream(runId, runs, params, {
+          ...options,
+          headers: { ...options?.headers, "X-Stainless-Helper-Method": "stream" }
+        }));
+        return runner;
+      }
+      async _createToolAssistantStream(run2, runId, params, options) {
+        const signal = options?.signal;
+        if (signal) {
+          if (signal.aborted)
+            this.controller.abort();
+          signal.addEventListener("abort", () => this.controller.abort());
+        }
+        const body = { ...params, stream: true };
+        const stream4 = await run2.submitToolOutputs(runId, body, {
+          ...options,
+          signal: this.controller.signal
+        });
+        this._connected();
+        for await (const event of stream4) {
+          __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_addEvent).call(this, event);
+        }
+        if (stream4.controller.signal?.aborted) {
+          throw new APIUserAbortError();
+        }
+        return this._addRun(__classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_endRequest).call(this));
+      }
+      static createThreadAssistantStream(params, thread, options) {
+        const runner = new _a2();
+        runner._run(() => runner._threadAssistantStream(params, thread, {
+          ...options,
+          headers: { ...options?.headers, "X-Stainless-Helper-Method": "stream" }
+        }));
+        return runner;
+      }
+      static createAssistantStream(threadId, runs, params, options) {
+        const runner = new _a2();
+        runner._run(() => runner._runAssistantStream(threadId, runs, params, {
+          ...options,
+          headers: { ...options?.headers, "X-Stainless-Helper-Method": "stream" }
+        }));
+        return runner;
+      }
+      currentEvent() {
+        return __classPrivateFieldGet(this, _AssistantStream_currentEvent, "f");
+      }
+      currentRun() {
+        return __classPrivateFieldGet(this, _AssistantStream_currentRunSnapshot, "f");
+      }
+      currentMessageSnapshot() {
+        return __classPrivateFieldGet(this, _AssistantStream_messageSnapshot, "f");
+      }
+      currentRunStepSnapshot() {
+        return __classPrivateFieldGet(this, _AssistantStream_currentRunStepSnapshot, "f");
+      }
+      async finalRunSteps() {
+        await this.done();
+        return Object.values(__classPrivateFieldGet(this, _AssistantStream_runStepSnapshots, "f"));
+      }
+      async finalMessages() {
+        await this.done();
+        return Object.values(__classPrivateFieldGet(this, _AssistantStream_messageSnapshots, "f"));
+      }
+      async finalRun() {
+        await this.done();
+        if (!__classPrivateFieldGet(this, _AssistantStream_finalRun, "f"))
+          throw Error("Final run was not received.");
+        return __classPrivateFieldGet(this, _AssistantStream_finalRun, "f");
+      }
+      async _createThreadAssistantStream(thread, params, options) {
+        const signal = options?.signal;
+        if (signal) {
+          if (signal.aborted)
+            this.controller.abort();
+          signal.addEventListener("abort", () => this.controller.abort());
+        }
+        const body = { ...params, stream: true };
+        const stream4 = await thread.createAndRun(body, { ...options, signal: this.controller.signal });
+        this._connected();
+        for await (const event of stream4) {
+          __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_addEvent).call(this, event);
+        }
+        if (stream4.controller.signal?.aborted) {
+          throw new APIUserAbortError();
+        }
+        return this._addRun(__classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_endRequest).call(this));
+      }
+      async _createAssistantStream(run2, threadId, params, options) {
+        const signal = options?.signal;
+        if (signal) {
+          if (signal.aborted)
+            this.controller.abort();
+          signal.addEventListener("abort", () => this.controller.abort());
+        }
+        const body = { ...params, stream: true };
+        const stream4 = await run2.create(threadId, body, { ...options, signal: this.controller.signal });
+        this._connected();
+        for await (const event of stream4) {
+          __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_addEvent).call(this, event);
+        }
+        if (stream4.controller.signal?.aborted) {
+          throw new APIUserAbortError();
+        }
+        return this._addRun(__classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_endRequest).call(this));
+      }
+      static accumulateDelta(acc, delta) {
+        for (const [key, deltaValue] of Object.entries(delta)) {
+          if (!acc.hasOwnProperty(key)) {
+            acc[key] = deltaValue;
+            continue;
+          }
+          let accValue = acc[key];
+          if (accValue === null || accValue === void 0) {
+            acc[key] = deltaValue;
+            continue;
+          }
+          if (key === "index" || key === "type") {
+            acc[key] = deltaValue;
+            continue;
+          }
+          if (typeof accValue === "string" && typeof deltaValue === "string") {
+            accValue += deltaValue;
+          } else if (typeof accValue === "number" && typeof deltaValue === "number") {
+            accValue += deltaValue;
+          } else if (isObj(accValue) && isObj(deltaValue)) {
+            accValue = this.accumulateDelta(accValue, deltaValue);
+          } else if (Array.isArray(accValue) && Array.isArray(deltaValue)) {
+            if (accValue.every((x) => typeof x === "string" || typeof x === "number")) {
+              accValue.push(...deltaValue);
+              continue;
+            }
+            for (const deltaEntry of deltaValue) {
+              if (!isObj(deltaEntry)) {
+                throw new Error(`Expected array delta entry to be an object but got: ${deltaEntry}`);
+              }
+              const index = deltaEntry["index"];
+              if (index == null) {
+                console.error(deltaEntry);
+                throw new Error("Expected array delta entry to have an `index` property");
+              }
+              if (typeof index !== "number") {
+                throw new Error(`Expected array delta entry \`index\` property to be a number but got ${index}`);
+              }
+              const accEntry = accValue[index];
+              if (accEntry == null) {
+                accValue.push(deltaEntry);
+              } else {
+                accValue[index] = this.accumulateDelta(accEntry, deltaEntry);
+              }
+            }
+            continue;
+          } else {
+            throw Error(`Unhandled record type: ${key}, deltaValue: ${deltaValue}, accValue: ${accValue}`);
+          }
+          acc[key] = accValue;
+        }
+        return acc;
+      }
+      _addRun(run2) {
+        return run2;
+      }
+      async _threadAssistantStream(params, thread, options) {
+        return await this._createThreadAssistantStream(thread, params, options);
+      }
+      async _runAssistantStream(threadId, runs, params, options) {
+        return await this._createAssistantStream(runs, threadId, params, options);
+      }
+      async _runToolAssistantStream(runId, runs, params, options) {
+        return await this._createToolAssistantStream(runs, runId, params, options);
+      }
+    };
+    _a2 = AssistantStream, _AssistantStream_addEvent = function _AssistantStream_addEvent2(event) {
+      if (this.ended)
+        return;
+      __classPrivateFieldSet(this, _AssistantStream_currentEvent, event, "f");
+      __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_handleEvent).call(this, event);
+      switch (event.event) {
+        case "thread.created":
+          break;
+        case "thread.run.created":
+        case "thread.run.queued":
+        case "thread.run.in_progress":
+        case "thread.run.requires_action":
+        case "thread.run.completed":
+        case "thread.run.incomplete":
+        case "thread.run.failed":
+        case "thread.run.cancelling":
+        case "thread.run.cancelled":
+        case "thread.run.expired":
+          __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_handleRun).call(this, event);
+          break;
+        case "thread.run.step.created":
+        case "thread.run.step.in_progress":
+        case "thread.run.step.delta":
+        case "thread.run.step.completed":
+        case "thread.run.step.failed":
+        case "thread.run.step.cancelled":
+        case "thread.run.step.expired":
+          __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_handleRunStep).call(this, event);
+          break;
+        case "thread.message.created":
+        case "thread.message.in_progress":
+        case "thread.message.delta":
+        case "thread.message.completed":
+        case "thread.message.incomplete":
+          __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_handleMessage).call(this, event);
+          break;
+        case "error":
+          throw new Error("Encountered an error event in event processing - errors should be processed earlier");
+        default:
+          assertNever3(event);
+      }
+    }, _AssistantStream_endRequest = function _AssistantStream_endRequest2() {
+      if (this.ended) {
+        throw new OpenAIError(`stream has ended, this shouldn't happen`);
+      }
+      if (!__classPrivateFieldGet(this, _AssistantStream_finalRun, "f"))
+        throw Error("Final run has not been received");
+      return __classPrivateFieldGet(this, _AssistantStream_finalRun, "f");
+    }, _AssistantStream_handleMessage = function _AssistantStream_handleMessage2(event) {
+      const [accumulatedMessage, newContent] = __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_accumulateMessage).call(this, event, __classPrivateFieldGet(this, _AssistantStream_messageSnapshot, "f"));
+      __classPrivateFieldSet(this, _AssistantStream_messageSnapshot, accumulatedMessage, "f");
+      __classPrivateFieldGet(this, _AssistantStream_messageSnapshots, "f")[accumulatedMessage.id] = accumulatedMessage;
+      for (const content of newContent) {
+        const snapshotContent = accumulatedMessage.content[content.index];
+        if (snapshotContent?.type == "text") {
+          this._emit("textCreated", snapshotContent.text);
+        }
+      }
+      switch (event.event) {
+        case "thread.message.created":
+          this._emit("messageCreated", event.data);
+          break;
+        case "thread.message.in_progress":
+          break;
+        case "thread.message.delta":
+          this._emit("messageDelta", event.data.delta, accumulatedMessage);
+          if (event.data.delta.content) {
+            for (const content of event.data.delta.content) {
+              if (content.type == "text" && content.text) {
+                let textDelta = content.text;
+                let snapshot = accumulatedMessage.content[content.index];
+                if (snapshot && snapshot.type == "text") {
+                  this._emit("textDelta", textDelta, snapshot.text);
+                } else {
+                  throw Error("The snapshot associated with this text delta is not text or missing");
+                }
+              }
+              if (content.index != __classPrivateFieldGet(this, _AssistantStream_currentContentIndex, "f")) {
+                if (__classPrivateFieldGet(this, _AssistantStream_currentContent, "f")) {
+                  switch (__classPrivateFieldGet(this, _AssistantStream_currentContent, "f").type) {
+                    case "text":
+                      this._emit("textDone", __classPrivateFieldGet(this, _AssistantStream_currentContent, "f").text, __classPrivateFieldGet(this, _AssistantStream_messageSnapshot, "f"));
+                      break;
+                    case "image_file":
+                      this._emit("imageFileDone", __classPrivateFieldGet(this, _AssistantStream_currentContent, "f").image_file, __classPrivateFieldGet(this, _AssistantStream_messageSnapshot, "f"));
+                      break;
+                  }
+                }
+                __classPrivateFieldSet(this, _AssistantStream_currentContentIndex, content.index, "f");
+              }
+              __classPrivateFieldSet(this, _AssistantStream_currentContent, accumulatedMessage.content[content.index], "f");
+            }
+          }
+          break;
+        case "thread.message.completed":
+        case "thread.message.incomplete":
+          if (__classPrivateFieldGet(this, _AssistantStream_currentContentIndex, "f") !== void 0) {
+            const currentContent = event.data.content[__classPrivateFieldGet(this, _AssistantStream_currentContentIndex, "f")];
+            if (currentContent) {
+              switch (currentContent.type) {
+                case "image_file":
+                  this._emit("imageFileDone", currentContent.image_file, __classPrivateFieldGet(this, _AssistantStream_messageSnapshot, "f"));
+                  break;
+                case "text":
+                  this._emit("textDone", currentContent.text, __classPrivateFieldGet(this, _AssistantStream_messageSnapshot, "f"));
+                  break;
+              }
+            }
+          }
+          if (__classPrivateFieldGet(this, _AssistantStream_messageSnapshot, "f")) {
+            this._emit("messageDone", event.data);
+          }
+          __classPrivateFieldSet(this, _AssistantStream_messageSnapshot, void 0, "f");
+      }
+    }, _AssistantStream_handleRunStep = function _AssistantStream_handleRunStep2(event) {
+      const accumulatedRunStep = __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_accumulateRunStep).call(this, event);
+      __classPrivateFieldSet(this, _AssistantStream_currentRunStepSnapshot, accumulatedRunStep, "f");
+      switch (event.event) {
+        case "thread.run.step.created":
+          this._emit("runStepCreated", event.data);
+          break;
+        case "thread.run.step.delta":
+          const delta = event.data.delta;
+          if (delta.step_details && delta.step_details.type == "tool_calls" && delta.step_details.tool_calls && accumulatedRunStep.step_details.type == "tool_calls") {
+            for (const toolCall of delta.step_details.tool_calls) {
+              if (toolCall.index == __classPrivateFieldGet(this, _AssistantStream_currentToolCallIndex, "f")) {
+                this._emit("toolCallDelta", toolCall, accumulatedRunStep.step_details.tool_calls[toolCall.index]);
+              } else {
+                if (__classPrivateFieldGet(this, _AssistantStream_currentToolCall, "f")) {
+                  this._emit("toolCallDone", __classPrivateFieldGet(this, _AssistantStream_currentToolCall, "f"));
+                }
+                __classPrivateFieldSet(this, _AssistantStream_currentToolCallIndex, toolCall.index, "f");
+                __classPrivateFieldSet(this, _AssistantStream_currentToolCall, accumulatedRunStep.step_details.tool_calls[toolCall.index], "f");
+                if (__classPrivateFieldGet(this, _AssistantStream_currentToolCall, "f"))
+                  this._emit("toolCallCreated", __classPrivateFieldGet(this, _AssistantStream_currentToolCall, "f"));
+              }
+            }
+          }
+          this._emit("runStepDelta", event.data.delta, accumulatedRunStep);
+          break;
+        case "thread.run.step.completed":
+        case "thread.run.step.failed":
+        case "thread.run.step.cancelled":
+        case "thread.run.step.expired":
+          __classPrivateFieldSet(this, _AssistantStream_currentRunStepSnapshot, void 0, "f");
+          const details = event.data.step_details;
+          if (details.type == "tool_calls") {
+            if (__classPrivateFieldGet(this, _AssistantStream_currentToolCall, "f")) {
+              this._emit("toolCallDone", __classPrivateFieldGet(this, _AssistantStream_currentToolCall, "f"));
+              __classPrivateFieldSet(this, _AssistantStream_currentToolCall, void 0, "f");
+            }
+          }
+          this._emit("runStepDone", event.data, accumulatedRunStep);
+          break;
+        case "thread.run.step.in_progress":
+          break;
+      }
+    }, _AssistantStream_handleEvent = function _AssistantStream_handleEvent2(event) {
+      __classPrivateFieldGet(this, _AssistantStream_events, "f").push(event);
+      this._emit("event", event);
+    }, _AssistantStream_accumulateRunStep = function _AssistantStream_accumulateRunStep2(event) {
+      switch (event.event) {
+        case "thread.run.step.created":
+          __classPrivateFieldGet(this, _AssistantStream_runStepSnapshots, "f")[event.data.id] = event.data;
+          return event.data;
+        case "thread.run.step.delta":
+          let snapshot = __classPrivateFieldGet(this, _AssistantStream_runStepSnapshots, "f")[event.data.id];
+          if (!snapshot) {
+            throw Error("Received a RunStepDelta before creation of a snapshot");
+          }
+          let data = event.data;
+          if (data.delta) {
+            const accumulated = _a2.accumulateDelta(snapshot, data.delta);
+            __classPrivateFieldGet(this, _AssistantStream_runStepSnapshots, "f")[event.data.id] = accumulated;
+          }
+          return __classPrivateFieldGet(this, _AssistantStream_runStepSnapshots, "f")[event.data.id];
+        case "thread.run.step.completed":
+        case "thread.run.step.failed":
+        case "thread.run.step.cancelled":
+        case "thread.run.step.expired":
+        case "thread.run.step.in_progress":
+          __classPrivateFieldGet(this, _AssistantStream_runStepSnapshots, "f")[event.data.id] = event.data;
+          break;
+      }
+      if (__classPrivateFieldGet(this, _AssistantStream_runStepSnapshots, "f")[event.data.id])
+        return __classPrivateFieldGet(this, _AssistantStream_runStepSnapshots, "f")[event.data.id];
+      throw new Error("No snapshot available");
+    }, _AssistantStream_accumulateMessage = function _AssistantStream_accumulateMessage2(event, snapshot) {
+      let newContent = [];
+      switch (event.event) {
+        case "thread.message.created":
+          return [event.data, newContent];
+        case "thread.message.delta":
+          if (!snapshot) {
+            throw Error("Received a delta with no existing snapshot (there should be one from message creation)");
+          }
+          let data = event.data;
+          if (data.delta.content) {
+            for (const contentElement of data.delta.content) {
+              if (contentElement.index in snapshot.content) {
+                let currentContent = snapshot.content[contentElement.index];
+                snapshot.content[contentElement.index] = __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_accumulateContent).call(this, contentElement, currentContent);
+              } else {
+                snapshot.content[contentElement.index] = contentElement;
+                newContent.push(contentElement);
+              }
+            }
+          }
+          return [snapshot, newContent];
+        case "thread.message.in_progress":
+        case "thread.message.completed":
+        case "thread.message.incomplete":
+          if (snapshot) {
+            return [snapshot, newContent];
+          } else {
+            throw Error("Received thread message event with no existing snapshot");
+          }
+      }
+      throw Error("Tried to accumulate a non-message event");
+    }, _AssistantStream_accumulateContent = function _AssistantStream_accumulateContent2(contentElement, currentContent) {
+      return _a2.accumulateDelta(currentContent, contentElement);
+    }, _AssistantStream_handleRun = function _AssistantStream_handleRun2(event) {
+      __classPrivateFieldSet(this, _AssistantStream_currentRunSnapshot, event.data, "f");
+      switch (event.event) {
+        case "thread.run.created":
+          break;
+        case "thread.run.queued":
+          break;
+        case "thread.run.in_progress":
+          break;
+        case "thread.run.requires_action":
+        case "thread.run.cancelled":
+        case "thread.run.failed":
+        case "thread.run.completed":
+        case "thread.run.expired":
+        case "thread.run.incomplete":
+          __classPrivateFieldSet(this, _AssistantStream_finalRun, event.data, "f");
+          if (__classPrivateFieldGet(this, _AssistantStream_currentToolCall, "f")) {
+            this._emit("toolCallDone", __classPrivateFieldGet(this, _AssistantStream_currentToolCall, "f"));
+            __classPrivateFieldSet(this, _AssistantStream_currentToolCall, void 0, "f");
+          }
+          break;
+        case "thread.run.cancelling":
+          break;
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/runs/runs.mjs
+var Runs;
+var init_runs = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/runs/runs.mjs"() {
+    init_resource();
+    init_steps();
+    init_steps();
+    init_pagination();
+    init_headers();
+    init_AssistantStream();
+    init_sleep();
+    init_path();
+    Runs = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.steps = new Steps(this._client);
+      }
+      create(threadID, params, options) {
+        const { include, ...body } = params;
+        return this._client.post(path2`/threads/${threadID}/runs`, {
+          query: { include },
+          body,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers]),
+          stream: params.stream ?? false,
+          __synthesizeEventData: true
+        });
+      }
+      /**
+       * Retrieves a run.
+       *
+       * @deprecated The Assistants API is deprecated in favor of the Responses API
+       */
+      retrieve(runID, params, options) {
+        const { thread_id } = params;
+        return this._client.get(path2`/threads/${thread_id}/runs/${runID}`, {
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Modifies a run.
+       *
+       * @deprecated The Assistants API is deprecated in favor of the Responses API
+       */
+      update(runID, params, options) {
+        const { thread_id, ...body } = params;
+        return this._client.post(path2`/threads/${thread_id}/runs/${runID}`, {
+          body,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Returns a list of runs belonging to a thread.
+       *
+       * @deprecated The Assistants API is deprecated in favor of the Responses API
+       */
+      list(threadID, query = {}, options) {
+        return this._client.getAPIList(path2`/threads/${threadID}/runs`, CursorPage, {
+          query,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Cancels a run that is `in_progress`.
+       *
+       * @deprecated The Assistants API is deprecated in favor of the Responses API
+       */
+      cancel(runID, params, options) {
+        const { thread_id } = params;
+        return this._client.post(path2`/threads/${thread_id}/runs/${runID}/cancel`, {
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * A helper to create a run an poll for a terminal state. More information on Run
+       * lifecycles can be found here:
+       * https://platform.openai.com/docs/assistants/how-it-works/runs-and-run-steps
+       */
+      async createAndPoll(threadId, body, options) {
+        const run2 = await this.create(threadId, body, options);
+        return await this.poll(run2.id, { thread_id: threadId }, options);
+      }
+      /**
+       * Create a Run stream
+       *
+       * @deprecated use `stream` instead
+       */
+      createAndStream(threadId, body, options) {
+        return AssistantStream.createAssistantStream(threadId, this._client.beta.threads.runs, body, options);
+      }
+      /**
+       * A helper to poll a run status until it reaches a terminal state. More
+       * information on Run lifecycles can be found here:
+       * https://platform.openai.com/docs/assistants/how-it-works/runs-and-run-steps
+       */
+      async poll(runId, params, options) {
+        const headers = buildHeaders([
+          options?.headers,
+          {
+            "X-Stainless-Poll-Helper": "true",
+            "X-Stainless-Custom-Poll-Interval": options?.pollIntervalMs?.toString() ?? void 0
+          }
+        ]);
+        while (true) {
+          const { data: run2, response } = await this.retrieve(runId, params, {
+            ...options,
+            headers: { ...options?.headers, ...headers }
+          }).withResponse();
+          switch (run2.status) {
+            //If we are in any sort of intermediate state we poll
+            case "queued":
+            case "in_progress":
+            case "cancelling":
+              let sleepInterval = 5e3;
+              if (options?.pollIntervalMs) {
+                sleepInterval = options.pollIntervalMs;
+              } else {
+                const headerInterval = response.headers.get("openai-poll-after-ms");
+                if (headerInterval) {
+                  const headerIntervalMs = parseInt(headerInterval);
+                  if (!isNaN(headerIntervalMs)) {
+                    sleepInterval = headerIntervalMs;
+                  }
+                }
+              }
+              await sleep(sleepInterval);
+              break;
+            //We return the run in any terminal state.
+            case "requires_action":
+            case "incomplete":
+            case "cancelled":
+            case "completed":
+            case "failed":
+            case "expired":
+              return run2;
+          }
+        }
+      }
+      /**
+       * Create a Run stream
+       */
+      stream(threadId, body, options) {
+        return AssistantStream.createAssistantStream(threadId, this._client.beta.threads.runs, body, options);
+      }
+      submitToolOutputs(runID, params, options) {
+        const { thread_id, ...body } = params;
+        return this._client.post(path2`/threads/${thread_id}/runs/${runID}/submit_tool_outputs`, {
+          body,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers]),
+          stream: params.stream ?? false,
+          __synthesizeEventData: true
+        });
+      }
+      /**
+       * A helper to submit a tool output to a run and poll for a terminal run state.
+       * More information on Run lifecycles can be found here:
+       * https://platform.openai.com/docs/assistants/how-it-works/runs-and-run-steps
+       */
+      async submitToolOutputsAndPoll(runId, params, options) {
+        const run2 = await this.submitToolOutputs(runId, params, options);
+        return await this.poll(run2.id, params, options);
+      }
+      /**
+       * Submit the tool outputs from a previous run and stream the run to a terminal
+       * state. More information on Run lifecycles can be found here:
+       * https://platform.openai.com/docs/assistants/how-it-works/runs-and-run-steps
+       */
+      submitToolOutputsStream(runId, params, options) {
+        return AssistantStream.createToolAssistantStream(runId, this._client.beta.threads.runs, params, options);
+      }
+    };
+    Runs.Steps = Steps;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/threads.mjs
+var Threads2;
+var init_threads2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/threads.mjs"() {
+    init_resource();
+    init_messages2();
+    init_messages2();
+    init_runs();
+    init_runs();
+    init_headers();
+    init_AssistantStream();
+    init_path();
+    Threads2 = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.runs = new Runs(this._client);
+        this.messages = new Messages2(this._client);
+      }
+      /**
+       * Create a thread.
+       *
+       * @deprecated The Assistants API is deprecated in favor of the Responses API
+       */
+      create(body = {}, options) {
+        return this._client.post("/threads", {
+          body,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Retrieves a thread.
+       *
+       * @deprecated The Assistants API is deprecated in favor of the Responses API
+       */
+      retrieve(threadID, options) {
+        return this._client.get(path2`/threads/${threadID}`, {
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Modifies a thread.
+       *
+       * @deprecated The Assistants API is deprecated in favor of the Responses API
+       */
+      update(threadID, body, options) {
+        return this._client.post(path2`/threads/${threadID}`, {
+          body,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Delete a thread.
+       *
+       * @deprecated The Assistants API is deprecated in favor of the Responses API
+       */
+      delete(threadID, options) {
+        return this._client.delete(path2`/threads/${threadID}`, {
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      createAndRun(body, options) {
+        return this._client.post("/threads/runs", {
+          body,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers]),
+          stream: body.stream ?? false,
+          __synthesizeEventData: true
+        });
+      }
+      /**
+       * A helper to create a thread, start a run and then poll for a terminal state.
+       * More information on Run lifecycles can be found here:
+       * https://platform.openai.com/docs/assistants/how-it-works/runs-and-run-steps
+       */
+      async createAndRunPoll(body, options) {
+        const run2 = await this.createAndRun(body, options);
+        return await this.runs.poll(run2.id, { thread_id: run2.thread_id }, options);
+      }
+      /**
+       * Create a thread and stream the run back
+       */
+      createAndRunStream(body, options) {
+        return AssistantStream.createThreadAssistantStream(body, this._client.beta.threads, options);
+      }
+    };
+    Threads2.Runs = Runs;
+    Threads2.Messages = Messages2;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/beta.mjs
+var Beta;
+var init_beta = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/beta.mjs"() {
+    init_resource();
+    init_assistants();
+    init_assistants();
+    init_realtime();
+    init_realtime();
+    init_chatkit();
+    init_chatkit();
+    init_threads2();
+    init_threads2();
+    Beta = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.realtime = new Realtime(this._client);
+        this.chatkit = new ChatKit(this._client);
+        this.assistants = new Assistants(this._client);
+        this.threads = new Threads2(this._client);
+      }
+    };
+    Beta.Realtime = Realtime;
+    Beta.ChatKit = ChatKit;
+    Beta.Assistants = Assistants;
+    Beta.Threads = Threads2;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/completions.mjs
+var Completions2;
+var init_completions3 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/completions.mjs"() {
+    init_resource();
+    Completions2 = class extends APIResource {
+      create(body, options) {
+        return this._client.post("/completions", { body, ...options, stream: body.stream ?? false });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/containers/files/content.mjs
+var Content;
+var init_content = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/containers/files/content.mjs"() {
+    init_resource();
+    init_headers();
+    init_path();
+    Content = class extends APIResource {
+      /**
+       * Retrieve Container File Content
+       */
+      retrieve(fileID, params, options) {
+        const { container_id } = params;
+        return this._client.get(path2`/containers/${container_id}/files/${fileID}/content`, {
+          ...options,
+          headers: buildHeaders([{ Accept: "application/binary" }, options?.headers]),
+          __binaryResponse: true
+        });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/containers/files/files.mjs
+var Files;
+var init_files = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/containers/files/files.mjs"() {
+    init_resource();
+    init_content();
+    init_content();
+    init_pagination();
+    init_headers();
+    init_uploads();
+    init_path();
+    Files = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.content = new Content(this._client);
+      }
+      /**
+       * Create a Container File
+       *
+       * You can send either a multipart/form-data request with the raw file content, or
+       * a JSON request with a file ID.
+       */
+      create(containerID, body, options) {
+        return this._client.post(path2`/containers/${containerID}/files`, maybeMultipartFormRequestOptions({ body, ...options }, this._client));
+      }
+      /**
+       * Retrieve Container File
+       */
+      retrieve(fileID, params, options) {
+        const { container_id } = params;
+        return this._client.get(path2`/containers/${container_id}/files/${fileID}`, options);
+      }
+      /**
+       * List Container files
+       */
+      list(containerID, query = {}, options) {
+        return this._client.getAPIList(path2`/containers/${containerID}/files`, CursorPage, {
+          query,
+          ...options
+        });
+      }
+      /**
+       * Delete Container File
+       */
+      delete(fileID, params, options) {
+        const { container_id } = params;
+        return this._client.delete(path2`/containers/${container_id}/files/${fileID}`, {
+          ...options,
+          headers: buildHeaders([{ Accept: "*/*" }, options?.headers])
+        });
+      }
+    };
+    Files.Content = Content;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/containers/containers.mjs
+var Containers;
+var init_containers = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/containers/containers.mjs"() {
+    init_resource();
+    init_files();
+    init_files();
+    init_pagination();
+    init_headers();
+    init_path();
+    Containers = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.files = new Files(this._client);
+      }
+      /**
+       * Create Container
+       */
+      create(body, options) {
+        return this._client.post("/containers", { body, ...options });
+      }
+      /**
+       * Retrieve Container
+       */
+      retrieve(containerID, options) {
+        return this._client.get(path2`/containers/${containerID}`, options);
+      }
+      /**
+       * List Containers
+       */
+      list(query = {}, options) {
+        return this._client.getAPIList("/containers", CursorPage, { query, ...options });
+      }
+      /**
+       * Delete Container
+       */
+      delete(containerID, options) {
+        return this._client.delete(path2`/containers/${containerID}`, {
+          ...options,
+          headers: buildHeaders([{ Accept: "*/*" }, options?.headers])
+        });
+      }
+    };
+    Containers.Files = Files;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/conversations/items.mjs
+var Items;
+var init_items = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/conversations/items.mjs"() {
+    init_resource();
+    init_pagination();
+    init_path();
+    Items = class extends APIResource {
+      /**
+       * Create items in a conversation with the given ID.
+       */
+      create(conversationID, params, options) {
+        const { include, ...body } = params;
+        return this._client.post(path2`/conversations/${conversationID}/items`, {
+          query: { include },
+          body,
+          ...options
+        });
+      }
+      /**
+       * Get a single item from a conversation with the given IDs.
+       */
+      retrieve(itemID, params, options) {
+        const { conversation_id, ...query } = params;
+        return this._client.get(path2`/conversations/${conversation_id}/items/${itemID}`, { query, ...options });
+      }
+      /**
+       * List all items for a conversation with the given ID.
+       */
+      list(conversationID, query = {}, options) {
+        return this._client.getAPIList(path2`/conversations/${conversationID}/items`, ConversationCursorPage, { query, ...options });
+      }
+      /**
+       * Delete an item from a conversation with the given IDs.
+       */
+      delete(itemID, params, options) {
+        const { conversation_id } = params;
+        return this._client.delete(path2`/conversations/${conversation_id}/items/${itemID}`, options);
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/conversations/conversations.mjs
+var Conversations;
+var init_conversations = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/conversations/conversations.mjs"() {
+    init_resource();
+    init_items();
+    init_items();
+    init_path();
+    Conversations = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.items = new Items(this._client);
+      }
+      /**
+       * Create a conversation.
+       */
+      create(body = {}, options) {
+        return this._client.post("/conversations", { body, ...options });
+      }
+      /**
+       * Get a conversation
+       */
+      retrieve(conversationID, options) {
+        return this._client.get(path2`/conversations/${conversationID}`, options);
+      }
+      /**
+       * Update a conversation
+       */
+      update(conversationID, body, options) {
+        return this._client.post(path2`/conversations/${conversationID}`, { body, ...options });
+      }
+      /**
+       * Delete a conversation. Items in the conversation will not be deleted.
+       */
+      delete(conversationID, options) {
+        return this._client.delete(path2`/conversations/${conversationID}`, options);
+      }
+    };
+    Conversations.Items = Items;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/embeddings.mjs
+var Embeddings;
+var init_embeddings = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/embeddings.mjs"() {
+    init_resource();
+    init_utils6();
+    Embeddings = class extends APIResource {
+      /**
+       * Creates an embedding vector representing the input text.
+       *
+       * @example
+       * ```ts
+       * const createEmbeddingResponse =
+       *   await client.embeddings.create({
+       *     input: 'The quick brown fox jumped over the lazy dog',
+       *     model: 'text-embedding-3-small',
+       *   });
+       * ```
+       */
+      create(body, options) {
+        const hasUserProvidedEncodingFormat = !!body.encoding_format;
+        let encoding_format = hasUserProvidedEncodingFormat ? body.encoding_format : "base64";
+        if (hasUserProvidedEncodingFormat) {
+          loggerFor(this._client).debug("embeddings/user defined encoding_format:", body.encoding_format);
+        }
+        const response = this._client.post("/embeddings", {
+          body: {
+            ...body,
+            encoding_format
+          },
+          ...options
+        });
+        if (hasUserProvidedEncodingFormat) {
+          return response;
+        }
+        loggerFor(this._client).debug("embeddings/decoding base64 embeddings from base64");
+        return response._thenUnwrap((response2) => {
+          if (response2 && response2.data) {
+            response2.data.forEach((embeddingBase64Obj) => {
+              const embeddingBase64Str = embeddingBase64Obj.embedding;
+              embeddingBase64Obj.embedding = toFloat32Array(embeddingBase64Str);
+            });
+          }
+          return response2;
+        });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/evals/runs/output-items.mjs
+var OutputItems;
+var init_output_items = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/evals/runs/output-items.mjs"() {
+    init_resource();
+    init_pagination();
+    init_path();
+    OutputItems = class extends APIResource {
+      /**
+       * Get an evaluation run output item by ID.
+       */
+      retrieve(outputItemID, params, options) {
+        const { eval_id, run_id } = params;
+        return this._client.get(path2`/evals/${eval_id}/runs/${run_id}/output_items/${outputItemID}`, options);
+      }
+      /**
+       * Get a list of output items for an evaluation run.
+       */
+      list(runID, params, options) {
+        const { eval_id, ...query } = params;
+        return this._client.getAPIList(path2`/evals/${eval_id}/runs/${runID}/output_items`, CursorPage, { query, ...options });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/evals/runs/runs.mjs
+var Runs2;
+var init_runs2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/evals/runs/runs.mjs"() {
+    init_resource();
+    init_output_items();
+    init_output_items();
+    init_pagination();
+    init_path();
+    Runs2 = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.outputItems = new OutputItems(this._client);
+      }
+      /**
+       * Kicks off a new run for a given evaluation, specifying the data source, and what
+       * model configuration to use to test. The datasource will be validated against the
+       * schema specified in the config of the evaluation.
+       */
+      create(evalID, body, options) {
+        return this._client.post(path2`/evals/${evalID}/runs`, { body, ...options });
+      }
+      /**
+       * Get an evaluation run by ID.
+       */
+      retrieve(runID, params, options) {
+        const { eval_id } = params;
+        return this._client.get(path2`/evals/${eval_id}/runs/${runID}`, options);
+      }
+      /**
+       * Get a list of runs for an evaluation.
+       */
+      list(evalID, query = {}, options) {
+        return this._client.getAPIList(path2`/evals/${evalID}/runs`, CursorPage, {
+          query,
+          ...options
+        });
+      }
+      /**
+       * Delete an eval run.
+       */
+      delete(runID, params, options) {
+        const { eval_id } = params;
+        return this._client.delete(path2`/evals/${eval_id}/runs/${runID}`, options);
+      }
+      /**
+       * Cancel an ongoing evaluation run.
+       */
+      cancel(runID, params, options) {
+        const { eval_id } = params;
+        return this._client.post(path2`/evals/${eval_id}/runs/${runID}`, options);
+      }
+    };
+    Runs2.OutputItems = OutputItems;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/evals/evals.mjs
+var Evals;
+var init_evals = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/evals/evals.mjs"() {
+    init_resource();
+    init_runs2();
+    init_runs2();
+    init_pagination();
+    init_path();
+    Evals = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.runs = new Runs2(this._client);
+      }
+      /**
+       * Create the structure of an evaluation that can be used to test a model's
+       * performance. An evaluation is a set of testing criteria and the config for a
+       * data source, which dictates the schema of the data used in the evaluation. After
+       * creating an evaluation, you can run it on different models and model parameters.
+       * We support several types of graders and datasources. For more information, see
+       * the [Evals guide](https://platform.openai.com/docs/guides/evals).
+       */
+      create(body, options) {
+        return this._client.post("/evals", { body, ...options });
+      }
+      /**
+       * Get an evaluation by ID.
+       */
+      retrieve(evalID, options) {
+        return this._client.get(path2`/evals/${evalID}`, options);
+      }
+      /**
+       * Update certain properties of an evaluation.
+       */
+      update(evalID, body, options) {
+        return this._client.post(path2`/evals/${evalID}`, { body, ...options });
+      }
+      /**
+       * List evaluations for a project.
+       */
+      list(query = {}, options) {
+        return this._client.getAPIList("/evals", CursorPage, { query, ...options });
+      }
+      /**
+       * Delete an evaluation.
+       */
+      delete(evalID, options) {
+        return this._client.delete(path2`/evals/${evalID}`, options);
+      }
+    };
+    Evals.Runs = Runs2;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/files.mjs
+var Files2;
+var init_files2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/files.mjs"() {
+    init_resource();
+    init_pagination();
+    init_headers();
+    init_sleep();
+    init_error2();
+    init_uploads();
+    init_path();
+    Files2 = class extends APIResource {
+      /**
+       * Upload a file that can be used across various endpoints. Individual files can be
+       * up to 512 MB, and each project can store up to 2.5 TB of files in total. There
+       * is no organization-wide storage limit.
+       *
+       * - The Assistants API supports files up to 2 million tokens and of specific file
+       *   types. See the
+       *   [Assistants Tools guide](https://platform.openai.com/docs/assistants/tools)
+       *   for details.
+       * - The Fine-tuning API only supports `.jsonl` files. The input also has certain
+       *   required formats for fine-tuning
+       *   [chat](https://platform.openai.com/docs/api-reference/fine-tuning/chat-input)
+       *   or
+       *   [completions](https://platform.openai.com/docs/api-reference/fine-tuning/completions-input)
+       *   models.
+       * - The Batch API only supports `.jsonl` files up to 200 MB in size. The input
+       *   also has a specific required
+       *   [format](https://platform.openai.com/docs/api-reference/batch/request-input).
+       *
+       * Please [contact us](https://help.openai.com/) if you need to increase these
+       * storage limits.
+       */
+      create(body, options) {
+        return this._client.post("/files", multipartFormRequestOptions({ body, ...options }, this._client));
+      }
+      /**
+       * Returns information about a specific file.
+       */
+      retrieve(fileID, options) {
+        return this._client.get(path2`/files/${fileID}`, options);
+      }
+      /**
+       * Returns a list of files.
+       */
+      list(query = {}, options) {
+        return this._client.getAPIList("/files", CursorPage, { query, ...options });
+      }
+      /**
+       * Delete a file and remove it from all vector stores.
+       */
+      delete(fileID, options) {
+        return this._client.delete(path2`/files/${fileID}`, options);
+      }
+      /**
+       * Returns the contents of the specified file.
+       */
+      content(fileID, options) {
+        return this._client.get(path2`/files/${fileID}/content`, {
+          ...options,
+          headers: buildHeaders([{ Accept: "application/binary" }, options?.headers]),
+          __binaryResponse: true
+        });
+      }
+      /**
+       * Waits for the given file to be processed, default timeout is 30 mins.
+       */
+      async waitForProcessing(id, { pollInterval = 5e3, maxWait = 30 * 60 * 1e3 } = {}) {
+        const TERMINAL_STATES = /* @__PURE__ */ new Set(["processed", "error", "deleted"]);
+        const start = Date.now();
+        let file2 = await this.retrieve(id);
+        while (!file2.status || !TERMINAL_STATES.has(file2.status)) {
+          await sleep(pollInterval);
+          file2 = await this.retrieve(id);
+          if (Date.now() - start > maxWait) {
+            throw new APIConnectionTimeoutError({
+              message: `Giving up on waiting for file ${id} to finish processing after ${maxWait} milliseconds.`
+            });
+          }
+        }
+        return file2;
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/methods.mjs
+var Methods;
+var init_methods = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/methods.mjs"() {
+    init_resource();
+    Methods = class extends APIResource {
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/alpha/graders.mjs
+var Graders;
+var init_graders = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/alpha/graders.mjs"() {
+    init_resource();
+    Graders = class extends APIResource {
+      /**
+       * Run a grader.
+       *
+       * @example
+       * ```ts
+       * const response = await client.fineTuning.alpha.graders.run({
+       *   grader: {
+       *     input: 'input',
+       *     name: 'name',
+       *     operation: 'eq',
+       *     reference: 'reference',
+       *     type: 'string_check',
+       *   },
+       *   model_sample: 'model_sample',
+       * });
+       * ```
+       */
+      run(body, options) {
+        return this._client.post("/fine_tuning/alpha/graders/run", { body, ...options });
+      }
+      /**
+       * Validate a grader.
+       *
+       * @example
+       * ```ts
+       * const response =
+       *   await client.fineTuning.alpha.graders.validate({
+       *     grader: {
+       *       input: 'input',
+       *       name: 'name',
+       *       operation: 'eq',
+       *       reference: 'reference',
+       *       type: 'string_check',
+       *     },
+       *   });
+       * ```
+       */
+      validate(body, options) {
+        return this._client.post("/fine_tuning/alpha/graders/validate", { body, ...options });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/alpha/alpha.mjs
+var Alpha;
+var init_alpha = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/alpha/alpha.mjs"() {
+    init_resource();
+    init_graders();
+    init_graders();
+    Alpha = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.graders = new Graders(this._client);
+      }
+    };
+    Alpha.Graders = Graders;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/checkpoints/permissions.mjs
+var Permissions;
+var init_permissions = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/checkpoints/permissions.mjs"() {
+    init_resource();
+    init_pagination();
+    init_path();
+    Permissions = class extends APIResource {
+      /**
+       * **NOTE:** Calling this endpoint requires an [admin API key](../admin-api-keys).
+       *
+       * This enables organization owners to share fine-tuned models with other projects
+       * in their organization.
+       *
+       * @example
+       * ```ts
+       * // Automatically fetches more pages as needed.
+       * for await (const permissionCreateResponse of client.fineTuning.checkpoints.permissions.create(
+       *   'ft:gpt-4o-mini-2024-07-18:org:weather:B7R9VjQd',
+       *   { project_ids: ['string'] },
+       * )) {
+       *   // ...
+       * }
+       * ```
+       */
+      create(fineTunedModelCheckpoint, body, options) {
+        return this._client.getAPIList(path2`/fine_tuning/checkpoints/${fineTunedModelCheckpoint}/permissions`, Page, { body, method: "post", ...options });
+      }
+      /**
+       * **NOTE:** This endpoint requires an [admin API key](../admin-api-keys).
+       *
+       * Organization owners can use this endpoint to view all permissions for a
+       * fine-tuned model checkpoint.
+       *
+       * @deprecated Retrieve is deprecated. Please swap to the paginated list method instead.
+       */
+      retrieve(fineTunedModelCheckpoint, query = {}, options) {
+        return this._client.get(path2`/fine_tuning/checkpoints/${fineTunedModelCheckpoint}/permissions`, {
+          query,
+          ...options
+        });
+      }
+      /**
+       * **NOTE:** This endpoint requires an [admin API key](../admin-api-keys).
+       *
+       * Organization owners can use this endpoint to view all permissions for a
+       * fine-tuned model checkpoint.
+       *
+       * @example
+       * ```ts
+       * // Automatically fetches more pages as needed.
+       * for await (const permissionListResponse of client.fineTuning.checkpoints.permissions.list(
+       *   'ft-AF1WoRqd3aJAHsqc9NY7iL8F',
+       * )) {
+       *   // ...
+       * }
+       * ```
+       */
+      list(fineTunedModelCheckpoint, query = {}, options) {
+        return this._client.getAPIList(path2`/fine_tuning/checkpoints/${fineTunedModelCheckpoint}/permissions`, ConversationCursorPage, { query, ...options });
+      }
+      /**
+       * **NOTE:** This endpoint requires an [admin API key](../admin-api-keys).
+       *
+       * Organization owners can use this endpoint to delete a permission for a
+       * fine-tuned model checkpoint.
+       *
+       * @example
+       * ```ts
+       * const permission =
+       *   await client.fineTuning.checkpoints.permissions.delete(
+       *     'cp_zc4Q7MP6XxulcVzj4MZdwsAB',
+       *     {
+       *       fine_tuned_model_checkpoint:
+       *         'ft:gpt-4o-mini-2024-07-18:org:weather:B7R9VjQd',
+       *     },
+       *   );
+       * ```
+       */
+      delete(permissionID, params, options) {
+        const { fine_tuned_model_checkpoint } = params;
+        return this._client.delete(path2`/fine_tuning/checkpoints/${fine_tuned_model_checkpoint}/permissions/${permissionID}`, options);
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/checkpoints/checkpoints.mjs
+var Checkpoints;
+var init_checkpoints = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/checkpoints/checkpoints.mjs"() {
+    init_resource();
+    init_permissions();
+    init_permissions();
+    Checkpoints = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.permissions = new Permissions(this._client);
+      }
+    };
+    Checkpoints.Permissions = Permissions;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/jobs/checkpoints.mjs
+var Checkpoints2;
+var init_checkpoints2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/jobs/checkpoints.mjs"() {
+    init_resource();
+    init_pagination();
+    init_path();
+    Checkpoints2 = class extends APIResource {
+      /**
+       * List checkpoints for a fine-tuning job.
+       *
+       * @example
+       * ```ts
+       * // Automatically fetches more pages as needed.
+       * for await (const fineTuningJobCheckpoint of client.fineTuning.jobs.checkpoints.list(
+       *   'ft-AF1WoRqd3aJAHsqc9NY7iL8F',
+       * )) {
+       *   // ...
+       * }
+       * ```
+       */
+      list(fineTuningJobID, query = {}, options) {
+        return this._client.getAPIList(path2`/fine_tuning/jobs/${fineTuningJobID}/checkpoints`, CursorPage, { query, ...options });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/jobs/jobs.mjs
+var Jobs;
+var init_jobs = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/jobs/jobs.mjs"() {
+    init_resource();
+    init_checkpoints2();
+    init_checkpoints2();
+    init_pagination();
+    init_path();
+    Jobs = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.checkpoints = new Checkpoints2(this._client);
+      }
+      /**
+       * Creates a fine-tuning job which begins the process of creating a new model from
+       * a given dataset.
+       *
+       * Response includes details of the enqueued job including job status and the name
+       * of the fine-tuned models once complete.
+       *
+       * [Learn more about fine-tuning](https://platform.openai.com/docs/guides/model-optimization)
+       *
+       * @example
+       * ```ts
+       * const fineTuningJob = await client.fineTuning.jobs.create({
+       *   model: 'gpt-4o-mini',
+       *   training_file: 'file-abc123',
+       * });
+       * ```
+       */
+      create(body, options) {
+        return this._client.post("/fine_tuning/jobs", { body, ...options });
+      }
+      /**
+       * Get info about a fine-tuning job.
+       *
+       * [Learn more about fine-tuning](https://platform.openai.com/docs/guides/model-optimization)
+       *
+       * @example
+       * ```ts
+       * const fineTuningJob = await client.fineTuning.jobs.retrieve(
+       *   'ft-AF1WoRqd3aJAHsqc9NY7iL8F',
+       * );
+       * ```
+       */
+      retrieve(fineTuningJobID, options) {
+        return this._client.get(path2`/fine_tuning/jobs/${fineTuningJobID}`, options);
+      }
+      /**
+       * List your organization's fine-tuning jobs
+       *
+       * @example
+       * ```ts
+       * // Automatically fetches more pages as needed.
+       * for await (const fineTuningJob of client.fineTuning.jobs.list()) {
+       *   // ...
+       * }
+       * ```
+       */
+      list(query = {}, options) {
+        return this._client.getAPIList("/fine_tuning/jobs", CursorPage, { query, ...options });
+      }
+      /**
+       * Immediately cancel a fine-tune job.
+       *
+       * @example
+       * ```ts
+       * const fineTuningJob = await client.fineTuning.jobs.cancel(
+       *   'ft-AF1WoRqd3aJAHsqc9NY7iL8F',
+       * );
+       * ```
+       */
+      cancel(fineTuningJobID, options) {
+        return this._client.post(path2`/fine_tuning/jobs/${fineTuningJobID}/cancel`, options);
+      }
+      /**
+       * Get status updates for a fine-tuning job.
+       *
+       * @example
+       * ```ts
+       * // Automatically fetches more pages as needed.
+       * for await (const fineTuningJobEvent of client.fineTuning.jobs.listEvents(
+       *   'ft-AF1WoRqd3aJAHsqc9NY7iL8F',
+       * )) {
+       *   // ...
+       * }
+       * ```
+       */
+      listEvents(fineTuningJobID, query = {}, options) {
+        return this._client.getAPIList(path2`/fine_tuning/jobs/${fineTuningJobID}/events`, CursorPage, { query, ...options });
+      }
+      /**
+       * Pause a fine-tune job.
+       *
+       * @example
+       * ```ts
+       * const fineTuningJob = await client.fineTuning.jobs.pause(
+       *   'ft-AF1WoRqd3aJAHsqc9NY7iL8F',
+       * );
+       * ```
+       */
+      pause(fineTuningJobID, options) {
+        return this._client.post(path2`/fine_tuning/jobs/${fineTuningJobID}/pause`, options);
+      }
+      /**
+       * Resume a fine-tune job.
+       *
+       * @example
+       * ```ts
+       * const fineTuningJob = await client.fineTuning.jobs.resume(
+       *   'ft-AF1WoRqd3aJAHsqc9NY7iL8F',
+       * );
+       * ```
+       */
+      resume(fineTuningJobID, options) {
+        return this._client.post(path2`/fine_tuning/jobs/${fineTuningJobID}/resume`, options);
+      }
+    };
+    Jobs.Checkpoints = Checkpoints2;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/fine-tuning.mjs
+var FineTuning;
+var init_fine_tuning = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/fine-tuning.mjs"() {
+    init_resource();
+    init_methods();
+    init_methods();
+    init_alpha();
+    init_alpha();
+    init_checkpoints();
+    init_checkpoints();
+    init_jobs();
+    init_jobs();
+    FineTuning = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.methods = new Methods(this._client);
+        this.jobs = new Jobs(this._client);
+        this.checkpoints = new Checkpoints(this._client);
+        this.alpha = new Alpha(this._client);
+      }
+    };
+    FineTuning.Methods = Methods;
+    FineTuning.Jobs = Jobs;
+    FineTuning.Checkpoints = Checkpoints;
+    FineTuning.Alpha = Alpha;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/graders/grader-models.mjs
+var GraderModels;
+var init_grader_models = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/graders/grader-models.mjs"() {
+    init_resource();
+    GraderModels = class extends APIResource {
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/graders/graders.mjs
+var Graders2;
+var init_graders2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/graders/graders.mjs"() {
+    init_resource();
+    init_grader_models();
+    init_grader_models();
+    Graders2 = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.graderModels = new GraderModels(this._client);
+      }
+    };
+    Graders2.GraderModels = GraderModels;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/images.mjs
+var Images;
+var init_images = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/images.mjs"() {
+    init_resource();
+    init_uploads();
+    Images = class extends APIResource {
+      /**
+       * Creates a variation of a given image. This endpoint only supports `dall-e-2`.
+       *
+       * @example
+       * ```ts
+       * const imagesResponse = await client.images.createVariation({
+       *   image: fs.createReadStream('otter.png'),
+       * });
+       * ```
+       */
+      createVariation(body, options) {
+        return this._client.post("/images/variations", multipartFormRequestOptions({ body, ...options }, this._client));
+      }
+      edit(body, options) {
+        return this._client.post("/images/edits", multipartFormRequestOptions({ body, ...options, stream: body.stream ?? false }, this._client));
+      }
+      generate(body, options) {
+        return this._client.post("/images/generations", { body, ...options, stream: body.stream ?? false });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/models.mjs
+var Models;
+var init_models = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/models.mjs"() {
+    init_resource();
+    init_pagination();
+    init_path();
+    Models = class extends APIResource {
+      /**
+       * Retrieves a model instance, providing basic information about the model such as
+       * the owner and permissioning.
+       */
+      retrieve(model, options) {
+        return this._client.get(path2`/models/${model}`, options);
+      }
+      /**
+       * Lists the currently available models, and provides basic information about each
+       * one such as the owner and availability.
+       */
+      list(options) {
+        return this._client.getAPIList("/models", Page, options);
+      }
+      /**
+       * Delete a fine-tuned model. You must have the Owner role in your organization to
+       * delete a model.
+       */
+      delete(model, options) {
+        return this._client.delete(path2`/models/${model}`, options);
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/moderations.mjs
+var Moderations;
+var init_moderations = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/moderations.mjs"() {
+    init_resource();
+    Moderations = class extends APIResource {
+      /**
+       * Classifies if text and/or image inputs are potentially harmful. Learn more in
+       * the [moderation guide](https://platform.openai.com/docs/guides/moderation).
+       */
+      create(body, options) {
+        return this._client.post("/moderations", { body, ...options });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/realtime/calls.mjs
+var Calls;
+var init_calls = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/realtime/calls.mjs"() {
+    init_resource();
+    init_headers();
+    init_path();
+    Calls = class extends APIResource {
+      /**
+       * Accept an incoming SIP call and configure the realtime session that will handle
+       * it.
+       *
+       * @example
+       * ```ts
+       * await client.realtime.calls.accept('call_id', {
+       *   type: 'realtime',
+       * });
+       * ```
+       */
+      accept(callID, body, options) {
+        return this._client.post(path2`/realtime/calls/${callID}/accept`, {
+          body,
+          ...options,
+          headers: buildHeaders([{ Accept: "*/*" }, options?.headers])
+        });
+      }
+      /**
+       * End an active Realtime API call, whether it was initiated over SIP or WebRTC.
+       *
+       * @example
+       * ```ts
+       * await client.realtime.calls.hangup('call_id');
+       * ```
+       */
+      hangup(callID, options) {
+        return this._client.post(path2`/realtime/calls/${callID}/hangup`, {
+          ...options,
+          headers: buildHeaders([{ Accept: "*/*" }, options?.headers])
+        });
+      }
+      /**
+       * Transfer an active SIP call to a new destination using the SIP REFER verb.
+       *
+       * @example
+       * ```ts
+       * await client.realtime.calls.refer('call_id', {
+       *   target_uri: 'tel:+14155550123',
+       * });
+       * ```
+       */
+      refer(callID, body, options) {
+        return this._client.post(path2`/realtime/calls/${callID}/refer`, {
+          body,
+          ...options,
+          headers: buildHeaders([{ Accept: "*/*" }, options?.headers])
+        });
+      }
+      /**
+       * Decline an incoming SIP call by returning a SIP status code to the caller.
+       *
+       * @example
+       * ```ts
+       * await client.realtime.calls.reject('call_id');
+       * ```
+       */
+      reject(callID, body = {}, options) {
+        return this._client.post(path2`/realtime/calls/${callID}/reject`, {
+          body,
+          ...options,
+          headers: buildHeaders([{ Accept: "*/*" }, options?.headers])
+        });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/realtime/client-secrets.mjs
+var ClientSecrets;
+var init_client_secrets = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/realtime/client-secrets.mjs"() {
+    init_resource();
+    ClientSecrets = class extends APIResource {
+      /**
+       * Create a Realtime client secret with an associated session configuration.
+       *
+       * Client secrets are short-lived tokens that can be passed to a client app, such
+       * as a web frontend or mobile client, which grants access to the Realtime API
+       * without leaking your main API key. You can configure a custom TTL for each
+       * client secret.
+       *
+       * You can also attach session configuration options to the client secret, which
+       * will be applied to any sessions created using that client secret, but these can
+       * also be overridden by the client connection.
+       *
+       * [Learn more about authentication with client secrets over WebRTC](https://platform.openai.com/docs/guides/realtime-webrtc).
+       *
+       * Returns the created client secret and the effective session object. The client
+       * secret is a string that looks like `ek_1234`.
+       *
+       * @example
+       * ```ts
+       * const clientSecret =
+       *   await client.realtime.clientSecrets.create();
+       * ```
+       */
+      create(body, options) {
+        return this._client.post("/realtime/client_secrets", { body, ...options });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/realtime/realtime.mjs
+var Realtime2;
+var init_realtime2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/realtime/realtime.mjs"() {
+    init_resource();
+    init_calls();
+    init_calls();
+    init_client_secrets();
+    init_client_secrets();
+    Realtime2 = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.clientSecrets = new ClientSecrets(this._client);
+        this.calls = new Calls(this._client);
+      }
+    };
+    Realtime2.ClientSecrets = ClientSecrets;
+    Realtime2.Calls = Calls;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ResponsesParser.mjs
+function maybeParseResponse(response, params) {
+  if (!params || !hasAutoParseableInput2(params)) {
+    return {
+      ...response,
+      output_parsed: null,
+      output: response.output.map((item) => {
+        if (item.type === "function_call") {
+          return {
+            ...item,
+            parsed_arguments: null
+          };
+        }
+        if (item.type === "message") {
+          return {
+            ...item,
+            content: item.content.map((content) => ({
+              ...content,
+              parsed: null
+            }))
+          };
+        } else {
+          return item;
+        }
+      })
+    };
+  }
+  return parseResponse(response, params);
+}
+function parseResponse(response, params) {
+  const output = response.output.map((item) => {
+    if (item.type === "function_call") {
+      return {
+        ...item,
+        parsed_arguments: parseToolCall2(params, item)
+      };
+    }
+    if (item.type === "message") {
+      const content = item.content.map((content2) => {
+        if (content2.type === "output_text") {
+          return {
+            ...content2,
+            parsed: parseTextFormat(params, content2.text)
+          };
+        }
+        return content2;
+      });
+      return {
+        ...item,
+        content
+      };
+    }
+    return item;
+  });
+  const parsed = Object.assign({}, response, { output });
+  if (!Object.getOwnPropertyDescriptor(response, "output_text")) {
+    addOutputText(parsed);
+  }
+  Object.defineProperty(parsed, "output_parsed", {
+    enumerable: true,
+    get() {
+      for (const output2 of parsed.output) {
+        if (output2.type !== "message") {
+          continue;
+        }
+        for (const content of output2.content) {
+          if (content.type === "output_text" && content.parsed !== null) {
+            return content.parsed;
+          }
+        }
+      }
+      return null;
+    }
+  });
+  return parsed;
+}
+function parseTextFormat(params, content) {
+  if (params.text?.format?.type !== "json_schema") {
+    return null;
+  }
+  if ("$parseRaw" in params.text?.format) {
+    const text_format = params.text?.format;
+    return text_format.$parseRaw(content);
+  }
+  return JSON.parse(content);
+}
+function hasAutoParseableInput2(params) {
+  if (isAutoParsableResponseFormat(params.text?.format)) {
+    return true;
+  }
+  return false;
+}
+function isAutoParsableTool2(tool) {
+  return tool?.["$brand"] === "auto-parseable-tool";
+}
+function getInputToolByName(input_tools, name2) {
+  return input_tools.find((tool) => tool.type === "function" && tool.name === name2);
+}
+function parseToolCall2(params, toolCall) {
+  const inputTool = getInputToolByName(params.tools ?? [], toolCall.name);
+  return {
+    ...toolCall,
+    ...toolCall,
+    parsed_arguments: isAutoParsableTool2(inputTool) ? inputTool.$parseRaw(toolCall.arguments) : inputTool?.strict ? JSON.parse(toolCall.arguments) : null
+  };
+}
+function addOutputText(rsp) {
+  const texts = [];
+  for (const output of rsp.output) {
+    if (output.type !== "message") {
+      continue;
+    }
+    for (const content of output.content) {
+      if (content.type === "output_text") {
+        texts.push(content.text);
+      }
+    }
+  }
+  rsp.output_text = texts.join("");
+}
+var init_ResponsesParser = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ResponsesParser.mjs"() {
+    init_error2();
+    init_parser();
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/responses/ResponseStream.mjs
+function finalizeResponse(snapshot, params) {
+  return maybeParseResponse(snapshot, params);
+}
+var _ResponseStream_instances, _ResponseStream_params, _ResponseStream_currentResponseSnapshot, _ResponseStream_finalResponse, _ResponseStream_beginRequest, _ResponseStream_addEvent, _ResponseStream_endRequest, _ResponseStream_accumulateResponse, ResponseStream;
+var init_ResponseStream = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/responses/ResponseStream.mjs"() {
+    init_tslib();
+    init_error2();
+    init_EventStream();
+    init_ResponsesParser();
+    ResponseStream = class _ResponseStream extends EventStream {
+      constructor(params) {
+        super();
+        _ResponseStream_instances.add(this);
+        _ResponseStream_params.set(this, void 0);
+        _ResponseStream_currentResponseSnapshot.set(this, void 0);
+        _ResponseStream_finalResponse.set(this, void 0);
+        __classPrivateFieldSet(this, _ResponseStream_params, params, "f");
+      }
+      static createResponse(client, params, options) {
+        const runner = new _ResponseStream(params);
+        runner._run(() => runner._createOrRetrieveResponse(client, params, {
+          ...options,
+          headers: { ...options?.headers, "X-Stainless-Helper-Method": "stream" }
+        }));
+        return runner;
+      }
+      async _createOrRetrieveResponse(client, params, options) {
+        const signal = options?.signal;
+        if (signal) {
+          if (signal.aborted)
+            this.controller.abort();
+          signal.addEventListener("abort", () => this.controller.abort());
+        }
+        __classPrivateFieldGet(this, _ResponseStream_instances, "m", _ResponseStream_beginRequest).call(this);
+        let stream4;
+        let starting_after = null;
+        if ("response_id" in params) {
+          stream4 = await client.responses.retrieve(params.response_id, { stream: true }, { ...options, signal: this.controller.signal, stream: true });
+          starting_after = params.starting_after ?? null;
+        } else {
+          stream4 = await client.responses.create({ ...params, stream: true }, { ...options, signal: this.controller.signal });
+        }
+        this._connected();
+        for await (const event of stream4) {
+          __classPrivateFieldGet(this, _ResponseStream_instances, "m", _ResponseStream_addEvent).call(this, event, starting_after);
+        }
+        if (stream4.controller.signal?.aborted) {
+          throw new APIUserAbortError();
+        }
+        return __classPrivateFieldGet(this, _ResponseStream_instances, "m", _ResponseStream_endRequest).call(this);
+      }
+      [(_ResponseStream_params = /* @__PURE__ */ new WeakMap(), _ResponseStream_currentResponseSnapshot = /* @__PURE__ */ new WeakMap(), _ResponseStream_finalResponse = /* @__PURE__ */ new WeakMap(), _ResponseStream_instances = /* @__PURE__ */ new WeakSet(), _ResponseStream_beginRequest = function _ResponseStream_beginRequest2() {
+        if (this.ended)
+          return;
+        __classPrivateFieldSet(this, _ResponseStream_currentResponseSnapshot, void 0, "f");
+      }, _ResponseStream_addEvent = function _ResponseStream_addEvent2(event, starting_after) {
+        if (this.ended)
+          return;
+        const maybeEmit = (name2, event2) => {
+          if (starting_after == null || event2.sequence_number > starting_after) {
+            this._emit(name2, event2);
+          }
+        };
+        const response = __classPrivateFieldGet(this, _ResponseStream_instances, "m", _ResponseStream_accumulateResponse).call(this, event);
+        maybeEmit("event", event);
+        switch (event.type) {
+          case "response.output_text.delta": {
+            const output = response.output[event.output_index];
+            if (!output) {
+              throw new OpenAIError(`missing output at index ${event.output_index}`);
+            }
+            if (output.type === "message") {
+              const content = output.content[event.content_index];
+              if (!content) {
+                throw new OpenAIError(`missing content at index ${event.content_index}`);
+              }
+              if (content.type !== "output_text") {
+                throw new OpenAIError(`expected content to be 'output_text', got ${content.type}`);
+              }
+              maybeEmit("response.output_text.delta", {
+                ...event,
+                snapshot: content.text
+              });
+            }
+            break;
+          }
+          case "response.function_call_arguments.delta": {
+            const output = response.output[event.output_index];
+            if (!output) {
+              throw new OpenAIError(`missing output at index ${event.output_index}`);
+            }
+            if (output.type === "function_call") {
+              maybeEmit("response.function_call_arguments.delta", {
+                ...event,
+                snapshot: output.arguments
+              });
+            }
+            break;
+          }
+          default:
+            maybeEmit(event.type, event);
+            break;
+        }
+      }, _ResponseStream_endRequest = function _ResponseStream_endRequest2() {
+        if (this.ended) {
+          throw new OpenAIError(`stream has ended, this shouldn't happen`);
+        }
+        const snapshot = __classPrivateFieldGet(this, _ResponseStream_currentResponseSnapshot, "f");
+        if (!snapshot) {
+          throw new OpenAIError(`request ended without sending any events`);
+        }
+        __classPrivateFieldSet(this, _ResponseStream_currentResponseSnapshot, void 0, "f");
+        const parsedResponse = finalizeResponse(snapshot, __classPrivateFieldGet(this, _ResponseStream_params, "f"));
+        __classPrivateFieldSet(this, _ResponseStream_finalResponse, parsedResponse, "f");
+        return parsedResponse;
+      }, _ResponseStream_accumulateResponse = function _ResponseStream_accumulateResponse2(event) {
+        let snapshot = __classPrivateFieldGet(this, _ResponseStream_currentResponseSnapshot, "f");
+        if (!snapshot) {
+          if (event.type !== "response.created") {
+            throw new OpenAIError(`When snapshot hasn't been set yet, expected 'response.created' event, got ${event.type}`);
+          }
+          snapshot = __classPrivateFieldSet(this, _ResponseStream_currentResponseSnapshot, event.response, "f");
+          return snapshot;
+        }
+        switch (event.type) {
+          case "response.output_item.added": {
+            snapshot.output.push(event.item);
+            break;
+          }
+          case "response.content_part.added": {
+            const output = snapshot.output[event.output_index];
+            if (!output) {
+              throw new OpenAIError(`missing output at index ${event.output_index}`);
+            }
+            const type = output.type;
+            const part = event.part;
+            if (type === "message" && part.type !== "reasoning_text") {
+              output.content.push(part);
+            } else if (type === "reasoning" && part.type === "reasoning_text") {
+              if (!output.content) {
+                output.content = [];
+              }
+              output.content.push(part);
+            }
+            break;
+          }
+          case "response.output_text.delta": {
+            const output = snapshot.output[event.output_index];
+            if (!output) {
+              throw new OpenAIError(`missing output at index ${event.output_index}`);
+            }
+            if (output.type === "message") {
+              const content = output.content[event.content_index];
+              if (!content) {
+                throw new OpenAIError(`missing content at index ${event.content_index}`);
+              }
+              if (content.type !== "output_text") {
+                throw new OpenAIError(`expected content to be 'output_text', got ${content.type}`);
+              }
+              content.text += event.delta;
+            }
+            break;
+          }
+          case "response.function_call_arguments.delta": {
+            const output = snapshot.output[event.output_index];
+            if (!output) {
+              throw new OpenAIError(`missing output at index ${event.output_index}`);
+            }
+            if (output.type === "function_call") {
+              output.arguments += event.delta;
+            }
+            break;
+          }
+          case "response.reasoning_text.delta": {
+            const output = snapshot.output[event.output_index];
+            if (!output) {
+              throw new OpenAIError(`missing output at index ${event.output_index}`);
+            }
+            if (output.type === "reasoning") {
+              const content = output.content?.[event.content_index];
+              if (!content) {
+                throw new OpenAIError(`missing content at index ${event.content_index}`);
+              }
+              if (content.type !== "reasoning_text") {
+                throw new OpenAIError(`expected content to be 'reasoning_text', got ${content.type}`);
+              }
+              content.text += event.delta;
+            }
+            break;
+          }
+          case "response.completed": {
+            __classPrivateFieldSet(this, _ResponseStream_currentResponseSnapshot, event.response, "f");
+            break;
+          }
+        }
+        return snapshot;
+      }, Symbol.asyncIterator)]() {
+        const pushQueue = [];
+        const readQueue = [];
+        let done = false;
+        this.on("event", (event) => {
+          const reader = readQueue.shift();
+          if (reader) {
+            reader.resolve(event);
+          } else {
+            pushQueue.push(event);
+          }
+        });
+        this.on("end", () => {
+          done = true;
+          for (const reader of readQueue) {
+            reader.resolve(void 0);
+          }
+          readQueue.length = 0;
+        });
+        this.on("abort", (err) => {
+          done = true;
+          for (const reader of readQueue) {
+            reader.reject(err);
+          }
+          readQueue.length = 0;
+        });
+        this.on("error", (err) => {
+          done = true;
+          for (const reader of readQueue) {
+            reader.reject(err);
+          }
+          readQueue.length = 0;
+        });
+        return {
+          next: async () => {
+            if (!pushQueue.length) {
+              if (done) {
+                return { value: void 0, done: true };
+              }
+              return new Promise((resolve, reject) => readQueue.push({ resolve, reject })).then((event2) => event2 ? { value: event2, done: false } : { value: void 0, done: true });
+            }
+            const event = pushQueue.shift();
+            return { value: event, done: false };
+          },
+          return: async () => {
+            this.abort();
+            return { value: void 0, done: true };
+          }
+        };
+      }
+      /**
+       * @returns a promise that resolves with the final Response, or rejects
+       * if an error occurred or the stream ended prematurely without producing a REsponse.
+       */
+      async finalResponse() {
+        await this.done();
+        const response = __classPrivateFieldGet(this, _ResponseStream_finalResponse, "f");
+        if (!response)
+          throw new OpenAIError("stream ended without producing a ChatCompletion");
+        return response;
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/responses/input-items.mjs
+var InputItems;
+var init_input_items = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/responses/input-items.mjs"() {
+    init_resource();
+    init_pagination();
+    init_path();
+    InputItems = class extends APIResource {
+      /**
+       * Returns a list of input items for a given response.
+       *
+       * @example
+       * ```ts
+       * // Automatically fetches more pages as needed.
+       * for await (const responseItem of client.responses.inputItems.list(
+       *   'response_id',
+       * )) {
+       *   // ...
+       * }
+       * ```
+       */
+      list(responseID, query = {}, options) {
+        return this._client.getAPIList(path2`/responses/${responseID}/input_items`, CursorPage, { query, ...options });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/responses/input-tokens.mjs
+var InputTokens;
+var init_input_tokens = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/responses/input-tokens.mjs"() {
+    init_resource();
+    InputTokens = class extends APIResource {
+      /**
+       * Returns input token counts of the request.
+       *
+       * Returns an object with `object` set to `response.input_tokens` and an
+       * `input_tokens` count.
+       *
+       * @example
+       * ```ts
+       * const response = await client.responses.inputTokens.count();
+       * ```
+       */
+      count(body = {}, options) {
+        return this._client.post("/responses/input_tokens", { body, ...options });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/responses/responses.mjs
+var Responses;
+var init_responses = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/responses/responses.mjs"() {
+    init_ResponsesParser();
+    init_ResponseStream();
+    init_resource();
+    init_input_items();
+    init_input_items();
+    init_input_tokens();
+    init_input_tokens();
+    init_headers();
+    init_path();
+    Responses = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.inputItems = new InputItems(this._client);
+        this.inputTokens = new InputTokens(this._client);
+      }
+      create(body, options) {
+        return this._client.post("/responses", { body, ...options, stream: body.stream ?? false })._thenUnwrap((rsp) => {
+          if ("object" in rsp && rsp.object === "response") {
+            addOutputText(rsp);
+          }
+          return rsp;
+        });
+      }
+      retrieve(responseID, query = {}, options) {
+        return this._client.get(path2`/responses/${responseID}`, {
+          query,
+          ...options,
+          stream: query?.stream ?? false
+        })._thenUnwrap((rsp) => {
+          if ("object" in rsp && rsp.object === "response") {
+            addOutputText(rsp);
+          }
+          return rsp;
+        });
+      }
+      /**
+       * Deletes a model response with the given ID.
+       *
+       * @example
+       * ```ts
+       * await client.responses.delete(
+       *   'resp_677efb5139a88190b512bc3fef8e535d',
+       * );
+       * ```
+       */
+      delete(responseID, options) {
+        return this._client.delete(path2`/responses/${responseID}`, {
+          ...options,
+          headers: buildHeaders([{ Accept: "*/*" }, options?.headers])
+        });
+      }
+      parse(body, options) {
+        return this._client.responses.create(body, options)._thenUnwrap((response) => parseResponse(response, body));
+      }
+      /**
+       * Creates a model response stream
+       */
+      stream(body, options) {
+        return ResponseStream.createResponse(this._client, body, options);
+      }
+      /**
+       * Cancels a model response with the given ID. Only responses created with the
+       * `background` parameter set to `true` can be cancelled.
+       * [Learn more](https://platform.openai.com/docs/guides/background).
+       *
+       * @example
+       * ```ts
+       * const response = await client.responses.cancel(
+       *   'resp_677efb5139a88190b512bc3fef8e535d',
+       * );
+       * ```
+       */
+      cancel(responseID, options) {
+        return this._client.post(path2`/responses/${responseID}/cancel`, options);
+      }
+      /**
+       * Compact a conversation. Returns a compacted response object.
+       *
+       * Learn when and how to compact long-running conversations in the
+       * [conversation state guide](https://platform.openai.com/docs/guides/conversation-state#managing-the-context-window).
+       * For ZDR-compatible compaction details, see
+       * [Compaction (advanced)](https://platform.openai.com/docs/guides/conversation-state#compaction-advanced).
+       *
+       * @example
+       * ```ts
+       * const compactedResponse = await client.responses.compact({
+       *   model: 'gpt-5.4',
+       * });
+       * ```
+       */
+      compact(body, options) {
+        return this._client.post("/responses/compact", { body, ...options });
+      }
+    };
+    Responses.InputItems = InputItems;
+    Responses.InputTokens = InputTokens;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/content.mjs
+var Content2;
+var init_content2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/content.mjs"() {
+    init_resource();
+    init_headers();
+    init_path();
+    Content2 = class extends APIResource {
+      /**
+       * Download a skill zip bundle by its ID.
+       */
+      retrieve(skillID, options) {
+        return this._client.get(path2`/skills/${skillID}/content`, {
+          ...options,
+          headers: buildHeaders([{ Accept: "application/binary" }, options?.headers]),
+          __binaryResponse: true
+        });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/versions/content.mjs
+var Content3;
+var init_content3 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/versions/content.mjs"() {
+    init_resource();
+    init_headers();
+    init_path();
+    Content3 = class extends APIResource {
+      /**
+       * Download a skill version zip bundle.
+       */
+      retrieve(version3, params, options) {
+        const { skill_id } = params;
+        return this._client.get(path2`/skills/${skill_id}/versions/${version3}/content`, {
+          ...options,
+          headers: buildHeaders([{ Accept: "application/binary" }, options?.headers]),
+          __binaryResponse: true
+        });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/versions/versions.mjs
+var Versions;
+var init_versions = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/versions/versions.mjs"() {
+    init_resource();
+    init_content3();
+    init_content3();
+    init_pagination();
+    init_uploads();
+    init_path();
+    Versions = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.content = new Content3(this._client);
+      }
+      /**
+       * Create a new immutable skill version.
+       */
+      create(skillID, body = {}, options) {
+        return this._client.post(path2`/skills/${skillID}/versions`, maybeMultipartFormRequestOptions({ body, ...options }, this._client));
+      }
+      /**
+       * Get a specific skill version.
+       */
+      retrieve(version3, params, options) {
+        const { skill_id } = params;
+        return this._client.get(path2`/skills/${skill_id}/versions/${version3}`, options);
+      }
+      /**
+       * List skill versions for a skill.
+       */
+      list(skillID, query = {}, options) {
+        return this._client.getAPIList(path2`/skills/${skillID}/versions`, CursorPage, {
+          query,
+          ...options
+        });
+      }
+      /**
+       * Delete a skill version.
+       */
+      delete(version3, params, options) {
+        const { skill_id } = params;
+        return this._client.delete(path2`/skills/${skill_id}/versions/${version3}`, options);
+      }
+    };
+    Versions.Content = Content3;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/skills.mjs
+var Skills;
+var init_skills = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/skills.mjs"() {
+    init_resource();
+    init_content2();
+    init_content2();
+    init_versions();
+    init_versions();
+    init_pagination();
+    init_uploads();
+    init_path();
+    Skills = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.content = new Content2(this._client);
+        this.versions = new Versions(this._client);
+      }
+      /**
+       * Create a new skill.
+       */
+      create(body = {}, options) {
+        return this._client.post("/skills", maybeMultipartFormRequestOptions({ body, ...options }, this._client));
+      }
+      /**
+       * Get a skill by its ID.
+       */
+      retrieve(skillID, options) {
+        return this._client.get(path2`/skills/${skillID}`, options);
+      }
+      /**
+       * Update the default version pointer for a skill.
+       */
+      update(skillID, body, options) {
+        return this._client.post(path2`/skills/${skillID}`, { body, ...options });
+      }
+      /**
+       * List all skills for the current project.
+       */
+      list(query = {}, options) {
+        return this._client.getAPIList("/skills", CursorPage, { query, ...options });
+      }
+      /**
+       * Delete a skill by its ID.
+       */
+      delete(skillID, options) {
+        return this._client.delete(path2`/skills/${skillID}`, options);
+      }
+    };
+    Skills.Content = Content2;
+    Skills.Versions = Versions;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/uploads/parts.mjs
+var Parts;
+var init_parts = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/uploads/parts.mjs"() {
+    init_resource();
+    init_uploads();
+    init_path();
+    Parts = class extends APIResource {
+      /**
+       * Adds a
+       * [Part](https://platform.openai.com/docs/api-reference/uploads/part-object) to an
+       * [Upload](https://platform.openai.com/docs/api-reference/uploads/object) object.
+       * A Part represents a chunk of bytes from the file you are trying to upload.
+       *
+       * Each Part can be at most 64 MB, and you can add Parts until you hit the Upload
+       * maximum of 8 GB.
+       *
+       * It is possible to add multiple Parts in parallel. You can decide the intended
+       * order of the Parts when you
+       * [complete the Upload](https://platform.openai.com/docs/api-reference/uploads/complete).
+       */
+      create(uploadID, body, options) {
+        return this._client.post(path2`/uploads/${uploadID}/parts`, multipartFormRequestOptions({ body, ...options }, this._client));
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/uploads/uploads.mjs
+var Uploads;
+var init_uploads3 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/uploads/uploads.mjs"() {
+    init_resource();
+    init_parts();
+    init_parts();
+    init_path();
+    Uploads = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.parts = new Parts(this._client);
+      }
+      /**
+       * Creates an intermediate
+       * [Upload](https://platform.openai.com/docs/api-reference/uploads/object) object
+       * that you can add
+       * [Parts](https://platform.openai.com/docs/api-reference/uploads/part-object) to.
+       * Currently, an Upload can accept at most 8 GB in total and expires after an hour
+       * after you create it.
+       *
+       * Once you complete the Upload, we will create a
+       * [File](https://platform.openai.com/docs/api-reference/files/object) object that
+       * contains all the parts you uploaded. This File is usable in the rest of our
+       * platform as a regular File object.
+       *
+       * For certain `purpose` values, the correct `mime_type` must be specified. Please
+       * refer to documentation for the
+       * [supported MIME types for your use case](https://platform.openai.com/docs/assistants/tools/file-search#supported-files).
+       *
+       * For guidance on the proper filename extensions for each purpose, please follow
+       * the documentation on
+       * [creating a File](https://platform.openai.com/docs/api-reference/files/create).
+       *
+       * Returns the Upload object with status `pending`.
+       */
+      create(body, options) {
+        return this._client.post("/uploads", { body, ...options });
+      }
+      /**
+       * Cancels the Upload. No Parts may be added after an Upload is cancelled.
+       *
+       * Returns the Upload object with status `cancelled`.
+       */
+      cancel(uploadID, options) {
+        return this._client.post(path2`/uploads/${uploadID}/cancel`, options);
+      }
+      /**
+       * Completes the
+       * [Upload](https://platform.openai.com/docs/api-reference/uploads/object).
+       *
+       * Within the returned Upload object, there is a nested
+       * [File](https://platform.openai.com/docs/api-reference/files/object) object that
+       * is ready to use in the rest of the platform.
+       *
+       * You can specify the order of the Parts by passing in an ordered list of the Part
+       * IDs.
+       *
+       * The number of bytes uploaded upon completion must match the number of bytes
+       * initially specified when creating the Upload object. No Parts may be added after
+       * an Upload is completed. Returns the Upload object with status `completed`,
+       * including an additional `file` property containing the created usable File
+       * object.
+       */
+      complete(uploadID, body, options) {
+        return this._client.post(path2`/uploads/${uploadID}/complete`, { body, ...options });
+      }
+    };
+    Uploads.Parts = Parts;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/Util.mjs
+var allSettledWithThrow;
+var init_Util = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/Util.mjs"() {
+    allSettledWithThrow = async (promises) => {
+      const results = await Promise.allSettled(promises);
+      const rejected = results.filter((result) => result.status === "rejected");
+      if (rejected.length) {
+        for (const result of rejected) {
+          console.error(result.reason);
+        }
+        throw new Error(`${rejected.length} promise(s) failed - see the above errors`);
+      }
+      const values2 = [];
+      for (const result of results) {
+        if (result.status === "fulfilled") {
+          values2.push(result.value);
+        }
+      }
+      return values2;
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/vector-stores/file-batches.mjs
+var FileBatches;
+var init_file_batches = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/vector-stores/file-batches.mjs"() {
+    init_resource();
+    init_pagination();
+    init_headers();
+    init_sleep();
+    init_Util();
+    init_path();
+    FileBatches = class extends APIResource {
+      /**
+       * Create a vector store file batch.
+       */
+      create(vectorStoreID, body, options) {
+        return this._client.post(path2`/vector_stores/${vectorStoreID}/file_batches`, {
+          body,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Retrieves a vector store file batch.
+       */
+      retrieve(batchID, params, options) {
+        const { vector_store_id } = params;
+        return this._client.get(path2`/vector_stores/${vector_store_id}/file_batches/${batchID}`, {
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Cancel a vector store file batch. This attempts to cancel the processing of
+       * files in this batch as soon as possible.
+       */
+      cancel(batchID, params, options) {
+        const { vector_store_id } = params;
+        return this._client.post(path2`/vector_stores/${vector_store_id}/file_batches/${batchID}/cancel`, {
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Create a vector store batch and poll until all files have been processed.
+       */
+      async createAndPoll(vectorStoreId, body, options) {
+        const batch = await this.create(vectorStoreId, body);
+        return await this.poll(vectorStoreId, batch.id, options);
+      }
+      /**
+       * Returns a list of vector store files in a batch.
+       */
+      listFiles(batchID, params, options) {
+        const { vector_store_id, ...query } = params;
+        return this._client.getAPIList(path2`/vector_stores/${vector_store_id}/file_batches/${batchID}/files`, CursorPage, { query, ...options, headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers]) });
+      }
+      /**
+       * Wait for the given file batch to be processed.
+       *
+       * Note: this will return even if one of the files failed to process, you need to
+       * check batch.file_counts.failed_count to handle this case.
+       */
+      async poll(vectorStoreID, batchID, options) {
+        const headers = buildHeaders([
+          options?.headers,
+          {
+            "X-Stainless-Poll-Helper": "true",
+            "X-Stainless-Custom-Poll-Interval": options?.pollIntervalMs?.toString() ?? void 0
+          }
+        ]);
+        while (true) {
+          const { data: batch, response } = await this.retrieve(batchID, { vector_store_id: vectorStoreID }, {
+            ...options,
+            headers
+          }).withResponse();
+          switch (batch.status) {
+            case "in_progress":
+              let sleepInterval = 5e3;
+              if (options?.pollIntervalMs) {
+                sleepInterval = options.pollIntervalMs;
+              } else {
+                const headerInterval = response.headers.get("openai-poll-after-ms");
+                if (headerInterval) {
+                  const headerIntervalMs = parseInt(headerInterval);
+                  if (!isNaN(headerIntervalMs)) {
+                    sleepInterval = headerIntervalMs;
+                  }
+                }
+              }
+              await sleep(sleepInterval);
+              break;
+            case "failed":
+            case "cancelled":
+            case "completed":
+              return batch;
+          }
+        }
+      }
+      /**
+       * Uploads the given files concurrently and then creates a vector store file batch.
+       *
+       * The concurrency limit is configurable using the `maxConcurrency` parameter.
+       */
+      async uploadAndPoll(vectorStoreId, { files, fileIds = [] }, options) {
+        if (files == null || files.length == 0) {
+          throw new Error(`No \`files\` provided to process. If you've already uploaded files you should use \`.createAndPoll()\` instead`);
+        }
+        const configuredConcurrency = options?.maxConcurrency ?? 5;
+        const concurrencyLimit = Math.min(configuredConcurrency, files.length);
+        const client = this._client;
+        const fileIterator = files.values();
+        const allFileIds = [...fileIds];
+        async function processFiles(iterator2) {
+          for (let item of iterator2) {
+            const fileObj = await client.files.create({ file: item, purpose: "assistants" }, options);
+            allFileIds.push(fileObj.id);
+          }
+        }
+        const workers = Array(concurrencyLimit).fill(fileIterator).map(processFiles);
+        await allSettledWithThrow(workers);
+        return await this.createAndPoll(vectorStoreId, {
+          file_ids: allFileIds
+        });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/vector-stores/files.mjs
+var Files3;
+var init_files3 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/vector-stores/files.mjs"() {
+    init_resource();
+    init_pagination();
+    init_headers();
+    init_utils6();
+    init_path();
+    Files3 = class extends APIResource {
+      /**
+       * Create a vector store file by attaching a
+       * [File](https://platform.openai.com/docs/api-reference/files) to a
+       * [vector store](https://platform.openai.com/docs/api-reference/vector-stores/object).
+       */
+      create(vectorStoreID, body, options) {
+        return this._client.post(path2`/vector_stores/${vectorStoreID}/files`, {
+          body,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Retrieves a vector store file.
+       */
+      retrieve(fileID, params, options) {
+        const { vector_store_id } = params;
+        return this._client.get(path2`/vector_stores/${vector_store_id}/files/${fileID}`, {
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Update attributes on a vector store file.
+       */
+      update(fileID, params, options) {
+        const { vector_store_id, ...body } = params;
+        return this._client.post(path2`/vector_stores/${vector_store_id}/files/${fileID}`, {
+          body,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Returns a list of vector store files.
+       */
+      list(vectorStoreID, query = {}, options) {
+        return this._client.getAPIList(path2`/vector_stores/${vectorStoreID}/files`, CursorPage, {
+          query,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Delete a vector store file. This will remove the file from the vector store but
+       * the file itself will not be deleted. To delete the file, use the
+       * [delete file](https://platform.openai.com/docs/api-reference/files/delete)
+       * endpoint.
+       */
+      delete(fileID, params, options) {
+        const { vector_store_id } = params;
+        return this._client.delete(path2`/vector_stores/${vector_store_id}/files/${fileID}`, {
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Attach a file to the given vector store and wait for it to be processed.
+       */
+      async createAndPoll(vectorStoreId, body, options) {
+        const file2 = await this.create(vectorStoreId, body, options);
+        return await this.poll(vectorStoreId, file2.id, options);
+      }
+      /**
+       * Wait for the vector store file to finish processing.
+       *
+       * Note: this will return even if the file failed to process, you need to check
+       * file.last_error and file.status to handle these cases
+       */
+      async poll(vectorStoreID, fileID, options) {
+        const headers = buildHeaders([
+          options?.headers,
+          {
+            "X-Stainless-Poll-Helper": "true",
+            "X-Stainless-Custom-Poll-Interval": options?.pollIntervalMs?.toString() ?? void 0
+          }
+        ]);
+        while (true) {
+          const fileResponse = await this.retrieve(fileID, {
+            vector_store_id: vectorStoreID
+          }, { ...options, headers }).withResponse();
+          const file2 = fileResponse.data;
+          switch (file2.status) {
+            case "in_progress":
+              let sleepInterval = 5e3;
+              if (options?.pollIntervalMs) {
+                sleepInterval = options.pollIntervalMs;
+              } else {
+                const headerInterval = fileResponse.response.headers.get("openai-poll-after-ms");
+                if (headerInterval) {
+                  const headerIntervalMs = parseInt(headerInterval);
+                  if (!isNaN(headerIntervalMs)) {
+                    sleepInterval = headerIntervalMs;
+                  }
+                }
+              }
+              await sleep(sleepInterval);
+              break;
+            case "failed":
+            case "completed":
+              return file2;
+          }
+        }
+      }
+      /**
+       * Upload a file to the `files` API and then attach it to the given vector store.
+       *
+       * Note the file will be asynchronously processed (you can use the alternative
+       * polling helper method to wait for processing to complete).
+       */
+      async upload(vectorStoreId, file2, options) {
+        const fileInfo = await this._client.files.create({ file: file2, purpose: "assistants" }, options);
+        return this.create(vectorStoreId, { file_id: fileInfo.id }, options);
+      }
+      /**
+       * Add a file to a vector store and poll until processing is complete.
+       */
+      async uploadAndPoll(vectorStoreId, file2, options) {
+        const fileInfo = await this.upload(vectorStoreId, file2, options);
+        return await this.poll(vectorStoreId, fileInfo.id, options);
+      }
+      /**
+       * Retrieve the parsed contents of a vector store file.
+       */
+      content(fileID, params, options) {
+        const { vector_store_id } = params;
+        return this._client.getAPIList(path2`/vector_stores/${vector_store_id}/files/${fileID}/content`, Page, { ...options, headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers]) });
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/vector-stores/vector-stores.mjs
+var VectorStores;
+var init_vector_stores = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/vector-stores/vector-stores.mjs"() {
+    init_resource();
+    init_file_batches();
+    init_file_batches();
+    init_files3();
+    init_files3();
+    init_pagination();
+    init_headers();
+    init_path();
+    VectorStores = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        this.files = new Files3(this._client);
+        this.fileBatches = new FileBatches(this._client);
+      }
+      /**
+       * Create a vector store.
+       */
+      create(body, options) {
+        return this._client.post("/vector_stores", {
+          body,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Retrieves a vector store.
+       */
+      retrieve(vectorStoreID, options) {
+        return this._client.get(path2`/vector_stores/${vectorStoreID}`, {
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Modifies a vector store.
+       */
+      update(vectorStoreID, body, options) {
+        return this._client.post(path2`/vector_stores/${vectorStoreID}`, {
+          body,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Returns a list of vector stores.
+       */
+      list(query = {}, options) {
+        return this._client.getAPIList("/vector_stores", CursorPage, {
+          query,
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Delete a vector store.
+       */
+      delete(vectorStoreID, options) {
+        return this._client.delete(path2`/vector_stores/${vectorStoreID}`, {
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+      /**
+       * Search a vector store for relevant chunks based on a query and file attributes
+       * filter.
+       */
+      search(vectorStoreID, body, options) {
+        return this._client.getAPIList(path2`/vector_stores/${vectorStoreID}/search`, Page, {
+          body,
+          method: "post",
+          ...options,
+          headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
+        });
+      }
+    };
+    VectorStores.Files = Files3;
+    VectorStores.FileBatches = FileBatches;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/videos.mjs
+var Videos;
+var init_videos = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/videos.mjs"() {
+    init_resource();
+    init_pagination();
+    init_headers();
+    init_uploads();
+    init_path();
+    Videos = class extends APIResource {
+      /**
+       * Create a new video generation job from a prompt and optional reference assets.
+       */
+      create(body, options) {
+        return this._client.post("/videos", multipartFormRequestOptions({ body, ...options }, this._client));
+      }
+      /**
+       * Fetch the latest metadata for a generated video.
+       */
+      retrieve(videoID, options) {
+        return this._client.get(path2`/videos/${videoID}`, options);
+      }
+      /**
+       * List recently generated videos for the current project.
+       */
+      list(query = {}, options) {
+        return this._client.getAPIList("/videos", ConversationCursorPage, { query, ...options });
+      }
+      /**
+       * Permanently delete a completed or failed video and its stored assets.
+       */
+      delete(videoID, options) {
+        return this._client.delete(path2`/videos/${videoID}`, options);
+      }
+      /**
+       * Create a character from an uploaded video.
+       */
+      createCharacter(body, options) {
+        return this._client.post("/videos/characters", multipartFormRequestOptions({ body, ...options }, this._client));
+      }
+      /**
+       * Download the generated video bytes or a derived preview asset.
+       *
+       * Streams the rendered video content for the specified video job.
+       */
+      downloadContent(videoID, query = {}, options) {
+        return this._client.get(path2`/videos/${videoID}/content`, {
+          query,
+          ...options,
+          headers: buildHeaders([{ Accept: "application/binary" }, options?.headers]),
+          __binaryResponse: true
+        });
+      }
+      /**
+       * Create a new video generation job by editing a source video or existing
+       * generated video.
+       */
+      edit(body, options) {
+        return this._client.post("/videos/edits", multipartFormRequestOptions({ body, ...options }, this._client));
+      }
+      /**
+       * Create an extension of a completed video.
+       */
+      extend(body, options) {
+        return this._client.post("/videos/extensions", multipartFormRequestOptions({ body, ...options }, this._client));
+      }
+      /**
+       * Fetch a character.
+       */
+      getCharacter(characterID, options) {
+        return this._client.get(path2`/videos/characters/${characterID}`, options);
+      }
+      /**
+       * Create a remix of a completed video using a refreshed prompt.
+       */
+      remix(videoID, body, options) {
+        return this._client.post(path2`/videos/${videoID}/remix`, maybeMultipartFormRequestOptions({ body, ...options }, this._client));
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/webhooks/webhooks.mjs
+var _Webhooks_instances, _Webhooks_validateSecret, _Webhooks_getRequiredHeader, Webhooks;
+var init_webhooks = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/webhooks/webhooks.mjs"() {
+    init_tslib();
+    init_error2();
+    init_resource();
+    init_headers();
+    Webhooks = class extends APIResource {
+      constructor() {
+        super(...arguments);
+        _Webhooks_instances.add(this);
+      }
+      /**
+       * Validates that the given payload was sent by OpenAI and parses the payload.
+       */
+      async unwrap(payload, headers, secret = this._client.webhookSecret, tolerance = 300) {
+        await this.verifySignature(payload, headers, secret, tolerance);
+        return JSON.parse(payload);
+      }
+      /**
+       * Validates whether or not the webhook payload was sent by OpenAI.
+       *
+       * An error will be raised if the webhook payload was not sent by OpenAI.
+       *
+       * @param payload - The webhook payload
+       * @param headers - The webhook headers
+       * @param secret - The webhook secret (optional, will use client secret if not provided)
+       * @param tolerance - Maximum age of the webhook in seconds (default: 300 = 5 minutes)
+       */
+      async verifySignature(payload, headers, secret = this._client.webhookSecret, tolerance = 300) {
+        if (typeof crypto === "undefined" || typeof crypto.subtle.importKey !== "function" || typeof crypto.subtle.verify !== "function") {
+          throw new Error("Webhook signature verification is only supported when the `crypto` global is defined");
+        }
+        __classPrivateFieldGet(this, _Webhooks_instances, "m", _Webhooks_validateSecret).call(this, secret);
+        const headersObj = buildHeaders([headers]).values;
+        const signatureHeader = __classPrivateFieldGet(this, _Webhooks_instances, "m", _Webhooks_getRequiredHeader).call(this, headersObj, "webhook-signature");
+        const timestamp2 = __classPrivateFieldGet(this, _Webhooks_instances, "m", _Webhooks_getRequiredHeader).call(this, headersObj, "webhook-timestamp");
+        const webhookId = __classPrivateFieldGet(this, _Webhooks_instances, "m", _Webhooks_getRequiredHeader).call(this, headersObj, "webhook-id");
+        const timestampSeconds = parseInt(timestamp2, 10);
+        if (isNaN(timestampSeconds)) {
+          throw new InvalidWebhookSignatureError("Invalid webhook timestamp format");
+        }
+        const nowSeconds = Math.floor(Date.now() / 1e3);
+        if (nowSeconds - timestampSeconds > tolerance) {
+          throw new InvalidWebhookSignatureError("Webhook timestamp is too old");
+        }
+        if (timestampSeconds > nowSeconds + tolerance) {
+          throw new InvalidWebhookSignatureError("Webhook timestamp is too new");
+        }
+        const signatures = signatureHeader.split(" ").map((part) => part.startsWith("v1,") ? part.substring(3) : part);
+        const decodedSecret = secret.startsWith("whsec_") ? Buffer.from(secret.replace("whsec_", ""), "base64") : Buffer.from(secret, "utf-8");
+        const signedPayload = webhookId ? `${webhookId}.${timestamp2}.${payload}` : `${timestamp2}.${payload}`;
+        const key = await crypto.subtle.importKey("raw", decodedSecret, { name: "HMAC", hash: "SHA-256" }, false, ["verify"]);
+        for (const signature of signatures) {
+          try {
+            const signatureBytes = Buffer.from(signature, "base64");
+            const isValid = await crypto.subtle.verify("HMAC", key, signatureBytes, new TextEncoder().encode(signedPayload));
+            if (isValid) {
+              return;
+            }
+          } catch {
+            continue;
+          }
+        }
+        throw new InvalidWebhookSignatureError("The given webhook signature does not match the expected signature");
+      }
+    };
+    _Webhooks_instances = /* @__PURE__ */ new WeakSet(), _Webhooks_validateSecret = function _Webhooks_validateSecret2(secret) {
+      if (typeof secret !== "string" || secret.length === 0) {
+        throw new Error(`The webhook secret must either be set using the env var, OPENAI_WEBHOOK_SECRET, on the client class, OpenAI({ webhookSecret: '123' }), or passed to this function`);
+      }
+    }, _Webhooks_getRequiredHeader = function _Webhooks_getRequiredHeader2(headers, name2) {
+      if (!headers) {
+        throw new Error(`Headers are required`);
+      }
+      const value = headers.get(name2);
+      if (value === null || value === void 0) {
+        throw new Error(`Missing required header: ${name2}`);
+      }
+      return value;
+    };
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/webhooks/index.mjs
+var init_webhooks2 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/webhooks/index.mjs"() {
+    init_webhooks();
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/webhooks.mjs
+var init_webhooks3 = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/webhooks.mjs"() {
+    init_webhooks2();
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/index.mjs
+var init_resources = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/index.mjs"() {
+    init_chat2();
+    init_shared();
+    init_audio();
+    init_batches();
+    init_beta();
+    init_completions3();
+    init_containers();
+    init_conversations();
+    init_embeddings();
+    init_evals();
+    init_files2();
+    init_fine_tuning();
+    init_graders2();
+    init_images();
+    init_models();
+    init_moderations();
+    init_realtime2();
+    init_responses();
+    init_skills();
+    init_uploads3();
+    init_vector_stores();
+    init_videos();
+    init_webhooks3();
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/client.mjs
+var _OpenAI_instances, _a3, _OpenAI_encoder, _OpenAI_baseURLOverridden, WORKLOAD_IDENTITY_API_KEY_PLACEHOLDER, OpenAI;
+var init_client = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/client.mjs"() {
+    init_tslib();
+    init_uuid2();
+    init_values();
+    init_sleep();
+    init_errors2();
+    init_detect_platform();
+    init_shims();
+    init_request_options();
+    init_query2();
+    init_version2();
+    init_error();
+    init_pagination();
+    init_workload_identity_auth();
+    init_error();
+    init_uploads2();
+    init_resources();
+    init_api_promise();
+    init_batches();
+    init_completions3();
+    init_embeddings();
+    init_files2();
+    init_images();
+    init_models();
+    init_moderations();
+    init_videos();
+    init_audio();
+    init_beta();
+    init_chat();
+    init_containers();
+    init_conversations();
+    init_evals();
+    init_fine_tuning();
+    init_graders2();
+    init_realtime2();
+    init_responses();
+    init_skills();
+    init_uploads3();
+    init_vector_stores();
+    init_webhooks();
+    init_detect_platform();
+    init_headers();
+    init_env();
+    init_log();
+    init_values();
+    WORKLOAD_IDENTITY_API_KEY_PLACEHOLDER = "workload-identity-auth";
+    OpenAI = class {
+      /**
+       * API Client for interfacing with the OpenAI API.
+       *
+       * @param {string | undefined} [opts.apiKey=process.env['OPENAI_API_KEY'] ?? undefined]
+       * @param {string | null | undefined} [opts.organization=process.env['OPENAI_ORG_ID'] ?? null]
+       * @param {string | null | undefined} [opts.project=process.env['OPENAI_PROJECT_ID'] ?? null]
+       * @param {string | null | undefined} [opts.webhookSecret=process.env['OPENAI_WEBHOOK_SECRET'] ?? null]
+       * @param {string} [opts.baseURL=process.env['OPENAI_BASE_URL'] ?? https://api.openai.com/v1] - Override the default base URL for the API.
+       * @param {number} [opts.timeout=10 minutes] - The maximum amount of time (in milliseconds) the client will wait for a response before timing out.
+       * @param {MergedRequestInit} [opts.fetchOptions] - Additional `RequestInit` options to be passed to `fetch` calls.
+       * @param {Fetch} [opts.fetch] - Specify a custom `fetch` function implementation.
+       * @param {number} [opts.maxRetries=2] - The maximum number of times the client will retry a request.
+       * @param {HeadersLike} opts.defaultHeaders - Default headers to include with every request to the API.
+       * @param {Record<string, string | undefined>} opts.defaultQuery - Default query parameters to include with every request to the API.
+       * @param {boolean} [opts.dangerouslyAllowBrowser=false] - By default, client-side use of this library is not allowed, as it risks exposing your secret API credentials to attackers.
+       */
+      constructor({ baseURL = readEnv("OPENAI_BASE_URL"), apiKey = readEnv("OPENAI_API_KEY"), organization = readEnv("OPENAI_ORG_ID") ?? null, project = readEnv("OPENAI_PROJECT_ID") ?? null, webhookSecret = readEnv("OPENAI_WEBHOOK_SECRET") ?? null, workloadIdentity, ...opts } = {}) {
+        _OpenAI_instances.add(this);
+        _OpenAI_encoder.set(this, void 0);
+        this.completions = new Completions2(this);
+        this.chat = new Chat(this);
+        this.embeddings = new Embeddings(this);
+        this.files = new Files2(this);
+        this.images = new Images(this);
+        this.audio = new Audio(this);
+        this.moderations = new Moderations(this);
+        this.models = new Models(this);
+        this.fineTuning = new FineTuning(this);
+        this.graders = new Graders2(this);
+        this.vectorStores = new VectorStores(this);
+        this.webhooks = new Webhooks(this);
+        this.beta = new Beta(this);
+        this.batches = new Batches(this);
+        this.uploads = new Uploads(this);
+        this.responses = new Responses(this);
+        this.realtime = new Realtime2(this);
+        this.conversations = new Conversations(this);
+        this.evals = new Evals(this);
+        this.containers = new Containers(this);
+        this.skills = new Skills(this);
+        this.videos = new Videos(this);
+        if (workloadIdentity) {
+          if (apiKey && apiKey !== WORKLOAD_IDENTITY_API_KEY_PLACEHOLDER) {
+            throw new OpenAIError("The `apiKey` and `workloadIdentity` arguments are mutually exclusive; only one can be passed at a time.");
+          }
+          apiKey = WORKLOAD_IDENTITY_API_KEY_PLACEHOLDER;
+        } else if (apiKey === void 0) {
+          throw new OpenAIError("Missing credentials. Please pass an `apiKey`, `workloadIdentity`, or set the `OPENAI_API_KEY` environment variable.");
+        }
+        const options = {
+          apiKey,
+          organization,
+          project,
+          webhookSecret,
+          workloadIdentity,
+          ...opts,
+          baseURL: baseURL || `https://api.openai.com/v1`
+        };
+        if (!options.dangerouslyAllowBrowser && isRunningInBrowser()) {
+          throw new OpenAIError("It looks like you're running in a browser-like environment.\n\nThis is disabled by default, as it risks exposing your secret API credentials to attackers.\nIf you understand the risks and have appropriate mitigations in place,\nyou can set the `dangerouslyAllowBrowser` option to `true`, e.g.,\n\nnew OpenAI({ apiKey, dangerouslyAllowBrowser: true });\n\nhttps://help.openai.com/en/articles/5112595-best-practices-for-api-key-safety\n");
+        }
+        this.baseURL = options.baseURL;
+        this.timeout = options.timeout ?? _a3.DEFAULT_TIMEOUT;
+        this.logger = options.logger ?? console;
+        const defaultLogLevel = "warn";
+        this.logLevel = defaultLogLevel;
+        this.logLevel = parseLogLevel(options.logLevel, "ClientOptions.logLevel", this) ?? parseLogLevel(readEnv("OPENAI_LOG"), "process.env['OPENAI_LOG']", this) ?? defaultLogLevel;
+        this.fetchOptions = options.fetchOptions;
+        this.maxRetries = options.maxRetries ?? 2;
+        this.fetch = options.fetch ?? getDefaultFetch();
+        __classPrivateFieldSet(this, _OpenAI_encoder, FallbackEncoder, "f");
+        this._options = options;
+        if (workloadIdentity) {
+          this._workloadIdentityAuth = new WorkloadIdentityAuth(workloadIdentity, this.fetch);
+        }
+        this.apiKey = typeof apiKey === "string" ? apiKey : "Missing Key";
+        this.organization = organization;
+        this.project = project;
+        this.webhookSecret = webhookSecret;
+      }
+      /**
+       * Create a new client instance re-using the same options given to the current client with optional overriding.
+       */
+      withOptions(options) {
+        const client = new this.constructor({
+          ...this._options,
+          baseURL: this.baseURL,
+          maxRetries: this.maxRetries,
+          timeout: this.timeout,
+          logger: this.logger,
+          logLevel: this.logLevel,
+          fetch: this.fetch,
+          fetchOptions: this.fetchOptions,
+          apiKey: this.apiKey,
+          workloadIdentity: this._options.workloadIdentity,
+          organization: this.organization,
+          project: this.project,
+          webhookSecret: this.webhookSecret,
+          ...options
+        });
+        return client;
+      }
+      defaultQuery() {
+        return this._options.defaultQuery;
+      }
+      validateHeaders({ values: values2, nulls }) {
+        return;
+      }
+      async authHeaders(opts) {
+        return buildHeaders([{ Authorization: `Bearer ${this.apiKey}` }]);
+      }
+      stringifyQuery(query) {
+        return stringifyQuery(query);
+      }
+      getUserAgent() {
+        return `${this.constructor.name}/JS ${VERSION3}`;
+      }
+      defaultIdempotencyKey() {
+        return `stainless-node-retry-${uuid42()}`;
+      }
+      makeStatusError(status, error48, message, headers) {
+        return APIError.generate(status, error48, message, headers);
+      }
+      async _callApiKey() {
+        const apiKey = this._options.apiKey;
+        if (typeof apiKey !== "function")
+          return false;
+        let token;
+        try {
+          token = await apiKey();
+        } catch (err) {
+          if (err instanceof OpenAIError)
+            throw err;
+          throw new OpenAIError(
+            `Failed to get token from 'apiKey' function: ${err.message}`,
+            // @ts-ignore
+            { cause: err }
+          );
+        }
+        if (typeof token !== "string" || !token) {
+          throw new OpenAIError(`Expected 'apiKey' function argument to return a string but it returned ${token}`);
+        }
+        this.apiKey = token;
+        return true;
+      }
+      buildURL(path3, query, defaultBaseURL) {
+        const baseURL = !__classPrivateFieldGet(this, _OpenAI_instances, "m", _OpenAI_baseURLOverridden).call(this) && defaultBaseURL || this.baseURL;
+        const url3 = isAbsoluteURL2(path3) ? new URL(path3) : new URL(baseURL + (baseURL.endsWith("/") && path3.startsWith("/") ? path3.slice(1) : path3));
+        const defaultQuery = this.defaultQuery();
+        const pathQuery = Object.fromEntries(url3.searchParams);
+        if (!isEmptyObj(defaultQuery) || !isEmptyObj(pathQuery)) {
+          query = { ...pathQuery, ...defaultQuery, ...query };
+        }
+        if (typeof query === "object" && query && !Array.isArray(query)) {
+          url3.search = this.stringifyQuery(query);
+        }
+        return url3.toString();
+      }
+      /**
+       * Used as a callback for mutating the given `FinalRequestOptions` object.
+       */
+      async prepareOptions(options) {
+        await this._callApiKey();
+      }
+      /**
+       * Used as a callback for mutating the given `RequestInit` object.
+       *
+       * This is useful for cases where you want to add certain headers based off of
+       * the request properties, e.g. `method` or `url`.
+       */
+      async prepareRequest(request, { url: url3, options }) {
+      }
+      get(path3, opts) {
+        return this.methodRequest("get", path3, opts);
+      }
+      post(path3, opts) {
+        return this.methodRequest("post", path3, opts);
+      }
+      patch(path3, opts) {
+        return this.methodRequest("patch", path3, opts);
+      }
+      put(path3, opts) {
+        return this.methodRequest("put", path3, opts);
+      }
+      delete(path3, opts) {
+        return this.methodRequest("delete", path3, opts);
+      }
+      methodRequest(method, path3, opts) {
+        return this.request(Promise.resolve(opts).then((opts2) => {
+          return { method, path: path3, ...opts2 };
+        }));
+      }
+      request(options, remainingRetries = null) {
+        return new APIPromise(this, this.makeRequest(options, remainingRetries, void 0));
+      }
+      async makeRequest(optionsInput, retriesRemaining, retryOfRequestLogID) {
+        const options = await optionsInput;
+        const maxRetries = options.maxRetries ?? this.maxRetries;
+        if (retriesRemaining == null) {
+          retriesRemaining = maxRetries;
+        }
+        await this.prepareOptions(options);
+        const { req, url: url3, timeout } = await this.buildRequest(options, {
+          retryCount: maxRetries - retriesRemaining
+        });
+        await this.prepareRequest(req, { url: url3, options });
+        const requestLogID = "log_" + (Math.random() * (1 << 24) | 0).toString(16).padStart(6, "0");
+        const retryLogStr = retryOfRequestLogID === void 0 ? "" : `, retryOf: ${retryOfRequestLogID}`;
+        const startTime = Date.now();
+        loggerFor(this).debug(`[${requestLogID}] sending request`, formatRequestDetails({
+          retryOfRequestLogID,
+          method: options.method,
+          url: url3,
+          options,
+          headers: req.headers
+        }));
+        if (options.signal?.aborted) {
+          throw new APIUserAbortError();
+        }
+        const controller = new AbortController();
+        const response = await this.fetchWithAuth(url3, req, timeout, controller).catch(castToError);
+        const headersTime = Date.now();
+        if (response instanceof globalThis.Error) {
+          const retryMessage = `retrying, ${retriesRemaining} attempts remaining`;
+          if (options.signal?.aborted) {
+            throw new APIUserAbortError();
+          }
+          const isTimeout = isAbortError2(response) || /timed? ?out/i.test(String(response) + ("cause" in response ? String(response.cause) : ""));
+          if (retriesRemaining) {
+            loggerFor(this).info(`[${requestLogID}] connection ${isTimeout ? "timed out" : "failed"} - ${retryMessage}`);
+            loggerFor(this).debug(`[${requestLogID}] connection ${isTimeout ? "timed out" : "failed"} (${retryMessage})`, formatRequestDetails({
+              retryOfRequestLogID,
+              url: url3,
+              durationMs: headersTime - startTime,
+              message: response.message
+            }));
+            return this.retryRequest(options, retriesRemaining, retryOfRequestLogID ?? requestLogID);
+          }
+          loggerFor(this).info(`[${requestLogID}] connection ${isTimeout ? "timed out" : "failed"} - error; no more retries left`);
+          loggerFor(this).debug(`[${requestLogID}] connection ${isTimeout ? "timed out" : "failed"} (error; no more retries left)`, formatRequestDetails({
+            retryOfRequestLogID,
+            url: url3,
+            durationMs: headersTime - startTime,
+            message: response.message
+          }));
+          if (response instanceof OAuthError || response instanceof SubjectTokenProviderError) {
+            throw response;
+          }
+          if (isTimeout) {
+            throw new APIConnectionTimeoutError();
+          }
+          throw new APIConnectionError({ cause: response });
+        }
+        const specialHeaders = [...response.headers.entries()].filter(([name2]) => name2 === "x-request-id").map(([name2, value]) => ", " + name2 + ": " + JSON.stringify(value)).join("");
+        const responseInfo = `[${requestLogID}${retryLogStr}${specialHeaders}] ${req.method} ${url3} ${response.ok ? "succeeded" : "failed"} with status ${response.status} in ${headersTime - startTime}ms`;
+        if (!response.ok) {
+          if (response.status === 401 && this._workloadIdentityAuth && !options.__metadata?.["hasStreamingBody"] && !options.__metadata?.["workloadIdentityTokenRefreshed"]) {
+            await CancelReadableStream(response.body);
+            this._workloadIdentityAuth.invalidateToken();
+            return this.makeRequest({
+              ...options,
+              __metadata: {
+                ...options.__metadata,
+                workloadIdentityTokenRefreshed: true
+              }
+            }, retriesRemaining, retryOfRequestLogID ?? requestLogID);
+          }
+          const shouldRetry = await this.shouldRetry(response);
+          if (retriesRemaining && shouldRetry) {
+            const retryMessage2 = `retrying, ${retriesRemaining} attempts remaining`;
+            await CancelReadableStream(response.body);
+            loggerFor(this).info(`${responseInfo} - ${retryMessage2}`);
+            loggerFor(this).debug(`[${requestLogID}] response error (${retryMessage2})`, formatRequestDetails({
+              retryOfRequestLogID,
+              url: response.url,
+              status: response.status,
+              headers: response.headers,
+              durationMs: headersTime - startTime
+            }));
+            return this.retryRequest(options, retriesRemaining, retryOfRequestLogID ?? requestLogID, response.headers);
+          }
+          const retryMessage = shouldRetry ? `error; no more retries left` : `error; not retryable`;
+          loggerFor(this).info(`${responseInfo} - ${retryMessage}`);
+          const errText = await response.text().catch((err2) => castToError(err2).message);
+          const errJSON = safeJSON(errText);
+          const errMessage = errJSON ? void 0 : errText;
+          loggerFor(this).debug(`[${requestLogID}] response error (${retryMessage})`, formatRequestDetails({
+            retryOfRequestLogID,
+            url: response.url,
+            status: response.status,
+            headers: response.headers,
+            message: errMessage,
+            durationMs: Date.now() - startTime
+          }));
+          const err = this.makeStatusError(response.status, errJSON, errMessage, response.headers);
+          throw err;
+        }
+        loggerFor(this).info(responseInfo);
+        loggerFor(this).debug(`[${requestLogID}] response start`, formatRequestDetails({
+          retryOfRequestLogID,
+          url: response.url,
+          status: response.status,
+          headers: response.headers,
+          durationMs: headersTime - startTime
+        }));
+        return { response, options, controller, requestLogID, retryOfRequestLogID, startTime };
+      }
+      getAPIList(path3, Page2, opts) {
+        return this.requestAPIList(Page2, opts && "then" in opts ? opts.then((opts2) => ({ method: "get", path: path3, ...opts2 })) : { method: "get", path: path3, ...opts });
+      }
+      requestAPIList(Page2, options) {
+        const request = this.makeRequest(options, null, void 0);
+        return new PagePromise(this, request, Page2);
+      }
+      async fetchWithAuth(url3, init, timeout, controller) {
+        if (this._workloadIdentityAuth) {
+          const headers = init.headers;
+          const authHeader = headers.get("Authorization");
+          if (!authHeader || authHeader === `Bearer ${WORKLOAD_IDENTITY_API_KEY_PLACEHOLDER}`) {
+            const token = await this._workloadIdentityAuth.getToken();
+            headers.set("Authorization", `Bearer ${token}`);
+          }
+        }
+        const response = await this.fetchWithTimeout(url3, init, timeout, controller);
+        return response;
+      }
+      async fetchWithTimeout(url3, init, ms, controller) {
+        const { signal, method, ...options } = init || {};
+        const abort = this._makeAbort(controller);
+        if (signal)
+          signal.addEventListener("abort", abort, { once: true });
+        const timeout = setTimeout(abort, ms);
+        const isReadableBody = globalThis.ReadableStream && options.body instanceof globalThis.ReadableStream || typeof options.body === "object" && options.body !== null && Symbol.asyncIterator in options.body;
+        const fetchOptions = {
+          signal: controller.signal,
+          ...isReadableBody ? { duplex: "half" } : {},
+          method: "GET",
+          ...options
+        };
+        if (method) {
+          fetchOptions.method = method.toUpperCase();
+        }
+        try {
+          return await this.fetch.call(void 0, url3, fetchOptions);
+        } finally {
+          clearTimeout(timeout);
+        }
+      }
+      async shouldRetry(response) {
+        const shouldRetryHeader = response.headers.get("x-should-retry");
+        if (shouldRetryHeader === "true")
+          return true;
+        if (shouldRetryHeader === "false")
+          return false;
+        if (response.status === 408)
+          return true;
+        if (response.status === 409)
+          return true;
+        if (response.status === 429)
+          return true;
+        if (response.status >= 500)
+          return true;
+        return false;
+      }
+      async retryRequest(options, retriesRemaining, requestLogID, responseHeaders) {
+        let timeoutMillis;
+        const retryAfterMillisHeader = responseHeaders?.get("retry-after-ms");
+        if (retryAfterMillisHeader) {
+          const timeoutMs = parseFloat(retryAfterMillisHeader);
+          if (!Number.isNaN(timeoutMs)) {
+            timeoutMillis = timeoutMs;
+          }
+        }
+        const retryAfterHeader = responseHeaders?.get("retry-after");
+        if (retryAfterHeader && !timeoutMillis) {
+          const timeoutSeconds = parseFloat(retryAfterHeader);
+          if (!Number.isNaN(timeoutSeconds)) {
+            timeoutMillis = timeoutSeconds * 1e3;
+          } else {
+            timeoutMillis = Date.parse(retryAfterHeader) - Date.now();
+          }
+        }
+        if (timeoutMillis === void 0) {
+          const maxRetries = options.maxRetries ?? this.maxRetries;
+          timeoutMillis = this.calculateDefaultRetryTimeoutMillis(retriesRemaining, maxRetries);
+        }
+        await sleep(timeoutMillis);
+        return this.makeRequest(options, retriesRemaining - 1, requestLogID);
+      }
+      calculateDefaultRetryTimeoutMillis(retriesRemaining, maxRetries) {
+        const initialRetryDelay = 0.5;
+        const maxRetryDelay = 8;
+        const numRetries = maxRetries - retriesRemaining;
+        const sleepSeconds = Math.min(initialRetryDelay * Math.pow(2, numRetries), maxRetryDelay);
+        const jitter = 1 - Math.random() * 0.25;
+        return sleepSeconds * jitter * 1e3;
+      }
+      async buildRequest(inputOptions, { retryCount = 0 } = {}) {
+        const options = { ...inputOptions };
+        const { method, path: path3, query, defaultBaseURL } = options;
+        const url3 = this.buildURL(path3, query, defaultBaseURL);
+        if ("timeout" in options)
+          validatePositiveInteger("timeout", options.timeout);
+        options.timeout = options.timeout ?? this.timeout;
+        const { bodyHeaders, body, isStreamingBody } = this.buildBody({ options });
+        if (isStreamingBody) {
+          inputOptions.__metadata = {
+            ...inputOptions.__metadata,
+            hasStreamingBody: true
+          };
+        }
+        const reqHeaders = await this.buildHeaders({ options: inputOptions, method, bodyHeaders, retryCount });
+        const req = {
+          method,
+          headers: reqHeaders,
+          ...options.signal && { signal: options.signal },
+          ...globalThis.ReadableStream && body instanceof globalThis.ReadableStream && { duplex: "half" },
+          ...body && { body },
+          ...this.fetchOptions ?? {},
+          ...options.fetchOptions ?? {}
+        };
+        return { req, url: url3, timeout: options.timeout };
+      }
+      async buildHeaders({ options, method, bodyHeaders, retryCount }) {
+        let idempotencyHeaders = {};
+        if (this.idempotencyHeader && method !== "get") {
+          if (!options.idempotencyKey)
+            options.idempotencyKey = this.defaultIdempotencyKey();
+          idempotencyHeaders[this.idempotencyHeader] = options.idempotencyKey;
+        }
+        const headers = buildHeaders([
+          idempotencyHeaders,
+          {
+            Accept: "application/json",
+            "User-Agent": this.getUserAgent(),
+            "X-Stainless-Retry-Count": String(retryCount),
+            ...options.timeout ? { "X-Stainless-Timeout": String(Math.trunc(options.timeout / 1e3)) } : {},
+            ...getPlatformHeaders(),
+            "OpenAI-Organization": this.organization,
+            "OpenAI-Project": this.project
+          },
+          await this.authHeaders(options),
+          this._options.defaultHeaders,
+          bodyHeaders,
+          options.headers
+        ]);
+        this.validateHeaders(headers);
+        return headers.values;
+      }
+      _makeAbort(controller) {
+        return () => controller.abort();
+      }
+      buildBody({ options: { body, headers: rawHeaders } }) {
+        if (!body) {
+          return { bodyHeaders: void 0, body: void 0, isStreamingBody: false };
+        }
+        const headers = buildHeaders([rawHeaders]);
+        const isReadableStream2 = typeof globalThis.ReadableStream !== "undefined" && body instanceof globalThis.ReadableStream;
+        const isRetryableBody = !isReadableStream2 && (typeof body === "string" || body instanceof ArrayBuffer || ArrayBuffer.isView(body) || typeof globalThis.Blob !== "undefined" && body instanceof globalThis.Blob || body instanceof URLSearchParams || body instanceof FormData);
+        if (
+          // Pass raw type verbatim
+          ArrayBuffer.isView(body) || body instanceof ArrayBuffer || body instanceof DataView || typeof body === "string" && // Preserve legacy string encoding behavior for now
+          headers.values.has("content-type") || // `Blob` is superset of `File`
+          globalThis.Blob && body instanceof globalThis.Blob || // `FormData` -> `multipart/form-data`
+          body instanceof FormData || // `URLSearchParams` -> `application/x-www-form-urlencoded`
+          body instanceof URLSearchParams || // Send chunked stream (each chunk has own `length`)
+          isReadableStream2
+        ) {
+          return { bodyHeaders: void 0, body, isStreamingBody: !isRetryableBody };
+        } else if (typeof body === "object" && (Symbol.asyncIterator in body || Symbol.iterator in body && "next" in body && typeof body.next === "function")) {
+          return {
+            bodyHeaders: void 0,
+            body: ReadableStreamFrom(body),
+            isStreamingBody: true
+          };
+        } else if (typeof body === "object" && headers.values.get("content-type") === "application/x-www-form-urlencoded") {
+          return {
+            bodyHeaders: { "content-type": "application/x-www-form-urlencoded" },
+            body: this.stringifyQuery(body),
+            isStreamingBody: false
+          };
+        } else {
+          return { ...__classPrivateFieldGet(this, _OpenAI_encoder, "f").call(this, { body, headers }), isStreamingBody: false };
+        }
+      }
+    };
+    _a3 = OpenAI, _OpenAI_encoder = /* @__PURE__ */ new WeakMap(), _OpenAI_instances = /* @__PURE__ */ new WeakSet(), _OpenAI_baseURLOverridden = function _OpenAI_baseURLOverridden2() {
+      return this.baseURL !== "https://api.openai.com/v1";
+    };
+    OpenAI.OpenAI = _a3;
+    OpenAI.DEFAULT_TIMEOUT = 6e5;
+    OpenAI.OpenAIError = OpenAIError;
+    OpenAI.APIError = APIError;
+    OpenAI.APIConnectionError = APIConnectionError;
+    OpenAI.APIConnectionTimeoutError = APIConnectionTimeoutError;
+    OpenAI.APIUserAbortError = APIUserAbortError;
+    OpenAI.NotFoundError = NotFoundError;
+    OpenAI.ConflictError = ConflictError;
+    OpenAI.RateLimitError = RateLimitError;
+    OpenAI.BadRequestError = BadRequestError;
+    OpenAI.AuthenticationError = AuthenticationError;
+    OpenAI.InternalServerError = InternalServerError;
+    OpenAI.PermissionDeniedError = PermissionDeniedError;
+    OpenAI.UnprocessableEntityError = UnprocessableEntityError;
+    OpenAI.InvalidWebhookSignatureError = InvalidWebhookSignatureError;
+    OpenAI.toFile = toFile;
+    OpenAI.Completions = Completions2;
+    OpenAI.Chat = Chat;
+    OpenAI.Embeddings = Embeddings;
+    OpenAI.Files = Files2;
+    OpenAI.Images = Images;
+    OpenAI.Audio = Audio;
+    OpenAI.Moderations = Moderations;
+    OpenAI.Models = Models;
+    OpenAI.FineTuning = FineTuning;
+    OpenAI.Graders = Graders2;
+    OpenAI.VectorStores = VectorStores;
+    OpenAI.Webhooks = Webhooks;
+    OpenAI.Beta = Beta;
+    OpenAI.Batches = Batches;
+    OpenAI.Uploads = Uploads;
+    OpenAI.Responses = Responses;
+    OpenAI.Realtime = Realtime2;
+    OpenAI.Conversations = Conversations;
+    OpenAI.Evals = Evals;
+    OpenAI.Containers = Containers;
+    OpenAI.Skills = Skills;
+    OpenAI.Videos = Videos;
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/azure.mjs
+var AzureOpenAI, _deployments_endpoints;
+var init_azure = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/azure.mjs"() {
+    init_headers();
+    init_error2();
+    init_utils6();
+    init_client();
+    AzureOpenAI = class extends OpenAI {
+      /**
+       * API Client for interfacing with the Azure OpenAI API.
+       *
+       * @param {string | undefined} [opts.apiVersion=process.env['OPENAI_API_VERSION'] ?? undefined]
+       * @param {string | undefined} [opts.endpoint=process.env['AZURE_OPENAI_ENDPOINT'] ?? undefined] - Your Azure endpoint, including the resource, e.g. `https://example-resource.azure.openai.com/`
+       * @param {string | undefined} [opts.apiKey=process.env['AZURE_OPENAI_API_KEY'] ?? undefined]
+       * @param {string | undefined} opts.deployment - A model deployment, if given, sets the base client URL to include `/deployments/{deployment}`.
+       * @param {string | null | undefined} [opts.organization=process.env['OPENAI_ORG_ID'] ?? null]
+       * @param {string} [opts.baseURL=process.env['OPENAI_BASE_URL']] - Sets the base URL for the API, e.g. `https://example-resource.azure.openai.com/openai/`.
+       * @param {number} [opts.timeout=10 minutes] - The maximum amount of time (in milliseconds) the client will wait for a response before timing out.
+       * @param {number} [opts.httpAgent] - An HTTP agent used to manage HTTP(s) connections.
+       * @param {Fetch} [opts.fetch] - Specify a custom `fetch` function implementation.
+       * @param {number} [opts.maxRetries=2] - The maximum number of times the client will retry a request.
+       * @param {Headers} opts.defaultHeaders - Default headers to include with every request to the API.
+       * @param {DefaultQuery} opts.defaultQuery - Default query parameters to include with every request to the API.
+       * @param {boolean} [opts.dangerouslyAllowBrowser=false] - By default, client-side use of this library is not allowed, as it risks exposing your secret API credentials to attackers.
+       */
+      constructor({ baseURL = readEnv("OPENAI_BASE_URL"), apiKey = readEnv("AZURE_OPENAI_API_KEY"), apiVersion = readEnv("OPENAI_API_VERSION"), endpoint, deployment, azureADTokenProvider, dangerouslyAllowBrowser, ...opts } = {}) {
+        if (!apiVersion) {
+          throw new OpenAIError("The OPENAI_API_VERSION environment variable is missing or empty; either provide it, or instantiate the AzureOpenAI client with an apiVersion option, like new AzureOpenAI({ apiVersion: 'My API Version' }).");
+        }
+        if (typeof azureADTokenProvider === "function") {
+          dangerouslyAllowBrowser = true;
+        }
+        if (!azureADTokenProvider && !apiKey) {
+          throw new OpenAIError("Missing credentials. Please pass one of `apiKey` and `azureADTokenProvider`, or set the `AZURE_OPENAI_API_KEY` environment variable.");
+        }
+        if (azureADTokenProvider && apiKey) {
+          throw new OpenAIError("The `apiKey` and `azureADTokenProvider` arguments are mutually exclusive; only one can be passed at a time.");
+        }
+        opts.defaultQuery = { ...opts.defaultQuery, "api-version": apiVersion };
+        if (!baseURL) {
+          if (!endpoint) {
+            endpoint = process.env["AZURE_OPENAI_ENDPOINT"];
+          }
+          if (!endpoint) {
+            throw new OpenAIError("Must provide one of the `baseURL` or `endpoint` arguments, or the `AZURE_OPENAI_ENDPOINT` environment variable");
+          }
+          baseURL = `${endpoint}/openai`;
+        } else {
+          if (endpoint) {
+            throw new OpenAIError("baseURL and endpoint are mutually exclusive");
+          }
+        }
+        super({
+          apiKey: azureADTokenProvider ?? apiKey,
+          baseURL,
+          ...opts,
+          ...dangerouslyAllowBrowser !== void 0 ? { dangerouslyAllowBrowser } : {}
+        });
+        this.apiVersion = "";
+        this.apiVersion = apiVersion;
+        this.deploymentName = deployment;
+      }
+      async buildRequest(options, props = {}) {
+        if (_deployments_endpoints.has(options.path) && options.method === "post" && options.body !== void 0) {
+          if (!isObj(options.body)) {
+            throw new Error("Expected request body to be an object");
+          }
+          const model = this.deploymentName || options.body["model"] || options.__metadata?.["model"];
+          if (model !== void 0 && !this.baseURL.includes("/deployments")) {
+            options.path = `/deployments/${model}${options.path}`;
+          }
+        }
+        return super.buildRequest(options, props);
+      }
+      async authHeaders(opts) {
+        if (typeof this._options.apiKey === "string") {
+          return buildHeaders([{ "api-key": this.apiKey }]);
+        }
+        return super.authHeaders(opts);
+      }
+    };
+    _deployments_endpoints = /* @__PURE__ */ new Set([
+      "/completions",
+      "/chat/completions",
+      "/embeddings",
+      "/audio/transcriptions",
+      "/audio/translations",
+      "/audio/speech",
+      "/images/generations",
+      "/batches",
+      "/images/edits"
+    ]);
+  }
+});
+
+// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/index.mjs
+var openai_exports = {};
+__export(openai_exports, {
+  APIConnectionError: () => APIConnectionError,
+  APIConnectionTimeoutError: () => APIConnectionTimeoutError,
+  APIError: () => APIError,
+  APIPromise: () => APIPromise,
+  APIUserAbortError: () => APIUserAbortError,
+  AuthenticationError: () => AuthenticationError,
+  AzureOpenAI: () => AzureOpenAI,
+  BadRequestError: () => BadRequestError,
+  ConflictError: () => ConflictError,
+  InternalServerError: () => InternalServerError,
+  InvalidWebhookSignatureError: () => InvalidWebhookSignatureError,
+  NotFoundError: () => NotFoundError,
+  OAuthError: () => OAuthError,
+  OpenAI: () => OpenAI,
+  OpenAIError: () => OpenAIError,
+  PagePromise: () => PagePromise,
+  PermissionDeniedError: () => PermissionDeniedError,
+  RateLimitError: () => RateLimitError,
+  SubjectTokenProviderError: () => SubjectTokenProviderError,
+  UnprocessableEntityError: () => UnprocessableEntityError,
+  default: () => OpenAI,
+  toFile: () => toFile
+});
+var init_openai = __esm({
+  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/index.mjs"() {
+    init_client();
+    init_uploads2();
+    init_api_promise();
+    init_client();
+    init_pagination();
+    init_error();
+    init_azure();
+  }
+});
+
 // node_modules/.pnpm/object-assign@4.1.1/node_modules/object-assign/index.js
 var require_object_assign = __commonJS({
-  "node_modules/.pnpm/object-assign@4.1.1/node_modules/object-assign/index.js"(exports, module) {
+  "node_modules/.pnpm/object-assign@4.1.1/node_modules/object-assign/index.js"(exports2, module2) {
     "use strict";
     var getOwnPropertySymbols = Object.getOwnPropertySymbols;
     var hasOwnProperty2 = Object.prototype.hasOwnProperty;
@@ -39200,7 +47653,7 @@ var require_object_assign = __commonJS({
         return false;
       }
     }
-    module.exports = shouldUseNative() ? Object.assign : function(target, source) {
+    module2.exports = shouldUseNative() ? Object.assign : function(target, source) {
       var from;
       var to = toObject(target);
       var symbols;
@@ -39227,7 +47680,7 @@ var require_object_assign = __commonJS({
 
 // node_modules/.pnpm/cors@2.8.6/node_modules/cors/lib/index.js
 var require_lib3 = __commonJS({
-  "node_modules/.pnpm/cors@2.8.6/node_modules/cors/lib/index.js"(exports, module) {
+  "node_modules/.pnpm/cors@2.8.6/node_modules/cors/lib/index.js"(exports2, module2) {
     (function() {
       "use strict";
       var assign = require_object_assign();
@@ -39428,14 +47881,14 @@ var require_lib3 = __commonJS({
           });
         };
       }
-      module.exports = middlewareWrapper;
+      module2.exports = middlewareWrapper;
     })();
   }
 });
 
 // index.ts
-var import_express = __toESM(require_express2(), 1);
-import { webcrypto } from "crypto";
+var import_crypto4 = require("crypto");
+var import_express = __toESM(require_express2());
 
 // node_modules/.pnpm/@trpc+server@11.16.0_typescript@6.0.2/node_modules/@trpc/server/dist/codes-DagpWZLc.mjs
 function mergeWithoutOverrides(obj1, ...objs) {
@@ -39632,18 +48085,18 @@ function getHTTPStatusCode(json3) {
 function getHTTPStatusCodeFromError(error48) {
   return getStatusCodeFromKey(error48.code);
 }
-var require_typeof = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/typeof.js"(exports, module) {
+var require_typeof = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/typeof.js"(exports2, module2) {
   function _typeof$2(o) {
     "@babel/helpers - typeof";
-    return module.exports = _typeof$2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o$1) {
+    return module2.exports = _typeof$2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o$1) {
       return typeof o$1;
     } : function(o$1) {
       return o$1 && "function" == typeof Symbol && o$1.constructor === Symbol && o$1 !== Symbol.prototype ? "symbol" : typeof o$1;
-    }, module.exports.__esModule = true, module.exports["default"] = module.exports, _typeof$2(o);
+    }, module2.exports.__esModule = true, module2.exports["default"] = module2.exports, _typeof$2(o);
   }
-  module.exports = _typeof$2, module.exports.__esModule = true, module.exports["default"] = module.exports;
+  module2.exports = _typeof$2, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
 } });
-var require_toPrimitive = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/toPrimitive.js"(exports, module) {
+var require_toPrimitive = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/toPrimitive.js"(exports2, module2) {
   var _typeof$1 = require_typeof()["default"];
   function toPrimitive$1(t2, r) {
     if ("object" != _typeof$1(t2) || !t2) return t2;
@@ -39655,18 +48108,18 @@ var require_toPrimitive = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+r
     }
     return ("string" === r ? String : Number)(t2);
   }
-  module.exports = toPrimitive$1, module.exports.__esModule = true, module.exports["default"] = module.exports;
+  module2.exports = toPrimitive$1, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
 } });
-var require_toPropertyKey = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/toPropertyKey.js"(exports, module) {
+var require_toPropertyKey = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/toPropertyKey.js"(exports2, module2) {
   var _typeof = require_typeof()["default"];
   var toPrimitive = require_toPrimitive();
   function toPropertyKey$1(t2) {
     var i = toPrimitive(t2, "string");
     return "symbol" == _typeof(i) ? i : i + "";
   }
-  module.exports = toPropertyKey$1, module.exports.__esModule = true, module.exports["default"] = module.exports;
+  module2.exports = toPropertyKey$1, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
 } });
-var require_defineProperty = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/defineProperty.js"(exports, module) {
+var require_defineProperty = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/defineProperty.js"(exports2, module2) {
   var toPropertyKey = require_toPropertyKey();
   function _defineProperty(e, r, t2) {
     return (r = toPropertyKey(r)) in e ? Object.defineProperty(e, r, {
@@ -39676,9 +48129,9 @@ var require_defineProperty = __commonJS2({ "../../node_modules/.pnpm/@oxc-projec
       writable: true
     }) : e[r] = t2, e;
   }
-  module.exports = _defineProperty, module.exports.__esModule = true, module.exports["default"] = module.exports;
+  module2.exports = _defineProperty, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
 } });
-var require_objectSpread2 = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/objectSpread2.js"(exports, module) {
+var require_objectSpread2 = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/objectSpread2.js"(exports2, module2) {
   var defineProperty = require_defineProperty();
   function ownKeys(e, r) {
     var t2 = Object.keys(e);
@@ -39701,7 +48154,7 @@ var require_objectSpread2 = __commonJS2({ "../../node_modules/.pnpm/@oxc-project
     }
     return e;
   }
-  module.exports = _objectSpread2, module.exports.__esModule = true, module.exports["default"] = module.exports;
+  module2.exports = _objectSpread2, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
 } });
 var import_objectSpread2 = __toESM2(require_objectSpread2(), 1);
 function getErrorShape(opts) {
@@ -40517,7 +48970,7 @@ function timerResource(ms) {
     if (timer2) clearTimeout(timer2);
   });
 }
-var require_usingCtx = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/usingCtx.js"(exports, module) {
+var require_usingCtx = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/usingCtx.js"(exports2, module2) {
   function _usingCtx() {
     var r = "function" == typeof SuppressedError ? SuppressedError : function(r$1, e$1) {
       var n$1 = Error();
@@ -40572,22 +49025,22 @@ var require_usingCtx = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runt
       }
     };
   }
-  module.exports = _usingCtx, module.exports.__esModule = true, module.exports["default"] = module.exports;
+  module2.exports = _usingCtx, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
 } });
-var require_OverloadYield = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/OverloadYield.js"(exports, module) {
+var require_OverloadYield = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/OverloadYield.js"(exports2, module2) {
   function _OverloadYield(e, d) {
     this.v = e, this.k = d;
   }
-  module.exports = _OverloadYield, module.exports.__esModule = true, module.exports["default"] = module.exports;
+  module2.exports = _OverloadYield, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
 } });
-var require_awaitAsyncGenerator = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/awaitAsyncGenerator.js"(exports, module) {
+var require_awaitAsyncGenerator = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/awaitAsyncGenerator.js"(exports2, module2) {
   var OverloadYield$2 = require_OverloadYield();
   function _awaitAsyncGenerator$5(e) {
     return new OverloadYield$2(e, 0);
   }
-  module.exports = _awaitAsyncGenerator$5, module.exports.__esModule = true, module.exports["default"] = module.exports;
+  module2.exports = _awaitAsyncGenerator$5, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
 } });
-var require_wrapAsyncGenerator = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/wrapAsyncGenerator.js"(exports, module) {
+var require_wrapAsyncGenerator = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/wrapAsyncGenerator.js"(exports2, module2) {
   var OverloadYield$1 = require_OverloadYield();
   function _wrapAsyncGenerator$6(e) {
     return function() {
@@ -40654,7 +49107,7 @@ var require_wrapAsyncGenerator = __commonJS2({ "../../node_modules/.pnpm/@oxc-pr
   }, AsyncGenerator.prototype["return"] = function(e) {
     return this._invoke("return", e);
   };
-  module.exports = _wrapAsyncGenerator$6, module.exports.__esModule = true, module.exports["default"] = module.exports;
+  module2.exports = _wrapAsyncGenerator$6, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
 } });
 var import_usingCtx$4 = __toESM2(require_usingCtx(), 1);
 var import_awaitAsyncGenerator$4 = __toESM2(require_awaitAsyncGenerator(), 1);
@@ -40898,7 +49351,7 @@ function _withPing() {
   });
   return _withPing.apply(this, arguments);
 }
-var require_asyncIterator = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/asyncIterator.js"(exports, module) {
+var require_asyncIterator = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/asyncIterator.js"(exports2, module2) {
   function _asyncIterator$2(r) {
     var n, t2, o, e = 2;
     for ("undefined" != typeof Symbol && (t2 = Symbol.asyncIterator, o = Symbol.iterator); e--; ) {
@@ -40940,7 +49393,7 @@ var require_asyncIterator = __commonJS2({ "../../node_modules/.pnpm/@oxc-project
       }
     }, new AsyncFromSyncIterator(r);
   }
-  module.exports = _asyncIterator$2, module.exports.__esModule = true, module.exports["default"] = module.exports;
+  module2.exports = _asyncIterator$2, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
 } });
 var import_awaitAsyncGenerator$1 = __toESM2(require_awaitAsyncGenerator(), 1);
 var import_wrapAsyncGenerator$2 = __toESM2(require_wrapAsyncGenerator(), 1);
@@ -41138,7 +49591,7 @@ function jsonlStreamProducer(opts) {
     else controller.enqueue(JSON.stringify(chunk) + "\n");
   } })).pipeThrough(new TextEncoderStream());
 }
-var require_asyncGeneratorDelegate = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/asyncGeneratorDelegate.js"(exports, module) {
+var require_asyncGeneratorDelegate = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/asyncGeneratorDelegate.js"(exports2, module2) {
   var OverloadYield = require_OverloadYield();
   function _asyncGeneratorDelegate$1(t2) {
     var e = {}, n = false;
@@ -41161,7 +49614,7 @@ var require_asyncGeneratorDelegate = __commonJS2({ "../../node_modules/.pnpm/@ox
       return n ? (n = false, t$1) : pump("return", t$1);
     }), e;
   }
-  module.exports = _asyncGeneratorDelegate$1, module.exports.__esModule = true, module.exports["default"] = module.exports;
+  module2.exports = _asyncGeneratorDelegate$1, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
 } });
 var import_asyncIterator = __toESM2(require_asyncIterator(), 1);
 var import_awaitAsyncGenerator = __toESM2(require_awaitAsyncGenerator(), 1);
@@ -41808,7 +50261,7 @@ function getParseFn(procedureParser) {
   };
   throw new Error("Could not find a validator fn");
 }
-var require_objectWithoutPropertiesLoose = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/objectWithoutPropertiesLoose.js"(exports, module) {
+var require_objectWithoutPropertiesLoose = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/objectWithoutPropertiesLoose.js"(exports2, module2) {
   function _objectWithoutPropertiesLoose(r, e) {
     if (null == r) return {};
     var t2 = {};
@@ -41818,9 +50271,9 @@ var require_objectWithoutPropertiesLoose = __commonJS2({ "../../node_modules/.pn
     }
     return t2;
   }
-  module.exports = _objectWithoutPropertiesLoose, module.exports.__esModule = true, module.exports["default"] = module.exports;
+  module2.exports = _objectWithoutPropertiesLoose, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
 } });
-var require_objectWithoutProperties = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/objectWithoutProperties.js"(exports, module) {
+var require_objectWithoutProperties = __commonJS2({ "../../node_modules/.pnpm/@oxc-project+runtime@0.72.2/node_modules/@oxc-project/runtime/src/helpers/objectWithoutProperties.js"(exports2, module2) {
   var objectWithoutPropertiesLoose = require_objectWithoutPropertiesLoose();
   function _objectWithoutProperties$1(e, t2) {
     if (null == e) return {};
@@ -41831,7 +50284,7 @@ var require_objectWithoutProperties = __commonJS2({ "../../node_modules/.pnpm/@o
     }
     return i;
   }
-  module.exports = _objectWithoutProperties$1, module.exports.__esModule = true, module.exports["default"] = module.exports;
+  module2.exports = _objectWithoutProperties$1, module2.exports.__esModule = true, module2.exports["default"] = module2.exports;
 } });
 var import_objectWithoutProperties = __toESM2(require_objectWithoutProperties(), 1);
 var import_objectSpread2$13 = __toESM2(require_objectSpread2(), 1);
@@ -42027,12 +50480,12 @@ var TRPCBuilder = class TRPCBuilder2 {
 var initTRPC = new TRPCBuilder();
 
 // node_modules/.pnpm/@trpc+server@11.16.0_typescript@6.0.2/node_modules/@trpc/server/dist/node-http-CPiHo2kI.mjs
-import { IncomingMessage } from "node:http";
+var import_node_http = require("node:http");
 function createBody(req, opts) {
   if ("body" in req) {
     if (req.body === void 0) return void 0;
     if (typeof req.body === "string") return req.body;
-    if (req.body instanceof IncomingMessage) return req.body;
+    if (req.body instanceof import_node_http.IncomingMessage) return req.body;
     return JSON.stringify(req.body);
   }
   let size2 = 0;
@@ -56921,7 +65374,7 @@ var t = initTRPC.context().create({
   transformer: dist_default
 });
 var router = t.router;
-var publicProcedure2 = t.procedure;
+var publicProcedure = t.procedure;
 var requireUser = t.middleware(async (opts) => {
   const { ctx, next } = opts;
   if (!ctx.user) {
@@ -56981,7 +65434,7 @@ var dispatcherProcedure = t.procedure.use(
 
 // _core/systemRouter.ts
 var systemRouter = router({
-  health: publicProcedure2.input(
+  health: publicProcedure.input(
     external_exports.object({
       timestamp: external_exports.number().min(0, "timestamp cannot be negative")
     })
@@ -57002,13 +65455,13 @@ var systemRouter = router({
 });
 
 // db.ts
-var import_dotenv = __toESM(require_main(), 1);
+var import_path = __toESM(require("path"));
+var import_dotenv = __toESM(require_main());
 init_drizzle_orm();
-import path from "path";
 
 // node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/index.js
-import os from "os";
-import fs from "fs";
+var import_os = __toESM(require("os"), 1);
+var import_fs = __toESM(require("fs"), 1);
 
 // node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/query.js
 var originCache = /* @__PURE__ */ new Map();
@@ -57484,11 +65937,11 @@ var kebab = { ...toKebab };
 kebab.column.to = fromKebab;
 
 // node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/connection.js
-import net from "net";
-import tls from "tls";
-import crypto2 from "crypto";
-import Stream from "stream";
-import { performance } from "perf_hooks";
+var import_net = __toESM(require("net"), 1);
+var import_tls = __toESM(require("tls"), 1);
+var import_crypto = __toESM(require("crypto"), 1);
+var import_stream = __toESM(require("stream"), 1);
+var import_perf_hooks = require("perf_hooks");
 
 // node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/result.js
 var Result = class extends Array {
@@ -57700,7 +66153,7 @@ function Connection(options, queues = {}, { onopen = noop2, onend = noop2, onclo
   async function createSocket() {
     let x;
     try {
-      x = options.socket ? await Promise.resolve(options.socket(options)) : new net.Socket();
+      x = options.socket ? await Promise.resolve(options.socket(options)) : new import_net.default.Socket();
     } catch (e) {
       error48(e);
       return;
@@ -57802,7 +66255,7 @@ function Connection(options, queues = {}, { onopen = noop2, onend = noop2, onclo
     }
     const options2 = {
       socket,
-      servername: net.isIP(socket.host) ? void 0 : socket.host
+      servername: import_net.default.isIP(socket.host) ? void 0 : socket.host
     };
     if (sslnegotiation === "direct")
       options2.ALPNProtocols = ["postgresql"];
@@ -57811,7 +66264,7 @@ function Connection(options, queues = {}, { onopen = noop2, onend = noop2, onclo
     else if (typeof ssl === "object")
       Object.assign(options2, ssl);
     socket.removeAllListeners();
-    socket = tls.connect(options2);
+    socket = import_tls.default.connect(options2);
     socket.on("secureConnect", connected);
     socket.on("error", error48);
     socket.on("close", closed);
@@ -57865,7 +66318,7 @@ function Connection(options, queues = {}, { onopen = noop2, onend = noop2, onclo
     hostIndex = (hostIndex + 1) % port2.length;
   }
   function reconnect() {
-    setTimeout(connect, closedTime ? Math.max(0, closedTime + delay - performance.now()) : 0);
+    setTimeout(connect, closedTime ? Math.max(0, closedTime + delay - import_perf_hooks.performance.now()) : 0);
   }
   function connected() {
     try {
@@ -57938,7 +66391,7 @@ function Connection(options, queues = {}, { onopen = noop2, onend = noop2, onclo
     if (initial)
       return reconnect();
     !hadError && (query || sent.length) && error48(Errors.connection("CONNECTION_CLOSED", options, socket));
-    closedTime = performance.now();
+    closedTime = import_perf_hooks.performance.now();
     hadError && options.shared.retries++;
     delay = (typeof backoff2 === "function" ? backoff2(options.shared.retries) : backoff2) * 1e3;
     onclose(connection2, Errors.connection("CONNECTION_CLOSED", options, socket));
@@ -58163,14 +66616,14 @@ function Connection(options, queues = {}, { onopen = noop2, onend = noop2, onclo
     );
   }
   async function SASL() {
-    nonce = (await crypto2.randomBytes(18)).toString("base64");
+    nonce = (await import_crypto.default.randomBytes(18)).toString("base64");
     bytes_default().p().str("SCRAM-SHA-256" + bytes_default.N);
     const i = bytes_default.i;
     write(bytes_default.inc(4).str("n,,n=*,r=" + nonce).i32(bytes_default.i - i - 4, i).end());
   }
   async function SASLContinue(x) {
     const res = x.toString("utf8", 9).split(",").reduce((acc, x2) => (acc[x2[0]] = x2.slice(2), acc), {});
-    const saltedPassword = await crypto2.pbkdf2Sync(
+    const saltedPassword = await import_crypto.default.pbkdf2Sync(
       await Pass(),
       Buffer.from(res.s, "base64"),
       parseInt(res.i),
@@ -58281,7 +66734,7 @@ function Connection(options, queues = {}, { onopen = noop2, onend = noop2, onclo
     query.resolve(result);
   }
   function CopyInResponse() {
-    stream4 = new Stream.Writable({
+    stream4 = new import_stream.default.Writable({
       autoDestroy: true,
       write(chunk2, encoding, callback) {
         socket.write(bytes_default().d().raw(chunk2).end(), callback);
@@ -58300,7 +66753,7 @@ function Connection(options, queues = {}, { onopen = noop2, onend = noop2, onclo
     query.resolve(stream4);
   }
   function CopyOutResponse() {
-    stream4 = new Stream.Readable({
+    stream4 = new import_stream.default.Readable({
       read() {
         socket.resume();
       }
@@ -58308,7 +66761,7 @@ function Connection(options, queues = {}, { onopen = noop2, onend = noop2, onclo
     query.resolve(stream4);
   }
   function CopyBothResponse() {
-    stream4 = new Stream.Duplex({
+    stream4 = new import_stream.default.Duplex({
       autoDestroy: true,
       read() {
         socket.resume();
@@ -58412,13 +66865,13 @@ function parseError(x) {
   return error48;
 }
 function md5(x) {
-  return crypto2.createHash("md5").update(x).digest("hex");
+  return import_crypto.default.createHash("md5").update(x).digest("hex");
 }
 function hmac(key, x) {
-  return crypto2.createHmac("sha256", key).update(x).digest();
+  return import_crypto.default.createHmac("sha256", key).update(x).digest();
 }
 function sha256(x) {
-  return crypto2.createHash("sha256").update(x).digest();
+  return import_crypto.default.createHash("sha256").update(x).digest();
 }
 function xor2(a, b2) {
   const length = Math.max(a.length, b2.length);
@@ -58660,7 +67113,7 @@ function parseEvent(x) {
 }
 
 // node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/large.js
-import Stream2 from "stream";
+var import_stream2 = __toESM(require("stream"), 1);
 function largeObject(sql4, oid, mode = 131072 | 262144) {
   return new Promise(async (resolve, reject) => {
     await sql4.begin(async (sql5) => {
@@ -58697,7 +67150,7 @@ function largeObject(sql4, oid, mode = 131072 | 262144) {
       } = {}) {
         let max2 = end - start;
         start && await lo.seek(start);
-        return new Stream2.Readable({
+        return new import_stream2.default.Readable({
           highWaterMark,
           async read(size2) {
             const l = size2 > max2 ? size2 - max2 : size2;
@@ -58714,7 +67167,7 @@ function largeObject(sql4, oid, mode = 131072 | 262144) {
         start = 0
       } = {}) {
         start && await lo.seek(start);
-        return new Stream2.Writable({
+        return new import_stream2.default.Writable({
           highWaterMark,
           write(chunk, encoding, callback) {
             lo.write(chunk).then(() => callback(), callback);
@@ -58804,7 +67257,7 @@ function Postgres(a, b2) {
     function file2(path3, args = [], options2 = {}) {
       arguments.length === 2 && !Array.isArray(args) && (options2 = args, args = []);
       const query = new Query([], args, (query2) => {
-        fs.readFile(path3, "utf8", (err, string4) => {
+        import_fs.default.readFile(path3, "utf8", (err, string4) => {
           if (err)
             return query2.reject(err);
           query2.strings = [string4];
@@ -59122,7 +67575,7 @@ function parseUrl(url3) {
 }
 function osUsername() {
   try {
-    return os.userInfo().username;
+    return import_os.default.userInfo().username;
   } catch (_) {
     return process.env.USERNAME || process.env.USER || process.env.LOGNAME;
   }
@@ -59351,7 +67804,7 @@ function drizzle(...params) {
 
 // db.ts
 init_schema2();
-import_dotenv.default.config({ path: path.resolve(process.cwd(), "..", ".env") });
+import_dotenv.default.config({ path: import_path.default.resolve(process.cwd(), "..", ".env") });
 import_dotenv.default.config();
 var _db = null;
 var _client = null;
@@ -61875,7 +70328,7 @@ var multasRouter = router({
 // routers/auth.ts
 init_schema2();
 init_drizzle_orm();
-var import_bcryptjs = __toESM(require_bcryptjs(), 1);
+var import_bcryptjs = __toESM(require_bcryptjs());
 
 // shared/_core/errors.ts
 var HttpError = class extends Error {
@@ -62654,11 +71107,11 @@ var transitional_default = {
 };
 
 // node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/platform/node/index.js
-import crypto3 from "crypto";
+var import_crypto2 = __toESM(require("crypto"), 1);
 
 // node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/platform/node/classes/URLSearchParams.js
-import url2 from "url";
-var URLSearchParams_default = url2.URLSearchParams;
+var import_url = __toESM(require("url"), 1);
+var URLSearchParams_default = import_url.default.URLSearchParams;
 
 // node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/platform/node/index.js
 var ALPHA = "abcdefghijklmnopqrstuvwxyz";
@@ -62672,7 +71125,7 @@ var generateString = (size2 = 16, alphabet = ALPHABET.ALPHA_DIGIT) => {
   let str2 = "";
   const { length } = alphabet;
   const randomValues = new Uint32Array(size2);
-  crypto3.randomFillSync(randomValues);
+  import_crypto2.default.randomFillSync(randomValues);
   for (let i = 0; i < size2; i++) {
     str2 += alphabet[randomValues[i] % length];
   }
@@ -63320,12 +71773,12 @@ function getEnv(key) {
 }
 
 // node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/adapters/http.js
+var import_http = __toESM(require("http"), 1);
+var import_https = __toESM(require("https"), 1);
+var import_http2 = __toESM(require("http2"), 1);
+var import_util8 = __toESM(require("util"), 1);
 var import_follow_redirects = __toESM(require_follow_redirects(), 1);
-import http from "http";
-import https from "https";
-import http2 from "http2";
-import util2 from "util";
-import zlib from "zlib";
+var import_zlib = __toESM(require("zlib"), 1);
 
 // node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/env/data.js
 var VERSION = "1.14.0";
@@ -63366,12 +71819,12 @@ function fromDataURI(uri, asBlob, options) {
 }
 
 // node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/adapters/http.js
-import stream3 from "stream";
+var import_stream6 = __toESM(require("stream"), 1);
 
 // node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/AxiosTransformStream.js
-import stream from "stream";
+var import_stream3 = __toESM(require("stream"), 1);
 var kInternals = /* @__PURE__ */ Symbol("internals");
-var AxiosTransformStream = class extends stream.Transform {
+var AxiosTransformStream = class extends import_stream3.default.Transform {
   constructor(options) {
     options = utils_default.toFlatObject(
       options,
@@ -63492,11 +71945,11 @@ var AxiosTransformStream = class extends stream.Transform {
 var AxiosTransformStream_default = AxiosTransformStream;
 
 // node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/adapters/http.js
-import { EventEmitter } from "events";
+var import_events = require("events");
 
 // node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/formDataToStream.js
-import util from "util";
-import { Readable } from "stream";
+var import_util7 = __toESM(require("util"), 1);
+var import_stream4 = require("stream");
 
 // node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/readBlob.js
 var { asyncIterator } = Symbol;
@@ -63515,7 +71968,7 @@ var readBlob_default = readBlob;
 
 // node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/formDataToStream.js
 var BOUNDARY_ALPHABET = platform_default.ALPHABET.ALPHA_DIGIT + "-_";
-var textEncoder = typeof TextEncoder === "function" ? new TextEncoder() : new util.TextEncoder();
+var textEncoder = typeof TextEncoder === "function" ? new TextEncoder() : new import_util7.default.TextEncoder();
 var CRLF = "\r\n";
 var CRLF_BYTES = textEncoder.encode(CRLF);
 var CRLF_BYTES_COUNT = 2;
@@ -63585,7 +72038,7 @@ var formDataToStream = (form, headersHandler, options) => {
     computedHeaders["Content-Length"] = contentLength;
   }
   headersHandler && headersHandler(computedHeaders);
-  return Readable.from(
+  return import_stream4.Readable.from(
     (async function* () {
       for (const part of parts) {
         yield boundaryBytes;
@@ -63598,8 +72051,8 @@ var formDataToStream = (form, headersHandler, options) => {
 var formDataToStream_default = formDataToStream;
 
 // node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/ZlibHeaderTransformStream.js
-import stream2 from "stream";
-var ZlibHeaderTransformStream = class extends stream2.Transform {
+var import_stream5 = __toESM(require("stream"), 1);
+var ZlibHeaderTransformStream = class extends import_stream5.default.Transform {
   __transform(chunk, encoding, callback) {
     this.push(chunk);
     callback();
@@ -63796,14 +72249,14 @@ function estimateDataURLDecodedBytes(url3) {
 
 // node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/adapters/http.js
 var zlibOptions = {
-  flush: zlib.constants.Z_SYNC_FLUSH,
-  finishFlush: zlib.constants.Z_SYNC_FLUSH
+  flush: import_zlib.default.constants.Z_SYNC_FLUSH,
+  finishFlush: import_zlib.default.constants.Z_SYNC_FLUSH
 };
 var brotliOptions = {
-  flush: zlib.constants.BROTLI_OPERATION_FLUSH,
-  finishFlush: zlib.constants.BROTLI_OPERATION_FLUSH
+  flush: import_zlib.default.constants.BROTLI_OPERATION_FLUSH,
+  finishFlush: import_zlib.default.constants.BROTLI_OPERATION_FLUSH
 };
-var isBrotliSupported = utils_default.isFunction(zlib.createBrotliDecompress);
+var isBrotliSupported = utils_default.isFunction(import_zlib.default.createBrotliDecompress);
 var { http: httpFollow, https: httpsFollow } = import_follow_redirects.default;
 var isHttps = /https:?/;
 var supportedProtocols = platform_default.protocols.map((protocol) => {
@@ -63829,12 +72282,12 @@ var Http2Sessions = class {
       let len = authoritySessions.length;
       for (let i = 0; i < len; i++) {
         const [sessionHandle, sessionOptions] = authoritySessions[i];
-        if (!sessionHandle.destroyed && !sessionHandle.closed && util2.isDeepStrictEqual(sessionOptions, options)) {
+        if (!sessionHandle.destroyed && !sessionHandle.closed && import_util8.default.isDeepStrictEqual(sessionOptions, options)) {
           return sessionHandle;
         }
       }
     }
-    const session = http2.connect(authority, options);
+    const session = import_http2.default.connect(authority, options);
     let removed;
     const removeSession = () => {
       if (removed) {
@@ -63966,7 +72419,7 @@ var http2Transport = {
     const authority = options.protocol + "//" + options.hostname + ":" + (options.port || (options.protocol === "https:" ? 443 : 80));
     const { http2Options, headers } = options;
     const session = http2Sessions.getSession(authority, http2Options);
-    const { HTTP2_HEADER_SCHEME, HTTP2_HEADER_METHOD, HTTP2_HEADER_PATH, HTTP2_HEADER_STATUS } = http2.constants;
+    const { HTTP2_HEADER_SCHEME, HTTP2_HEADER_METHOD, HTTP2_HEADER_PATH, HTTP2_HEADER_STATUS } = import_http2.default.constants;
     const http2Headers = {
       [HTTP2_HEADER_SCHEME]: options.protocol.replace(":", ""),
       [HTTP2_HEADER_METHOD]: options.method,
@@ -64016,7 +72469,7 @@ var http_default = isHttpAdapterSupported && function httpAdapter(config2) {
         });
       };
     }
-    const abortEmitter = new EventEmitter();
+    const abortEmitter = new import_events.EventEmitter();
     function abort(reason) {
       try {
         abortEmitter.emit(
@@ -64051,8 +72504,8 @@ var http_default = isHttpAdapterSupported && function httpAdapter(config2) {
         return;
       }
       const { data: data2 } = response;
-      if (data2 instanceof stream3.Readable || data2 instanceof stream3.Duplex) {
-        const offListeners = stream3.finished(data2, () => {
+      if (data2 instanceof import_stream6.default.Readable || data2 instanceof import_stream6.default.Duplex) {
+        const offListeners = import_stream6.default.finished(data2, () => {
           offListeners();
           onFinished();
         });
@@ -64099,7 +72552,7 @@ var http_default = isHttpAdapterSupported && function httpAdapter(config2) {
           convertedData = utils_default.stripBOM(convertedData);
         }
       } else if (responseType === "stream") {
-        convertedData = stream3.Readable.from(convertedData);
+        convertedData = import_stream6.default.Readable.from(convertedData);
       }
       return settle(resolve, reject, {
         data: convertedData,
@@ -64136,7 +72589,7 @@ var http_default = isHttpAdapterSupported && function httpAdapter(config2) {
       headers.set(data.getHeaders());
       if (!headers.hasContentLength()) {
         try {
-          const knownLength = await util2.promisify(data.getLength).call(data);
+          const knownLength = await import_util8.default.promisify(data.getLength).call(data);
           Number.isFinite(knownLength) && knownLength >= 0 && headers.setContentLength(knownLength);
         } catch (e) {
         }
@@ -64144,7 +72597,7 @@ var http_default = isHttpAdapterSupported && function httpAdapter(config2) {
     } else if (utils_default.isBlob(data) || utils_default.isFile(data)) {
       data.size && headers.setContentType(data.type || "application/octet-stream");
       headers.setContentLength(data.size || 0);
-      data = stream3.Readable.from(readBlob_default(data));
+      data = import_stream6.default.Readable.from(readBlob_default(data));
     } else if (data && !utils_default.isStream(data)) {
       if (Buffer.isBuffer(data)) {
       } else if (utils_default.isArrayBuffer(data)) {
@@ -64180,9 +72633,9 @@ var http_default = isHttpAdapterSupported && function httpAdapter(config2) {
     }
     if (data && (onUploadProgress || maxUploadRate)) {
       if (!utils_default.isStream(data)) {
-        data = stream3.Readable.from(data, { objectMode: false });
+        data = import_stream6.default.Readable.from(data, { objectMode: false });
       }
-      data = stream3.pipeline(
+      data = import_stream6.default.pipeline(
         [
           data,
           new AxiosTransformStream_default({
@@ -64266,7 +72719,7 @@ var http_default = isHttpAdapterSupported && function httpAdapter(config2) {
       if (config2.transport) {
         transport = config2.transport;
       } else if (config2.maxRedirects === 0) {
-        transport = isHttpsRequest ? https : http;
+        transport = isHttpsRequest ? import_https.default : import_http.default;
       } else {
         if (config2.maxRedirects) {
           options.maxRedirects = config2.maxRedirects;
@@ -64317,22 +72770,22 @@ var http_default = isHttpAdapterSupported && function httpAdapter(config2) {
           case "x-gzip":
           case "compress":
           case "x-compress":
-            streams.push(zlib.createUnzip(zlibOptions));
+            streams.push(import_zlib.default.createUnzip(zlibOptions));
             delete res.headers["content-encoding"];
             break;
           case "deflate":
             streams.push(new ZlibHeaderTransformStream_default());
-            streams.push(zlib.createUnzip(zlibOptions));
+            streams.push(import_zlib.default.createUnzip(zlibOptions));
             delete res.headers["content-encoding"];
             break;
           case "br":
             if (isBrotliSupported) {
-              streams.push(zlib.createBrotliDecompress(brotliOptions));
+              streams.push(import_zlib.default.createBrotliDecompress(brotliOptions));
               delete res.headers["content-encoding"];
             }
         }
       }
-      responseStream = streams.length > 1 ? stream3.pipeline(streams, utils_default.noop) : streams[0];
+      responseStream = streams.length > 1 ? import_stream6.default.pipeline(streams, utils_default.noop) : streams[0];
       const response = {
         status: res.statusCode,
         statusText: res.statusMessage,
@@ -65736,8 +74189,8 @@ var {
 } = axios_default;
 
 // _core/sdk.ts
-var import_cookie = __toESM(require_cookie2(), 1);
-var import_jsonwebtoken = __toESM(require_jsonwebtoken(), 1);
+var import_cookie = __toESM(require_cookie2());
+var import_jsonwebtoken = __toESM(require_jsonwebtoken());
 var EXCHANGE_TOKEN_PATH = `/webdev.v1.WebDevAuthPublicService/ExchangeToken`;
 var GET_USER_INFO_PATH = `/webdev.v1.WebDevAuthPublicService/GetUserInfo`;
 var GET_USER_INFO_WITH_JWT_PATH = `/webdev.v1.WebDevAuthPublicService/GetUserInfoWithJwt`;
@@ -65990,7 +74443,7 @@ function buildClearCookieHeader() {
   return `${SESSION_COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0${secure}`;
 }
 var authRouter = router({
-  login: publicProcedure2.input(external_exports.object({
+  login: publicProcedure.input(external_exports.object({
     username: external_exports.string().optional(),
     email: external_exports.string().optional(),
     password: external_exports.string()
@@ -66030,7 +74483,7 @@ var authRouter = router({
     const { password: _pw, ...safeUser } = user;
     return { success: true, user: safeUser, token };
   }),
-  register: publicProcedure2.input(external_exports.object({
+  register: publicProcedure.input(external_exports.object({
     name: external_exports.string().min(2),
     email: external_exports.string().email(),
     phone: external_exports.string().optional(),
@@ -66107,12 +74560,12 @@ var authRouter = router({
       message: isAdmin ? "Usu\xE1rio criado com sucesso!" : "Cadastro realizado com sucesso! Aguarde a aprova\xE7\xE3o de um administrador para acessar o sistema."
     };
   }),
-  me: publicProcedure2.query(async ({ ctx }) => {
+  me: publicProcedure.query(async ({ ctx }) => {
     if (!ctx.user) return null;
     const { password: _pw, ...safeUser } = ctx.user;
     return safeUser;
   }),
-  logout: publicProcedure2.mutation(async ({ ctx }) => {
+  logout: publicProcedure.mutation(async ({ ctx }) => {
     ctx.res.setHeader("Set-Cookie", buildClearCookieHeader());
     return { success: true };
   })
@@ -67045,11 +75498,11 @@ var gruposRouter = router({
 // routers/empresas.ts
 init_schema2();
 init_drizzle_orm();
-import { randomBytes } from "crypto";
+var import_crypto3 = require("crypto");
 function gerarCodigoConvite() {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let codigo = "";
-  const bytes = randomBytes(8);
+  const bytes = (0, import_crypto3.randomBytes)(8);
   for (let i = 0; i < 8; i++) {
     codigo += chars[bytes[i] % chars.length];
   }
@@ -67621,7 +76074,7 @@ var licenciamentoRouter = router({
   }),
   // ─── REGISTRO DE TRIAL PÚBLICO ────────────────────────────────────────────
   // Endpoint público: cria empresa + usuário admin + licença trial em uma transação
-  registrarTrial: publicProcedure2.input(external_exports.object({
+  registrarTrial: publicProcedure.input(external_exports.object({
     nomeEmpresa: external_exports.string().min(2, "Nome da empresa deve ter ao menos 2 caracteres"),
     cnpj: external_exports.string().optional(),
     cidade: external_exports.string().optional(),
@@ -67653,7 +76106,7 @@ var licenciamentoRouter = router({
       ativo: true
     }).returning();
     if (!novaEmpresa) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao criar empresa" });
-    const bcrypt2 = await Promise.resolve().then(() => __toESM(require_bcryptjs(), 1));
+    const bcrypt2 = await Promise.resolve().then(() => __toESM(require_bcryptjs()));
     const hashedSenha = await bcrypt2.hash(input.senha, 10);
     const openId = `local_${Date.now()}_${randomBytes2(4).toString("hex")}`;
     const [novoUsuario] = await db.insert(users2).values({
@@ -67782,7422 +76235,804 @@ var documentosRouter = router({
   })
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/tslib.mjs
-function __classPrivateFieldSet(receiver, state, value, kind, f) {
-  if (kind === "m")
-    throw new TypeError("Private method is not writable");
-  if (kind === "a" && !f)
-    throw new TypeError("Private accessor was defined without a setter");
-  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver))
-    throw new TypeError("Cannot write private member to an object whose class did not declare it");
-  return kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value), value;
-}
-function __classPrivateFieldGet(receiver, state, kind, f) {
-  if (kind === "a" && !f)
-    throw new TypeError("Private accessor was defined without a getter");
-  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver))
-    throw new TypeError("Cannot read private member from an object whose class did not declare it");
-  return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-}
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/uuid.mjs
-var uuid42 = function() {
-  const { crypto: crypto4 } = globalThis;
-  if (crypto4?.randomUUID) {
-    uuid42 = crypto4.randomUUID.bind(crypto4);
-    return crypto4.randomUUID();
-  }
-  const u8 = new Uint8Array(1);
-  const randomByte = crypto4 ? () => crypto4.getRandomValues(u8)[0] : () => Math.random() * 255 & 255;
-  return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) => (+c ^ randomByte() & 15 >> +c / 4).toString(16));
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/errors.mjs
-function isAbortError2(err) {
-  return typeof err === "object" && err !== null && // Spec-compliant fetch implementations
-  ("name" in err && err.name === "AbortError" || // Expo fetch
-  "message" in err && String(err.message).includes("FetchRequestCanceledException"));
-}
-var castToError = (err) => {
-  if (err instanceof Error)
-    return err;
-  if (typeof err === "object" && err !== null) {
-    try {
-      if (Object.prototype.toString.call(err) === "[object Error]") {
-        const error48 = new Error(err.message, err.cause ? { cause: err.cause } : {});
-        if (err.stack)
-          error48.stack = err.stack;
-        if (err.cause && !error48.cause)
-          error48.cause = err.cause;
-        if (err.name)
-          error48.name = err.name;
-        return error48;
-      }
-    } catch {
-    }
-    try {
-      return new Error(JSON.stringify(err));
-    } catch {
-    }
-  }
-  return new Error(err);
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/error.mjs
-var OpenAIError = class extends Error {
-};
-var APIError = class _APIError extends OpenAIError {
-  constructor(status, error48, message, headers) {
-    super(`${_APIError.makeMessage(status, error48, message)}`);
-    this.status = status;
-    this.headers = headers;
-    this.requestID = headers?.get("x-request-id");
-    this.error = error48;
-    const data = error48;
-    this.code = data?.["code"];
-    this.param = data?.["param"];
-    this.type = data?.["type"];
-  }
-  static makeMessage(status, error48, message) {
-    const msg = error48?.message ? typeof error48.message === "string" ? error48.message : JSON.stringify(error48.message) : error48 ? JSON.stringify(error48) : message;
-    if (status && msg) {
-      return `${status} ${msg}`;
-    }
-    if (status) {
-      return `${status} status code (no body)`;
-    }
-    if (msg) {
-      return msg;
-    }
-    return "(no status code or body)";
-  }
-  static generate(status, errorResponse, message, headers) {
-    if (!status || !headers) {
-      return new APIConnectionError({ message, cause: castToError(errorResponse) });
-    }
-    const error48 = errorResponse?.["error"];
-    if (status === 400) {
-      return new BadRequestError(status, error48, message, headers);
-    }
-    if (status === 401) {
-      return new AuthenticationError(status, error48, message, headers);
-    }
-    if (status === 403) {
-      return new PermissionDeniedError(status, error48, message, headers);
-    }
-    if (status === 404) {
-      return new NotFoundError(status, error48, message, headers);
-    }
-    if (status === 409) {
-      return new ConflictError(status, error48, message, headers);
-    }
-    if (status === 422) {
-      return new UnprocessableEntityError(status, error48, message, headers);
-    }
-    if (status === 429) {
-      return new RateLimitError(status, error48, message, headers);
-    }
-    if (status >= 500) {
-      return new InternalServerError(status, error48, message, headers);
-    }
-    return new _APIError(status, error48, message, headers);
-  }
-};
-var APIUserAbortError = class extends APIError {
-  constructor({ message } = {}) {
-    super(void 0, void 0, message || "Request was aborted.", void 0);
-  }
-};
-var APIConnectionError = class extends APIError {
-  constructor({ message, cause }) {
-    super(void 0, void 0, message || "Connection error.", void 0);
-    if (cause)
-      this.cause = cause;
-  }
-};
-var APIConnectionTimeoutError = class extends APIConnectionError {
-  constructor({ message } = {}) {
-    super({ message: message ?? "Request timed out." });
-  }
-};
-var BadRequestError = class extends APIError {
-};
-var AuthenticationError = class extends APIError {
-};
-var PermissionDeniedError = class extends APIError {
-};
-var NotFoundError = class extends APIError {
-};
-var ConflictError = class extends APIError {
-};
-var UnprocessableEntityError = class extends APIError {
-};
-var RateLimitError = class extends APIError {
-};
-var InternalServerError = class extends APIError {
-};
-var LengthFinishReasonError = class extends OpenAIError {
-  constructor() {
-    super(`Could not parse response content as the length limit was reached`);
-  }
-};
-var ContentFilterFinishReasonError = class extends OpenAIError {
-  constructor() {
-    super(`Could not parse response content as the request was rejected by the content filter`);
-  }
-};
-var InvalidWebhookSignatureError = class extends Error {
-  constructor(message) {
-    super(message);
-  }
-};
-var OAuthError = class extends APIError {
-  constructor(status, error48, headers) {
-    let finalMessage = "OAuth2 authentication error";
-    let error_code = void 0;
-    if (error48 && typeof error48 === "object") {
-      const errorData = error48;
-      error_code = errorData["error"];
-      const description = errorData["error_description"];
-      if (description && typeof description === "string") {
-        finalMessage = description;
-      } else if (error_code) {
-        finalMessage = error_code;
-      }
-    }
-    super(status, error48, finalMessage, headers);
-    this.error_code = error_code;
-  }
-};
-var SubjectTokenProviderError = class extends OpenAIError {
-  constructor(message, provider, cause) {
-    super(message);
-    this.provider = provider;
-    this.cause = cause;
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/values.mjs
-var startsWithSchemeRegexp = /^[a-z][a-z0-9+.-]*:/i;
-var isAbsoluteURL2 = (url3) => {
-  return startsWithSchemeRegexp.test(url3);
-};
-var isArray4 = (val) => (isArray4 = Array.isArray, isArray4(val));
-var isReadonlyArray = isArray4;
-function maybeObj(x) {
-  if (typeof x !== "object") {
-    return {};
-  }
-  return x ?? {};
-}
-function isEmptyObj(obj) {
-  if (!obj)
-    return true;
-  for (const _k in obj)
-    return false;
-  return true;
-}
-function hasOwn(obj, key) {
-  return Object.prototype.hasOwnProperty.call(obj, key);
-}
-function isObj(obj) {
-  return obj != null && typeof obj === "object" && !Array.isArray(obj);
-}
-var validatePositiveInteger = (name2, n) => {
-  if (typeof n !== "number" || !Number.isInteger(n)) {
-    throw new OpenAIError(`${name2} must be an integer`);
-  }
-  if (n < 0) {
-    throw new OpenAIError(`${name2} must be a positive integer`);
-  }
-  return n;
-};
-var safeJSON = (text2) => {
-  try {
-    return JSON.parse(text2);
-  } catch (err) {
-    return void 0;
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/sleep.mjs
-var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/version.mjs
-var VERSION3 = "6.34.0";
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/detect-platform.mjs
-var isRunningInBrowser = () => {
-  return (
-    // @ts-ignore
-    typeof window !== "undefined" && // @ts-ignore
-    typeof window.document !== "undefined" && // @ts-ignore
-    typeof navigator !== "undefined"
-  );
-};
-function getDetectedPlatform() {
-  if (typeof Deno !== "undefined" && Deno.build != null) {
-    return "deno";
-  }
-  if (typeof EdgeRuntime !== "undefined") {
-    return "edge";
-  }
-  if (Object.prototype.toString.call(typeof globalThis.process !== "undefined" ? globalThis.process : 0) === "[object process]") {
-    return "node";
-  }
-  return "unknown";
-}
-var getPlatformProperties = () => {
-  const detectedPlatform = getDetectedPlatform();
-  if (detectedPlatform === "deno") {
-    return {
-      "X-Stainless-Lang": "js",
-      "X-Stainless-Package-Version": VERSION3,
-      "X-Stainless-OS": normalizePlatform(Deno.build.os),
-      "X-Stainless-Arch": normalizeArch(Deno.build.arch),
-      "X-Stainless-Runtime": "deno",
-      "X-Stainless-Runtime-Version": typeof Deno.version === "string" ? Deno.version : Deno.version?.deno ?? "unknown"
-    };
-  }
-  if (typeof EdgeRuntime !== "undefined") {
-    return {
-      "X-Stainless-Lang": "js",
-      "X-Stainless-Package-Version": VERSION3,
-      "X-Stainless-OS": "Unknown",
-      "X-Stainless-Arch": `other:${EdgeRuntime}`,
-      "X-Stainless-Runtime": "edge",
-      "X-Stainless-Runtime-Version": globalThis.process.version
-    };
-  }
-  if (detectedPlatform === "node") {
-    return {
-      "X-Stainless-Lang": "js",
-      "X-Stainless-Package-Version": VERSION3,
-      "X-Stainless-OS": normalizePlatform(globalThis.process.platform ?? "unknown"),
-      "X-Stainless-Arch": normalizeArch(globalThis.process.arch ?? "unknown"),
-      "X-Stainless-Runtime": "node",
-      "X-Stainless-Runtime-Version": globalThis.process.version ?? "unknown"
-    };
-  }
-  const browserInfo = getBrowserInfo();
-  if (browserInfo) {
-    return {
-      "X-Stainless-Lang": "js",
-      "X-Stainless-Package-Version": VERSION3,
-      "X-Stainless-OS": "Unknown",
-      "X-Stainless-Arch": "unknown",
-      "X-Stainless-Runtime": `browser:${browserInfo.browser}`,
-      "X-Stainless-Runtime-Version": browserInfo.version
-    };
-  }
-  return {
-    "X-Stainless-Lang": "js",
-    "X-Stainless-Package-Version": VERSION3,
-    "X-Stainless-OS": "Unknown",
-    "X-Stainless-Arch": "unknown",
-    "X-Stainless-Runtime": "unknown",
-    "X-Stainless-Runtime-Version": "unknown"
-  };
-};
-function getBrowserInfo() {
-  if (typeof navigator === "undefined" || !navigator) {
-    return null;
-  }
-  const browserPatterns = [
-    { key: "edge", pattern: /Edge(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "ie", pattern: /MSIE(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "ie", pattern: /Trident(?:.*rv\:(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "chrome", pattern: /Chrome(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "firefox", pattern: /Firefox(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "safari", pattern: /(?:Version\W+(\d+)\.(\d+)(?:\.(\d+))?)?(?:\W+Mobile\S*)?\W+Safari/ }
-  ];
-  for (const { key, pattern } of browserPatterns) {
-    const match = pattern.exec(navigator.userAgent);
-    if (match) {
-      const major = match[1] || 0;
-      const minor = match[2] || 0;
-      const patch = match[3] || 0;
-      return { browser: key, version: `${major}.${minor}.${patch}` };
-    }
-  }
-  return null;
-}
-var normalizeArch = (arch) => {
-  if (arch === "x32")
-    return "x32";
-  if (arch === "x86_64" || arch === "x64")
-    return "x64";
-  if (arch === "arm")
-    return "arm";
-  if (arch === "aarch64" || arch === "arm64")
-    return "arm64";
-  if (arch)
-    return `other:${arch}`;
-  return "unknown";
-};
-var normalizePlatform = (platform) => {
-  platform = platform.toLowerCase();
-  if (platform.includes("ios"))
-    return "iOS";
-  if (platform === "android")
-    return "Android";
-  if (platform === "darwin")
-    return "MacOS";
-  if (platform === "win32")
-    return "Windows";
-  if (platform === "freebsd")
-    return "FreeBSD";
-  if (platform === "openbsd")
-    return "OpenBSD";
-  if (platform === "linux")
-    return "Linux";
-  if (platform)
-    return `Other:${platform}`;
-  return "Unknown";
-};
-var _platformHeaders;
-var getPlatformHeaders = () => {
-  return _platformHeaders ?? (_platformHeaders = getPlatformProperties());
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/shims.mjs
-function getDefaultFetch() {
-  if (typeof fetch !== "undefined") {
-    return fetch;
-  }
-  throw new Error("`fetch` is not defined as a global; Either pass `fetch` to the client, `new OpenAI({ fetch })` or polyfill the global, `globalThis.fetch = fetch`");
-}
-function makeReadableStream(...args) {
-  const ReadableStream3 = globalThis.ReadableStream;
-  if (typeof ReadableStream3 === "undefined") {
-    throw new Error("`ReadableStream` is not defined as a global; You will need to polyfill it, `globalThis.ReadableStream = ReadableStream`");
-  }
-  return new ReadableStream3(...args);
-}
-function ReadableStreamFrom(iterable) {
-  let iter = Symbol.asyncIterator in iterable ? iterable[Symbol.asyncIterator]() : iterable[Symbol.iterator]();
-  return makeReadableStream({
-    start() {
-    },
-    async pull(controller) {
-      const { done, value } = await iter.next();
-      if (done) {
-        controller.close();
-      } else {
-        controller.enqueue(value);
-      }
-    },
-    async cancel() {
-      await iter.return?.();
-    }
-  });
-}
-function ReadableStreamToAsyncIterable(stream4) {
-  if (stream4[Symbol.asyncIterator])
-    return stream4;
-  const reader = stream4.getReader();
-  return {
-    async next() {
-      try {
-        const result = await reader.read();
-        if (result?.done)
-          reader.releaseLock();
-        return result;
-      } catch (e) {
-        reader.releaseLock();
-        throw e;
-      }
-    },
-    async return() {
-      const cancelPromise = reader.cancel();
-      reader.releaseLock();
-      await cancelPromise;
-      return { done: true, value: void 0 };
-    },
-    [Symbol.asyncIterator]() {
-      return this;
-    }
-  };
-}
-async function CancelReadableStream(stream4) {
-  if (stream4 === null || typeof stream4 !== "object")
-    return;
-  if (stream4[Symbol.asyncIterator]) {
-    await stream4[Symbol.asyncIterator]().return?.();
-    return;
-  }
-  const reader = stream4.getReader();
-  const cancelPromise = reader.cancel();
-  reader.releaseLock();
-  await cancelPromise;
-}
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/request-options.mjs
-var FallbackEncoder = ({ headers, body }) => {
-  return {
-    bodyHeaders: {
-      "content-type": "application/json"
-    },
-    body: JSON.stringify(body)
-  };
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/qs/formats.mjs
-var default_format = "RFC3986";
-var default_formatter = (v) => String(v);
-var formatters = {
-  RFC1738: (v) => String(v).replace(/%20/g, "+"),
-  RFC3986: default_formatter
-};
-var RFC1738 = "RFC1738";
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/qs/utils.mjs
-var has = (obj, key) => (has = Object.hasOwn ?? Function.prototype.call.bind(Object.prototype.hasOwnProperty), has(obj, key));
-var hex_table = /* @__PURE__ */ (() => {
-  const array2 = [];
-  for (let i = 0; i < 256; ++i) {
-    array2.push("%" + ((i < 16 ? "0" : "") + i.toString(16)).toUpperCase());
-  }
-  return array2;
-})();
-var limit = 1024;
-var encode5 = (str2, _defaultEncoder, charset, _kind, format) => {
-  if (str2.length === 0) {
-    return str2;
-  }
-  let string4 = str2;
-  if (typeof str2 === "symbol") {
-    string4 = Symbol.prototype.toString.call(str2);
-  } else if (typeof str2 !== "string") {
-    string4 = String(str2);
-  }
-  if (charset === "iso-8859-1") {
-    return escape(string4).replace(/%u[0-9a-f]{4}/gi, function($0) {
-      return "%26%23" + parseInt($0.slice(2), 16) + "%3B";
-    });
-  }
-  let out = "";
-  for (let j = 0; j < string4.length; j += limit) {
-    const segment = string4.length >= limit ? string4.slice(j, j + limit) : string4;
-    const arr = [];
-    for (let i = 0; i < segment.length; ++i) {
-      let c = segment.charCodeAt(i);
-      if (c === 45 || // -
-      c === 46 || // .
-      c === 95 || // _
-      c === 126 || // ~
-      c >= 48 && c <= 57 || // 0-9
-      c >= 65 && c <= 90 || // a-z
-      c >= 97 && c <= 122 || // A-Z
-      format === RFC1738 && (c === 40 || c === 41)) {
-        arr[arr.length] = segment.charAt(i);
-        continue;
-      }
-      if (c < 128) {
-        arr[arr.length] = hex_table[c];
-        continue;
-      }
-      if (c < 2048) {
-        arr[arr.length] = hex_table[192 | c >> 6] + hex_table[128 | c & 63];
-        continue;
-      }
-      if (c < 55296 || c >= 57344) {
-        arr[arr.length] = hex_table[224 | c >> 12] + hex_table[128 | c >> 6 & 63] + hex_table[128 | c & 63];
-        continue;
-      }
-      i += 1;
-      c = 65536 + ((c & 1023) << 10 | segment.charCodeAt(i) & 1023);
-      arr[arr.length] = hex_table[240 | c >> 18] + hex_table[128 | c >> 12 & 63] + hex_table[128 | c >> 6 & 63] + hex_table[128 | c & 63];
-    }
-    out += arr.join("");
-  }
-  return out;
-};
-function is_buffer(obj) {
-  if (!obj || typeof obj !== "object") {
-    return false;
-  }
-  return !!(obj.constructor && obj.constructor.isBuffer && obj.constructor.isBuffer(obj));
-}
-function maybe_map(val, fn) {
-  if (isArray4(val)) {
-    const mapped = [];
-    for (let i = 0; i < val.length; i += 1) {
-      mapped.push(fn(val[i]));
-    }
-    return mapped;
-  }
-  return fn(val);
-}
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/qs/stringify.mjs
-var array_prefix_generators = {
-  brackets(prefix) {
-    return String(prefix) + "[]";
-  },
-  comma: "comma",
-  indices(prefix, key) {
-    return String(prefix) + "[" + key + "]";
-  },
-  repeat(prefix) {
-    return String(prefix);
-  }
-};
-var push_to_array = function(arr, value_or_array) {
-  Array.prototype.push.apply(arr, isArray4(value_or_array) ? value_or_array : [value_or_array]);
-};
-var toISOString;
-var defaults2 = {
-  addQueryPrefix: false,
-  allowDots: false,
-  allowEmptyArrays: false,
-  arrayFormat: "indices",
-  charset: "utf-8",
-  charsetSentinel: false,
-  delimiter: "&",
-  encode: true,
-  encodeDotInKeys: false,
-  encoder: encode5,
-  encodeValuesOnly: false,
-  format: default_format,
-  formatter: default_formatter,
-  /** @deprecated */
-  indices: false,
-  serializeDate(date6) {
-    return (toISOString ?? (toISOString = Function.prototype.call.bind(Date.prototype.toISOString)))(date6);
-  },
-  skipNulls: false,
-  strictNullHandling: false
-};
-function is_non_nullish_primitive(v) {
-  return typeof v === "string" || typeof v === "number" || typeof v === "boolean" || typeof v === "symbol" || typeof v === "bigint";
-}
-var sentinel = {};
-function inner_stringify(object2, prefix, generateArrayPrefix, commaRoundTrip, allowEmptyArrays, strictNullHandling, skipNulls, encodeDotInKeys, encoder, filter2, sort, allowDots, serializeDate, format, formatter, encodeValuesOnly, charset, sideChannel) {
-  let obj = object2;
-  let tmp_sc = sideChannel;
-  let step = 0;
-  let find_flag = false;
-  while ((tmp_sc = tmp_sc.get(sentinel)) !== void 0 && !find_flag) {
-    const pos = tmp_sc.get(object2);
-    step += 1;
-    if (typeof pos !== "undefined") {
-      if (pos === step) {
-        throw new RangeError("Cyclic object value");
-      } else {
-        find_flag = true;
-      }
-    }
-    if (typeof tmp_sc.get(sentinel) === "undefined") {
-      step = 0;
-    }
-  }
-  if (typeof filter2 === "function") {
-    obj = filter2(prefix, obj);
-  } else if (obj instanceof Date) {
-    obj = serializeDate?.(obj);
-  } else if (generateArrayPrefix === "comma" && isArray4(obj)) {
-    obj = maybe_map(obj, function(value) {
-      if (value instanceof Date) {
-        return serializeDate?.(value);
-      }
-      return value;
-    });
-  }
-  if (obj === null) {
-    if (strictNullHandling) {
-      return encoder && !encodeValuesOnly ? (
-        // @ts-expect-error
-        encoder(prefix, defaults2.encoder, charset, "key", format)
-      ) : prefix;
-    }
-    obj = "";
-  }
-  if (is_non_nullish_primitive(obj) || is_buffer(obj)) {
-    if (encoder) {
-      const key_value = encodeValuesOnly ? prefix : encoder(prefix, defaults2.encoder, charset, "key", format);
-      return [
-        formatter?.(key_value) + "=" + // @ts-expect-error
-        formatter?.(encoder(obj, defaults2.encoder, charset, "value", format))
-      ];
-    }
-    return [formatter?.(prefix) + "=" + formatter?.(String(obj))];
-  }
-  const values2 = [];
-  if (typeof obj === "undefined") {
-    return values2;
-  }
-  let obj_keys;
-  if (generateArrayPrefix === "comma" && isArray4(obj)) {
-    if (encodeValuesOnly && encoder) {
-      obj = maybe_map(obj, encoder);
-    }
-    obj_keys = [{ value: obj.length > 0 ? obj.join(",") || null : void 0 }];
-  } else if (isArray4(filter2)) {
-    obj_keys = filter2;
-  } else {
-    const keys = Object.keys(obj);
-    obj_keys = sort ? keys.sort(sort) : keys;
-  }
-  const encoded_prefix = encodeDotInKeys ? String(prefix).replace(/\./g, "%2E") : String(prefix);
-  const adjusted_prefix = commaRoundTrip && isArray4(obj) && obj.length === 1 ? encoded_prefix + "[]" : encoded_prefix;
-  if (allowEmptyArrays && isArray4(obj) && obj.length === 0) {
-    return adjusted_prefix + "[]";
-  }
-  for (let j = 0; j < obj_keys.length; ++j) {
-    const key = obj_keys[j];
-    const value = (
-      // @ts-ignore
-      typeof key === "object" && typeof key.value !== "undefined" ? key.value : obj[key]
-    );
-    if (skipNulls && value === null) {
-      continue;
-    }
-    const encoded_key = allowDots && encodeDotInKeys ? key.replace(/\./g, "%2E") : key;
-    const key_prefix = isArray4(obj) ? typeof generateArrayPrefix === "function" ? generateArrayPrefix(adjusted_prefix, encoded_key) : adjusted_prefix : adjusted_prefix + (allowDots ? "." + encoded_key : "[" + encoded_key + "]");
-    sideChannel.set(object2, step);
-    const valueSideChannel = /* @__PURE__ */ new WeakMap();
-    valueSideChannel.set(sentinel, sideChannel);
-    push_to_array(values2, inner_stringify(
-      value,
-      key_prefix,
-      generateArrayPrefix,
-      commaRoundTrip,
-      allowEmptyArrays,
-      strictNullHandling,
-      skipNulls,
-      encodeDotInKeys,
-      // @ts-ignore
-      generateArrayPrefix === "comma" && encodeValuesOnly && isArray4(obj) ? null : encoder,
-      filter2,
-      sort,
-      allowDots,
-      serializeDate,
-      format,
-      formatter,
-      encodeValuesOnly,
-      charset,
-      valueSideChannel
-    ));
-  }
-  return values2;
-}
-function normalize_stringify_options(opts = defaults2) {
-  if (typeof opts.allowEmptyArrays !== "undefined" && typeof opts.allowEmptyArrays !== "boolean") {
-    throw new TypeError("`allowEmptyArrays` option can only be `true` or `false`, when provided");
-  }
-  if (typeof opts.encodeDotInKeys !== "undefined" && typeof opts.encodeDotInKeys !== "boolean") {
-    throw new TypeError("`encodeDotInKeys` option can only be `true` or `false`, when provided");
-  }
-  if (opts.encoder !== null && typeof opts.encoder !== "undefined" && typeof opts.encoder !== "function") {
-    throw new TypeError("Encoder has to be a function.");
-  }
-  const charset = opts.charset || defaults2.charset;
-  if (typeof opts.charset !== "undefined" && opts.charset !== "utf-8" && opts.charset !== "iso-8859-1") {
-    throw new TypeError("The charset option must be either utf-8, iso-8859-1, or undefined");
-  }
-  let format = default_format;
-  if (typeof opts.format !== "undefined") {
-    if (!has(formatters, opts.format)) {
-      throw new TypeError("Unknown format option provided.");
-    }
-    format = opts.format;
-  }
-  const formatter = formatters[format];
-  let filter2 = defaults2.filter;
-  if (typeof opts.filter === "function" || isArray4(opts.filter)) {
-    filter2 = opts.filter;
-  }
-  let arrayFormat;
-  if (opts.arrayFormat && opts.arrayFormat in array_prefix_generators) {
-    arrayFormat = opts.arrayFormat;
-  } else if ("indices" in opts) {
-    arrayFormat = opts.indices ? "indices" : "repeat";
-  } else {
-    arrayFormat = defaults2.arrayFormat;
-  }
-  if ("commaRoundTrip" in opts && typeof opts.commaRoundTrip !== "boolean") {
-    throw new TypeError("`commaRoundTrip` must be a boolean, or absent");
-  }
-  const allowDots = typeof opts.allowDots === "undefined" ? !!opts.encodeDotInKeys === true ? true : defaults2.allowDots : !!opts.allowDots;
-  return {
-    addQueryPrefix: typeof opts.addQueryPrefix === "boolean" ? opts.addQueryPrefix : defaults2.addQueryPrefix,
-    // @ts-ignore
-    allowDots,
-    allowEmptyArrays: typeof opts.allowEmptyArrays === "boolean" ? !!opts.allowEmptyArrays : defaults2.allowEmptyArrays,
-    arrayFormat,
-    charset,
-    charsetSentinel: typeof opts.charsetSentinel === "boolean" ? opts.charsetSentinel : defaults2.charsetSentinel,
-    commaRoundTrip: !!opts.commaRoundTrip,
-    delimiter: typeof opts.delimiter === "undefined" ? defaults2.delimiter : opts.delimiter,
-    encode: typeof opts.encode === "boolean" ? opts.encode : defaults2.encode,
-    encodeDotInKeys: typeof opts.encodeDotInKeys === "boolean" ? opts.encodeDotInKeys : defaults2.encodeDotInKeys,
-    encoder: typeof opts.encoder === "function" ? opts.encoder : defaults2.encoder,
-    encodeValuesOnly: typeof opts.encodeValuesOnly === "boolean" ? opts.encodeValuesOnly : defaults2.encodeValuesOnly,
-    filter: filter2,
-    format,
-    formatter,
-    serializeDate: typeof opts.serializeDate === "function" ? opts.serializeDate : defaults2.serializeDate,
-    skipNulls: typeof opts.skipNulls === "boolean" ? opts.skipNulls : defaults2.skipNulls,
-    // @ts-ignore
-    sort: typeof opts.sort === "function" ? opts.sort : null,
-    strictNullHandling: typeof opts.strictNullHandling === "boolean" ? opts.strictNullHandling : defaults2.strictNullHandling
-  };
-}
-function stringify3(object2, opts = {}) {
-  let obj = object2;
-  const options = normalize_stringify_options(opts);
-  let obj_keys;
-  let filter2;
-  if (typeof options.filter === "function") {
-    filter2 = options.filter;
-    obj = filter2("", obj);
-  } else if (isArray4(options.filter)) {
-    filter2 = options.filter;
-    obj_keys = filter2;
-  }
-  const keys = [];
-  if (typeof obj !== "object" || obj === null) {
-    return "";
-  }
-  const generateArrayPrefix = array_prefix_generators[options.arrayFormat];
-  const commaRoundTrip = generateArrayPrefix === "comma" && options.commaRoundTrip;
-  if (!obj_keys) {
-    obj_keys = Object.keys(obj);
-  }
-  if (options.sort) {
-    obj_keys.sort(options.sort);
-  }
-  const sideChannel = /* @__PURE__ */ new WeakMap();
-  for (let i = 0; i < obj_keys.length; ++i) {
-    const key = obj_keys[i];
-    if (options.skipNulls && obj[key] === null) {
-      continue;
-    }
-    push_to_array(keys, inner_stringify(
-      obj[key],
-      key,
-      // @ts-expect-error
-      generateArrayPrefix,
-      commaRoundTrip,
-      options.allowEmptyArrays,
-      options.strictNullHandling,
-      options.skipNulls,
-      options.encodeDotInKeys,
-      options.encode ? options.encoder : null,
-      options.filter,
-      options.sort,
-      options.allowDots,
-      options.serializeDate,
-      options.format,
-      options.formatter,
-      options.encodeValuesOnly,
-      options.charset,
-      sideChannel
-    ));
-  }
-  const joined = keys.join(options.delimiter);
-  let prefix = options.addQueryPrefix === true ? "?" : "";
-  if (options.charsetSentinel) {
-    if (options.charset === "iso-8859-1") {
-      prefix += "utf8=%26%2310003%3B&";
-    } else {
-      prefix += "utf8=%E2%9C%93&";
-    }
-  }
-  return joined.length > 0 ? prefix + joined : "";
-}
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/query.mjs
-function stringifyQuery(query) {
-  return stringify3(query, { arrayFormat: "brackets" });
-}
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/bytes.mjs
-function concatBytes(buffers) {
-  let length = 0;
-  for (const buffer2 of buffers) {
-    length += buffer2.length;
-  }
-  const output = new Uint8Array(length);
-  let index = 0;
-  for (const buffer2 of buffers) {
-    output.set(buffer2, index);
-    index += buffer2.length;
-  }
-  return output;
-}
-var encodeUTF8_;
-function encodeUTF8(str2) {
-  let encoder;
-  return (encodeUTF8_ ?? (encoder = new globalThis.TextEncoder(), encodeUTF8_ = encoder.encode.bind(encoder)))(str2);
-}
-var decodeUTF8_;
-function decodeUTF8(bytes) {
-  let decoder;
-  return (decodeUTF8_ ?? (decoder = new globalThis.TextDecoder(), decodeUTF8_ = decoder.decode.bind(decoder)))(bytes);
-}
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/decoders/line.mjs
-var _LineDecoder_buffer;
-var _LineDecoder_carriageReturnIndex;
-var LineDecoder = class {
-  constructor() {
-    _LineDecoder_buffer.set(this, void 0);
-    _LineDecoder_carriageReturnIndex.set(this, void 0);
-    __classPrivateFieldSet(this, _LineDecoder_buffer, new Uint8Array(), "f");
-    __classPrivateFieldSet(this, _LineDecoder_carriageReturnIndex, null, "f");
-  }
-  decode(chunk) {
-    if (chunk == null) {
-      return [];
-    }
-    const binaryChunk = chunk instanceof ArrayBuffer ? new Uint8Array(chunk) : typeof chunk === "string" ? encodeUTF8(chunk) : chunk;
-    __classPrivateFieldSet(this, _LineDecoder_buffer, concatBytes([__classPrivateFieldGet(this, _LineDecoder_buffer, "f"), binaryChunk]), "f");
-    const lines = [];
-    let patternIndex;
-    while ((patternIndex = findNewlineIndex(__classPrivateFieldGet(this, _LineDecoder_buffer, "f"), __classPrivateFieldGet(this, _LineDecoder_carriageReturnIndex, "f"))) != null) {
-      if (patternIndex.carriage && __classPrivateFieldGet(this, _LineDecoder_carriageReturnIndex, "f") == null) {
-        __classPrivateFieldSet(this, _LineDecoder_carriageReturnIndex, patternIndex.index, "f");
-        continue;
-      }
-      if (__classPrivateFieldGet(this, _LineDecoder_carriageReturnIndex, "f") != null && (patternIndex.index !== __classPrivateFieldGet(this, _LineDecoder_carriageReturnIndex, "f") + 1 || patternIndex.carriage)) {
-        lines.push(decodeUTF8(__classPrivateFieldGet(this, _LineDecoder_buffer, "f").subarray(0, __classPrivateFieldGet(this, _LineDecoder_carriageReturnIndex, "f") - 1)));
-        __classPrivateFieldSet(this, _LineDecoder_buffer, __classPrivateFieldGet(this, _LineDecoder_buffer, "f").subarray(__classPrivateFieldGet(this, _LineDecoder_carriageReturnIndex, "f")), "f");
-        __classPrivateFieldSet(this, _LineDecoder_carriageReturnIndex, null, "f");
-        continue;
-      }
-      const endIndex = __classPrivateFieldGet(this, _LineDecoder_carriageReturnIndex, "f") !== null ? patternIndex.preceding - 1 : patternIndex.preceding;
-      const line2 = decodeUTF8(__classPrivateFieldGet(this, _LineDecoder_buffer, "f").subarray(0, endIndex));
-      lines.push(line2);
-      __classPrivateFieldSet(this, _LineDecoder_buffer, __classPrivateFieldGet(this, _LineDecoder_buffer, "f").subarray(patternIndex.index), "f");
-      __classPrivateFieldSet(this, _LineDecoder_carriageReturnIndex, null, "f");
-    }
-    return lines;
-  }
-  flush() {
-    if (!__classPrivateFieldGet(this, _LineDecoder_buffer, "f").length) {
-      return [];
-    }
-    return this.decode("\n");
-  }
-};
-_LineDecoder_buffer = /* @__PURE__ */ new WeakMap(), _LineDecoder_carriageReturnIndex = /* @__PURE__ */ new WeakMap();
-LineDecoder.NEWLINE_CHARS = /* @__PURE__ */ new Set(["\n", "\r"]);
-LineDecoder.NEWLINE_REGEXP = /\r\n|[\n\r]/g;
-function findNewlineIndex(buffer2, startIndex) {
-  const newline = 10;
-  const carriage = 13;
-  for (let i = startIndex ?? 0; i < buffer2.length; i++) {
-    if (buffer2[i] === newline) {
-      return { preceding: i, index: i + 1, carriage: false };
-    }
-    if (buffer2[i] === carriage) {
-      return { preceding: i, index: i + 1, carriage: true };
-    }
-  }
-  return null;
-}
-function findDoubleNewlineIndex(buffer2) {
-  const newline = 10;
-  const carriage = 13;
-  for (let i = 0; i < buffer2.length - 1; i++) {
-    if (buffer2[i] === newline && buffer2[i + 1] === newline) {
-      return i + 2;
-    }
-    if (buffer2[i] === carriage && buffer2[i + 1] === carriage) {
-      return i + 2;
-    }
-    if (buffer2[i] === carriage && buffer2[i + 1] === newline && i + 3 < buffer2.length && buffer2[i + 2] === carriage && buffer2[i + 3] === newline) {
-      return i + 4;
-    }
-  }
-  return -1;
-}
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/log.mjs
-var levelNumbers = {
-  off: 0,
-  error: 200,
-  warn: 300,
-  info: 400,
-  debug: 500
-};
-var parseLogLevel = (maybeLevel, sourceName, client) => {
-  if (!maybeLevel) {
-    return void 0;
-  }
-  if (hasOwn(levelNumbers, maybeLevel)) {
-    return maybeLevel;
-  }
-  loggerFor(client).warn(`${sourceName} was set to ${JSON.stringify(maybeLevel)}, expected one of ${JSON.stringify(Object.keys(levelNumbers))}`);
-  return void 0;
-};
-function noop5() {
-}
-function makeLogFn(fnLevel, logger, logLevel) {
-  if (!logger || levelNumbers[fnLevel] > levelNumbers[logLevel]) {
-    return noop5;
-  } else {
-    return logger[fnLevel].bind(logger);
-  }
-}
-var noopLogger = {
-  error: noop5,
-  warn: noop5,
-  info: noop5,
-  debug: noop5
-};
-var cachedLoggers = /* @__PURE__ */ new WeakMap();
-function loggerFor(client) {
-  const logger = client.logger;
-  const logLevel = client.logLevel ?? "off";
-  if (!logger) {
-    return noopLogger;
-  }
-  const cachedLogger = cachedLoggers.get(logger);
-  if (cachedLogger && cachedLogger[0] === logLevel) {
-    return cachedLogger[1];
-  }
-  const levelLogger = {
-    error: makeLogFn("error", logger, logLevel),
-    warn: makeLogFn("warn", logger, logLevel),
-    info: makeLogFn("info", logger, logLevel),
-    debug: makeLogFn("debug", logger, logLevel)
-  };
-  cachedLoggers.set(logger, [logLevel, levelLogger]);
-  return levelLogger;
-}
-var formatRequestDetails = (details) => {
-  if (details.options) {
-    details.options = { ...details.options };
-    delete details.options["headers"];
-  }
-  if (details.headers) {
-    details.headers = Object.fromEntries((details.headers instanceof Headers ? [...details.headers] : Object.entries(details.headers)).map(([name2, value]) => [
-      name2,
-      name2.toLowerCase() === "authorization" || name2.toLowerCase() === "cookie" || name2.toLowerCase() === "set-cookie" ? "***" : value
-    ]));
-  }
-  if ("retryOfRequestLogID" in details) {
-    if (details.retryOfRequestLogID) {
-      details.retryOf = details.retryOfRequestLogID;
-    }
-    delete details.retryOfRequestLogID;
-  }
-  return details;
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/streaming.mjs
-var _Stream_client;
-var Stream3 = class _Stream {
-  constructor(iterator2, controller, client) {
-    this.iterator = iterator2;
-    _Stream_client.set(this, void 0);
-    this.controller = controller;
-    __classPrivateFieldSet(this, _Stream_client, client, "f");
-  }
-  static fromSSEResponse(response, controller, client, synthesizeEventData) {
-    let consumed = false;
-    const logger = client ? loggerFor(client) : console;
-    async function* iterator2() {
-      if (consumed) {
-        throw new OpenAIError("Cannot iterate over a consumed stream, use `.tee()` to split the stream.");
-      }
-      consumed = true;
-      let done = false;
-      try {
-        for await (const sse2 of _iterSSEMessages(response, controller)) {
-          if (done)
-            continue;
-          if (sse2.data.startsWith("[DONE]")) {
-            done = true;
-            continue;
-          }
-          if (sse2.event === null || !sse2.event.startsWith("thread.")) {
-            let data;
-            try {
-              data = JSON.parse(sse2.data);
-            } catch (e) {
-              logger.error(`Could not parse message into JSON:`, sse2.data);
-              logger.error(`From chunk:`, sse2.raw);
-              throw e;
-            }
-            if (data && data.error) {
-              throw new APIError(void 0, data.error, void 0, response.headers);
-            }
-            yield synthesizeEventData ? { event: sse2.event, data } : data;
-          } else {
-            let data;
-            try {
-              data = JSON.parse(sse2.data);
-            } catch (e) {
-              console.error(`Could not parse message into JSON:`, sse2.data);
-              console.error(`From chunk:`, sse2.raw);
-              throw e;
-            }
-            if (sse2.event == "error") {
-              throw new APIError(void 0, data.error, data.message, void 0);
-            }
-            yield { event: sse2.event, data };
-          }
-        }
-        done = true;
-      } catch (e) {
-        if (isAbortError2(e))
-          return;
-        throw e;
-      } finally {
-        if (!done)
-          controller.abort();
-      }
-    }
-    return new _Stream(iterator2, controller, client);
-  }
-  /**
-   * Generates a Stream from a newline-separated ReadableStream
-   * where each item is a JSON value.
-   */
-  static fromReadableStream(readableStream, controller, client) {
-    let consumed = false;
-    async function* iterLines() {
-      const lineDecoder = new LineDecoder();
-      const iter = ReadableStreamToAsyncIterable(readableStream);
-      for await (const chunk of iter) {
-        for (const line2 of lineDecoder.decode(chunk)) {
-          yield line2;
-        }
-      }
-      for (const line2 of lineDecoder.flush()) {
-        yield line2;
-      }
-    }
-    async function* iterator2() {
-      if (consumed) {
-        throw new OpenAIError("Cannot iterate over a consumed stream, use `.tee()` to split the stream.");
-      }
-      consumed = true;
-      let done = false;
-      try {
-        for await (const line2 of iterLines()) {
-          if (done)
-            continue;
-          if (line2)
-            yield JSON.parse(line2);
-        }
-        done = true;
-      } catch (e) {
-        if (isAbortError2(e))
-          return;
-        throw e;
-      } finally {
-        if (!done)
-          controller.abort();
-      }
-    }
-    return new _Stream(iterator2, controller, client);
-  }
-  [(_Stream_client = /* @__PURE__ */ new WeakMap(), Symbol.asyncIterator)]() {
-    return this.iterator();
-  }
-  /**
-   * Splits the stream into two streams which can be
-   * independently read from at different speeds.
-   */
-  tee() {
-    const left = [];
-    const right = [];
-    const iterator2 = this.iterator();
-    const teeIterator = (queue) => {
-      return {
-        next: () => {
-          if (queue.length === 0) {
-            const result = iterator2.next();
-            left.push(result);
-            right.push(result);
-          }
-          return queue.shift();
-        }
-      };
-    };
-    return [
-      new _Stream(() => teeIterator(left), this.controller, __classPrivateFieldGet(this, _Stream_client, "f")),
-      new _Stream(() => teeIterator(right), this.controller, __classPrivateFieldGet(this, _Stream_client, "f"))
-    ];
-  }
-  /**
-   * Converts this stream to a newline-separated ReadableStream of
-   * JSON stringified values in the stream
-   * which can be turned back into a Stream with `Stream.fromReadableStream()`.
-   */
-  toReadableStream() {
-    const self2 = this;
-    let iter;
-    return makeReadableStream({
-      async start() {
-        iter = self2[Symbol.asyncIterator]();
-      },
-      async pull(ctrl) {
-        try {
-          const { value, done } = await iter.next();
-          if (done)
-            return ctrl.close();
-          const bytes = encodeUTF8(JSON.stringify(value) + "\n");
-          ctrl.enqueue(bytes);
-        } catch (err) {
-          ctrl.error(err);
-        }
-      },
-      async cancel() {
-        await iter.return?.();
-      }
-    });
-  }
-};
-async function* _iterSSEMessages(response, controller) {
-  if (!response.body) {
-    controller.abort();
-    if (typeof globalThis.navigator !== "undefined" && globalThis.navigator.product === "ReactNative") {
-      throw new OpenAIError(`The default react-native fetch implementation does not support streaming. Please use expo/fetch: https://docs.expo.dev/versions/latest/sdk/expo/#expofetch-api`);
-    }
-    throw new OpenAIError(`Attempted to iterate over a response with no body`);
-  }
-  const sseDecoder = new SSEDecoder();
-  const lineDecoder = new LineDecoder();
-  const iter = ReadableStreamToAsyncIterable(response.body);
-  for await (const sseChunk of iterSSEChunks(iter)) {
-    for (const line2 of lineDecoder.decode(sseChunk)) {
-      const sse2 = sseDecoder.decode(line2);
-      if (sse2)
-        yield sse2;
-    }
-  }
-  for (const line2 of lineDecoder.flush()) {
-    const sse2 = sseDecoder.decode(line2);
-    if (sse2)
-      yield sse2;
-  }
-}
-async function* iterSSEChunks(iterator2) {
-  let data = new Uint8Array();
-  for await (const chunk of iterator2) {
-    if (chunk == null) {
-      continue;
-    }
-    const binaryChunk = chunk instanceof ArrayBuffer ? new Uint8Array(chunk) : typeof chunk === "string" ? encodeUTF8(chunk) : chunk;
-    let newData = new Uint8Array(data.length + binaryChunk.length);
-    newData.set(data);
-    newData.set(binaryChunk, data.length);
-    data = newData;
-    let patternIndex;
-    while ((patternIndex = findDoubleNewlineIndex(data)) !== -1) {
-      yield data.slice(0, patternIndex);
-      data = data.slice(patternIndex);
-    }
-  }
-  if (data.length > 0) {
-    yield data;
-  }
-}
-var SSEDecoder = class {
-  constructor() {
-    this.event = null;
-    this.data = [];
-    this.chunks = [];
-  }
-  decode(line2) {
-    if (line2.endsWith("\r")) {
-      line2 = line2.substring(0, line2.length - 1);
-    }
-    if (!line2) {
-      if (!this.event && !this.data.length)
-        return null;
-      const sse2 = {
-        event: this.event,
-        data: this.data.join("\n"),
-        raw: this.chunks
-      };
-      this.event = null;
-      this.data = [];
-      this.chunks = [];
-      return sse2;
-    }
-    this.chunks.push(line2);
-    if (line2.startsWith(":")) {
-      return null;
-    }
-    let [fieldname, _, value] = partition(line2, ":");
-    if (value.startsWith(" ")) {
-      value = value.substring(1);
-    }
-    if (fieldname === "event") {
-      this.event = value;
-    } else if (fieldname === "data") {
-      this.data.push(value);
-    }
-    return null;
-  }
-};
-function partition(str2, delimiter) {
-  const index = str2.indexOf(delimiter);
-  if (index !== -1) {
-    return [str2.substring(0, index), delimiter, str2.substring(index + delimiter.length)];
-  }
-  return [str2, "", ""];
-}
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/parse.mjs
-async function defaultParseResponse(client, props) {
-  const { response, requestLogID, retryOfRequestLogID, startTime } = props;
-  const body = await (async () => {
-    if (props.options.stream) {
-      loggerFor(client).debug("response", response.status, response.url, response.headers, response.body);
-      if (props.options.__streamClass) {
-        return props.options.__streamClass.fromSSEResponse(response, props.controller, client, props.options.__synthesizeEventData);
-      }
-      return Stream3.fromSSEResponse(response, props.controller, client, props.options.__synthesizeEventData);
-    }
-    if (response.status === 204) {
-      return null;
-    }
-    if (props.options.__binaryResponse) {
-      return response;
-    }
-    const contentType = response.headers.get("content-type");
-    const mediaType = contentType?.split(";")[0]?.trim();
-    const isJSON = mediaType?.includes("application/json") || mediaType?.endsWith("+json");
-    if (isJSON) {
-      const contentLength = response.headers.get("content-length");
-      if (contentLength === "0") {
-        return void 0;
-      }
-      const json3 = await response.json();
-      return addRequestID(json3, response);
-    }
-    const text2 = await response.text();
-    return text2;
-  })();
-  loggerFor(client).debug(`[${requestLogID}] response parsed`, formatRequestDetails({
-    retryOfRequestLogID,
-    url: response.url,
-    status: response.status,
-    body,
-    durationMs: Date.now() - startTime
-  }));
-  return body;
-}
-function addRequestID(value, response) {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return value;
-  }
-  return Object.defineProperty(value, "_request_id", {
-    value: response.headers.get("x-request-id"),
-    enumerable: false
-  });
-}
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/api-promise.mjs
-var _APIPromise_client;
-var APIPromise = class _APIPromise extends Promise {
-  constructor(client, responsePromise, parseResponse2 = defaultParseResponse) {
-    super((resolve) => {
-      resolve(null);
-    });
-    this.responsePromise = responsePromise;
-    this.parseResponse = parseResponse2;
-    _APIPromise_client.set(this, void 0);
-    __classPrivateFieldSet(this, _APIPromise_client, client, "f");
-  }
-  _thenUnwrap(transform2) {
-    return new _APIPromise(__classPrivateFieldGet(this, _APIPromise_client, "f"), this.responsePromise, async (client, props) => addRequestID(transform2(await this.parseResponse(client, props), props), props.response));
-  }
-  /**
-   * Gets the raw `Response` instance instead of parsing the response
-   * data.
-   *
-   * If you want to parse the response body but still get the `Response`
-   * instance, you can use {@link withResponse()}.
-   *
-   * 👋 Getting the wrong TypeScript type for `Response`?
-   * Try setting `"moduleResolution": "NodeNext"` or add `"lib": ["DOM"]`
-   * to your `tsconfig.json`.
-   */
-  asResponse() {
-    return this.responsePromise.then((p) => p.response);
-  }
-  /**
-   * Gets the parsed response data, the raw `Response` instance and the ID of the request,
-   * returned via the X-Request-ID header which is useful for debugging requests and reporting
-   * issues to OpenAI.
-   *
-   * If you just want to get the raw `Response` instance without parsing it,
-   * you can use {@link asResponse()}.
-   *
-   * 👋 Getting the wrong TypeScript type for `Response`?
-   * Try setting `"moduleResolution": "NodeNext"` or add `"lib": ["DOM"]`
-   * to your `tsconfig.json`.
-   */
-  async withResponse() {
-    const [data, response] = await Promise.all([this.parse(), this.asResponse()]);
-    return { data, response, request_id: response.headers.get("x-request-id") };
-  }
-  parse() {
-    if (!this.parsedPromise) {
-      this.parsedPromise = this.responsePromise.then((data) => this.parseResponse(__classPrivateFieldGet(this, _APIPromise_client, "f"), data));
-    }
-    return this.parsedPromise;
-  }
-  then(onfulfilled, onrejected) {
-    return this.parse().then(onfulfilled, onrejected);
-  }
-  catch(onrejected) {
-    return this.parse().catch(onrejected);
-  }
-  finally(onfinally) {
-    return this.parse().finally(onfinally);
-  }
-};
-_APIPromise_client = /* @__PURE__ */ new WeakMap();
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/pagination.mjs
-var _AbstractPage_client;
-var AbstractPage = class {
-  constructor(client, response, body, options) {
-    _AbstractPage_client.set(this, void 0);
-    __classPrivateFieldSet(this, _AbstractPage_client, client, "f");
-    this.options = options;
-    this.response = response;
-    this.body = body;
-  }
-  hasNextPage() {
-    const items = this.getPaginatedItems();
-    if (!items.length)
-      return false;
-    return this.nextPageRequestOptions() != null;
-  }
-  async getNextPage() {
-    const nextOptions = this.nextPageRequestOptions();
-    if (!nextOptions) {
-      throw new OpenAIError("No next page expected; please check `.hasNextPage()` before calling `.getNextPage()`.");
-    }
-    return await __classPrivateFieldGet(this, _AbstractPage_client, "f").requestAPIList(this.constructor, nextOptions);
-  }
-  async *iterPages() {
-    let page = this;
-    yield page;
-    while (page.hasNextPage()) {
-      page = await page.getNextPage();
-      yield page;
-    }
-  }
-  async *[(_AbstractPage_client = /* @__PURE__ */ new WeakMap(), Symbol.asyncIterator)]() {
-    for await (const page of this.iterPages()) {
-      for (const item of page.getPaginatedItems()) {
-        yield item;
-      }
-    }
-  }
-};
-var PagePromise = class extends APIPromise {
-  constructor(client, request, Page2) {
-    super(client, request, async (client2, props) => new Page2(client2, props.response, await defaultParseResponse(client2, props), props.options));
-  }
-  /**
-   * Allow auto-paginating iteration on an unawaited list call, eg:
-   *
-   *    for await (const item of client.items.list()) {
-   *      console.log(item)
-   *    }
-   */
-  async *[Symbol.asyncIterator]() {
-    const page = await this;
-    for await (const item of page) {
-      yield item;
-    }
-  }
-};
-var Page = class extends AbstractPage {
-  constructor(client, response, body, options) {
-    super(client, response, body, options);
-    this.data = body.data || [];
-    this.object = body.object;
-  }
-  getPaginatedItems() {
-    return this.data ?? [];
-  }
-  nextPageRequestOptions() {
-    return null;
-  }
-};
-var CursorPage = class extends AbstractPage {
-  constructor(client, response, body, options) {
-    super(client, response, body, options);
-    this.data = body.data || [];
-    this.has_more = body.has_more || false;
-  }
-  getPaginatedItems() {
-    return this.data ?? [];
-  }
-  hasNextPage() {
-    if (this.has_more === false) {
-      return false;
-    }
-    return super.hasNextPage();
-  }
-  nextPageRequestOptions() {
-    const data = this.getPaginatedItems();
-    const id = data[data.length - 1]?.id;
-    if (!id) {
-      return null;
-    }
-    return {
-      ...this.options,
-      query: {
-        ...maybeObj(this.options.query),
-        after: id
-      }
-    };
-  }
-};
-var ConversationCursorPage = class extends AbstractPage {
-  constructor(client, response, body, options) {
-    super(client, response, body, options);
-    this.data = body.data || [];
-    this.has_more = body.has_more || false;
-    this.last_id = body.last_id || "";
-  }
-  getPaginatedItems() {
-    return this.data ?? [];
-  }
-  hasNextPage() {
-    if (this.has_more === false) {
-      return false;
-    }
-    return super.hasNextPage();
-  }
-  nextPageRequestOptions() {
-    const cursor = this.last_id;
-    if (!cursor) {
-      return null;
-    }
-    return {
-      ...this.options,
-      query: {
-        ...maybeObj(this.options.query),
-        after: cursor
-      }
-    };
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/auth/workload-identity-auth.mjs
-var SUBJECT_TOKEN_TYPES = {
-  jwt: "urn:ietf:params:oauth:token-type:jwt",
-  id: "urn:ietf:params:oauth:token-type:id_token"
-};
-var TOKEN_EXCHANGE_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:token-exchange";
-var WorkloadIdentityAuth = class {
-  constructor(config2, fetch2) {
-    this.cachedToken = null;
-    this.refreshPromise = null;
-    this.tokenExchangeUrl = "https://auth.openai.com/oauth/token";
-    this.config = config2;
-    this.fetch = fetch2 ?? getDefaultFetch();
-  }
-  async getToken() {
-    if (!this.cachedToken || this.isTokenExpired(this.cachedToken)) {
-      if (this.refreshPromise) {
-        return await this.refreshPromise;
-      }
-      this.refreshPromise = this.refreshToken();
-      try {
-        const token = await this.refreshPromise;
-        return token;
-      } finally {
-        this.refreshPromise = null;
-      }
-    }
-    if (this.needsRefresh(this.cachedToken) && !this.refreshPromise) {
-      this.refreshPromise = this.refreshToken().finally(() => {
-        this.refreshPromise = null;
-      });
-    }
-    return this.cachedToken.token;
-  }
-  async refreshToken() {
-    const subjectToken = await this.config.provider.getToken();
-    const response = await this.fetch(this.tokenExchangeUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        grant_type: TOKEN_EXCHANGE_GRANT_TYPE,
-        client_id: this.config.clientId,
-        subject_token: subjectToken,
-        subject_token_type: SUBJECT_TOKEN_TYPES[this.config.provider.tokenType],
-        identity_provider_id: this.config.identityProviderId,
-        service_account_id: this.config.serviceAccountId
-      })
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      let body = void 0;
-      try {
-        body = JSON.parse(errorText);
-      } catch {
-      }
-      if (response.status === 400 || response.status === 401 || response.status === 403) {
-        throw new OAuthError(response.status, body, response.headers);
-      }
-      throw APIError.generate(response.status, body, `Token exchange failed with status ${response.status}`, response.headers);
-    }
-    const tokenResponse = await response.json();
-    const expiresIn = tokenResponse.expires_in || 3600;
-    const expiresAt = Date.now() + expiresIn * 1e3;
-    this.cachedToken = {
-      token: tokenResponse.access_token,
-      expiresAt
-    };
-    return tokenResponse.access_token;
-  }
-  isTokenExpired(cachedToken) {
-    return Date.now() >= cachedToken.expiresAt;
-  }
-  needsRefresh(cachedToken) {
-    const bufferSeconds = this.config.refreshBufferSeconds ?? 1200;
-    const bufferMs = bufferSeconds * 1e3;
-    return Date.now() >= cachedToken.expiresAt - bufferMs;
-  }
-  invalidateToken() {
-    this.cachedToken = null;
-    this.refreshPromise = null;
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/uploads.mjs
-var checkFileSupport = () => {
-  if (typeof File === "undefined") {
-    const { process: process3 } = globalThis;
-    const isOldNode = typeof process3?.versions?.node === "string" && parseInt(process3.versions.node.split(".")) < 20;
-    throw new Error("`File` is not defined as a global, which is required for file uploads." + (isOldNode ? " Update to Node 20 LTS or newer, or set `globalThis.File` to `import('node:buffer').File`." : ""));
-  }
-};
-function makeFile(fileBits, fileName, options) {
-  checkFileSupport();
-  return new File(fileBits, fileName ?? "unknown_file", options);
-}
-function getName(value) {
-  return (typeof value === "object" && value !== null && ("name" in value && value.name && String(value.name) || "url" in value && value.url && String(value.url) || "filename" in value && value.filename && String(value.filename) || "path" in value && value.path && String(value.path)) || "").split(/[\\/]/).pop() || void 0;
-}
-var isAsyncIterable2 = (value) => value != null && typeof value === "object" && typeof value[Symbol.asyncIterator] === "function";
-var maybeMultipartFormRequestOptions = async (opts, fetch2) => {
-  if (!hasUploadableValue(opts.body))
-    return opts;
-  return { ...opts, body: await createForm(opts.body, fetch2) };
-};
-var multipartFormRequestOptions = async (opts, fetch2) => {
-  return { ...opts, body: await createForm(opts.body, fetch2) };
-};
-var supportsFormDataMap = /* @__PURE__ */ new WeakMap();
-function supportsFormData(fetchObject) {
-  const fetch2 = typeof fetchObject === "function" ? fetchObject : fetchObject.fetch;
-  const cached2 = supportsFormDataMap.get(fetch2);
-  if (cached2)
-    return cached2;
-  const promise2 = (async () => {
-    try {
-      const FetchResponse = "Response" in fetch2 ? fetch2.Response : (await fetch2("data:,")).constructor;
-      const data = new FormData();
-      if (data.toString() === await new FetchResponse(data).text()) {
-        return false;
-      }
-      return true;
-    } catch {
-      return true;
-    }
-  })();
-  supportsFormDataMap.set(fetch2, promise2);
-  return promise2;
-}
-var createForm = async (body, fetch2) => {
-  if (!await supportsFormData(fetch2)) {
-    throw new TypeError("The provided fetch function does not support file uploads with the current global FormData class.");
-  }
-  const form = new FormData();
-  await Promise.all(Object.entries(body || {}).map(([key, value]) => addFormValue(form, key, value)));
-  return form;
-};
-var isNamedBlob = (value) => value instanceof Blob && "name" in value;
-var isUploadable = (value) => typeof value === "object" && value !== null && (value instanceof Response || isAsyncIterable2(value) || isNamedBlob(value));
-var hasUploadableValue = (value) => {
-  if (isUploadable(value))
-    return true;
-  if (Array.isArray(value))
-    return value.some(hasUploadableValue);
-  if (value && typeof value === "object") {
-    for (const k in value) {
-      if (hasUploadableValue(value[k]))
-        return true;
-    }
-  }
-  return false;
-};
-var addFormValue = async (form, key, value) => {
-  if (value === void 0)
-    return;
-  if (value == null) {
-    throw new TypeError(`Received null for "${key}"; to pass null in FormData, you must use the string 'null'`);
-  }
-  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
-    form.append(key, String(value));
-  } else if (value instanceof Response) {
-    form.append(key, makeFile([await value.blob()], getName(value)));
-  } else if (isAsyncIterable2(value)) {
-    form.append(key, makeFile([await new Response(ReadableStreamFrom(value)).blob()], getName(value)));
-  } else if (isNamedBlob(value)) {
-    form.append(key, value, getName(value));
-  } else if (Array.isArray(value)) {
-    await Promise.all(value.map((entry) => addFormValue(form, key + "[]", entry)));
-  } else if (typeof value === "object") {
-    await Promise.all(Object.entries(value).map(([name2, prop]) => addFormValue(form, `${key}[${name2}]`, prop)));
-  } else {
-    throw new TypeError(`Invalid value given to form, expected a string, number, boolean, object, Array, File or Blob but got ${value} instead`);
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/to-file.mjs
-var isBlobLike = (value) => value != null && typeof value === "object" && typeof value.size === "number" && typeof value.type === "string" && typeof value.text === "function" && typeof value.slice === "function" && typeof value.arrayBuffer === "function";
-var isFileLike = (value) => value != null && typeof value === "object" && typeof value.name === "string" && typeof value.lastModified === "number" && isBlobLike(value);
-var isResponseLike = (value) => value != null && typeof value === "object" && typeof value.url === "string" && typeof value.blob === "function";
-async function toFile(value, name2, options) {
-  checkFileSupport();
-  value = await value;
-  if (isFileLike(value)) {
-    if (value instanceof File) {
-      return value;
-    }
-    return makeFile([await value.arrayBuffer()], value.name);
-  }
-  if (isResponseLike(value)) {
-    const blob = await value.blob();
-    name2 || (name2 = new URL(value.url).pathname.split(/[\\/]/).pop());
-    return makeFile(await getBytes(blob), name2, options);
-  }
-  const parts = await getBytes(value);
-  name2 || (name2 = getName(value));
-  if (!options?.type) {
-    const type = parts.find((part) => typeof part === "object" && "type" in part && part.type);
-    if (typeof type === "string") {
-      options = { ...options, type };
-    }
-  }
-  return makeFile(parts, name2, options);
-}
-async function getBytes(value) {
-  let parts = [];
-  if (typeof value === "string" || ArrayBuffer.isView(value) || // includes Uint8Array, Buffer, etc.
-  value instanceof ArrayBuffer) {
-    parts.push(value);
-  } else if (isBlobLike(value)) {
-    parts.push(value instanceof Blob ? value : await value.arrayBuffer());
-  } else if (isAsyncIterable2(value)) {
-    for await (const chunk of value) {
-      parts.push(...await getBytes(chunk));
-    }
-  } else {
-    const constructor = value?.constructor?.name;
-    throw new Error(`Unexpected data type: ${typeof value}${constructor ? `; constructor: ${constructor}` : ""}${propsForError(value)}`);
-  }
-  return parts;
-}
-function propsForError(value) {
-  if (typeof value !== "object" || value === null)
-    return "";
-  const props = Object.getOwnPropertyNames(value);
-  return `; props: [${props.map((p) => `"${p}"`).join(", ")}]`;
-}
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/resource.mjs
-var APIResource = class {
-  constructor(client) {
-    this._client = client;
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/path.mjs
-function encodeURIPath(str2) {
-  return str2.replace(/[^A-Za-z0-9\-._~!$&'()*+,;=:@]+/g, encodeURIComponent);
-}
-var EMPTY = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.create(null));
-var createPathTagFunction = (pathEncoder = encodeURIPath) => function path3(statics, ...params) {
-  if (statics.length === 1)
-    return statics[0];
-  let postPath = false;
-  const invalidSegments = [];
-  const path4 = statics.reduce((previousValue, currentValue, index) => {
-    if (/[?#]/.test(currentValue)) {
-      postPath = true;
-    }
-    const value = params[index];
-    let encoded = (postPath ? encodeURIComponent : pathEncoder)("" + value);
-    if (index !== params.length && (value == null || typeof value === "object" && // handle values from other realms
-    value.toString === Object.getPrototypeOf(Object.getPrototypeOf(value.hasOwnProperty ?? EMPTY) ?? EMPTY)?.toString)) {
-      encoded = value + "";
-      invalidSegments.push({
-        start: previousValue.length + currentValue.length,
-        length: encoded.length,
-        error: `Value of type ${Object.prototype.toString.call(value).slice(8, -1)} is not a valid path parameter`
-      });
-    }
-    return previousValue + currentValue + (index === params.length ? "" : encoded);
-  }, "");
-  const pathOnly = path4.split(/[?#]/, 1)[0];
-  const invalidSegmentPattern = /(?<=^|\/)(?:\.|%2e){1,2}(?=\/|$)/gi;
-  let match;
-  while ((match = invalidSegmentPattern.exec(pathOnly)) !== null) {
-    invalidSegments.push({
-      start: match.index,
-      length: match[0].length,
-      error: `Value "${match[0]}" can't be safely passed as a path parameter`
-    });
-  }
-  invalidSegments.sort((a, b2) => a.start - b2.start);
-  if (invalidSegments.length > 0) {
-    let lastEnd = 0;
-    const underline = invalidSegments.reduce((acc, segment) => {
-      const spaces = " ".repeat(segment.start - lastEnd);
-      const arrows = "^".repeat(segment.length);
-      lastEnd = segment.start + segment.length;
-      return acc + spaces + arrows;
-    }, "");
-    throw new OpenAIError(`Path parameters result in path with invalid segments:
-${invalidSegments.map((e) => e.error).join("\n")}
-${path4}
-${underline}`);
-  }
-  return path4;
-};
-var path2 = /* @__PURE__ */ createPathTagFunction(encodeURIPath);
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/completions/messages.mjs
-var Messages = class extends APIResource {
-  /**
-   * Get the messages in a stored chat completion. Only Chat Completions that have
-   * been created with the `store` parameter set to `true` will be returned.
-   *
-   * @example
-   * ```ts
-   * // Automatically fetches more pages as needed.
-   * for await (const chatCompletionStoreMessage of client.chat.completions.messages.list(
-   *   'completion_id',
-   * )) {
-   *   // ...
-   * }
-   * ```
-   */
-  list(completionID, query = {}, options) {
-    return this._client.getAPIList(path2`/chat/completions/${completionID}/messages`, CursorPage, { query, ...options });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/parser.mjs
-function isChatCompletionFunctionTool(tool) {
-  return tool !== void 0 && "function" in tool && tool.function !== void 0;
-}
-function isAutoParsableResponseFormat(response_format) {
-  return response_format?.["$brand"] === "auto-parseable-response-format";
-}
-function isAutoParsableTool(tool) {
-  return tool?.["$brand"] === "auto-parseable-tool";
-}
-function maybeParseChatCompletion(completion, params) {
-  if (!params || !hasAutoParseableInput(params)) {
-    return {
-      ...completion,
-      choices: completion.choices.map((choice) => {
-        assertToolCallsAreChatCompletionFunctionToolCalls(choice.message.tool_calls);
-        return {
-          ...choice,
-          message: {
-            ...choice.message,
-            parsed: null,
-            ...choice.message.tool_calls ? {
-              tool_calls: choice.message.tool_calls
-            } : void 0
-          }
-        };
-      })
-    };
-  }
-  return parseChatCompletion(completion, params);
-}
-function parseChatCompletion(completion, params) {
-  const choices = completion.choices.map((choice) => {
-    if (choice.finish_reason === "length") {
-      throw new LengthFinishReasonError();
-    }
-    if (choice.finish_reason === "content_filter") {
-      throw new ContentFilterFinishReasonError();
-    }
-    assertToolCallsAreChatCompletionFunctionToolCalls(choice.message.tool_calls);
-    return {
-      ...choice,
-      message: {
-        ...choice.message,
-        ...choice.message.tool_calls ? {
-          tool_calls: choice.message.tool_calls?.map((toolCall) => parseToolCall(params, toolCall)) ?? void 0
-        } : void 0,
-        parsed: choice.message.content && !choice.message.refusal ? parseResponseFormat(params, choice.message.content) : null
-      }
-    };
-  });
-  return { ...completion, choices };
-}
-function parseResponseFormat(params, content) {
-  if (params.response_format?.type !== "json_schema") {
-    return null;
-  }
-  if (params.response_format?.type === "json_schema") {
-    if ("$parseRaw" in params.response_format) {
-      const response_format = params.response_format;
-      return response_format.$parseRaw(content);
-    }
-    return JSON.parse(content);
-  }
-  return null;
-}
-function parseToolCall(params, toolCall) {
-  const inputTool = params.tools?.find((inputTool2) => isChatCompletionFunctionTool(inputTool2) && inputTool2.function?.name === toolCall.function.name);
-  return {
-    ...toolCall,
-    function: {
-      ...toolCall.function,
-      parsed_arguments: isAutoParsableTool(inputTool) ? inputTool.$parseRaw(toolCall.function.arguments) : inputTool?.function.strict ? JSON.parse(toolCall.function.arguments) : null
-    }
-  };
-}
-function shouldParseToolCall(params, toolCall) {
-  if (!params || !("tools" in params) || !params.tools) {
-    return false;
-  }
-  const inputTool = params.tools?.find((inputTool2) => isChatCompletionFunctionTool(inputTool2) && inputTool2.function?.name === toolCall.function.name);
-  return isChatCompletionFunctionTool(inputTool) && (isAutoParsableTool(inputTool) || inputTool?.function.strict || false);
-}
-function hasAutoParseableInput(params) {
-  if (isAutoParsableResponseFormat(params.response_format)) {
-    return true;
-  }
-  return params.tools?.some((t2) => isAutoParsableTool(t2) || t2.type === "function" && t2.function.strict === true) ?? false;
-}
-function assertToolCallsAreChatCompletionFunctionToolCalls(toolCalls) {
-  for (const toolCall of toolCalls || []) {
-    if (toolCall.type !== "function") {
-      throw new OpenAIError(`Currently only \`function\` tool calls are supported; Received \`${toolCall.type}\``);
-    }
-  }
-}
-function validateInputTools(tools) {
-  for (const tool of tools ?? []) {
-    if (tool.type !== "function") {
-      throw new OpenAIError(`Currently only \`function\` tool types support auto-parsing; Received \`${tool.type}\``);
-    }
-    if (tool.function.strict !== true) {
-      throw new OpenAIError(`The \`${tool.function.name}\` tool is not marked with \`strict: true\`. Only strict function tools can be auto-parsed`);
-    }
-  }
-}
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/chatCompletionUtils.mjs
-var isAssistantMessage = (message) => {
-  return message?.role === "assistant";
-};
-var isToolMessage = (message) => {
-  return message?.role === "tool";
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/EventStream.mjs
-var _EventStream_instances;
-var _EventStream_connectedPromise;
-var _EventStream_resolveConnectedPromise;
-var _EventStream_rejectConnectedPromise;
-var _EventStream_endPromise;
-var _EventStream_resolveEndPromise;
-var _EventStream_rejectEndPromise;
-var _EventStream_listeners;
-var _EventStream_ended;
-var _EventStream_errored;
-var _EventStream_aborted;
-var _EventStream_catchingPromiseCreated;
-var _EventStream_handleError;
-var EventStream = class {
-  constructor() {
-    _EventStream_instances.add(this);
-    this.controller = new AbortController();
-    _EventStream_connectedPromise.set(this, void 0);
-    _EventStream_resolveConnectedPromise.set(this, () => {
-    });
-    _EventStream_rejectConnectedPromise.set(this, () => {
-    });
-    _EventStream_endPromise.set(this, void 0);
-    _EventStream_resolveEndPromise.set(this, () => {
-    });
-    _EventStream_rejectEndPromise.set(this, () => {
-    });
-    _EventStream_listeners.set(this, {});
-    _EventStream_ended.set(this, false);
-    _EventStream_errored.set(this, false);
-    _EventStream_aborted.set(this, false);
-    _EventStream_catchingPromiseCreated.set(this, false);
-    __classPrivateFieldSet(this, _EventStream_connectedPromise, new Promise((resolve, reject) => {
-      __classPrivateFieldSet(this, _EventStream_resolveConnectedPromise, resolve, "f");
-      __classPrivateFieldSet(this, _EventStream_rejectConnectedPromise, reject, "f");
-    }), "f");
-    __classPrivateFieldSet(this, _EventStream_endPromise, new Promise((resolve, reject) => {
-      __classPrivateFieldSet(this, _EventStream_resolveEndPromise, resolve, "f");
-      __classPrivateFieldSet(this, _EventStream_rejectEndPromise, reject, "f");
-    }), "f");
-    __classPrivateFieldGet(this, _EventStream_connectedPromise, "f").catch(() => {
-    });
-    __classPrivateFieldGet(this, _EventStream_endPromise, "f").catch(() => {
-    });
-  }
-  _run(executor) {
-    setTimeout(() => {
-      executor().then(() => {
-        this._emitFinal();
-        this._emit("end");
-      }, __classPrivateFieldGet(this, _EventStream_instances, "m", _EventStream_handleError).bind(this));
-    }, 0);
-  }
-  _connected() {
-    if (this.ended)
-      return;
-    __classPrivateFieldGet(this, _EventStream_resolveConnectedPromise, "f").call(this);
-    this._emit("connect");
-  }
-  get ended() {
-    return __classPrivateFieldGet(this, _EventStream_ended, "f");
-  }
-  get errored() {
-    return __classPrivateFieldGet(this, _EventStream_errored, "f");
-  }
-  get aborted() {
-    return __classPrivateFieldGet(this, _EventStream_aborted, "f");
-  }
-  abort() {
-    this.controller.abort();
-  }
-  /**
-   * Adds the listener function to the end of the listeners array for the event.
-   * No checks are made to see if the listener has already been added. Multiple calls passing
-   * the same combination of event and listener will result in the listener being added, and
-   * called, multiple times.
-   * @returns this ChatCompletionStream, so that calls can be chained
-   */
-  on(event, listener) {
-    const listeners = __classPrivateFieldGet(this, _EventStream_listeners, "f")[event] || (__classPrivateFieldGet(this, _EventStream_listeners, "f")[event] = []);
-    listeners.push({ listener });
-    return this;
-  }
-  /**
-   * Removes the specified listener from the listener array for the event.
-   * off() will remove, at most, one instance of a listener from the listener array. If any single
-   * listener has been added multiple times to the listener array for the specified event, then
-   * off() must be called multiple times to remove each instance.
-   * @returns this ChatCompletionStream, so that calls can be chained
-   */
-  off(event, listener) {
-    const listeners = __classPrivateFieldGet(this, _EventStream_listeners, "f")[event];
-    if (!listeners)
-      return this;
-    const index = listeners.findIndex((l) => l.listener === listener);
-    if (index >= 0)
-      listeners.splice(index, 1);
-    return this;
-  }
-  /**
-   * Adds a one-time listener function for the event. The next time the event is triggered,
-   * this listener is removed and then invoked.
-   * @returns this ChatCompletionStream, so that calls can be chained
-   */
-  once(event, listener) {
-    const listeners = __classPrivateFieldGet(this, _EventStream_listeners, "f")[event] || (__classPrivateFieldGet(this, _EventStream_listeners, "f")[event] = []);
-    listeners.push({ listener, once: true });
-    return this;
-  }
-  /**
-   * This is similar to `.once()`, but returns a Promise that resolves the next time
-   * the event is triggered, instead of calling a listener callback.
-   * @returns a Promise that resolves the next time given event is triggered,
-   * or rejects if an error is emitted.  (If you request the 'error' event,
-   * returns a promise that resolves with the error).
-   *
-   * Example:
-   *
-   *   const message = await stream.emitted('message') // rejects if the stream errors
-   */
-  emitted(event) {
-    return new Promise((resolve, reject) => {
-      __classPrivateFieldSet(this, _EventStream_catchingPromiseCreated, true, "f");
-      if (event !== "error")
-        this.once("error", reject);
-      this.once(event, resolve);
-    });
-  }
-  async done() {
-    __classPrivateFieldSet(this, _EventStream_catchingPromiseCreated, true, "f");
-    await __classPrivateFieldGet(this, _EventStream_endPromise, "f");
-  }
-  _emit(event, ...args) {
-    if (__classPrivateFieldGet(this, _EventStream_ended, "f")) {
-      return;
-    }
-    if (event === "end") {
-      __classPrivateFieldSet(this, _EventStream_ended, true, "f");
-      __classPrivateFieldGet(this, _EventStream_resolveEndPromise, "f").call(this);
-    }
-    const listeners = __classPrivateFieldGet(this, _EventStream_listeners, "f")[event];
-    if (listeners) {
-      __classPrivateFieldGet(this, _EventStream_listeners, "f")[event] = listeners.filter((l) => !l.once);
-      listeners.forEach(({ listener }) => listener(...args));
-    }
-    if (event === "abort") {
-      const error48 = args[0];
-      if (!__classPrivateFieldGet(this, _EventStream_catchingPromiseCreated, "f") && !listeners?.length) {
-        Promise.reject(error48);
-      }
-      __classPrivateFieldGet(this, _EventStream_rejectConnectedPromise, "f").call(this, error48);
-      __classPrivateFieldGet(this, _EventStream_rejectEndPromise, "f").call(this, error48);
-      this._emit("end");
-      return;
-    }
-    if (event === "error") {
-      const error48 = args[0];
-      if (!__classPrivateFieldGet(this, _EventStream_catchingPromiseCreated, "f") && !listeners?.length) {
-        Promise.reject(error48);
-      }
-      __classPrivateFieldGet(this, _EventStream_rejectConnectedPromise, "f").call(this, error48);
-      __classPrivateFieldGet(this, _EventStream_rejectEndPromise, "f").call(this, error48);
-      this._emit("end");
-    }
-  }
-  _emitFinal() {
-  }
-};
-_EventStream_connectedPromise = /* @__PURE__ */ new WeakMap(), _EventStream_resolveConnectedPromise = /* @__PURE__ */ new WeakMap(), _EventStream_rejectConnectedPromise = /* @__PURE__ */ new WeakMap(), _EventStream_endPromise = /* @__PURE__ */ new WeakMap(), _EventStream_resolveEndPromise = /* @__PURE__ */ new WeakMap(), _EventStream_rejectEndPromise = /* @__PURE__ */ new WeakMap(), _EventStream_listeners = /* @__PURE__ */ new WeakMap(), _EventStream_ended = /* @__PURE__ */ new WeakMap(), _EventStream_errored = /* @__PURE__ */ new WeakMap(), _EventStream_aborted = /* @__PURE__ */ new WeakMap(), _EventStream_catchingPromiseCreated = /* @__PURE__ */ new WeakMap(), _EventStream_instances = /* @__PURE__ */ new WeakSet(), _EventStream_handleError = function _EventStream_handleError2(error48) {
-  __classPrivateFieldSet(this, _EventStream_errored, true, "f");
-  if (error48 instanceof Error && error48.name === "AbortError") {
-    error48 = new APIUserAbortError();
-  }
-  if (error48 instanceof APIUserAbortError) {
-    __classPrivateFieldSet(this, _EventStream_aborted, true, "f");
-    return this._emit("abort", error48);
-  }
-  if (error48 instanceof OpenAIError) {
-    return this._emit("error", error48);
-  }
-  if (error48 instanceof Error) {
-    const openAIError = new OpenAIError(error48.message);
-    openAIError.cause = error48;
-    return this._emit("error", openAIError);
-  }
-  return this._emit("error", new OpenAIError(String(error48)));
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/RunnableFunction.mjs
-function isRunnableFunctionWithParse(fn) {
-  return typeof fn.parse === "function";
-}
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/AbstractChatCompletionRunner.mjs
-var _AbstractChatCompletionRunner_instances;
-var _AbstractChatCompletionRunner_getFinalContent;
-var _AbstractChatCompletionRunner_getFinalMessage;
-var _AbstractChatCompletionRunner_getFinalFunctionToolCall;
-var _AbstractChatCompletionRunner_getFinalFunctionToolCallResult;
-var _AbstractChatCompletionRunner_calculateTotalUsage;
-var _AbstractChatCompletionRunner_validateParams;
-var _AbstractChatCompletionRunner_stringifyFunctionCallResult;
-var DEFAULT_MAX_CHAT_COMPLETIONS = 10;
-var AbstractChatCompletionRunner = class extends EventStream {
-  constructor() {
-    super(...arguments);
-    _AbstractChatCompletionRunner_instances.add(this);
-    this._chatCompletions = [];
-    this.messages = [];
-  }
-  _addChatCompletion(chatCompletion) {
-    this._chatCompletions.push(chatCompletion);
-    this._emit("chatCompletion", chatCompletion);
-    const message = chatCompletion.choices[0]?.message;
-    if (message)
-      this._addMessage(message);
-    return chatCompletion;
-  }
-  _addMessage(message, emit = true) {
-    if (!("content" in message))
-      message.content = null;
-    this.messages.push(message);
-    if (emit) {
-      this._emit("message", message);
-      if (isToolMessage(message) && message.content) {
-        this._emit("functionToolCallResult", message.content);
-      } else if (isAssistantMessage(message) && message.tool_calls) {
-        for (const tool_call of message.tool_calls) {
-          if (tool_call.type === "function") {
-            this._emit("functionToolCall", tool_call.function);
-          }
-        }
-      }
-    }
-  }
-  /**
-   * @returns a promise that resolves with the final ChatCompletion, or rejects
-   * if an error occurred or the stream ended prematurely without producing a ChatCompletion.
-   */
-  async finalChatCompletion() {
-    await this.done();
-    const completion = this._chatCompletions[this._chatCompletions.length - 1];
-    if (!completion)
-      throw new OpenAIError("stream ended without producing a ChatCompletion");
-    return completion;
-  }
-  /**
-   * @returns a promise that resolves with the content of the final ChatCompletionMessage, or rejects
-   * if an error occurred or the stream ended prematurely without producing a ChatCompletionMessage.
-   */
-  async finalContent() {
-    await this.done();
-    return __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalContent).call(this);
-  }
-  /**
-   * @returns a promise that resolves with the the final assistant ChatCompletionMessage response,
-   * or rejects if an error occurred or the stream ended prematurely without producing a ChatCompletionMessage.
-   */
-  async finalMessage() {
-    await this.done();
-    return __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalMessage).call(this);
-  }
-  /**
-   * @returns a promise that resolves with the content of the final FunctionCall, or rejects
-   * if an error occurred or the stream ended prematurely without producing a ChatCompletionMessage.
-   */
-  async finalFunctionToolCall() {
-    await this.done();
-    return __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalFunctionToolCall).call(this);
-  }
-  async finalFunctionToolCallResult() {
-    await this.done();
-    return __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalFunctionToolCallResult).call(this);
-  }
-  async totalUsage() {
-    await this.done();
-    return __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_calculateTotalUsage).call(this);
-  }
-  allChatCompletions() {
-    return [...this._chatCompletions];
-  }
-  _emitFinal() {
-    const completion = this._chatCompletions[this._chatCompletions.length - 1];
-    if (completion)
-      this._emit("finalChatCompletion", completion);
-    const finalMessage = __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalMessage).call(this);
-    if (finalMessage)
-      this._emit("finalMessage", finalMessage);
-    const finalContent = __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalContent).call(this);
-    if (finalContent)
-      this._emit("finalContent", finalContent);
-    const finalFunctionCall = __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalFunctionToolCall).call(this);
-    if (finalFunctionCall)
-      this._emit("finalFunctionToolCall", finalFunctionCall);
-    const finalFunctionCallResult = __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalFunctionToolCallResult).call(this);
-    if (finalFunctionCallResult != null)
-      this._emit("finalFunctionToolCallResult", finalFunctionCallResult);
-    if (this._chatCompletions.some((c) => c.usage)) {
-      this._emit("totalUsage", __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_calculateTotalUsage).call(this));
-    }
-  }
-  async _createChatCompletion(client, params, options) {
-    const signal = options?.signal;
-    if (signal) {
-      if (signal.aborted)
-        this.controller.abort();
-      signal.addEventListener("abort", () => this.controller.abort());
-    }
-    __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_validateParams).call(this, params);
-    const chatCompletion = await client.chat.completions.create({ ...params, stream: false }, { ...options, signal: this.controller.signal });
-    this._connected();
-    return this._addChatCompletion(parseChatCompletion(chatCompletion, params));
-  }
-  async _runChatCompletion(client, params, options) {
-    for (const message of params.messages) {
-      this._addMessage(message, false);
-    }
-    return await this._createChatCompletion(client, params, options);
-  }
-  async _runTools(client, params, options) {
-    const role = "tool";
-    const { tool_choice = "auto", stream: stream4, ...restParams } = params;
-    const singleFunctionToCall = typeof tool_choice !== "string" && tool_choice.type === "function" && tool_choice?.function?.name;
-    const { maxChatCompletions = DEFAULT_MAX_CHAT_COMPLETIONS } = options || {};
-    const inputTools = params.tools.map((tool) => {
-      if (isAutoParsableTool(tool)) {
-        if (!tool.$callback) {
-          throw new OpenAIError("Tool given to `.runTools()` that does not have an associated function");
-        }
-        return {
-          type: "function",
-          function: {
-            function: tool.$callback,
-            name: tool.function.name,
-            description: tool.function.description || "",
-            parameters: tool.function.parameters,
-            parse: tool.$parseRaw,
-            strict: true
-          }
-        };
-      }
-      return tool;
-    });
-    const functionsByName = {};
-    for (const f of inputTools) {
-      if (f.type === "function") {
-        functionsByName[f.function.name || f.function.function.name] = f.function;
-      }
-    }
-    const tools = "tools" in params ? inputTools.map((t2) => t2.type === "function" ? {
-      type: "function",
-      function: {
-        name: t2.function.name || t2.function.function.name,
-        parameters: t2.function.parameters,
-        description: t2.function.description,
-        strict: t2.function.strict
-      }
-    } : t2) : void 0;
-    for (const message of params.messages) {
-      this._addMessage(message, false);
-    }
-    for (let i = 0; i < maxChatCompletions; ++i) {
-      const chatCompletion = await this._createChatCompletion(client, {
-        ...restParams,
-        tool_choice,
-        tools,
-        messages: [...this.messages]
-      }, options);
-      const message = chatCompletion.choices[0]?.message;
-      if (!message) {
-        throw new OpenAIError(`missing message in ChatCompletion response`);
-      }
-      if (!message.tool_calls?.length) {
-        return;
-      }
-      for (const tool_call of message.tool_calls) {
-        if (tool_call.type !== "function")
-          continue;
-        const tool_call_id = tool_call.id;
-        const { name: name2, arguments: args } = tool_call.function;
-        const fn = functionsByName[name2];
-        if (!fn) {
-          const content2 = `Invalid tool_call: ${JSON.stringify(name2)}. Available options are: ${Object.keys(functionsByName).map((name3) => JSON.stringify(name3)).join(", ")}. Please try again`;
-          this._addMessage({ role, tool_call_id, content: content2 });
-          continue;
-        } else if (singleFunctionToCall && singleFunctionToCall !== name2) {
-          const content2 = `Invalid tool_call: ${JSON.stringify(name2)}. ${JSON.stringify(singleFunctionToCall)} requested. Please try again`;
-          this._addMessage({ role, tool_call_id, content: content2 });
-          continue;
-        }
-        let parsed;
-        try {
-          parsed = isRunnableFunctionWithParse(fn) ? await fn.parse(args) : args;
-        } catch (error48) {
-          const content2 = error48 instanceof Error ? error48.message : String(error48);
-          this._addMessage({ role, tool_call_id, content: content2 });
-          continue;
-        }
-        const rawContent = await fn.function(parsed, this);
-        const content = __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_stringifyFunctionCallResult).call(this, rawContent);
-        this._addMessage({ role, tool_call_id, content });
-        if (singleFunctionToCall) {
-          return;
-        }
-      }
-    }
-    return;
-  }
-};
-_AbstractChatCompletionRunner_instances = /* @__PURE__ */ new WeakSet(), _AbstractChatCompletionRunner_getFinalContent = function _AbstractChatCompletionRunner_getFinalContent2() {
-  return __classPrivateFieldGet(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalMessage).call(this).content ?? null;
-}, _AbstractChatCompletionRunner_getFinalMessage = function _AbstractChatCompletionRunner_getFinalMessage2() {
-  let i = this.messages.length;
-  while (i-- > 0) {
-    const message = this.messages[i];
-    if (isAssistantMessage(message)) {
-      const ret = {
-        ...message,
-        content: message.content ?? null,
-        refusal: message.refusal ?? null
-      };
-      return ret;
-    }
-  }
-  throw new OpenAIError("stream ended without producing a ChatCompletionMessage with role=assistant");
-}, _AbstractChatCompletionRunner_getFinalFunctionToolCall = function _AbstractChatCompletionRunner_getFinalFunctionToolCall2() {
-  for (let i = this.messages.length - 1; i >= 0; i--) {
-    const message = this.messages[i];
-    if (isAssistantMessage(message) && message?.tool_calls?.length) {
-      return message.tool_calls.filter((x) => x.type === "function").at(-1)?.function;
-    }
-  }
-  return;
-}, _AbstractChatCompletionRunner_getFinalFunctionToolCallResult = function _AbstractChatCompletionRunner_getFinalFunctionToolCallResult2() {
-  for (let i = this.messages.length - 1; i >= 0; i--) {
-    const message = this.messages[i];
-    if (isToolMessage(message) && message.content != null && typeof message.content === "string" && this.messages.some((x) => x.role === "assistant" && x.tool_calls?.some((y) => y.type === "function" && y.id === message.tool_call_id))) {
-      return message.content;
-    }
-  }
-  return;
-}, _AbstractChatCompletionRunner_calculateTotalUsage = function _AbstractChatCompletionRunner_calculateTotalUsage2() {
-  const total = {
-    completion_tokens: 0,
-    prompt_tokens: 0,
-    total_tokens: 0
-  };
-  for (const { usage } of this._chatCompletions) {
-    if (usage) {
-      total.completion_tokens += usage.completion_tokens;
-      total.prompt_tokens += usage.prompt_tokens;
-      total.total_tokens += usage.total_tokens;
-    }
-  }
-  return total;
-}, _AbstractChatCompletionRunner_validateParams = function _AbstractChatCompletionRunner_validateParams2(params) {
-  if (params.n != null && params.n > 1) {
-    throw new OpenAIError("ChatCompletion convenience helpers only support n=1 at this time. To use n>1, please use chat.completions.create() directly.");
-  }
-}, _AbstractChatCompletionRunner_stringifyFunctionCallResult = function _AbstractChatCompletionRunner_stringifyFunctionCallResult2(rawContent) {
-  return typeof rawContent === "string" ? rawContent : rawContent === void 0 ? "undefined" : JSON.stringify(rawContent);
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionRunner.mjs
-var ChatCompletionRunner = class _ChatCompletionRunner extends AbstractChatCompletionRunner {
-  static runTools(client, params, options) {
-    const runner = new _ChatCompletionRunner();
-    const opts = {
-      ...options,
-      headers: { ...options?.headers, "X-Stainless-Helper-Method": "runTools" }
-    };
-    runner._run(() => runner._runTools(client, params, opts));
-    return runner;
-  }
-  _addMessage(message, emit = true) {
-    super._addMessage(message, emit);
-    if (isAssistantMessage(message) && message.content) {
-      this._emit("content", message.content);
-    }
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/_vendor/partial-json-parser/parser.mjs
-var STR = 1;
-var NUM = 2;
-var ARR = 4;
-var OBJ = 8;
-var NULL = 16;
-var BOOL = 32;
-var NAN = 64;
-var INFINITY = 128;
-var MINUS_INFINITY = 256;
-var INF = INFINITY | MINUS_INFINITY;
-var SPECIAL = NULL | BOOL | INF | NAN;
-var ATOM = STR | NUM | SPECIAL;
-var COLLECTION = ARR | OBJ;
-var ALL = ATOM | COLLECTION;
-var Allow = {
-  STR,
-  NUM,
-  ARR,
-  OBJ,
-  NULL,
-  BOOL,
-  NAN,
-  INFINITY,
-  MINUS_INFINITY,
-  INF,
-  SPECIAL,
-  ATOM,
-  COLLECTION,
-  ALL
-};
-var PartialJSON = class extends Error {
-};
-var MalformedJSON = class extends Error {
-};
-function parseJSON(jsonString, allowPartial = Allow.ALL) {
-  if (typeof jsonString !== "string") {
-    throw new TypeError(`expecting str, got ${typeof jsonString}`);
-  }
-  if (!jsonString.trim()) {
-    throw new Error(`${jsonString} is empty`);
-  }
-  return _parseJSON(jsonString.trim(), allowPartial);
-}
-var _parseJSON = (jsonString, allow) => {
-  const length = jsonString.length;
-  let index = 0;
-  const markPartialJSON = (msg) => {
-    throw new PartialJSON(`${msg} at position ${index}`);
-  };
-  const throwMalformedError = (msg) => {
-    throw new MalformedJSON(`${msg} at position ${index}`);
-  };
-  const parseAny = () => {
-    skipBlank();
-    if (index >= length)
-      markPartialJSON("Unexpected end of input");
-    if (jsonString[index] === '"')
-      return parseStr();
-    if (jsonString[index] === "{")
-      return parseObj();
-    if (jsonString[index] === "[")
-      return parseArr();
-    if (jsonString.substring(index, index + 4) === "null" || Allow.NULL & allow && length - index < 4 && "null".startsWith(jsonString.substring(index))) {
-      index += 4;
-      return null;
-    }
-    if (jsonString.substring(index, index + 4) === "true" || Allow.BOOL & allow && length - index < 4 && "true".startsWith(jsonString.substring(index))) {
-      index += 4;
-      return true;
-    }
-    if (jsonString.substring(index, index + 5) === "false" || Allow.BOOL & allow && length - index < 5 && "false".startsWith(jsonString.substring(index))) {
-      index += 5;
-      return false;
-    }
-    if (jsonString.substring(index, index + 8) === "Infinity" || Allow.INFINITY & allow && length - index < 8 && "Infinity".startsWith(jsonString.substring(index))) {
-      index += 8;
-      return Infinity;
-    }
-    if (jsonString.substring(index, index + 9) === "-Infinity" || Allow.MINUS_INFINITY & allow && 1 < length - index && length - index < 9 && "-Infinity".startsWith(jsonString.substring(index))) {
-      index += 9;
-      return -Infinity;
-    }
-    if (jsonString.substring(index, index + 3) === "NaN" || Allow.NAN & allow && length - index < 3 && "NaN".startsWith(jsonString.substring(index))) {
-      index += 3;
-      return NaN;
-    }
-    return parseNum();
-  };
-  const parseStr = () => {
-    const start = index;
-    let escape3 = false;
-    index++;
-    while (index < length && (jsonString[index] !== '"' || escape3 && jsonString[index - 1] === "\\")) {
-      escape3 = jsonString[index] === "\\" ? !escape3 : false;
-      index++;
-    }
-    if (jsonString.charAt(index) == '"') {
-      try {
-        return JSON.parse(jsonString.substring(start, ++index - Number(escape3)));
-      } catch (e) {
-        throwMalformedError(String(e));
-      }
-    } else if (Allow.STR & allow) {
-      try {
-        return JSON.parse(jsonString.substring(start, index - Number(escape3)) + '"');
-      } catch (e) {
-        return JSON.parse(jsonString.substring(start, jsonString.lastIndexOf("\\")) + '"');
-      }
-    }
-    markPartialJSON("Unterminated string literal");
-  };
-  const parseObj = () => {
-    index++;
-    skipBlank();
-    const obj = {};
-    try {
-      while (jsonString[index] !== "}") {
-        skipBlank();
-        if (index >= length && Allow.OBJ & allow)
-          return obj;
-        const key = parseStr();
-        skipBlank();
-        index++;
-        try {
-          const value = parseAny();
-          Object.defineProperty(obj, key, { value, writable: true, enumerable: true, configurable: true });
-        } catch (e) {
-          if (Allow.OBJ & allow)
-            return obj;
-          else
-            throw e;
-        }
-        skipBlank();
-        if (jsonString[index] === ",")
-          index++;
-      }
-    } catch (e) {
-      if (Allow.OBJ & allow)
-        return obj;
-      else
-        markPartialJSON("Expected '}' at end of object");
-    }
-    index++;
-    return obj;
-  };
-  const parseArr = () => {
-    index++;
-    const arr = [];
-    try {
-      while (jsonString[index] !== "]") {
-        arr.push(parseAny());
-        skipBlank();
-        if (jsonString[index] === ",") {
-          index++;
-        }
-      }
-    } catch (e) {
-      if (Allow.ARR & allow) {
-        return arr;
-      }
-      markPartialJSON("Expected ']' at end of array");
-    }
-    index++;
-    return arr;
-  };
-  const parseNum = () => {
-    if (index === 0) {
-      if (jsonString === "-" && Allow.NUM & allow)
-        markPartialJSON("Not sure what '-' is");
-      try {
-        return JSON.parse(jsonString);
-      } catch (e) {
-        if (Allow.NUM & allow) {
-          try {
-            if ("." === jsonString[jsonString.length - 1])
-              return JSON.parse(jsonString.substring(0, jsonString.lastIndexOf(".")));
-            return JSON.parse(jsonString.substring(0, jsonString.lastIndexOf("e")));
-          } catch (e2) {
-          }
-        }
-        throwMalformedError(String(e));
-      }
-    }
-    const start = index;
-    if (jsonString[index] === "-")
-      index++;
-    while (jsonString[index] && !",]}".includes(jsonString[index]))
-      index++;
-    if (index == length && !(Allow.NUM & allow))
-      markPartialJSON("Unterminated number literal");
-    try {
-      return JSON.parse(jsonString.substring(start, index));
-    } catch (e) {
-      if (jsonString.substring(start, index) === "-" && Allow.NUM & allow)
-        markPartialJSON("Not sure what '-' is");
-      try {
-        return JSON.parse(jsonString.substring(start, jsonString.lastIndexOf("e")));
-      } catch (e2) {
-        throwMalformedError(String(e2));
-      }
-    }
-  };
-  const skipBlank = () => {
-    while (index < length && " \n\r	".includes(jsonString[index])) {
-      index++;
-    }
-  };
-  return parseAny();
-};
-var partialParse = (input) => parseJSON(input, Allow.ALL ^ Allow.NUM);
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionStream.mjs
-var _ChatCompletionStream_instances;
-var _ChatCompletionStream_params;
-var _ChatCompletionStream_choiceEventStates;
-var _ChatCompletionStream_currentChatCompletionSnapshot;
-var _ChatCompletionStream_beginRequest;
-var _ChatCompletionStream_getChoiceEventState;
-var _ChatCompletionStream_addChunk;
-var _ChatCompletionStream_emitToolCallDoneEvent;
-var _ChatCompletionStream_emitContentDoneEvents;
-var _ChatCompletionStream_endRequest;
-var _ChatCompletionStream_getAutoParseableResponseFormat;
-var _ChatCompletionStream_accumulateChatCompletion;
-var ChatCompletionStream = class _ChatCompletionStream extends AbstractChatCompletionRunner {
-  constructor(params) {
-    super();
-    _ChatCompletionStream_instances.add(this);
-    _ChatCompletionStream_params.set(this, void 0);
-    _ChatCompletionStream_choiceEventStates.set(this, void 0);
-    _ChatCompletionStream_currentChatCompletionSnapshot.set(this, void 0);
-    __classPrivateFieldSet(this, _ChatCompletionStream_params, params, "f");
-    __classPrivateFieldSet(this, _ChatCompletionStream_choiceEventStates, [], "f");
-  }
-  get currentChatCompletionSnapshot() {
-    return __classPrivateFieldGet(this, _ChatCompletionStream_currentChatCompletionSnapshot, "f");
-  }
-  /**
-   * Intended for use on the frontend, consuming a stream produced with
-   * `.toReadableStream()` on the backend.
-   *
-   * Note that messages sent to the model do not appear in `.on('message')`
-   * in this context.
-   */
-  static fromReadableStream(stream4) {
-    const runner = new _ChatCompletionStream(null);
-    runner._run(() => runner._fromReadableStream(stream4));
-    return runner;
-  }
-  static createChatCompletion(client, params, options) {
-    const runner = new _ChatCompletionStream(params);
-    runner._run(() => runner._runChatCompletion(client, { ...params, stream: true }, { ...options, headers: { ...options?.headers, "X-Stainless-Helper-Method": "stream" } }));
-    return runner;
-  }
-  async _createChatCompletion(client, params, options) {
-    super._createChatCompletion;
-    const signal = options?.signal;
-    if (signal) {
-      if (signal.aborted)
-        this.controller.abort();
-      signal.addEventListener("abort", () => this.controller.abort());
-    }
-    __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_beginRequest).call(this);
-    const stream4 = await client.chat.completions.create({ ...params, stream: true }, { ...options, signal: this.controller.signal });
-    this._connected();
-    for await (const chunk of stream4) {
-      __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_addChunk).call(this, chunk);
-    }
-    if (stream4.controller.signal?.aborted) {
-      throw new APIUserAbortError();
-    }
-    return this._addChatCompletion(__classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_endRequest).call(this));
-  }
-  async _fromReadableStream(readableStream, options) {
-    const signal = options?.signal;
-    if (signal) {
-      if (signal.aborted)
-        this.controller.abort();
-      signal.addEventListener("abort", () => this.controller.abort());
-    }
-    __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_beginRequest).call(this);
-    this._connected();
-    const stream4 = Stream3.fromReadableStream(readableStream, this.controller);
-    let chatId;
-    for await (const chunk of stream4) {
-      if (chatId && chatId !== chunk.id) {
-        this._addChatCompletion(__classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_endRequest).call(this));
-      }
-      __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_addChunk).call(this, chunk);
-      chatId = chunk.id;
-    }
-    if (stream4.controller.signal?.aborted) {
-      throw new APIUserAbortError();
-    }
-    return this._addChatCompletion(__classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_endRequest).call(this));
-  }
-  [(_ChatCompletionStream_params = /* @__PURE__ */ new WeakMap(), _ChatCompletionStream_choiceEventStates = /* @__PURE__ */ new WeakMap(), _ChatCompletionStream_currentChatCompletionSnapshot = /* @__PURE__ */ new WeakMap(), _ChatCompletionStream_instances = /* @__PURE__ */ new WeakSet(), _ChatCompletionStream_beginRequest = function _ChatCompletionStream_beginRequest2() {
-    if (this.ended)
-      return;
-    __classPrivateFieldSet(this, _ChatCompletionStream_currentChatCompletionSnapshot, void 0, "f");
-  }, _ChatCompletionStream_getChoiceEventState = function _ChatCompletionStream_getChoiceEventState2(choice) {
-    let state = __classPrivateFieldGet(this, _ChatCompletionStream_choiceEventStates, "f")[choice.index];
-    if (state) {
-      return state;
-    }
-    state = {
-      content_done: false,
-      refusal_done: false,
-      logprobs_content_done: false,
-      logprobs_refusal_done: false,
-      done_tool_calls: /* @__PURE__ */ new Set(),
-      current_tool_call_index: null
-    };
-    __classPrivateFieldGet(this, _ChatCompletionStream_choiceEventStates, "f")[choice.index] = state;
-    return state;
-  }, _ChatCompletionStream_addChunk = function _ChatCompletionStream_addChunk2(chunk) {
-    if (this.ended)
-      return;
-    const completion = __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_accumulateChatCompletion).call(this, chunk);
-    this._emit("chunk", chunk, completion);
-    for (const choice of chunk.choices) {
-      const choiceSnapshot = completion.choices[choice.index];
-      if (choice.delta.content != null && choiceSnapshot.message?.role === "assistant" && choiceSnapshot.message?.content) {
-        this._emit("content", choice.delta.content, choiceSnapshot.message.content);
-        this._emit("content.delta", {
-          delta: choice.delta.content,
-          snapshot: choiceSnapshot.message.content,
-          parsed: choiceSnapshot.message.parsed
-        });
-      }
-      if (choice.delta.refusal != null && choiceSnapshot.message?.role === "assistant" && choiceSnapshot.message?.refusal) {
-        this._emit("refusal.delta", {
-          delta: choice.delta.refusal,
-          snapshot: choiceSnapshot.message.refusal
-        });
-      }
-      if (choice.logprobs?.content != null && choiceSnapshot.message?.role === "assistant") {
-        this._emit("logprobs.content.delta", {
-          content: choice.logprobs?.content,
-          snapshot: choiceSnapshot.logprobs?.content ?? []
-        });
-      }
-      if (choice.logprobs?.refusal != null && choiceSnapshot.message?.role === "assistant") {
-        this._emit("logprobs.refusal.delta", {
-          refusal: choice.logprobs?.refusal,
-          snapshot: choiceSnapshot.logprobs?.refusal ?? []
-        });
-      }
-      const state = __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_getChoiceEventState).call(this, choiceSnapshot);
-      if (choiceSnapshot.finish_reason) {
-        __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_emitContentDoneEvents).call(this, choiceSnapshot);
-        if (state.current_tool_call_index != null) {
-          __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_emitToolCallDoneEvent).call(this, choiceSnapshot, state.current_tool_call_index);
-        }
-      }
-      for (const toolCall of choice.delta.tool_calls ?? []) {
-        if (state.current_tool_call_index !== toolCall.index) {
-          __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_emitContentDoneEvents).call(this, choiceSnapshot);
-          if (state.current_tool_call_index != null) {
-            __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_emitToolCallDoneEvent).call(this, choiceSnapshot, state.current_tool_call_index);
-          }
-        }
-        state.current_tool_call_index = toolCall.index;
-      }
-      for (const toolCallDelta of choice.delta.tool_calls ?? []) {
-        const toolCallSnapshot = choiceSnapshot.message.tool_calls?.[toolCallDelta.index];
-        if (!toolCallSnapshot?.type) {
-          continue;
-        }
-        if (toolCallSnapshot?.type === "function") {
-          this._emit("tool_calls.function.arguments.delta", {
-            name: toolCallSnapshot.function?.name,
-            index: toolCallDelta.index,
-            arguments: toolCallSnapshot.function.arguments,
-            parsed_arguments: toolCallSnapshot.function.parsed_arguments,
-            arguments_delta: toolCallDelta.function?.arguments ?? ""
-          });
-        } else {
-          assertNever2(toolCallSnapshot?.type);
-        }
-      }
-    }
-  }, _ChatCompletionStream_emitToolCallDoneEvent = function _ChatCompletionStream_emitToolCallDoneEvent2(choiceSnapshot, toolCallIndex) {
-    const state = __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_getChoiceEventState).call(this, choiceSnapshot);
-    if (state.done_tool_calls.has(toolCallIndex)) {
-      return;
-    }
-    const toolCallSnapshot = choiceSnapshot.message.tool_calls?.[toolCallIndex];
-    if (!toolCallSnapshot) {
-      throw new Error("no tool call snapshot");
-    }
-    if (!toolCallSnapshot.type) {
-      throw new Error("tool call snapshot missing `type`");
-    }
-    if (toolCallSnapshot.type === "function") {
-      const inputTool = __classPrivateFieldGet(this, _ChatCompletionStream_params, "f")?.tools?.find((tool) => isChatCompletionFunctionTool(tool) && tool.function.name === toolCallSnapshot.function.name);
-      this._emit("tool_calls.function.arguments.done", {
-        name: toolCallSnapshot.function.name,
-        index: toolCallIndex,
-        arguments: toolCallSnapshot.function.arguments,
-        parsed_arguments: isAutoParsableTool(inputTool) ? inputTool.$parseRaw(toolCallSnapshot.function.arguments) : inputTool?.function.strict ? JSON.parse(toolCallSnapshot.function.arguments) : null
-      });
-    } else {
-      assertNever2(toolCallSnapshot.type);
-    }
-  }, _ChatCompletionStream_emitContentDoneEvents = function _ChatCompletionStream_emitContentDoneEvents2(choiceSnapshot) {
-    const state = __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_getChoiceEventState).call(this, choiceSnapshot);
-    if (choiceSnapshot.message.content && !state.content_done) {
-      state.content_done = true;
-      const responseFormat = __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_getAutoParseableResponseFormat).call(this);
-      this._emit("content.done", {
-        content: choiceSnapshot.message.content,
-        parsed: responseFormat ? responseFormat.$parseRaw(choiceSnapshot.message.content) : null
-      });
-    }
-    if (choiceSnapshot.message.refusal && !state.refusal_done) {
-      state.refusal_done = true;
-      this._emit("refusal.done", { refusal: choiceSnapshot.message.refusal });
-    }
-    if (choiceSnapshot.logprobs?.content && !state.logprobs_content_done) {
-      state.logprobs_content_done = true;
-      this._emit("logprobs.content.done", { content: choiceSnapshot.logprobs.content });
-    }
-    if (choiceSnapshot.logprobs?.refusal && !state.logprobs_refusal_done) {
-      state.logprobs_refusal_done = true;
-      this._emit("logprobs.refusal.done", { refusal: choiceSnapshot.logprobs.refusal });
-    }
-  }, _ChatCompletionStream_endRequest = function _ChatCompletionStream_endRequest2() {
-    if (this.ended) {
-      throw new OpenAIError(`stream has ended, this shouldn't happen`);
-    }
-    const snapshot = __classPrivateFieldGet(this, _ChatCompletionStream_currentChatCompletionSnapshot, "f");
-    if (!snapshot) {
-      throw new OpenAIError(`request ended without sending any chunks`);
-    }
-    __classPrivateFieldSet(this, _ChatCompletionStream_currentChatCompletionSnapshot, void 0, "f");
-    __classPrivateFieldSet(this, _ChatCompletionStream_choiceEventStates, [], "f");
-    return finalizeChatCompletion(snapshot, __classPrivateFieldGet(this, _ChatCompletionStream_params, "f"));
-  }, _ChatCompletionStream_getAutoParseableResponseFormat = function _ChatCompletionStream_getAutoParseableResponseFormat2() {
-    const responseFormat = __classPrivateFieldGet(this, _ChatCompletionStream_params, "f")?.response_format;
-    if (isAutoParsableResponseFormat(responseFormat)) {
-      return responseFormat;
-    }
-    return null;
-  }, _ChatCompletionStream_accumulateChatCompletion = function _ChatCompletionStream_accumulateChatCompletion2(chunk) {
-    var _a4, _b, _c, _d;
-    let snapshot = __classPrivateFieldGet(this, _ChatCompletionStream_currentChatCompletionSnapshot, "f");
-    const { choices, ...rest } = chunk;
-    if (!snapshot) {
-      snapshot = __classPrivateFieldSet(this, _ChatCompletionStream_currentChatCompletionSnapshot, {
-        ...rest,
-        choices: []
-      }, "f");
-    } else {
-      Object.assign(snapshot, rest);
-    }
-    for (const { delta, finish_reason, index, logprobs = null, ...other } of chunk.choices) {
-      let choice = snapshot.choices[index];
-      if (!choice) {
-        choice = snapshot.choices[index] = { finish_reason, index, message: {}, logprobs, ...other };
-      }
-      if (logprobs) {
-        if (!choice.logprobs) {
-          choice.logprobs = Object.assign({}, logprobs);
-        } else {
-          const { content: content2, refusal: refusal2, ...rest3 } = logprobs;
-          assertIsEmpty(rest3);
-          Object.assign(choice.logprobs, rest3);
-          if (content2) {
-            (_a4 = choice.logprobs).content ?? (_a4.content = []);
-            choice.logprobs.content.push(...content2);
-          }
-          if (refusal2) {
-            (_b = choice.logprobs).refusal ?? (_b.refusal = []);
-            choice.logprobs.refusal.push(...refusal2);
-          }
-        }
-      }
-      if (finish_reason) {
-        choice.finish_reason = finish_reason;
-        if (__classPrivateFieldGet(this, _ChatCompletionStream_params, "f") && hasAutoParseableInput(__classPrivateFieldGet(this, _ChatCompletionStream_params, "f"))) {
-          if (finish_reason === "length") {
-            throw new LengthFinishReasonError();
-          }
-          if (finish_reason === "content_filter") {
-            throw new ContentFilterFinishReasonError();
-          }
-        }
-      }
-      Object.assign(choice, other);
-      if (!delta)
-        continue;
-      const { content, refusal, function_call, role, tool_calls, ...rest2 } = delta;
-      assertIsEmpty(rest2);
-      Object.assign(choice.message, rest2);
-      if (refusal) {
-        choice.message.refusal = (choice.message.refusal || "") + refusal;
-      }
-      if (role)
-        choice.message.role = role;
-      if (function_call) {
-        if (!choice.message.function_call) {
-          choice.message.function_call = function_call;
-        } else {
-          if (function_call.name)
-            choice.message.function_call.name = function_call.name;
-          if (function_call.arguments) {
-            (_c = choice.message.function_call).arguments ?? (_c.arguments = "");
-            choice.message.function_call.arguments += function_call.arguments;
-          }
-        }
-      }
-      if (content) {
-        choice.message.content = (choice.message.content || "") + content;
-        if (!choice.message.refusal && __classPrivateFieldGet(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_getAutoParseableResponseFormat).call(this)) {
-          choice.message.parsed = partialParse(choice.message.content);
-        }
-      }
-      if (tool_calls) {
-        if (!choice.message.tool_calls)
-          choice.message.tool_calls = [];
-        for (const { index: index2, id, type, function: fn, ...rest3 } of tool_calls) {
-          const tool_call = (_d = choice.message.tool_calls)[index2] ?? (_d[index2] = {});
-          Object.assign(tool_call, rest3);
-          if (id)
-            tool_call.id = id;
-          if (type)
-            tool_call.type = type;
-          if (fn)
-            tool_call.function ?? (tool_call.function = { name: fn.name ?? "", arguments: "" });
-          if (fn?.name)
-            tool_call.function.name = fn.name;
-          if (fn?.arguments) {
-            tool_call.function.arguments += fn.arguments;
-            if (shouldParseToolCall(__classPrivateFieldGet(this, _ChatCompletionStream_params, "f"), tool_call)) {
-              tool_call.function.parsed_arguments = partialParse(tool_call.function.arguments);
-            }
-          }
-        }
-      }
-    }
-    return snapshot;
-  }, Symbol.asyncIterator)]() {
-    const pushQueue = [];
-    const readQueue = [];
-    let done = false;
-    this.on("chunk", (chunk) => {
-      const reader = readQueue.shift();
-      if (reader) {
-        reader.resolve(chunk);
-      } else {
-        pushQueue.push(chunk);
-      }
-    });
-    this.on("end", () => {
-      done = true;
-      for (const reader of readQueue) {
-        reader.resolve(void 0);
-      }
-      readQueue.length = 0;
-    });
-    this.on("abort", (err) => {
-      done = true;
-      for (const reader of readQueue) {
-        reader.reject(err);
-      }
-      readQueue.length = 0;
-    });
-    this.on("error", (err) => {
-      done = true;
-      for (const reader of readQueue) {
-        reader.reject(err);
-      }
-      readQueue.length = 0;
-    });
-    return {
-      next: async () => {
-        if (!pushQueue.length) {
-          if (done) {
-            return { value: void 0, done: true };
-          }
-          return new Promise((resolve, reject) => readQueue.push({ resolve, reject })).then((chunk2) => chunk2 ? { value: chunk2, done: false } : { value: void 0, done: true });
-        }
-        const chunk = pushQueue.shift();
-        return { value: chunk, done: false };
-      },
-      return: async () => {
-        this.abort();
-        return { value: void 0, done: true };
-      }
-    };
-  }
-  toReadableStream() {
-    const stream4 = new Stream3(this[Symbol.asyncIterator].bind(this), this.controller);
-    return stream4.toReadableStream();
-  }
-};
-function finalizeChatCompletion(snapshot, params) {
-  const { id, choices, created, model, system_fingerprint, ...rest } = snapshot;
-  const completion = {
-    ...rest,
-    id,
-    choices: choices.map(({ message, finish_reason, index, logprobs, ...choiceRest }) => {
-      if (!finish_reason) {
-        throw new OpenAIError(`missing finish_reason for choice ${index}`);
-      }
-      const { content = null, function_call, tool_calls, ...messageRest } = message;
-      const role = message.role;
-      if (!role) {
-        throw new OpenAIError(`missing role for choice ${index}`);
-      }
-      if (function_call) {
-        const { arguments: args, name: name2 } = function_call;
-        if (args == null) {
-          throw new OpenAIError(`missing function_call.arguments for choice ${index}`);
-        }
-        if (!name2) {
-          throw new OpenAIError(`missing function_call.name for choice ${index}`);
-        }
-        return {
-          ...choiceRest,
-          message: {
-            content,
-            function_call: { arguments: args, name: name2 },
-            role,
-            refusal: message.refusal ?? null
-          },
-          finish_reason,
-          index,
-          logprobs
-        };
-      }
-      if (tool_calls) {
-        return {
-          ...choiceRest,
-          index,
-          finish_reason,
-          logprobs,
-          message: {
-            ...messageRest,
-            role,
-            content,
-            refusal: message.refusal ?? null,
-            tool_calls: tool_calls.map((tool_call, i) => {
-              const { function: fn, type, id: id2, ...toolRest } = tool_call;
-              const { arguments: args, name: name2, ...fnRest } = fn || {};
-              if (id2 == null) {
-                throw new OpenAIError(`missing choices[${index}].tool_calls[${i}].id
-${str(snapshot)}`);
-              }
-              if (type == null) {
-                throw new OpenAIError(`missing choices[${index}].tool_calls[${i}].type
-${str(snapshot)}`);
-              }
-              if (name2 == null) {
-                throw new OpenAIError(`missing choices[${index}].tool_calls[${i}].function.name
-${str(snapshot)}`);
-              }
-              if (args == null) {
-                throw new OpenAIError(`missing choices[${index}].tool_calls[${i}].function.arguments
-${str(snapshot)}`);
-              }
-              return { ...toolRest, id: id2, type, function: { ...fnRest, name: name2, arguments: args } };
-            })
-          }
-        };
-      }
-      return {
-        ...choiceRest,
-        message: { ...messageRest, content, role, refusal: message.refusal ?? null },
-        finish_reason,
-        index,
-        logprobs
-      };
-    }),
-    created,
-    model,
-    object: "chat.completion",
-    ...system_fingerprint ? { system_fingerprint } : {}
-  };
-  return maybeParseChatCompletion(completion, params);
-}
-function str(x) {
-  return JSON.stringify(x);
-}
-function assertIsEmpty(obj) {
-  return;
-}
-function assertNever2(_x) {
-}
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionStreamingRunner.mjs
-var ChatCompletionStreamingRunner = class _ChatCompletionStreamingRunner extends ChatCompletionStream {
-  static fromReadableStream(stream4) {
-    const runner = new _ChatCompletionStreamingRunner(null);
-    runner._run(() => runner._fromReadableStream(stream4));
-    return runner;
-  }
-  static runTools(client, params, options) {
-    const runner = new _ChatCompletionStreamingRunner(
-      // @ts-expect-error TODO these types are incompatible
-      params
-    );
-    const opts = {
-      ...options,
-      headers: { ...options?.headers, "X-Stainless-Helper-Method": "runTools" }
-    };
-    runner._run(() => runner._runTools(client, params, opts));
-    return runner;
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/completions/completions.mjs
-var Completions = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.messages = new Messages(this._client);
-  }
-  create(body, options) {
-    return this._client.post("/chat/completions", { body, ...options, stream: body.stream ?? false });
-  }
-  /**
-   * Get a stored chat completion. Only Chat Completions that have been created with
-   * the `store` parameter set to `true` will be returned.
-   *
-   * @example
-   * ```ts
-   * const chatCompletion =
-   *   await client.chat.completions.retrieve('completion_id');
-   * ```
-   */
-  retrieve(completionID, options) {
-    return this._client.get(path2`/chat/completions/${completionID}`, options);
-  }
-  /**
-   * Modify a stored chat completion. Only Chat Completions that have been created
-   * with the `store` parameter set to `true` can be modified. Currently, the only
-   * supported modification is to update the `metadata` field.
-   *
-   * @example
-   * ```ts
-   * const chatCompletion = await client.chat.completions.update(
-   *   'completion_id',
-   *   { metadata: { foo: 'string' } },
-   * );
-   * ```
-   */
-  update(completionID, body, options) {
-    return this._client.post(path2`/chat/completions/${completionID}`, { body, ...options });
-  }
-  /**
-   * List stored Chat Completions. Only Chat Completions that have been stored with
-   * the `store` parameter set to `true` will be returned.
-   *
-   * @example
-   * ```ts
-   * // Automatically fetches more pages as needed.
-   * for await (const chatCompletion of client.chat.completions.list()) {
-   *   // ...
-   * }
-   * ```
-   */
-  list(query = {}, options) {
-    return this._client.getAPIList("/chat/completions", CursorPage, { query, ...options });
-  }
-  /**
-   * Delete a stored chat completion. Only Chat Completions that have been created
-   * with the `store` parameter set to `true` can be deleted.
-   *
-   * @example
-   * ```ts
-   * const chatCompletionDeleted =
-   *   await client.chat.completions.delete('completion_id');
-   * ```
-   */
-  delete(completionID, options) {
-    return this._client.delete(path2`/chat/completions/${completionID}`, options);
-  }
-  parse(body, options) {
-    validateInputTools(body.tools);
-    return this._client.chat.completions.create(body, {
-      ...options,
-      headers: {
-        ...options?.headers,
-        "X-Stainless-Helper-Method": "chat.completions.parse"
-      }
-    })._thenUnwrap((completion) => parseChatCompletion(completion, body));
-  }
-  runTools(body, options) {
-    if (body.stream) {
-      return ChatCompletionStreamingRunner.runTools(this._client, body, options);
-    }
-    return ChatCompletionRunner.runTools(this._client, body, options);
-  }
-  /**
-   * Creates a chat completion stream
-   */
-  stream(body, options) {
-    return ChatCompletionStream.createChatCompletion(this._client, body, options);
-  }
-};
-Completions.Messages = Messages;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/chat.mjs
-var Chat = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.completions = new Completions(this._client);
-  }
-};
-Chat.Completions = Completions;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/headers.mjs
-var brand_privateNullableHeaders = /* @__PURE__ */ Symbol("brand.privateNullableHeaders");
-function* iterateHeaders(headers) {
-  if (!headers)
-    return;
-  if (brand_privateNullableHeaders in headers) {
-    const { values: values2, nulls } = headers;
-    yield* values2.entries();
-    for (const name2 of nulls) {
-      yield [name2, null];
-    }
-    return;
-  }
-  let shouldClear = false;
-  let iter;
-  if (headers instanceof Headers) {
-    iter = headers.entries();
-  } else if (isReadonlyArray(headers)) {
-    iter = headers;
-  } else {
-    shouldClear = true;
-    iter = Object.entries(headers ?? {});
-  }
-  for (let row of iter) {
-    const name2 = row[0];
-    if (typeof name2 !== "string")
-      throw new TypeError("expected header name to be a string");
-    const values2 = isReadonlyArray(row[1]) ? row[1] : [row[1]];
-    let didClear = false;
-    for (const value of values2) {
-      if (value === void 0)
-        continue;
-      if (shouldClear && !didClear) {
-        didClear = true;
-        yield [name2, null];
-      }
-      yield [name2, value];
-    }
-  }
-}
-var buildHeaders = (newHeaders) => {
-  const targetHeaders = new Headers();
-  const nullHeaders = /* @__PURE__ */ new Set();
-  for (const headers of newHeaders) {
-    const seenHeaders = /* @__PURE__ */ new Set();
-    for (const [name2, value] of iterateHeaders(headers)) {
-      const lowerName = name2.toLowerCase();
-      if (!seenHeaders.has(lowerName)) {
-        targetHeaders.delete(name2);
-        seenHeaders.add(lowerName);
-      }
-      if (value === null) {
-        targetHeaders.delete(name2);
-        nullHeaders.add(lowerName);
-      } else {
-        targetHeaders.append(name2, value);
-        nullHeaders.delete(lowerName);
-      }
-    }
-  }
-  return { [brand_privateNullableHeaders]: true, values: targetHeaders, nulls: nullHeaders };
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/speech.mjs
-var Speech = class extends APIResource {
-  /**
-   * Generates audio from the input text.
-   *
-   * Returns the audio file content, or a stream of audio events.
-   *
-   * @example
-   * ```ts
-   * const speech = await client.audio.speech.create({
-   *   input: 'input',
-   *   model: 'string',
-   *   voice: 'string',
-   * });
-   *
-   * const content = await speech.blob();
-   * console.log(content);
-   * ```
-   */
-  create(body, options) {
-    return this._client.post("/audio/speech", {
-      body,
-      ...options,
-      headers: buildHeaders([{ Accept: "application/octet-stream" }, options?.headers]),
-      __binaryResponse: true
-    });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/transcriptions.mjs
-var Transcriptions = class extends APIResource {
-  create(body, options) {
-    return this._client.post("/audio/transcriptions", multipartFormRequestOptions({
-      body,
-      ...options,
-      stream: body.stream ?? false,
-      __metadata: { model: body.model }
-    }, this._client));
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/translations.mjs
-var Translations = class extends APIResource {
-  create(body, options) {
-    return this._client.post("/audio/translations", multipartFormRequestOptions({ body, ...options, __metadata: { model: body.model } }, this._client));
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/audio.mjs
-var Audio = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.transcriptions = new Transcriptions(this._client);
-    this.translations = new Translations(this._client);
-    this.speech = new Speech(this._client);
-  }
-};
-Audio.Transcriptions = Transcriptions;
-Audio.Translations = Translations;
-Audio.Speech = Speech;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/batches.mjs
-var Batches = class extends APIResource {
-  /**
-   * Creates and executes a batch from an uploaded file of requests
-   */
-  create(body, options) {
-    return this._client.post("/batches", { body, ...options });
-  }
-  /**
-   * Retrieves a batch.
-   */
-  retrieve(batchID, options) {
-    return this._client.get(path2`/batches/${batchID}`, options);
-  }
-  /**
-   * List your organization's batches.
-   */
-  list(query = {}, options) {
-    return this._client.getAPIList("/batches", CursorPage, { query, ...options });
-  }
-  /**
-   * Cancels an in-progress batch. The batch will be in status `cancelling` for up to
-   * 10 minutes, before changing to `cancelled`, where it will have partial results
-   * (if any) available in the output file.
-   */
-  cancel(batchID, options) {
-    return this._client.post(path2`/batches/${batchID}/cancel`, options);
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/assistants.mjs
-var Assistants = class extends APIResource {
-  /**
-   * Create an assistant with a model and instructions.
-   *
-   * @deprecated
-   */
-  create(body, options) {
-    return this._client.post("/assistants", {
-      body,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Retrieves an assistant.
-   *
-   * @deprecated
-   */
-  retrieve(assistantID, options) {
-    return this._client.get(path2`/assistants/${assistantID}`, {
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Modifies an assistant.
-   *
-   * @deprecated
-   */
-  update(assistantID, body, options) {
-    return this._client.post(path2`/assistants/${assistantID}`, {
-      body,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Returns a list of assistants.
-   *
-   * @deprecated
-   */
-  list(query = {}, options) {
-    return this._client.getAPIList("/assistants", CursorPage, {
-      query,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Delete an assistant.
-   *
-   * @deprecated
-   */
-  delete(assistantID, options) {
-    return this._client.delete(path2`/assistants/${assistantID}`, {
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/sessions.mjs
-var Sessions = class extends APIResource {
-  /**
-   * Create an ephemeral API token for use in client-side applications with the
-   * Realtime API. Can be configured with the same session parameters as the
-   * `session.update` client event.
-   *
-   * It responds with a session object, plus a `client_secret` key which contains a
-   * usable ephemeral API token that can be used to authenticate browser clients for
-   * the Realtime API.
-   *
-   * @example
-   * ```ts
-   * const session =
-   *   await client.beta.realtime.sessions.create();
-   * ```
-   */
-  create(body, options) {
-    return this._client.post("/realtime/sessions", {
-      body,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/transcription-sessions.mjs
-var TranscriptionSessions = class extends APIResource {
-  /**
-   * Create an ephemeral API token for use in client-side applications with the
-   * Realtime API specifically for realtime transcriptions. Can be configured with
-   * the same session parameters as the `transcription_session.update` client event.
-   *
-   * It responds with a session object, plus a `client_secret` key which contains a
-   * usable ephemeral API token that can be used to authenticate browser clients for
-   * the Realtime API.
-   *
-   * @example
-   * ```ts
-   * const transcriptionSession =
-   *   await client.beta.realtime.transcriptionSessions.create();
-   * ```
-   */
-  create(body, options) {
-    return this._client.post("/realtime/transcription_sessions", {
-      body,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/realtime.mjs
-var Realtime = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.sessions = new Sessions(this._client);
-    this.transcriptionSessions = new TranscriptionSessions(this._client);
-  }
-};
-Realtime.Sessions = Sessions;
-Realtime.TranscriptionSessions = TranscriptionSessions;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/sessions.mjs
-var Sessions2 = class extends APIResource {
-  /**
-   * Create a ChatKit session.
-   *
-   * @example
-   * ```ts
-   * const chatSession =
-   *   await client.beta.chatkit.sessions.create({
-   *     user: 'x',
-   *     workflow: { id: 'id' },
-   *   });
-   * ```
-   */
-  create(body, options) {
-    return this._client.post("/chatkit/sessions", {
-      body,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "chatkit_beta=v1" }, options?.headers])
-    });
-  }
-  /**
-   * Cancel an active ChatKit session and return its most recent metadata.
-   *
-   * Cancelling prevents new requests from using the issued client secret.
-   *
-   * @example
-   * ```ts
-   * const chatSession =
-   *   await client.beta.chatkit.sessions.cancel('cksess_123');
-   * ```
-   */
-  cancel(sessionID, options) {
-    return this._client.post(path2`/chatkit/sessions/${sessionID}/cancel`, {
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "chatkit_beta=v1" }, options?.headers])
-    });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/threads.mjs
-var Threads = class extends APIResource {
-  /**
-   * Retrieve a ChatKit thread by its identifier.
-   *
-   * @example
-   * ```ts
-   * const chatkitThread =
-   *   await client.beta.chatkit.threads.retrieve('cthr_123');
-   * ```
-   */
-  retrieve(threadID, options) {
-    return this._client.get(path2`/chatkit/threads/${threadID}`, {
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "chatkit_beta=v1" }, options?.headers])
-    });
-  }
-  /**
-   * List ChatKit threads with optional pagination and user filters.
-   *
-   * @example
-   * ```ts
-   * // Automatically fetches more pages as needed.
-   * for await (const chatkitThread of client.beta.chatkit.threads.list()) {
-   *   // ...
-   * }
-   * ```
-   */
-  list(query = {}, options) {
-    return this._client.getAPIList("/chatkit/threads", ConversationCursorPage, {
-      query,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "chatkit_beta=v1" }, options?.headers])
-    });
-  }
-  /**
-   * Delete a ChatKit thread along with its items and stored attachments.
-   *
-   * @example
-   * ```ts
-   * const thread = await client.beta.chatkit.threads.delete(
-   *   'cthr_123',
-   * );
-   * ```
-   */
-  delete(threadID, options) {
-    return this._client.delete(path2`/chatkit/threads/${threadID}`, {
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "chatkit_beta=v1" }, options?.headers])
-    });
-  }
-  /**
-   * List items that belong to a ChatKit thread.
-   *
-   * @example
-   * ```ts
-   * // Automatically fetches more pages as needed.
-   * for await (const thread of client.beta.chatkit.threads.listItems(
-   *   'cthr_123',
-   * )) {
-   *   // ...
-   * }
-   * ```
-   */
-  listItems(threadID, query = {}, options) {
-    return this._client.getAPIList(path2`/chatkit/threads/${threadID}/items`, ConversationCursorPage, { query, ...options, headers: buildHeaders([{ "OpenAI-Beta": "chatkit_beta=v1" }, options?.headers]) });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/chatkit.mjs
-var ChatKit = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.sessions = new Sessions2(this._client);
-    this.threads = new Threads(this._client);
-  }
-};
-ChatKit.Sessions = Sessions2;
-ChatKit.Threads = Threads;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/messages.mjs
-var Messages2 = class extends APIResource {
-  /**
-   * Create a message.
-   *
-   * @deprecated The Assistants API is deprecated in favor of the Responses API
-   */
-  create(threadID, body, options) {
-    return this._client.post(path2`/threads/${threadID}/messages`, {
-      body,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Retrieve a message.
-   *
-   * @deprecated The Assistants API is deprecated in favor of the Responses API
-   */
-  retrieve(messageID, params, options) {
-    const { thread_id } = params;
-    return this._client.get(path2`/threads/${thread_id}/messages/${messageID}`, {
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Modifies a message.
-   *
-   * @deprecated The Assistants API is deprecated in favor of the Responses API
-   */
-  update(messageID, params, options) {
-    const { thread_id, ...body } = params;
-    return this._client.post(path2`/threads/${thread_id}/messages/${messageID}`, {
-      body,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Returns a list of messages for a given thread.
-   *
-   * @deprecated The Assistants API is deprecated in favor of the Responses API
-   */
-  list(threadID, query = {}, options) {
-    return this._client.getAPIList(path2`/threads/${threadID}/messages`, CursorPage, {
-      query,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Deletes a message.
-   *
-   * @deprecated The Assistants API is deprecated in favor of the Responses API
-   */
-  delete(messageID, params, options) {
-    const { thread_id } = params;
-    return this._client.delete(path2`/threads/${thread_id}/messages/${messageID}`, {
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/runs/steps.mjs
-var Steps = class extends APIResource {
-  /**
-   * Retrieves a run step.
-   *
-   * @deprecated The Assistants API is deprecated in favor of the Responses API
-   */
-  retrieve(stepID, params, options) {
-    const { thread_id, run_id, ...query } = params;
-    return this._client.get(path2`/threads/${thread_id}/runs/${run_id}/steps/${stepID}`, {
-      query,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Returns a list of run steps belonging to a run.
-   *
-   * @deprecated The Assistants API is deprecated in favor of the Responses API
-   */
-  list(runID, params, options) {
-    const { thread_id, ...query } = params;
-    return this._client.getAPIList(path2`/threads/${thread_id}/runs/${runID}/steps`, CursorPage, {
-      query,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/base64.mjs
-var toFloat32Array = (base64Str) => {
-  if (typeof Buffer !== "undefined") {
-    const buf = Buffer.from(base64Str, "base64");
-    return Array.from(new Float32Array(buf.buffer, buf.byteOffset, buf.length / Float32Array.BYTES_PER_ELEMENT));
-  } else {
-    const binaryStr = atob(base64Str);
-    const len = binaryStr.length;
-    const bytes = new Uint8Array(len);
-    for (let i = 0; i < len; i++) {
-      bytes[i] = binaryStr.charCodeAt(i);
-    }
-    return Array.from(new Float32Array(bytes.buffer));
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/env.mjs
-var readEnv = (env) => {
-  if (typeof globalThis.process !== "undefined") {
-    return globalThis.process.env?.[env]?.trim() ?? void 0;
-  }
-  if (typeof globalThis.Deno !== "undefined") {
-    return globalThis.Deno.env?.get?.(env)?.trim();
-  }
-  return void 0;
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/AssistantStream.mjs
-var _AssistantStream_instances;
-var _a2;
-var _AssistantStream_events;
-var _AssistantStream_runStepSnapshots;
-var _AssistantStream_messageSnapshots;
-var _AssistantStream_messageSnapshot;
-var _AssistantStream_finalRun;
-var _AssistantStream_currentContentIndex;
-var _AssistantStream_currentContent;
-var _AssistantStream_currentToolCallIndex;
-var _AssistantStream_currentToolCall;
-var _AssistantStream_currentEvent;
-var _AssistantStream_currentRunSnapshot;
-var _AssistantStream_currentRunStepSnapshot;
-var _AssistantStream_addEvent;
-var _AssistantStream_endRequest;
-var _AssistantStream_handleMessage;
-var _AssistantStream_handleRunStep;
-var _AssistantStream_handleEvent;
-var _AssistantStream_accumulateRunStep;
-var _AssistantStream_accumulateMessage;
-var _AssistantStream_accumulateContent;
-var _AssistantStream_handleRun;
-var AssistantStream = class extends EventStream {
-  constructor() {
-    super(...arguments);
-    _AssistantStream_instances.add(this);
-    _AssistantStream_events.set(this, []);
-    _AssistantStream_runStepSnapshots.set(this, {});
-    _AssistantStream_messageSnapshots.set(this, {});
-    _AssistantStream_messageSnapshot.set(this, void 0);
-    _AssistantStream_finalRun.set(this, void 0);
-    _AssistantStream_currentContentIndex.set(this, void 0);
-    _AssistantStream_currentContent.set(this, void 0);
-    _AssistantStream_currentToolCallIndex.set(this, void 0);
-    _AssistantStream_currentToolCall.set(this, void 0);
-    _AssistantStream_currentEvent.set(this, void 0);
-    _AssistantStream_currentRunSnapshot.set(this, void 0);
-    _AssistantStream_currentRunStepSnapshot.set(this, void 0);
-  }
-  [(_AssistantStream_events = /* @__PURE__ */ new WeakMap(), _AssistantStream_runStepSnapshots = /* @__PURE__ */ new WeakMap(), _AssistantStream_messageSnapshots = /* @__PURE__ */ new WeakMap(), _AssistantStream_messageSnapshot = /* @__PURE__ */ new WeakMap(), _AssistantStream_finalRun = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentContentIndex = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentContent = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentToolCallIndex = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentToolCall = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentEvent = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentRunSnapshot = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentRunStepSnapshot = /* @__PURE__ */ new WeakMap(), _AssistantStream_instances = /* @__PURE__ */ new WeakSet(), Symbol.asyncIterator)]() {
-    const pushQueue = [];
-    const readQueue = [];
-    let done = false;
-    this.on("event", (event) => {
-      const reader = readQueue.shift();
-      if (reader) {
-        reader.resolve(event);
-      } else {
-        pushQueue.push(event);
-      }
-    });
-    this.on("end", () => {
-      done = true;
-      for (const reader of readQueue) {
-        reader.resolve(void 0);
-      }
-      readQueue.length = 0;
-    });
-    this.on("abort", (err) => {
-      done = true;
-      for (const reader of readQueue) {
-        reader.reject(err);
-      }
-      readQueue.length = 0;
-    });
-    this.on("error", (err) => {
-      done = true;
-      for (const reader of readQueue) {
-        reader.reject(err);
-      }
-      readQueue.length = 0;
-    });
-    return {
-      next: async () => {
-        if (!pushQueue.length) {
-          if (done) {
-            return { value: void 0, done: true };
-          }
-          return new Promise((resolve, reject) => readQueue.push({ resolve, reject })).then((chunk2) => chunk2 ? { value: chunk2, done: false } : { value: void 0, done: true });
-        }
-        const chunk = pushQueue.shift();
-        return { value: chunk, done: false };
-      },
-      return: async () => {
-        this.abort();
-        return { value: void 0, done: true };
-      }
-    };
-  }
-  static fromReadableStream(stream4) {
-    const runner = new _a2();
-    runner._run(() => runner._fromReadableStream(stream4));
-    return runner;
-  }
-  async _fromReadableStream(readableStream, options) {
-    const signal = options?.signal;
-    if (signal) {
-      if (signal.aborted)
-        this.controller.abort();
-      signal.addEventListener("abort", () => this.controller.abort());
-    }
-    this._connected();
-    const stream4 = Stream3.fromReadableStream(readableStream, this.controller);
-    for await (const event of stream4) {
-      __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_addEvent).call(this, event);
-    }
-    if (stream4.controller.signal?.aborted) {
-      throw new APIUserAbortError();
-    }
-    return this._addRun(__classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_endRequest).call(this));
-  }
-  toReadableStream() {
-    const stream4 = new Stream3(this[Symbol.asyncIterator].bind(this), this.controller);
-    return stream4.toReadableStream();
-  }
-  static createToolAssistantStream(runId, runs, params, options) {
-    const runner = new _a2();
-    runner._run(() => runner._runToolAssistantStream(runId, runs, params, {
-      ...options,
-      headers: { ...options?.headers, "X-Stainless-Helper-Method": "stream" }
-    }));
-    return runner;
-  }
-  async _createToolAssistantStream(run2, runId, params, options) {
-    const signal = options?.signal;
-    if (signal) {
-      if (signal.aborted)
-        this.controller.abort();
-      signal.addEventListener("abort", () => this.controller.abort());
-    }
-    const body = { ...params, stream: true };
-    const stream4 = await run2.submitToolOutputs(runId, body, {
-      ...options,
-      signal: this.controller.signal
-    });
-    this._connected();
-    for await (const event of stream4) {
-      __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_addEvent).call(this, event);
-    }
-    if (stream4.controller.signal?.aborted) {
-      throw new APIUserAbortError();
-    }
-    return this._addRun(__classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_endRequest).call(this));
-  }
-  static createThreadAssistantStream(params, thread, options) {
-    const runner = new _a2();
-    runner._run(() => runner._threadAssistantStream(params, thread, {
-      ...options,
-      headers: { ...options?.headers, "X-Stainless-Helper-Method": "stream" }
-    }));
-    return runner;
-  }
-  static createAssistantStream(threadId, runs, params, options) {
-    const runner = new _a2();
-    runner._run(() => runner._runAssistantStream(threadId, runs, params, {
-      ...options,
-      headers: { ...options?.headers, "X-Stainless-Helper-Method": "stream" }
-    }));
-    return runner;
-  }
-  currentEvent() {
-    return __classPrivateFieldGet(this, _AssistantStream_currentEvent, "f");
-  }
-  currentRun() {
-    return __classPrivateFieldGet(this, _AssistantStream_currentRunSnapshot, "f");
-  }
-  currentMessageSnapshot() {
-    return __classPrivateFieldGet(this, _AssistantStream_messageSnapshot, "f");
-  }
-  currentRunStepSnapshot() {
-    return __classPrivateFieldGet(this, _AssistantStream_currentRunStepSnapshot, "f");
-  }
-  async finalRunSteps() {
-    await this.done();
-    return Object.values(__classPrivateFieldGet(this, _AssistantStream_runStepSnapshots, "f"));
-  }
-  async finalMessages() {
-    await this.done();
-    return Object.values(__classPrivateFieldGet(this, _AssistantStream_messageSnapshots, "f"));
-  }
-  async finalRun() {
-    await this.done();
-    if (!__classPrivateFieldGet(this, _AssistantStream_finalRun, "f"))
-      throw Error("Final run was not received.");
-    return __classPrivateFieldGet(this, _AssistantStream_finalRun, "f");
-  }
-  async _createThreadAssistantStream(thread, params, options) {
-    const signal = options?.signal;
-    if (signal) {
-      if (signal.aborted)
-        this.controller.abort();
-      signal.addEventListener("abort", () => this.controller.abort());
-    }
-    const body = { ...params, stream: true };
-    const stream4 = await thread.createAndRun(body, { ...options, signal: this.controller.signal });
-    this._connected();
-    for await (const event of stream4) {
-      __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_addEvent).call(this, event);
-    }
-    if (stream4.controller.signal?.aborted) {
-      throw new APIUserAbortError();
-    }
-    return this._addRun(__classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_endRequest).call(this));
-  }
-  async _createAssistantStream(run2, threadId, params, options) {
-    const signal = options?.signal;
-    if (signal) {
-      if (signal.aborted)
-        this.controller.abort();
-      signal.addEventListener("abort", () => this.controller.abort());
-    }
-    const body = { ...params, stream: true };
-    const stream4 = await run2.create(threadId, body, { ...options, signal: this.controller.signal });
-    this._connected();
-    for await (const event of stream4) {
-      __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_addEvent).call(this, event);
-    }
-    if (stream4.controller.signal?.aborted) {
-      throw new APIUserAbortError();
-    }
-    return this._addRun(__classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_endRequest).call(this));
-  }
-  static accumulateDelta(acc, delta) {
-    for (const [key, deltaValue] of Object.entries(delta)) {
-      if (!acc.hasOwnProperty(key)) {
-        acc[key] = deltaValue;
-        continue;
-      }
-      let accValue = acc[key];
-      if (accValue === null || accValue === void 0) {
-        acc[key] = deltaValue;
-        continue;
-      }
-      if (key === "index" || key === "type") {
-        acc[key] = deltaValue;
-        continue;
-      }
-      if (typeof accValue === "string" && typeof deltaValue === "string") {
-        accValue += deltaValue;
-      } else if (typeof accValue === "number" && typeof deltaValue === "number") {
-        accValue += deltaValue;
-      } else if (isObj(accValue) && isObj(deltaValue)) {
-        accValue = this.accumulateDelta(accValue, deltaValue);
-      } else if (Array.isArray(accValue) && Array.isArray(deltaValue)) {
-        if (accValue.every((x) => typeof x === "string" || typeof x === "number")) {
-          accValue.push(...deltaValue);
-          continue;
-        }
-        for (const deltaEntry of deltaValue) {
-          if (!isObj(deltaEntry)) {
-            throw new Error(`Expected array delta entry to be an object but got: ${deltaEntry}`);
-          }
-          const index = deltaEntry["index"];
-          if (index == null) {
-            console.error(deltaEntry);
-            throw new Error("Expected array delta entry to have an `index` property");
-          }
-          if (typeof index !== "number") {
-            throw new Error(`Expected array delta entry \`index\` property to be a number but got ${index}`);
-          }
-          const accEntry = accValue[index];
-          if (accEntry == null) {
-            accValue.push(deltaEntry);
-          } else {
-            accValue[index] = this.accumulateDelta(accEntry, deltaEntry);
-          }
-        }
-        continue;
-      } else {
-        throw Error(`Unhandled record type: ${key}, deltaValue: ${deltaValue}, accValue: ${accValue}`);
-      }
-      acc[key] = accValue;
-    }
-    return acc;
-  }
-  _addRun(run2) {
-    return run2;
-  }
-  async _threadAssistantStream(params, thread, options) {
-    return await this._createThreadAssistantStream(thread, params, options);
-  }
-  async _runAssistantStream(threadId, runs, params, options) {
-    return await this._createAssistantStream(runs, threadId, params, options);
-  }
-  async _runToolAssistantStream(runId, runs, params, options) {
-    return await this._createToolAssistantStream(runs, runId, params, options);
-  }
-};
-_a2 = AssistantStream, _AssistantStream_addEvent = function _AssistantStream_addEvent2(event) {
-  if (this.ended)
-    return;
-  __classPrivateFieldSet(this, _AssistantStream_currentEvent, event, "f");
-  __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_handleEvent).call(this, event);
-  switch (event.event) {
-    case "thread.created":
-      break;
-    case "thread.run.created":
-    case "thread.run.queued":
-    case "thread.run.in_progress":
-    case "thread.run.requires_action":
-    case "thread.run.completed":
-    case "thread.run.incomplete":
-    case "thread.run.failed":
-    case "thread.run.cancelling":
-    case "thread.run.cancelled":
-    case "thread.run.expired":
-      __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_handleRun).call(this, event);
-      break;
-    case "thread.run.step.created":
-    case "thread.run.step.in_progress":
-    case "thread.run.step.delta":
-    case "thread.run.step.completed":
-    case "thread.run.step.failed":
-    case "thread.run.step.cancelled":
-    case "thread.run.step.expired":
-      __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_handleRunStep).call(this, event);
-      break;
-    case "thread.message.created":
-    case "thread.message.in_progress":
-    case "thread.message.delta":
-    case "thread.message.completed":
-    case "thread.message.incomplete":
-      __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_handleMessage).call(this, event);
-      break;
-    case "error":
-      throw new Error("Encountered an error event in event processing - errors should be processed earlier");
-    default:
-      assertNever3(event);
-  }
-}, _AssistantStream_endRequest = function _AssistantStream_endRequest2() {
-  if (this.ended) {
-    throw new OpenAIError(`stream has ended, this shouldn't happen`);
-  }
-  if (!__classPrivateFieldGet(this, _AssistantStream_finalRun, "f"))
-    throw Error("Final run has not been received");
-  return __classPrivateFieldGet(this, _AssistantStream_finalRun, "f");
-}, _AssistantStream_handleMessage = function _AssistantStream_handleMessage2(event) {
-  const [accumulatedMessage, newContent] = __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_accumulateMessage).call(this, event, __classPrivateFieldGet(this, _AssistantStream_messageSnapshot, "f"));
-  __classPrivateFieldSet(this, _AssistantStream_messageSnapshot, accumulatedMessage, "f");
-  __classPrivateFieldGet(this, _AssistantStream_messageSnapshots, "f")[accumulatedMessage.id] = accumulatedMessage;
-  for (const content of newContent) {
-    const snapshotContent = accumulatedMessage.content[content.index];
-    if (snapshotContent?.type == "text") {
-      this._emit("textCreated", snapshotContent.text);
-    }
-  }
-  switch (event.event) {
-    case "thread.message.created":
-      this._emit("messageCreated", event.data);
-      break;
-    case "thread.message.in_progress":
-      break;
-    case "thread.message.delta":
-      this._emit("messageDelta", event.data.delta, accumulatedMessage);
-      if (event.data.delta.content) {
-        for (const content of event.data.delta.content) {
-          if (content.type == "text" && content.text) {
-            let textDelta = content.text;
-            let snapshot = accumulatedMessage.content[content.index];
-            if (snapshot && snapshot.type == "text") {
-              this._emit("textDelta", textDelta, snapshot.text);
-            } else {
-              throw Error("The snapshot associated with this text delta is not text or missing");
-            }
-          }
-          if (content.index != __classPrivateFieldGet(this, _AssistantStream_currentContentIndex, "f")) {
-            if (__classPrivateFieldGet(this, _AssistantStream_currentContent, "f")) {
-              switch (__classPrivateFieldGet(this, _AssistantStream_currentContent, "f").type) {
-                case "text":
-                  this._emit("textDone", __classPrivateFieldGet(this, _AssistantStream_currentContent, "f").text, __classPrivateFieldGet(this, _AssistantStream_messageSnapshot, "f"));
-                  break;
-                case "image_file":
-                  this._emit("imageFileDone", __classPrivateFieldGet(this, _AssistantStream_currentContent, "f").image_file, __classPrivateFieldGet(this, _AssistantStream_messageSnapshot, "f"));
-                  break;
-              }
-            }
-            __classPrivateFieldSet(this, _AssistantStream_currentContentIndex, content.index, "f");
-          }
-          __classPrivateFieldSet(this, _AssistantStream_currentContent, accumulatedMessage.content[content.index], "f");
-        }
-      }
-      break;
-    case "thread.message.completed":
-    case "thread.message.incomplete":
-      if (__classPrivateFieldGet(this, _AssistantStream_currentContentIndex, "f") !== void 0) {
-        const currentContent = event.data.content[__classPrivateFieldGet(this, _AssistantStream_currentContentIndex, "f")];
-        if (currentContent) {
-          switch (currentContent.type) {
-            case "image_file":
-              this._emit("imageFileDone", currentContent.image_file, __classPrivateFieldGet(this, _AssistantStream_messageSnapshot, "f"));
-              break;
-            case "text":
-              this._emit("textDone", currentContent.text, __classPrivateFieldGet(this, _AssistantStream_messageSnapshot, "f"));
-              break;
-          }
-        }
-      }
-      if (__classPrivateFieldGet(this, _AssistantStream_messageSnapshot, "f")) {
-        this._emit("messageDone", event.data);
-      }
-      __classPrivateFieldSet(this, _AssistantStream_messageSnapshot, void 0, "f");
-  }
-}, _AssistantStream_handleRunStep = function _AssistantStream_handleRunStep2(event) {
-  const accumulatedRunStep = __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_accumulateRunStep).call(this, event);
-  __classPrivateFieldSet(this, _AssistantStream_currentRunStepSnapshot, accumulatedRunStep, "f");
-  switch (event.event) {
-    case "thread.run.step.created":
-      this._emit("runStepCreated", event.data);
-      break;
-    case "thread.run.step.delta":
-      const delta = event.data.delta;
-      if (delta.step_details && delta.step_details.type == "tool_calls" && delta.step_details.tool_calls && accumulatedRunStep.step_details.type == "tool_calls") {
-        for (const toolCall of delta.step_details.tool_calls) {
-          if (toolCall.index == __classPrivateFieldGet(this, _AssistantStream_currentToolCallIndex, "f")) {
-            this._emit("toolCallDelta", toolCall, accumulatedRunStep.step_details.tool_calls[toolCall.index]);
-          } else {
-            if (__classPrivateFieldGet(this, _AssistantStream_currentToolCall, "f")) {
-              this._emit("toolCallDone", __classPrivateFieldGet(this, _AssistantStream_currentToolCall, "f"));
-            }
-            __classPrivateFieldSet(this, _AssistantStream_currentToolCallIndex, toolCall.index, "f");
-            __classPrivateFieldSet(this, _AssistantStream_currentToolCall, accumulatedRunStep.step_details.tool_calls[toolCall.index], "f");
-            if (__classPrivateFieldGet(this, _AssistantStream_currentToolCall, "f"))
-              this._emit("toolCallCreated", __classPrivateFieldGet(this, _AssistantStream_currentToolCall, "f"));
-          }
-        }
-      }
-      this._emit("runStepDelta", event.data.delta, accumulatedRunStep);
-      break;
-    case "thread.run.step.completed":
-    case "thread.run.step.failed":
-    case "thread.run.step.cancelled":
-    case "thread.run.step.expired":
-      __classPrivateFieldSet(this, _AssistantStream_currentRunStepSnapshot, void 0, "f");
-      const details = event.data.step_details;
-      if (details.type == "tool_calls") {
-        if (__classPrivateFieldGet(this, _AssistantStream_currentToolCall, "f")) {
-          this._emit("toolCallDone", __classPrivateFieldGet(this, _AssistantStream_currentToolCall, "f"));
-          __classPrivateFieldSet(this, _AssistantStream_currentToolCall, void 0, "f");
-        }
-      }
-      this._emit("runStepDone", event.data, accumulatedRunStep);
-      break;
-    case "thread.run.step.in_progress":
-      break;
-  }
-}, _AssistantStream_handleEvent = function _AssistantStream_handleEvent2(event) {
-  __classPrivateFieldGet(this, _AssistantStream_events, "f").push(event);
-  this._emit("event", event);
-}, _AssistantStream_accumulateRunStep = function _AssistantStream_accumulateRunStep2(event) {
-  switch (event.event) {
-    case "thread.run.step.created":
-      __classPrivateFieldGet(this, _AssistantStream_runStepSnapshots, "f")[event.data.id] = event.data;
-      return event.data;
-    case "thread.run.step.delta":
-      let snapshot = __classPrivateFieldGet(this, _AssistantStream_runStepSnapshots, "f")[event.data.id];
-      if (!snapshot) {
-        throw Error("Received a RunStepDelta before creation of a snapshot");
-      }
-      let data = event.data;
-      if (data.delta) {
-        const accumulated = _a2.accumulateDelta(snapshot, data.delta);
-        __classPrivateFieldGet(this, _AssistantStream_runStepSnapshots, "f")[event.data.id] = accumulated;
-      }
-      return __classPrivateFieldGet(this, _AssistantStream_runStepSnapshots, "f")[event.data.id];
-    case "thread.run.step.completed":
-    case "thread.run.step.failed":
-    case "thread.run.step.cancelled":
-    case "thread.run.step.expired":
-    case "thread.run.step.in_progress":
-      __classPrivateFieldGet(this, _AssistantStream_runStepSnapshots, "f")[event.data.id] = event.data;
-      break;
-  }
-  if (__classPrivateFieldGet(this, _AssistantStream_runStepSnapshots, "f")[event.data.id])
-    return __classPrivateFieldGet(this, _AssistantStream_runStepSnapshots, "f")[event.data.id];
-  throw new Error("No snapshot available");
-}, _AssistantStream_accumulateMessage = function _AssistantStream_accumulateMessage2(event, snapshot) {
-  let newContent = [];
-  switch (event.event) {
-    case "thread.message.created":
-      return [event.data, newContent];
-    case "thread.message.delta":
-      if (!snapshot) {
-        throw Error("Received a delta with no existing snapshot (there should be one from message creation)");
-      }
-      let data = event.data;
-      if (data.delta.content) {
-        for (const contentElement of data.delta.content) {
-          if (contentElement.index in snapshot.content) {
-            let currentContent = snapshot.content[contentElement.index];
-            snapshot.content[contentElement.index] = __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_accumulateContent).call(this, contentElement, currentContent);
-          } else {
-            snapshot.content[contentElement.index] = contentElement;
-            newContent.push(contentElement);
-          }
-        }
-      }
-      return [snapshot, newContent];
-    case "thread.message.in_progress":
-    case "thread.message.completed":
-    case "thread.message.incomplete":
-      if (snapshot) {
-        return [snapshot, newContent];
-      } else {
-        throw Error("Received thread message event with no existing snapshot");
-      }
-  }
-  throw Error("Tried to accumulate a non-message event");
-}, _AssistantStream_accumulateContent = function _AssistantStream_accumulateContent2(contentElement, currentContent) {
-  return _a2.accumulateDelta(currentContent, contentElement);
-}, _AssistantStream_handleRun = function _AssistantStream_handleRun2(event) {
-  __classPrivateFieldSet(this, _AssistantStream_currentRunSnapshot, event.data, "f");
-  switch (event.event) {
-    case "thread.run.created":
-      break;
-    case "thread.run.queued":
-      break;
-    case "thread.run.in_progress":
-      break;
-    case "thread.run.requires_action":
-    case "thread.run.cancelled":
-    case "thread.run.failed":
-    case "thread.run.completed":
-    case "thread.run.expired":
-    case "thread.run.incomplete":
-      __classPrivateFieldSet(this, _AssistantStream_finalRun, event.data, "f");
-      if (__classPrivateFieldGet(this, _AssistantStream_currentToolCall, "f")) {
-        this._emit("toolCallDone", __classPrivateFieldGet(this, _AssistantStream_currentToolCall, "f"));
-        __classPrivateFieldSet(this, _AssistantStream_currentToolCall, void 0, "f");
-      }
-      break;
-    case "thread.run.cancelling":
-      break;
-  }
-};
-function assertNever3(_x) {
-}
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/runs/runs.mjs
-var Runs = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.steps = new Steps(this._client);
-  }
-  create(threadID, params, options) {
-    const { include, ...body } = params;
-    return this._client.post(path2`/threads/${threadID}/runs`, {
-      query: { include },
-      body,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers]),
-      stream: params.stream ?? false,
-      __synthesizeEventData: true
-    });
-  }
-  /**
-   * Retrieves a run.
-   *
-   * @deprecated The Assistants API is deprecated in favor of the Responses API
-   */
-  retrieve(runID, params, options) {
-    const { thread_id } = params;
-    return this._client.get(path2`/threads/${thread_id}/runs/${runID}`, {
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Modifies a run.
-   *
-   * @deprecated The Assistants API is deprecated in favor of the Responses API
-   */
-  update(runID, params, options) {
-    const { thread_id, ...body } = params;
-    return this._client.post(path2`/threads/${thread_id}/runs/${runID}`, {
-      body,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Returns a list of runs belonging to a thread.
-   *
-   * @deprecated The Assistants API is deprecated in favor of the Responses API
-   */
-  list(threadID, query = {}, options) {
-    return this._client.getAPIList(path2`/threads/${threadID}/runs`, CursorPage, {
-      query,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Cancels a run that is `in_progress`.
-   *
-   * @deprecated The Assistants API is deprecated in favor of the Responses API
-   */
-  cancel(runID, params, options) {
-    const { thread_id } = params;
-    return this._client.post(path2`/threads/${thread_id}/runs/${runID}/cancel`, {
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * A helper to create a run an poll for a terminal state. More information on Run
-   * lifecycles can be found here:
-   * https://platform.openai.com/docs/assistants/how-it-works/runs-and-run-steps
-   */
-  async createAndPoll(threadId, body, options) {
-    const run2 = await this.create(threadId, body, options);
-    return await this.poll(run2.id, { thread_id: threadId }, options);
-  }
-  /**
-   * Create a Run stream
-   *
-   * @deprecated use `stream` instead
-   */
-  createAndStream(threadId, body, options) {
-    return AssistantStream.createAssistantStream(threadId, this._client.beta.threads.runs, body, options);
-  }
-  /**
-   * A helper to poll a run status until it reaches a terminal state. More
-   * information on Run lifecycles can be found here:
-   * https://platform.openai.com/docs/assistants/how-it-works/runs-and-run-steps
-   */
-  async poll(runId, params, options) {
-    const headers = buildHeaders([
-      options?.headers,
-      {
-        "X-Stainless-Poll-Helper": "true",
-        "X-Stainless-Custom-Poll-Interval": options?.pollIntervalMs?.toString() ?? void 0
-      }
-    ]);
-    while (true) {
-      const { data: run2, response } = await this.retrieve(runId, params, {
-        ...options,
-        headers: { ...options?.headers, ...headers }
-      }).withResponse();
-      switch (run2.status) {
-        //If we are in any sort of intermediate state we poll
-        case "queued":
-        case "in_progress":
-        case "cancelling":
-          let sleepInterval = 5e3;
-          if (options?.pollIntervalMs) {
-            sleepInterval = options.pollIntervalMs;
-          } else {
-            const headerInterval = response.headers.get("openai-poll-after-ms");
-            if (headerInterval) {
-              const headerIntervalMs = parseInt(headerInterval);
-              if (!isNaN(headerIntervalMs)) {
-                sleepInterval = headerIntervalMs;
-              }
-            }
-          }
-          await sleep(sleepInterval);
-          break;
-        //We return the run in any terminal state.
-        case "requires_action":
-        case "incomplete":
-        case "cancelled":
-        case "completed":
-        case "failed":
-        case "expired":
-          return run2;
-      }
-    }
-  }
-  /**
-   * Create a Run stream
-   */
-  stream(threadId, body, options) {
-    return AssistantStream.createAssistantStream(threadId, this._client.beta.threads.runs, body, options);
-  }
-  submitToolOutputs(runID, params, options) {
-    const { thread_id, ...body } = params;
-    return this._client.post(path2`/threads/${thread_id}/runs/${runID}/submit_tool_outputs`, {
-      body,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers]),
-      stream: params.stream ?? false,
-      __synthesizeEventData: true
-    });
-  }
-  /**
-   * A helper to submit a tool output to a run and poll for a terminal run state.
-   * More information on Run lifecycles can be found here:
-   * https://platform.openai.com/docs/assistants/how-it-works/runs-and-run-steps
-   */
-  async submitToolOutputsAndPoll(runId, params, options) {
-    const run2 = await this.submitToolOutputs(runId, params, options);
-    return await this.poll(run2.id, params, options);
-  }
-  /**
-   * Submit the tool outputs from a previous run and stream the run to a terminal
-   * state. More information on Run lifecycles can be found here:
-   * https://platform.openai.com/docs/assistants/how-it-works/runs-and-run-steps
-   */
-  submitToolOutputsStream(runId, params, options) {
-    return AssistantStream.createToolAssistantStream(runId, this._client.beta.threads.runs, params, options);
-  }
-};
-Runs.Steps = Steps;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/threads.mjs
-var Threads2 = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.runs = new Runs(this._client);
-    this.messages = new Messages2(this._client);
-  }
-  /**
-   * Create a thread.
-   *
-   * @deprecated The Assistants API is deprecated in favor of the Responses API
-   */
-  create(body = {}, options) {
-    return this._client.post("/threads", {
-      body,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Retrieves a thread.
-   *
-   * @deprecated The Assistants API is deprecated in favor of the Responses API
-   */
-  retrieve(threadID, options) {
-    return this._client.get(path2`/threads/${threadID}`, {
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Modifies a thread.
-   *
-   * @deprecated The Assistants API is deprecated in favor of the Responses API
-   */
-  update(threadID, body, options) {
-    return this._client.post(path2`/threads/${threadID}`, {
-      body,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Delete a thread.
-   *
-   * @deprecated The Assistants API is deprecated in favor of the Responses API
-   */
-  delete(threadID, options) {
-    return this._client.delete(path2`/threads/${threadID}`, {
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  createAndRun(body, options) {
-    return this._client.post("/threads/runs", {
-      body,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers]),
-      stream: body.stream ?? false,
-      __synthesizeEventData: true
-    });
-  }
-  /**
-   * A helper to create a thread, start a run and then poll for a terminal state.
-   * More information on Run lifecycles can be found here:
-   * https://platform.openai.com/docs/assistants/how-it-works/runs-and-run-steps
-   */
-  async createAndRunPoll(body, options) {
-    const run2 = await this.createAndRun(body, options);
-    return await this.runs.poll(run2.id, { thread_id: run2.thread_id }, options);
-  }
-  /**
-   * Create a thread and stream the run back
-   */
-  createAndRunStream(body, options) {
-    return AssistantStream.createThreadAssistantStream(body, this._client.beta.threads, options);
-  }
-};
-Threads2.Runs = Runs;
-Threads2.Messages = Messages2;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/beta.mjs
-var Beta = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.realtime = new Realtime(this._client);
-    this.chatkit = new ChatKit(this._client);
-    this.assistants = new Assistants(this._client);
-    this.threads = new Threads2(this._client);
-  }
-};
-Beta.Realtime = Realtime;
-Beta.ChatKit = ChatKit;
-Beta.Assistants = Assistants;
-Beta.Threads = Threads2;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/completions.mjs
-var Completions2 = class extends APIResource {
-  create(body, options) {
-    return this._client.post("/completions", { body, ...options, stream: body.stream ?? false });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/containers/files/content.mjs
-var Content = class extends APIResource {
-  /**
-   * Retrieve Container File Content
-   */
-  retrieve(fileID, params, options) {
-    const { container_id } = params;
-    return this._client.get(path2`/containers/${container_id}/files/${fileID}/content`, {
-      ...options,
-      headers: buildHeaders([{ Accept: "application/binary" }, options?.headers]),
-      __binaryResponse: true
-    });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/containers/files/files.mjs
-var Files = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.content = new Content(this._client);
-  }
-  /**
-   * Create a Container File
-   *
-   * You can send either a multipart/form-data request with the raw file content, or
-   * a JSON request with a file ID.
-   */
-  create(containerID, body, options) {
-    return this._client.post(path2`/containers/${containerID}/files`, maybeMultipartFormRequestOptions({ body, ...options }, this._client));
-  }
-  /**
-   * Retrieve Container File
-   */
-  retrieve(fileID, params, options) {
-    const { container_id } = params;
-    return this._client.get(path2`/containers/${container_id}/files/${fileID}`, options);
-  }
-  /**
-   * List Container files
-   */
-  list(containerID, query = {}, options) {
-    return this._client.getAPIList(path2`/containers/${containerID}/files`, CursorPage, {
-      query,
-      ...options
-    });
-  }
-  /**
-   * Delete Container File
-   */
-  delete(fileID, params, options) {
-    const { container_id } = params;
-    return this._client.delete(path2`/containers/${container_id}/files/${fileID}`, {
-      ...options,
-      headers: buildHeaders([{ Accept: "*/*" }, options?.headers])
-    });
-  }
-};
-Files.Content = Content;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/containers/containers.mjs
-var Containers = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.files = new Files(this._client);
-  }
-  /**
-   * Create Container
-   */
-  create(body, options) {
-    return this._client.post("/containers", { body, ...options });
-  }
-  /**
-   * Retrieve Container
-   */
-  retrieve(containerID, options) {
-    return this._client.get(path2`/containers/${containerID}`, options);
-  }
-  /**
-   * List Containers
-   */
-  list(query = {}, options) {
-    return this._client.getAPIList("/containers", CursorPage, { query, ...options });
-  }
-  /**
-   * Delete Container
-   */
-  delete(containerID, options) {
-    return this._client.delete(path2`/containers/${containerID}`, {
-      ...options,
-      headers: buildHeaders([{ Accept: "*/*" }, options?.headers])
-    });
-  }
-};
-Containers.Files = Files;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/conversations/items.mjs
-var Items = class extends APIResource {
-  /**
-   * Create items in a conversation with the given ID.
-   */
-  create(conversationID, params, options) {
-    const { include, ...body } = params;
-    return this._client.post(path2`/conversations/${conversationID}/items`, {
-      query: { include },
-      body,
-      ...options
-    });
-  }
-  /**
-   * Get a single item from a conversation with the given IDs.
-   */
-  retrieve(itemID, params, options) {
-    const { conversation_id, ...query } = params;
-    return this._client.get(path2`/conversations/${conversation_id}/items/${itemID}`, { query, ...options });
-  }
-  /**
-   * List all items for a conversation with the given ID.
-   */
-  list(conversationID, query = {}, options) {
-    return this._client.getAPIList(path2`/conversations/${conversationID}/items`, ConversationCursorPage, { query, ...options });
-  }
-  /**
-   * Delete an item from a conversation with the given IDs.
-   */
-  delete(itemID, params, options) {
-    const { conversation_id } = params;
-    return this._client.delete(path2`/conversations/${conversation_id}/items/${itemID}`, options);
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/conversations/conversations.mjs
-var Conversations = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.items = new Items(this._client);
-  }
-  /**
-   * Create a conversation.
-   */
-  create(body = {}, options) {
-    return this._client.post("/conversations", { body, ...options });
-  }
-  /**
-   * Get a conversation
-   */
-  retrieve(conversationID, options) {
-    return this._client.get(path2`/conversations/${conversationID}`, options);
-  }
-  /**
-   * Update a conversation
-   */
-  update(conversationID, body, options) {
-    return this._client.post(path2`/conversations/${conversationID}`, { body, ...options });
-  }
-  /**
-   * Delete a conversation. Items in the conversation will not be deleted.
-   */
-  delete(conversationID, options) {
-    return this._client.delete(path2`/conversations/${conversationID}`, options);
-  }
-};
-Conversations.Items = Items;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/embeddings.mjs
-var Embeddings = class extends APIResource {
-  /**
-   * Creates an embedding vector representing the input text.
-   *
-   * @example
-   * ```ts
-   * const createEmbeddingResponse =
-   *   await client.embeddings.create({
-   *     input: 'The quick brown fox jumped over the lazy dog',
-   *     model: 'text-embedding-3-small',
-   *   });
-   * ```
-   */
-  create(body, options) {
-    const hasUserProvidedEncodingFormat = !!body.encoding_format;
-    let encoding_format = hasUserProvidedEncodingFormat ? body.encoding_format : "base64";
-    if (hasUserProvidedEncodingFormat) {
-      loggerFor(this._client).debug("embeddings/user defined encoding_format:", body.encoding_format);
-    }
-    const response = this._client.post("/embeddings", {
-      body: {
-        ...body,
-        encoding_format
-      },
-      ...options
-    });
-    if (hasUserProvidedEncodingFormat) {
-      return response;
-    }
-    loggerFor(this._client).debug("embeddings/decoding base64 embeddings from base64");
-    return response._thenUnwrap((response2) => {
-      if (response2 && response2.data) {
-        response2.data.forEach((embeddingBase64Obj) => {
-          const embeddingBase64Str = embeddingBase64Obj.embedding;
-          embeddingBase64Obj.embedding = toFloat32Array(embeddingBase64Str);
-        });
-      }
-      return response2;
-    });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/evals/runs/output-items.mjs
-var OutputItems = class extends APIResource {
-  /**
-   * Get an evaluation run output item by ID.
-   */
-  retrieve(outputItemID, params, options) {
-    const { eval_id, run_id } = params;
-    return this._client.get(path2`/evals/${eval_id}/runs/${run_id}/output_items/${outputItemID}`, options);
-  }
-  /**
-   * Get a list of output items for an evaluation run.
-   */
-  list(runID, params, options) {
-    const { eval_id, ...query } = params;
-    return this._client.getAPIList(path2`/evals/${eval_id}/runs/${runID}/output_items`, CursorPage, { query, ...options });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/evals/runs/runs.mjs
-var Runs2 = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.outputItems = new OutputItems(this._client);
-  }
-  /**
-   * Kicks off a new run for a given evaluation, specifying the data source, and what
-   * model configuration to use to test. The datasource will be validated against the
-   * schema specified in the config of the evaluation.
-   */
-  create(evalID, body, options) {
-    return this._client.post(path2`/evals/${evalID}/runs`, { body, ...options });
-  }
-  /**
-   * Get an evaluation run by ID.
-   */
-  retrieve(runID, params, options) {
-    const { eval_id } = params;
-    return this._client.get(path2`/evals/${eval_id}/runs/${runID}`, options);
-  }
-  /**
-   * Get a list of runs for an evaluation.
-   */
-  list(evalID, query = {}, options) {
-    return this._client.getAPIList(path2`/evals/${evalID}/runs`, CursorPage, {
-      query,
-      ...options
-    });
-  }
-  /**
-   * Delete an eval run.
-   */
-  delete(runID, params, options) {
-    const { eval_id } = params;
-    return this._client.delete(path2`/evals/${eval_id}/runs/${runID}`, options);
-  }
-  /**
-   * Cancel an ongoing evaluation run.
-   */
-  cancel(runID, params, options) {
-    const { eval_id } = params;
-    return this._client.post(path2`/evals/${eval_id}/runs/${runID}`, options);
-  }
-};
-Runs2.OutputItems = OutputItems;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/evals/evals.mjs
-var Evals = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.runs = new Runs2(this._client);
-  }
-  /**
-   * Create the structure of an evaluation that can be used to test a model's
-   * performance. An evaluation is a set of testing criteria and the config for a
-   * data source, which dictates the schema of the data used in the evaluation. After
-   * creating an evaluation, you can run it on different models and model parameters.
-   * We support several types of graders and datasources. For more information, see
-   * the [Evals guide](https://platform.openai.com/docs/guides/evals).
-   */
-  create(body, options) {
-    return this._client.post("/evals", { body, ...options });
-  }
-  /**
-   * Get an evaluation by ID.
-   */
-  retrieve(evalID, options) {
-    return this._client.get(path2`/evals/${evalID}`, options);
-  }
-  /**
-   * Update certain properties of an evaluation.
-   */
-  update(evalID, body, options) {
-    return this._client.post(path2`/evals/${evalID}`, { body, ...options });
-  }
-  /**
-   * List evaluations for a project.
-   */
-  list(query = {}, options) {
-    return this._client.getAPIList("/evals", CursorPage, { query, ...options });
-  }
-  /**
-   * Delete an evaluation.
-   */
-  delete(evalID, options) {
-    return this._client.delete(path2`/evals/${evalID}`, options);
-  }
-};
-Evals.Runs = Runs2;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/files.mjs
-var Files2 = class extends APIResource {
-  /**
-   * Upload a file that can be used across various endpoints. Individual files can be
-   * up to 512 MB, and each project can store up to 2.5 TB of files in total. There
-   * is no organization-wide storage limit.
-   *
-   * - The Assistants API supports files up to 2 million tokens and of specific file
-   *   types. See the
-   *   [Assistants Tools guide](https://platform.openai.com/docs/assistants/tools)
-   *   for details.
-   * - The Fine-tuning API only supports `.jsonl` files. The input also has certain
-   *   required formats for fine-tuning
-   *   [chat](https://platform.openai.com/docs/api-reference/fine-tuning/chat-input)
-   *   or
-   *   [completions](https://platform.openai.com/docs/api-reference/fine-tuning/completions-input)
-   *   models.
-   * - The Batch API only supports `.jsonl` files up to 200 MB in size. The input
-   *   also has a specific required
-   *   [format](https://platform.openai.com/docs/api-reference/batch/request-input).
-   *
-   * Please [contact us](https://help.openai.com/) if you need to increase these
-   * storage limits.
-   */
-  create(body, options) {
-    return this._client.post("/files", multipartFormRequestOptions({ body, ...options }, this._client));
-  }
-  /**
-   * Returns information about a specific file.
-   */
-  retrieve(fileID, options) {
-    return this._client.get(path2`/files/${fileID}`, options);
-  }
-  /**
-   * Returns a list of files.
-   */
-  list(query = {}, options) {
-    return this._client.getAPIList("/files", CursorPage, { query, ...options });
-  }
-  /**
-   * Delete a file and remove it from all vector stores.
-   */
-  delete(fileID, options) {
-    return this._client.delete(path2`/files/${fileID}`, options);
-  }
-  /**
-   * Returns the contents of the specified file.
-   */
-  content(fileID, options) {
-    return this._client.get(path2`/files/${fileID}/content`, {
-      ...options,
-      headers: buildHeaders([{ Accept: "application/binary" }, options?.headers]),
-      __binaryResponse: true
-    });
-  }
-  /**
-   * Waits for the given file to be processed, default timeout is 30 mins.
-   */
-  async waitForProcessing(id, { pollInterval = 5e3, maxWait = 30 * 60 * 1e3 } = {}) {
-    const TERMINAL_STATES = /* @__PURE__ */ new Set(["processed", "error", "deleted"]);
-    const start = Date.now();
-    let file2 = await this.retrieve(id);
-    while (!file2.status || !TERMINAL_STATES.has(file2.status)) {
-      await sleep(pollInterval);
-      file2 = await this.retrieve(id);
-      if (Date.now() - start > maxWait) {
-        throw new APIConnectionTimeoutError({
-          message: `Giving up on waiting for file ${id} to finish processing after ${maxWait} milliseconds.`
-        });
-      }
-    }
-    return file2;
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/methods.mjs
-var Methods = class extends APIResource {
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/alpha/graders.mjs
-var Graders = class extends APIResource {
-  /**
-   * Run a grader.
-   *
-   * @example
-   * ```ts
-   * const response = await client.fineTuning.alpha.graders.run({
-   *   grader: {
-   *     input: 'input',
-   *     name: 'name',
-   *     operation: 'eq',
-   *     reference: 'reference',
-   *     type: 'string_check',
-   *   },
-   *   model_sample: 'model_sample',
-   * });
-   * ```
-   */
-  run(body, options) {
-    return this._client.post("/fine_tuning/alpha/graders/run", { body, ...options });
-  }
-  /**
-   * Validate a grader.
-   *
-   * @example
-   * ```ts
-   * const response =
-   *   await client.fineTuning.alpha.graders.validate({
-   *     grader: {
-   *       input: 'input',
-   *       name: 'name',
-   *       operation: 'eq',
-   *       reference: 'reference',
-   *       type: 'string_check',
-   *     },
-   *   });
-   * ```
-   */
-  validate(body, options) {
-    return this._client.post("/fine_tuning/alpha/graders/validate", { body, ...options });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/alpha/alpha.mjs
-var Alpha = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.graders = new Graders(this._client);
-  }
-};
-Alpha.Graders = Graders;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/checkpoints/permissions.mjs
-var Permissions = class extends APIResource {
-  /**
-   * **NOTE:** Calling this endpoint requires an [admin API key](../admin-api-keys).
-   *
-   * This enables organization owners to share fine-tuned models with other projects
-   * in their organization.
-   *
-   * @example
-   * ```ts
-   * // Automatically fetches more pages as needed.
-   * for await (const permissionCreateResponse of client.fineTuning.checkpoints.permissions.create(
-   *   'ft:gpt-4o-mini-2024-07-18:org:weather:B7R9VjQd',
-   *   { project_ids: ['string'] },
-   * )) {
-   *   // ...
-   * }
-   * ```
-   */
-  create(fineTunedModelCheckpoint, body, options) {
-    return this._client.getAPIList(path2`/fine_tuning/checkpoints/${fineTunedModelCheckpoint}/permissions`, Page, { body, method: "post", ...options });
-  }
-  /**
-   * **NOTE:** This endpoint requires an [admin API key](../admin-api-keys).
-   *
-   * Organization owners can use this endpoint to view all permissions for a
-   * fine-tuned model checkpoint.
-   *
-   * @deprecated Retrieve is deprecated. Please swap to the paginated list method instead.
-   */
-  retrieve(fineTunedModelCheckpoint, query = {}, options) {
-    return this._client.get(path2`/fine_tuning/checkpoints/${fineTunedModelCheckpoint}/permissions`, {
-      query,
-      ...options
-    });
-  }
-  /**
-   * **NOTE:** This endpoint requires an [admin API key](../admin-api-keys).
-   *
-   * Organization owners can use this endpoint to view all permissions for a
-   * fine-tuned model checkpoint.
-   *
-   * @example
-   * ```ts
-   * // Automatically fetches more pages as needed.
-   * for await (const permissionListResponse of client.fineTuning.checkpoints.permissions.list(
-   *   'ft-AF1WoRqd3aJAHsqc9NY7iL8F',
-   * )) {
-   *   // ...
-   * }
-   * ```
-   */
-  list(fineTunedModelCheckpoint, query = {}, options) {
-    return this._client.getAPIList(path2`/fine_tuning/checkpoints/${fineTunedModelCheckpoint}/permissions`, ConversationCursorPage, { query, ...options });
-  }
-  /**
-   * **NOTE:** This endpoint requires an [admin API key](../admin-api-keys).
-   *
-   * Organization owners can use this endpoint to delete a permission for a
-   * fine-tuned model checkpoint.
-   *
-   * @example
-   * ```ts
-   * const permission =
-   *   await client.fineTuning.checkpoints.permissions.delete(
-   *     'cp_zc4Q7MP6XxulcVzj4MZdwsAB',
-   *     {
-   *       fine_tuned_model_checkpoint:
-   *         'ft:gpt-4o-mini-2024-07-18:org:weather:B7R9VjQd',
-   *     },
-   *   );
-   * ```
-   */
-  delete(permissionID, params, options) {
-    const { fine_tuned_model_checkpoint } = params;
-    return this._client.delete(path2`/fine_tuning/checkpoints/${fine_tuned_model_checkpoint}/permissions/${permissionID}`, options);
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/checkpoints/checkpoints.mjs
-var Checkpoints = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.permissions = new Permissions(this._client);
-  }
-};
-Checkpoints.Permissions = Permissions;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/jobs/checkpoints.mjs
-var Checkpoints2 = class extends APIResource {
-  /**
-   * List checkpoints for a fine-tuning job.
-   *
-   * @example
-   * ```ts
-   * // Automatically fetches more pages as needed.
-   * for await (const fineTuningJobCheckpoint of client.fineTuning.jobs.checkpoints.list(
-   *   'ft-AF1WoRqd3aJAHsqc9NY7iL8F',
-   * )) {
-   *   // ...
-   * }
-   * ```
-   */
-  list(fineTuningJobID, query = {}, options) {
-    return this._client.getAPIList(path2`/fine_tuning/jobs/${fineTuningJobID}/checkpoints`, CursorPage, { query, ...options });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/jobs/jobs.mjs
-var Jobs = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.checkpoints = new Checkpoints2(this._client);
-  }
-  /**
-   * Creates a fine-tuning job which begins the process of creating a new model from
-   * a given dataset.
-   *
-   * Response includes details of the enqueued job including job status and the name
-   * of the fine-tuned models once complete.
-   *
-   * [Learn more about fine-tuning](https://platform.openai.com/docs/guides/model-optimization)
-   *
-   * @example
-   * ```ts
-   * const fineTuningJob = await client.fineTuning.jobs.create({
-   *   model: 'gpt-4o-mini',
-   *   training_file: 'file-abc123',
-   * });
-   * ```
-   */
-  create(body, options) {
-    return this._client.post("/fine_tuning/jobs", { body, ...options });
-  }
-  /**
-   * Get info about a fine-tuning job.
-   *
-   * [Learn more about fine-tuning](https://platform.openai.com/docs/guides/model-optimization)
-   *
-   * @example
-   * ```ts
-   * const fineTuningJob = await client.fineTuning.jobs.retrieve(
-   *   'ft-AF1WoRqd3aJAHsqc9NY7iL8F',
-   * );
-   * ```
-   */
-  retrieve(fineTuningJobID, options) {
-    return this._client.get(path2`/fine_tuning/jobs/${fineTuningJobID}`, options);
-  }
-  /**
-   * List your organization's fine-tuning jobs
-   *
-   * @example
-   * ```ts
-   * // Automatically fetches more pages as needed.
-   * for await (const fineTuningJob of client.fineTuning.jobs.list()) {
-   *   // ...
-   * }
-   * ```
-   */
-  list(query = {}, options) {
-    return this._client.getAPIList("/fine_tuning/jobs", CursorPage, { query, ...options });
-  }
-  /**
-   * Immediately cancel a fine-tune job.
-   *
-   * @example
-   * ```ts
-   * const fineTuningJob = await client.fineTuning.jobs.cancel(
-   *   'ft-AF1WoRqd3aJAHsqc9NY7iL8F',
-   * );
-   * ```
-   */
-  cancel(fineTuningJobID, options) {
-    return this._client.post(path2`/fine_tuning/jobs/${fineTuningJobID}/cancel`, options);
-  }
-  /**
-   * Get status updates for a fine-tuning job.
-   *
-   * @example
-   * ```ts
-   * // Automatically fetches more pages as needed.
-   * for await (const fineTuningJobEvent of client.fineTuning.jobs.listEvents(
-   *   'ft-AF1WoRqd3aJAHsqc9NY7iL8F',
-   * )) {
-   *   // ...
-   * }
-   * ```
-   */
-  listEvents(fineTuningJobID, query = {}, options) {
-    return this._client.getAPIList(path2`/fine_tuning/jobs/${fineTuningJobID}/events`, CursorPage, { query, ...options });
-  }
-  /**
-   * Pause a fine-tune job.
-   *
-   * @example
-   * ```ts
-   * const fineTuningJob = await client.fineTuning.jobs.pause(
-   *   'ft-AF1WoRqd3aJAHsqc9NY7iL8F',
-   * );
-   * ```
-   */
-  pause(fineTuningJobID, options) {
-    return this._client.post(path2`/fine_tuning/jobs/${fineTuningJobID}/pause`, options);
-  }
-  /**
-   * Resume a fine-tune job.
-   *
-   * @example
-   * ```ts
-   * const fineTuningJob = await client.fineTuning.jobs.resume(
-   *   'ft-AF1WoRqd3aJAHsqc9NY7iL8F',
-   * );
-   * ```
-   */
-  resume(fineTuningJobID, options) {
-    return this._client.post(path2`/fine_tuning/jobs/${fineTuningJobID}/resume`, options);
-  }
-};
-Jobs.Checkpoints = Checkpoints2;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/fine-tuning.mjs
-var FineTuning = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.methods = new Methods(this._client);
-    this.jobs = new Jobs(this._client);
-    this.checkpoints = new Checkpoints(this._client);
-    this.alpha = new Alpha(this._client);
-  }
-};
-FineTuning.Methods = Methods;
-FineTuning.Jobs = Jobs;
-FineTuning.Checkpoints = Checkpoints;
-FineTuning.Alpha = Alpha;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/graders/grader-models.mjs
-var GraderModels = class extends APIResource {
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/graders/graders.mjs
-var Graders2 = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.graderModels = new GraderModels(this._client);
-  }
-};
-Graders2.GraderModels = GraderModels;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/images.mjs
-var Images = class extends APIResource {
-  /**
-   * Creates a variation of a given image. This endpoint only supports `dall-e-2`.
-   *
-   * @example
-   * ```ts
-   * const imagesResponse = await client.images.createVariation({
-   *   image: fs.createReadStream('otter.png'),
-   * });
-   * ```
-   */
-  createVariation(body, options) {
-    return this._client.post("/images/variations", multipartFormRequestOptions({ body, ...options }, this._client));
-  }
-  edit(body, options) {
-    return this._client.post("/images/edits", multipartFormRequestOptions({ body, ...options, stream: body.stream ?? false }, this._client));
-  }
-  generate(body, options) {
-    return this._client.post("/images/generations", { body, ...options, stream: body.stream ?? false });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/models.mjs
-var Models = class extends APIResource {
-  /**
-   * Retrieves a model instance, providing basic information about the model such as
-   * the owner and permissioning.
-   */
-  retrieve(model, options) {
-    return this._client.get(path2`/models/${model}`, options);
-  }
-  /**
-   * Lists the currently available models, and provides basic information about each
-   * one such as the owner and availability.
-   */
-  list(options) {
-    return this._client.getAPIList("/models", Page, options);
-  }
-  /**
-   * Delete a fine-tuned model. You must have the Owner role in your organization to
-   * delete a model.
-   */
-  delete(model, options) {
-    return this._client.delete(path2`/models/${model}`, options);
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/moderations.mjs
-var Moderations = class extends APIResource {
-  /**
-   * Classifies if text and/or image inputs are potentially harmful. Learn more in
-   * the [moderation guide](https://platform.openai.com/docs/guides/moderation).
-   */
-  create(body, options) {
-    return this._client.post("/moderations", { body, ...options });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/realtime/calls.mjs
-var Calls = class extends APIResource {
-  /**
-   * Accept an incoming SIP call and configure the realtime session that will handle
-   * it.
-   *
-   * @example
-   * ```ts
-   * await client.realtime.calls.accept('call_id', {
-   *   type: 'realtime',
-   * });
-   * ```
-   */
-  accept(callID, body, options) {
-    return this._client.post(path2`/realtime/calls/${callID}/accept`, {
-      body,
-      ...options,
-      headers: buildHeaders([{ Accept: "*/*" }, options?.headers])
-    });
-  }
-  /**
-   * End an active Realtime API call, whether it was initiated over SIP or WebRTC.
-   *
-   * @example
-   * ```ts
-   * await client.realtime.calls.hangup('call_id');
-   * ```
-   */
-  hangup(callID, options) {
-    return this._client.post(path2`/realtime/calls/${callID}/hangup`, {
-      ...options,
-      headers: buildHeaders([{ Accept: "*/*" }, options?.headers])
-    });
-  }
-  /**
-   * Transfer an active SIP call to a new destination using the SIP REFER verb.
-   *
-   * @example
-   * ```ts
-   * await client.realtime.calls.refer('call_id', {
-   *   target_uri: 'tel:+14155550123',
-   * });
-   * ```
-   */
-  refer(callID, body, options) {
-    return this._client.post(path2`/realtime/calls/${callID}/refer`, {
-      body,
-      ...options,
-      headers: buildHeaders([{ Accept: "*/*" }, options?.headers])
-    });
-  }
-  /**
-   * Decline an incoming SIP call by returning a SIP status code to the caller.
-   *
-   * @example
-   * ```ts
-   * await client.realtime.calls.reject('call_id');
-   * ```
-   */
-  reject(callID, body = {}, options) {
-    return this._client.post(path2`/realtime/calls/${callID}/reject`, {
-      body,
-      ...options,
-      headers: buildHeaders([{ Accept: "*/*" }, options?.headers])
-    });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/realtime/client-secrets.mjs
-var ClientSecrets = class extends APIResource {
-  /**
-   * Create a Realtime client secret with an associated session configuration.
-   *
-   * Client secrets are short-lived tokens that can be passed to a client app, such
-   * as a web frontend or mobile client, which grants access to the Realtime API
-   * without leaking your main API key. You can configure a custom TTL for each
-   * client secret.
-   *
-   * You can also attach session configuration options to the client secret, which
-   * will be applied to any sessions created using that client secret, but these can
-   * also be overridden by the client connection.
-   *
-   * [Learn more about authentication with client secrets over WebRTC](https://platform.openai.com/docs/guides/realtime-webrtc).
-   *
-   * Returns the created client secret and the effective session object. The client
-   * secret is a string that looks like `ek_1234`.
-   *
-   * @example
-   * ```ts
-   * const clientSecret =
-   *   await client.realtime.clientSecrets.create();
-   * ```
-   */
-  create(body, options) {
-    return this._client.post("/realtime/client_secrets", { body, ...options });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/realtime/realtime.mjs
-var Realtime2 = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.clientSecrets = new ClientSecrets(this._client);
-    this.calls = new Calls(this._client);
-  }
-};
-Realtime2.ClientSecrets = ClientSecrets;
-Realtime2.Calls = Calls;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ResponsesParser.mjs
-function maybeParseResponse(response, params) {
-  if (!params || !hasAutoParseableInput2(params)) {
-    return {
-      ...response,
-      output_parsed: null,
-      output: response.output.map((item) => {
-        if (item.type === "function_call") {
-          return {
-            ...item,
-            parsed_arguments: null
-          };
-        }
-        if (item.type === "message") {
-          return {
-            ...item,
-            content: item.content.map((content) => ({
-              ...content,
-              parsed: null
-            }))
-          };
-        } else {
-          return item;
-        }
-      })
-    };
-  }
-  return parseResponse(response, params);
-}
-function parseResponse(response, params) {
-  const output = response.output.map((item) => {
-    if (item.type === "function_call") {
-      return {
-        ...item,
-        parsed_arguments: parseToolCall2(params, item)
-      };
-    }
-    if (item.type === "message") {
-      const content = item.content.map((content2) => {
-        if (content2.type === "output_text") {
-          return {
-            ...content2,
-            parsed: parseTextFormat(params, content2.text)
-          };
-        }
-        return content2;
-      });
-      return {
-        ...item,
-        content
-      };
-    }
-    return item;
-  });
-  const parsed = Object.assign({}, response, { output });
-  if (!Object.getOwnPropertyDescriptor(response, "output_text")) {
-    addOutputText(parsed);
-  }
-  Object.defineProperty(parsed, "output_parsed", {
-    enumerable: true,
-    get() {
-      for (const output2 of parsed.output) {
-        if (output2.type !== "message") {
-          continue;
-        }
-        for (const content of output2.content) {
-          if (content.type === "output_text" && content.parsed !== null) {
-            return content.parsed;
-          }
-        }
-      }
-      return null;
-    }
-  });
-  return parsed;
-}
-function parseTextFormat(params, content) {
-  if (params.text?.format?.type !== "json_schema") {
-    return null;
-  }
-  if ("$parseRaw" in params.text?.format) {
-    const text_format = params.text?.format;
-    return text_format.$parseRaw(content);
-  }
-  return JSON.parse(content);
-}
-function hasAutoParseableInput2(params) {
-  if (isAutoParsableResponseFormat(params.text?.format)) {
-    return true;
-  }
-  return false;
-}
-function isAutoParsableTool2(tool) {
-  return tool?.["$brand"] === "auto-parseable-tool";
-}
-function getInputToolByName(input_tools, name2) {
-  return input_tools.find((tool) => tool.type === "function" && tool.name === name2);
-}
-function parseToolCall2(params, toolCall) {
-  const inputTool = getInputToolByName(params.tools ?? [], toolCall.name);
-  return {
-    ...toolCall,
-    ...toolCall,
-    parsed_arguments: isAutoParsableTool2(inputTool) ? inputTool.$parseRaw(toolCall.arguments) : inputTool?.strict ? JSON.parse(toolCall.arguments) : null
-  };
-}
-function addOutputText(rsp) {
-  const texts = [];
-  for (const output of rsp.output) {
-    if (output.type !== "message") {
-      continue;
-    }
-    for (const content of output.content) {
-      if (content.type === "output_text") {
-        texts.push(content.text);
-      }
-    }
-  }
-  rsp.output_text = texts.join("");
-}
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/responses/ResponseStream.mjs
-var _ResponseStream_instances;
-var _ResponseStream_params;
-var _ResponseStream_currentResponseSnapshot;
-var _ResponseStream_finalResponse;
-var _ResponseStream_beginRequest;
-var _ResponseStream_addEvent;
-var _ResponseStream_endRequest;
-var _ResponseStream_accumulateResponse;
-var ResponseStream = class _ResponseStream extends EventStream {
-  constructor(params) {
-    super();
-    _ResponseStream_instances.add(this);
-    _ResponseStream_params.set(this, void 0);
-    _ResponseStream_currentResponseSnapshot.set(this, void 0);
-    _ResponseStream_finalResponse.set(this, void 0);
-    __classPrivateFieldSet(this, _ResponseStream_params, params, "f");
-  }
-  static createResponse(client, params, options) {
-    const runner = new _ResponseStream(params);
-    runner._run(() => runner._createOrRetrieveResponse(client, params, {
-      ...options,
-      headers: { ...options?.headers, "X-Stainless-Helper-Method": "stream" }
-    }));
-    return runner;
-  }
-  async _createOrRetrieveResponse(client, params, options) {
-    const signal = options?.signal;
-    if (signal) {
-      if (signal.aborted)
-        this.controller.abort();
-      signal.addEventListener("abort", () => this.controller.abort());
-    }
-    __classPrivateFieldGet(this, _ResponseStream_instances, "m", _ResponseStream_beginRequest).call(this);
-    let stream4;
-    let starting_after = null;
-    if ("response_id" in params) {
-      stream4 = await client.responses.retrieve(params.response_id, { stream: true }, { ...options, signal: this.controller.signal, stream: true });
-      starting_after = params.starting_after ?? null;
-    } else {
-      stream4 = await client.responses.create({ ...params, stream: true }, { ...options, signal: this.controller.signal });
-    }
-    this._connected();
-    for await (const event of stream4) {
-      __classPrivateFieldGet(this, _ResponseStream_instances, "m", _ResponseStream_addEvent).call(this, event, starting_after);
-    }
-    if (stream4.controller.signal?.aborted) {
-      throw new APIUserAbortError();
-    }
-    return __classPrivateFieldGet(this, _ResponseStream_instances, "m", _ResponseStream_endRequest).call(this);
-  }
-  [(_ResponseStream_params = /* @__PURE__ */ new WeakMap(), _ResponseStream_currentResponseSnapshot = /* @__PURE__ */ new WeakMap(), _ResponseStream_finalResponse = /* @__PURE__ */ new WeakMap(), _ResponseStream_instances = /* @__PURE__ */ new WeakSet(), _ResponseStream_beginRequest = function _ResponseStream_beginRequest2() {
-    if (this.ended)
-      return;
-    __classPrivateFieldSet(this, _ResponseStream_currentResponseSnapshot, void 0, "f");
-  }, _ResponseStream_addEvent = function _ResponseStream_addEvent2(event, starting_after) {
-    if (this.ended)
-      return;
-    const maybeEmit = (name2, event2) => {
-      if (starting_after == null || event2.sequence_number > starting_after) {
-        this._emit(name2, event2);
-      }
-    };
-    const response = __classPrivateFieldGet(this, _ResponseStream_instances, "m", _ResponseStream_accumulateResponse).call(this, event);
-    maybeEmit("event", event);
-    switch (event.type) {
-      case "response.output_text.delta": {
-        const output = response.output[event.output_index];
-        if (!output) {
-          throw new OpenAIError(`missing output at index ${event.output_index}`);
-        }
-        if (output.type === "message") {
-          const content = output.content[event.content_index];
-          if (!content) {
-            throw new OpenAIError(`missing content at index ${event.content_index}`);
-          }
-          if (content.type !== "output_text") {
-            throw new OpenAIError(`expected content to be 'output_text', got ${content.type}`);
-          }
-          maybeEmit("response.output_text.delta", {
-            ...event,
-            snapshot: content.text
-          });
-        }
-        break;
-      }
-      case "response.function_call_arguments.delta": {
-        const output = response.output[event.output_index];
-        if (!output) {
-          throw new OpenAIError(`missing output at index ${event.output_index}`);
-        }
-        if (output.type === "function_call") {
-          maybeEmit("response.function_call_arguments.delta", {
-            ...event,
-            snapshot: output.arguments
-          });
-        }
-        break;
-      }
-      default:
-        maybeEmit(event.type, event);
-        break;
-    }
-  }, _ResponseStream_endRequest = function _ResponseStream_endRequest2() {
-    if (this.ended) {
-      throw new OpenAIError(`stream has ended, this shouldn't happen`);
-    }
-    const snapshot = __classPrivateFieldGet(this, _ResponseStream_currentResponseSnapshot, "f");
-    if (!snapshot) {
-      throw new OpenAIError(`request ended without sending any events`);
-    }
-    __classPrivateFieldSet(this, _ResponseStream_currentResponseSnapshot, void 0, "f");
-    const parsedResponse = finalizeResponse(snapshot, __classPrivateFieldGet(this, _ResponseStream_params, "f"));
-    __classPrivateFieldSet(this, _ResponseStream_finalResponse, parsedResponse, "f");
-    return parsedResponse;
-  }, _ResponseStream_accumulateResponse = function _ResponseStream_accumulateResponse2(event) {
-    let snapshot = __classPrivateFieldGet(this, _ResponseStream_currentResponseSnapshot, "f");
-    if (!snapshot) {
-      if (event.type !== "response.created") {
-        throw new OpenAIError(`When snapshot hasn't been set yet, expected 'response.created' event, got ${event.type}`);
-      }
-      snapshot = __classPrivateFieldSet(this, _ResponseStream_currentResponseSnapshot, event.response, "f");
-      return snapshot;
-    }
-    switch (event.type) {
-      case "response.output_item.added": {
-        snapshot.output.push(event.item);
-        break;
-      }
-      case "response.content_part.added": {
-        const output = snapshot.output[event.output_index];
-        if (!output) {
-          throw new OpenAIError(`missing output at index ${event.output_index}`);
-        }
-        const type = output.type;
-        const part = event.part;
-        if (type === "message" && part.type !== "reasoning_text") {
-          output.content.push(part);
-        } else if (type === "reasoning" && part.type === "reasoning_text") {
-          if (!output.content) {
-            output.content = [];
-          }
-          output.content.push(part);
-        }
-        break;
-      }
-      case "response.output_text.delta": {
-        const output = snapshot.output[event.output_index];
-        if (!output) {
-          throw new OpenAIError(`missing output at index ${event.output_index}`);
-        }
-        if (output.type === "message") {
-          const content = output.content[event.content_index];
-          if (!content) {
-            throw new OpenAIError(`missing content at index ${event.content_index}`);
-          }
-          if (content.type !== "output_text") {
-            throw new OpenAIError(`expected content to be 'output_text', got ${content.type}`);
-          }
-          content.text += event.delta;
-        }
-        break;
-      }
-      case "response.function_call_arguments.delta": {
-        const output = snapshot.output[event.output_index];
-        if (!output) {
-          throw new OpenAIError(`missing output at index ${event.output_index}`);
-        }
-        if (output.type === "function_call") {
-          output.arguments += event.delta;
-        }
-        break;
-      }
-      case "response.reasoning_text.delta": {
-        const output = snapshot.output[event.output_index];
-        if (!output) {
-          throw new OpenAIError(`missing output at index ${event.output_index}`);
-        }
-        if (output.type === "reasoning") {
-          const content = output.content?.[event.content_index];
-          if (!content) {
-            throw new OpenAIError(`missing content at index ${event.content_index}`);
-          }
-          if (content.type !== "reasoning_text") {
-            throw new OpenAIError(`expected content to be 'reasoning_text', got ${content.type}`);
-          }
-          content.text += event.delta;
-        }
-        break;
-      }
-      case "response.completed": {
-        __classPrivateFieldSet(this, _ResponseStream_currentResponseSnapshot, event.response, "f");
-        break;
-      }
-    }
-    return snapshot;
-  }, Symbol.asyncIterator)]() {
-    const pushQueue = [];
-    const readQueue = [];
-    let done = false;
-    this.on("event", (event) => {
-      const reader = readQueue.shift();
-      if (reader) {
-        reader.resolve(event);
-      } else {
-        pushQueue.push(event);
-      }
-    });
-    this.on("end", () => {
-      done = true;
-      for (const reader of readQueue) {
-        reader.resolve(void 0);
-      }
-      readQueue.length = 0;
-    });
-    this.on("abort", (err) => {
-      done = true;
-      for (const reader of readQueue) {
-        reader.reject(err);
-      }
-      readQueue.length = 0;
-    });
-    this.on("error", (err) => {
-      done = true;
-      for (const reader of readQueue) {
-        reader.reject(err);
-      }
-      readQueue.length = 0;
-    });
-    return {
-      next: async () => {
-        if (!pushQueue.length) {
-          if (done) {
-            return { value: void 0, done: true };
-          }
-          return new Promise((resolve, reject) => readQueue.push({ resolve, reject })).then((event2) => event2 ? { value: event2, done: false } : { value: void 0, done: true });
-        }
-        const event = pushQueue.shift();
-        return { value: event, done: false };
-      },
-      return: async () => {
-        this.abort();
-        return { value: void 0, done: true };
-      }
-    };
-  }
-  /**
-   * @returns a promise that resolves with the final Response, or rejects
-   * if an error occurred or the stream ended prematurely without producing a REsponse.
-   */
-  async finalResponse() {
-    await this.done();
-    const response = __classPrivateFieldGet(this, _ResponseStream_finalResponse, "f");
-    if (!response)
-      throw new OpenAIError("stream ended without producing a ChatCompletion");
-    return response;
-  }
-};
-function finalizeResponse(snapshot, params) {
-  return maybeParseResponse(snapshot, params);
-}
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/responses/input-items.mjs
-var InputItems = class extends APIResource {
-  /**
-   * Returns a list of input items for a given response.
-   *
-   * @example
-   * ```ts
-   * // Automatically fetches more pages as needed.
-   * for await (const responseItem of client.responses.inputItems.list(
-   *   'response_id',
-   * )) {
-   *   // ...
-   * }
-   * ```
-   */
-  list(responseID, query = {}, options) {
-    return this._client.getAPIList(path2`/responses/${responseID}/input_items`, CursorPage, { query, ...options });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/responses/input-tokens.mjs
-var InputTokens = class extends APIResource {
-  /**
-   * Returns input token counts of the request.
-   *
-   * Returns an object with `object` set to `response.input_tokens` and an
-   * `input_tokens` count.
-   *
-   * @example
-   * ```ts
-   * const response = await client.responses.inputTokens.count();
-   * ```
-   */
-  count(body = {}, options) {
-    return this._client.post("/responses/input_tokens", { body, ...options });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/responses/responses.mjs
-var Responses = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.inputItems = new InputItems(this._client);
-    this.inputTokens = new InputTokens(this._client);
-  }
-  create(body, options) {
-    return this._client.post("/responses", { body, ...options, stream: body.stream ?? false })._thenUnwrap((rsp) => {
-      if ("object" in rsp && rsp.object === "response") {
-        addOutputText(rsp);
-      }
-      return rsp;
-    });
-  }
-  retrieve(responseID, query = {}, options) {
-    return this._client.get(path2`/responses/${responseID}`, {
-      query,
-      ...options,
-      stream: query?.stream ?? false
-    })._thenUnwrap((rsp) => {
-      if ("object" in rsp && rsp.object === "response") {
-        addOutputText(rsp);
-      }
-      return rsp;
-    });
-  }
-  /**
-   * Deletes a model response with the given ID.
-   *
-   * @example
-   * ```ts
-   * await client.responses.delete(
-   *   'resp_677efb5139a88190b512bc3fef8e535d',
-   * );
-   * ```
-   */
-  delete(responseID, options) {
-    return this._client.delete(path2`/responses/${responseID}`, {
-      ...options,
-      headers: buildHeaders([{ Accept: "*/*" }, options?.headers])
-    });
-  }
-  parse(body, options) {
-    return this._client.responses.create(body, options)._thenUnwrap((response) => parseResponse(response, body));
-  }
-  /**
-   * Creates a model response stream
-   */
-  stream(body, options) {
-    return ResponseStream.createResponse(this._client, body, options);
-  }
-  /**
-   * Cancels a model response with the given ID. Only responses created with the
-   * `background` parameter set to `true` can be cancelled.
-   * [Learn more](https://platform.openai.com/docs/guides/background).
-   *
-   * @example
-   * ```ts
-   * const response = await client.responses.cancel(
-   *   'resp_677efb5139a88190b512bc3fef8e535d',
-   * );
-   * ```
-   */
-  cancel(responseID, options) {
-    return this._client.post(path2`/responses/${responseID}/cancel`, options);
-  }
-  /**
-   * Compact a conversation. Returns a compacted response object.
-   *
-   * Learn when and how to compact long-running conversations in the
-   * [conversation state guide](https://platform.openai.com/docs/guides/conversation-state#managing-the-context-window).
-   * For ZDR-compatible compaction details, see
-   * [Compaction (advanced)](https://platform.openai.com/docs/guides/conversation-state#compaction-advanced).
-   *
-   * @example
-   * ```ts
-   * const compactedResponse = await client.responses.compact({
-   *   model: 'gpt-5.4',
-   * });
-   * ```
-   */
-  compact(body, options) {
-    return this._client.post("/responses/compact", { body, ...options });
-  }
-};
-Responses.InputItems = InputItems;
-Responses.InputTokens = InputTokens;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/content.mjs
-var Content2 = class extends APIResource {
-  /**
-   * Download a skill zip bundle by its ID.
-   */
-  retrieve(skillID, options) {
-    return this._client.get(path2`/skills/${skillID}/content`, {
-      ...options,
-      headers: buildHeaders([{ Accept: "application/binary" }, options?.headers]),
-      __binaryResponse: true
-    });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/versions/content.mjs
-var Content3 = class extends APIResource {
-  /**
-   * Download a skill version zip bundle.
-   */
-  retrieve(version3, params, options) {
-    const { skill_id } = params;
-    return this._client.get(path2`/skills/${skill_id}/versions/${version3}/content`, {
-      ...options,
-      headers: buildHeaders([{ Accept: "application/binary" }, options?.headers]),
-      __binaryResponse: true
-    });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/versions/versions.mjs
-var Versions = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.content = new Content3(this._client);
-  }
-  /**
-   * Create a new immutable skill version.
-   */
-  create(skillID, body = {}, options) {
-    return this._client.post(path2`/skills/${skillID}/versions`, maybeMultipartFormRequestOptions({ body, ...options }, this._client));
-  }
-  /**
-   * Get a specific skill version.
-   */
-  retrieve(version3, params, options) {
-    const { skill_id } = params;
-    return this._client.get(path2`/skills/${skill_id}/versions/${version3}`, options);
-  }
-  /**
-   * List skill versions for a skill.
-   */
-  list(skillID, query = {}, options) {
-    return this._client.getAPIList(path2`/skills/${skillID}/versions`, CursorPage, {
-      query,
-      ...options
-    });
-  }
-  /**
-   * Delete a skill version.
-   */
-  delete(version3, params, options) {
-    const { skill_id } = params;
-    return this._client.delete(path2`/skills/${skill_id}/versions/${version3}`, options);
-  }
-};
-Versions.Content = Content3;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/skills.mjs
-var Skills = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.content = new Content2(this._client);
-    this.versions = new Versions(this._client);
-  }
-  /**
-   * Create a new skill.
-   */
-  create(body = {}, options) {
-    return this._client.post("/skills", maybeMultipartFormRequestOptions({ body, ...options }, this._client));
-  }
-  /**
-   * Get a skill by its ID.
-   */
-  retrieve(skillID, options) {
-    return this._client.get(path2`/skills/${skillID}`, options);
-  }
-  /**
-   * Update the default version pointer for a skill.
-   */
-  update(skillID, body, options) {
-    return this._client.post(path2`/skills/${skillID}`, { body, ...options });
-  }
-  /**
-   * List all skills for the current project.
-   */
-  list(query = {}, options) {
-    return this._client.getAPIList("/skills", CursorPage, { query, ...options });
-  }
-  /**
-   * Delete a skill by its ID.
-   */
-  delete(skillID, options) {
-    return this._client.delete(path2`/skills/${skillID}`, options);
-  }
-};
-Skills.Content = Content2;
-Skills.Versions = Versions;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/uploads/parts.mjs
-var Parts = class extends APIResource {
-  /**
-   * Adds a
-   * [Part](https://platform.openai.com/docs/api-reference/uploads/part-object) to an
-   * [Upload](https://platform.openai.com/docs/api-reference/uploads/object) object.
-   * A Part represents a chunk of bytes from the file you are trying to upload.
-   *
-   * Each Part can be at most 64 MB, and you can add Parts until you hit the Upload
-   * maximum of 8 GB.
-   *
-   * It is possible to add multiple Parts in parallel. You can decide the intended
-   * order of the Parts when you
-   * [complete the Upload](https://platform.openai.com/docs/api-reference/uploads/complete).
-   */
-  create(uploadID, body, options) {
-    return this._client.post(path2`/uploads/${uploadID}/parts`, multipartFormRequestOptions({ body, ...options }, this._client));
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/uploads/uploads.mjs
-var Uploads = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.parts = new Parts(this._client);
-  }
-  /**
-   * Creates an intermediate
-   * [Upload](https://platform.openai.com/docs/api-reference/uploads/object) object
-   * that you can add
-   * [Parts](https://platform.openai.com/docs/api-reference/uploads/part-object) to.
-   * Currently, an Upload can accept at most 8 GB in total and expires after an hour
-   * after you create it.
-   *
-   * Once you complete the Upload, we will create a
-   * [File](https://platform.openai.com/docs/api-reference/files/object) object that
-   * contains all the parts you uploaded. This File is usable in the rest of our
-   * platform as a regular File object.
-   *
-   * For certain `purpose` values, the correct `mime_type` must be specified. Please
-   * refer to documentation for the
-   * [supported MIME types for your use case](https://platform.openai.com/docs/assistants/tools/file-search#supported-files).
-   *
-   * For guidance on the proper filename extensions for each purpose, please follow
-   * the documentation on
-   * [creating a File](https://platform.openai.com/docs/api-reference/files/create).
-   *
-   * Returns the Upload object with status `pending`.
-   */
-  create(body, options) {
-    return this._client.post("/uploads", { body, ...options });
-  }
-  /**
-   * Cancels the Upload. No Parts may be added after an Upload is cancelled.
-   *
-   * Returns the Upload object with status `cancelled`.
-   */
-  cancel(uploadID, options) {
-    return this._client.post(path2`/uploads/${uploadID}/cancel`, options);
-  }
-  /**
-   * Completes the
-   * [Upload](https://platform.openai.com/docs/api-reference/uploads/object).
-   *
-   * Within the returned Upload object, there is a nested
-   * [File](https://platform.openai.com/docs/api-reference/files/object) object that
-   * is ready to use in the rest of the platform.
-   *
-   * You can specify the order of the Parts by passing in an ordered list of the Part
-   * IDs.
-   *
-   * The number of bytes uploaded upon completion must match the number of bytes
-   * initially specified when creating the Upload object. No Parts may be added after
-   * an Upload is completed. Returns the Upload object with status `completed`,
-   * including an additional `file` property containing the created usable File
-   * object.
-   */
-  complete(uploadID, body, options) {
-    return this._client.post(path2`/uploads/${uploadID}/complete`, { body, ...options });
-  }
-};
-Uploads.Parts = Parts;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/Util.mjs
-var allSettledWithThrow = async (promises) => {
-  const results = await Promise.allSettled(promises);
-  const rejected = results.filter((result) => result.status === "rejected");
-  if (rejected.length) {
-    for (const result of rejected) {
-      console.error(result.reason);
-    }
-    throw new Error(`${rejected.length} promise(s) failed - see the above errors`);
-  }
-  const values2 = [];
-  for (const result of results) {
-    if (result.status === "fulfilled") {
-      values2.push(result.value);
-    }
-  }
-  return values2;
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/vector-stores/file-batches.mjs
-var FileBatches = class extends APIResource {
-  /**
-   * Create a vector store file batch.
-   */
-  create(vectorStoreID, body, options) {
-    return this._client.post(path2`/vector_stores/${vectorStoreID}/file_batches`, {
-      body,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Retrieves a vector store file batch.
-   */
-  retrieve(batchID, params, options) {
-    const { vector_store_id } = params;
-    return this._client.get(path2`/vector_stores/${vector_store_id}/file_batches/${batchID}`, {
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Cancel a vector store file batch. This attempts to cancel the processing of
-   * files in this batch as soon as possible.
-   */
-  cancel(batchID, params, options) {
-    const { vector_store_id } = params;
-    return this._client.post(path2`/vector_stores/${vector_store_id}/file_batches/${batchID}/cancel`, {
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Create a vector store batch and poll until all files have been processed.
-   */
-  async createAndPoll(vectorStoreId, body, options) {
-    const batch = await this.create(vectorStoreId, body);
-    return await this.poll(vectorStoreId, batch.id, options);
-  }
-  /**
-   * Returns a list of vector store files in a batch.
-   */
-  listFiles(batchID, params, options) {
-    const { vector_store_id, ...query } = params;
-    return this._client.getAPIList(path2`/vector_stores/${vector_store_id}/file_batches/${batchID}/files`, CursorPage, { query, ...options, headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers]) });
-  }
-  /**
-   * Wait for the given file batch to be processed.
-   *
-   * Note: this will return even if one of the files failed to process, you need to
-   * check batch.file_counts.failed_count to handle this case.
-   */
-  async poll(vectorStoreID, batchID, options) {
-    const headers = buildHeaders([
-      options?.headers,
-      {
-        "X-Stainless-Poll-Helper": "true",
-        "X-Stainless-Custom-Poll-Interval": options?.pollIntervalMs?.toString() ?? void 0
-      }
-    ]);
-    while (true) {
-      const { data: batch, response } = await this.retrieve(batchID, { vector_store_id: vectorStoreID }, {
-        ...options,
-        headers
-      }).withResponse();
-      switch (batch.status) {
-        case "in_progress":
-          let sleepInterval = 5e3;
-          if (options?.pollIntervalMs) {
-            sleepInterval = options.pollIntervalMs;
-          } else {
-            const headerInterval = response.headers.get("openai-poll-after-ms");
-            if (headerInterval) {
-              const headerIntervalMs = parseInt(headerInterval);
-              if (!isNaN(headerIntervalMs)) {
-                sleepInterval = headerIntervalMs;
-              }
-            }
-          }
-          await sleep(sleepInterval);
-          break;
-        case "failed":
-        case "cancelled":
-        case "completed":
-          return batch;
-      }
-    }
-  }
-  /**
-   * Uploads the given files concurrently and then creates a vector store file batch.
-   *
-   * The concurrency limit is configurable using the `maxConcurrency` parameter.
-   */
-  async uploadAndPoll(vectorStoreId, { files, fileIds = [] }, options) {
-    if (files == null || files.length == 0) {
-      throw new Error(`No \`files\` provided to process. If you've already uploaded files you should use \`.createAndPoll()\` instead`);
-    }
-    const configuredConcurrency = options?.maxConcurrency ?? 5;
-    const concurrencyLimit = Math.min(configuredConcurrency, files.length);
-    const client = this._client;
-    const fileIterator = files.values();
-    const allFileIds = [...fileIds];
-    async function processFiles(iterator2) {
-      for (let item of iterator2) {
-        const fileObj = await client.files.create({ file: item, purpose: "assistants" }, options);
-        allFileIds.push(fileObj.id);
-      }
-    }
-    const workers = Array(concurrencyLimit).fill(fileIterator).map(processFiles);
-    await allSettledWithThrow(workers);
-    return await this.createAndPoll(vectorStoreId, {
-      file_ids: allFileIds
-    });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/vector-stores/files.mjs
-var Files3 = class extends APIResource {
-  /**
-   * Create a vector store file by attaching a
-   * [File](https://platform.openai.com/docs/api-reference/files) to a
-   * [vector store](https://platform.openai.com/docs/api-reference/vector-stores/object).
-   */
-  create(vectorStoreID, body, options) {
-    return this._client.post(path2`/vector_stores/${vectorStoreID}/files`, {
-      body,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Retrieves a vector store file.
-   */
-  retrieve(fileID, params, options) {
-    const { vector_store_id } = params;
-    return this._client.get(path2`/vector_stores/${vector_store_id}/files/${fileID}`, {
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Update attributes on a vector store file.
-   */
-  update(fileID, params, options) {
-    const { vector_store_id, ...body } = params;
-    return this._client.post(path2`/vector_stores/${vector_store_id}/files/${fileID}`, {
-      body,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Returns a list of vector store files.
-   */
-  list(vectorStoreID, query = {}, options) {
-    return this._client.getAPIList(path2`/vector_stores/${vectorStoreID}/files`, CursorPage, {
-      query,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Delete a vector store file. This will remove the file from the vector store but
-   * the file itself will not be deleted. To delete the file, use the
-   * [delete file](https://platform.openai.com/docs/api-reference/files/delete)
-   * endpoint.
-   */
-  delete(fileID, params, options) {
-    const { vector_store_id } = params;
-    return this._client.delete(path2`/vector_stores/${vector_store_id}/files/${fileID}`, {
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Attach a file to the given vector store and wait for it to be processed.
-   */
-  async createAndPoll(vectorStoreId, body, options) {
-    const file2 = await this.create(vectorStoreId, body, options);
-    return await this.poll(vectorStoreId, file2.id, options);
-  }
-  /**
-   * Wait for the vector store file to finish processing.
-   *
-   * Note: this will return even if the file failed to process, you need to check
-   * file.last_error and file.status to handle these cases
-   */
-  async poll(vectorStoreID, fileID, options) {
-    const headers = buildHeaders([
-      options?.headers,
-      {
-        "X-Stainless-Poll-Helper": "true",
-        "X-Stainless-Custom-Poll-Interval": options?.pollIntervalMs?.toString() ?? void 0
-      }
-    ]);
-    while (true) {
-      const fileResponse = await this.retrieve(fileID, {
-        vector_store_id: vectorStoreID
-      }, { ...options, headers }).withResponse();
-      const file2 = fileResponse.data;
-      switch (file2.status) {
-        case "in_progress":
-          let sleepInterval = 5e3;
-          if (options?.pollIntervalMs) {
-            sleepInterval = options.pollIntervalMs;
-          } else {
-            const headerInterval = fileResponse.response.headers.get("openai-poll-after-ms");
-            if (headerInterval) {
-              const headerIntervalMs = parseInt(headerInterval);
-              if (!isNaN(headerIntervalMs)) {
-                sleepInterval = headerIntervalMs;
-              }
-            }
-          }
-          await sleep(sleepInterval);
-          break;
-        case "failed":
-        case "completed":
-          return file2;
-      }
-    }
-  }
-  /**
-   * Upload a file to the `files` API and then attach it to the given vector store.
-   *
-   * Note the file will be asynchronously processed (you can use the alternative
-   * polling helper method to wait for processing to complete).
-   */
-  async upload(vectorStoreId, file2, options) {
-    const fileInfo = await this._client.files.create({ file: file2, purpose: "assistants" }, options);
-    return this.create(vectorStoreId, { file_id: fileInfo.id }, options);
-  }
-  /**
-   * Add a file to a vector store and poll until processing is complete.
-   */
-  async uploadAndPoll(vectorStoreId, file2, options) {
-    const fileInfo = await this.upload(vectorStoreId, file2, options);
-    return await this.poll(vectorStoreId, fileInfo.id, options);
-  }
-  /**
-   * Retrieve the parsed contents of a vector store file.
-   */
-  content(fileID, params, options) {
-    const { vector_store_id } = params;
-    return this._client.getAPIList(path2`/vector_stores/${vector_store_id}/files/${fileID}/content`, Page, { ...options, headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers]) });
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/vector-stores/vector-stores.mjs
-var VectorStores = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    this.files = new Files3(this._client);
-    this.fileBatches = new FileBatches(this._client);
-  }
-  /**
-   * Create a vector store.
-   */
-  create(body, options) {
-    return this._client.post("/vector_stores", {
-      body,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Retrieves a vector store.
-   */
-  retrieve(vectorStoreID, options) {
-    return this._client.get(path2`/vector_stores/${vectorStoreID}`, {
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Modifies a vector store.
-   */
-  update(vectorStoreID, body, options) {
-    return this._client.post(path2`/vector_stores/${vectorStoreID}`, {
-      body,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Returns a list of vector stores.
-   */
-  list(query = {}, options) {
-    return this._client.getAPIList("/vector_stores", CursorPage, {
-      query,
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Delete a vector store.
-   */
-  delete(vectorStoreID, options) {
-    return this._client.delete(path2`/vector_stores/${vectorStoreID}`, {
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-  /**
-   * Search a vector store for relevant chunks based on a query and file attributes
-   * filter.
-   */
-  search(vectorStoreID, body, options) {
-    return this._client.getAPIList(path2`/vector_stores/${vectorStoreID}/search`, Page, {
-      body,
-      method: "post",
-      ...options,
-      headers: buildHeaders([{ "OpenAI-Beta": "assistants=v2" }, options?.headers])
-    });
-  }
-};
-VectorStores.Files = Files3;
-VectorStores.FileBatches = FileBatches;
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/videos.mjs
-var Videos = class extends APIResource {
-  /**
-   * Create a new video generation job from a prompt and optional reference assets.
-   */
-  create(body, options) {
-    return this._client.post("/videos", multipartFormRequestOptions({ body, ...options }, this._client));
-  }
-  /**
-   * Fetch the latest metadata for a generated video.
-   */
-  retrieve(videoID, options) {
-    return this._client.get(path2`/videos/${videoID}`, options);
-  }
-  /**
-   * List recently generated videos for the current project.
-   */
-  list(query = {}, options) {
-    return this._client.getAPIList("/videos", ConversationCursorPage, { query, ...options });
-  }
-  /**
-   * Permanently delete a completed or failed video and its stored assets.
-   */
-  delete(videoID, options) {
-    return this._client.delete(path2`/videos/${videoID}`, options);
-  }
-  /**
-   * Create a character from an uploaded video.
-   */
-  createCharacter(body, options) {
-    return this._client.post("/videos/characters", multipartFormRequestOptions({ body, ...options }, this._client));
-  }
-  /**
-   * Download the generated video bytes or a derived preview asset.
-   *
-   * Streams the rendered video content for the specified video job.
-   */
-  downloadContent(videoID, query = {}, options) {
-    return this._client.get(path2`/videos/${videoID}/content`, {
-      query,
-      ...options,
-      headers: buildHeaders([{ Accept: "application/binary" }, options?.headers]),
-      __binaryResponse: true
-    });
-  }
-  /**
-   * Create a new video generation job by editing a source video or existing
-   * generated video.
-   */
-  edit(body, options) {
-    return this._client.post("/videos/edits", multipartFormRequestOptions({ body, ...options }, this._client));
-  }
-  /**
-   * Create an extension of a completed video.
-   */
-  extend(body, options) {
-    return this._client.post("/videos/extensions", multipartFormRequestOptions({ body, ...options }, this._client));
-  }
-  /**
-   * Fetch a character.
-   */
-  getCharacter(characterID, options) {
-    return this._client.get(path2`/videos/characters/${characterID}`, options);
-  }
-  /**
-   * Create a remix of a completed video using a refreshed prompt.
-   */
-  remix(videoID, body, options) {
-    return this._client.post(path2`/videos/${videoID}/remix`, maybeMultipartFormRequestOptions({ body, ...options }, this._client));
-  }
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/webhooks/webhooks.mjs
-var _Webhooks_instances;
-var _Webhooks_validateSecret;
-var _Webhooks_getRequiredHeader;
-var Webhooks = class extends APIResource {
-  constructor() {
-    super(...arguments);
-    _Webhooks_instances.add(this);
-  }
-  /**
-   * Validates that the given payload was sent by OpenAI and parses the payload.
-   */
-  async unwrap(payload, headers, secret = this._client.webhookSecret, tolerance = 300) {
-    await this.verifySignature(payload, headers, secret, tolerance);
-    return JSON.parse(payload);
-  }
-  /**
-   * Validates whether or not the webhook payload was sent by OpenAI.
-   *
-   * An error will be raised if the webhook payload was not sent by OpenAI.
-   *
-   * @param payload - The webhook payload
-   * @param headers - The webhook headers
-   * @param secret - The webhook secret (optional, will use client secret if not provided)
-   * @param tolerance - Maximum age of the webhook in seconds (default: 300 = 5 minutes)
-   */
-  async verifySignature(payload, headers, secret = this._client.webhookSecret, tolerance = 300) {
-    if (typeof crypto === "undefined" || typeof crypto.subtle.importKey !== "function" || typeof crypto.subtle.verify !== "function") {
-      throw new Error("Webhook signature verification is only supported when the `crypto` global is defined");
-    }
-    __classPrivateFieldGet(this, _Webhooks_instances, "m", _Webhooks_validateSecret).call(this, secret);
-    const headersObj = buildHeaders([headers]).values;
-    const signatureHeader = __classPrivateFieldGet(this, _Webhooks_instances, "m", _Webhooks_getRequiredHeader).call(this, headersObj, "webhook-signature");
-    const timestamp2 = __classPrivateFieldGet(this, _Webhooks_instances, "m", _Webhooks_getRequiredHeader).call(this, headersObj, "webhook-timestamp");
-    const webhookId = __classPrivateFieldGet(this, _Webhooks_instances, "m", _Webhooks_getRequiredHeader).call(this, headersObj, "webhook-id");
-    const timestampSeconds = parseInt(timestamp2, 10);
-    if (isNaN(timestampSeconds)) {
-      throw new InvalidWebhookSignatureError("Invalid webhook timestamp format");
-    }
-    const nowSeconds = Math.floor(Date.now() / 1e3);
-    if (nowSeconds - timestampSeconds > tolerance) {
-      throw new InvalidWebhookSignatureError("Webhook timestamp is too old");
-    }
-    if (timestampSeconds > nowSeconds + tolerance) {
-      throw new InvalidWebhookSignatureError("Webhook timestamp is too new");
-    }
-    const signatures = signatureHeader.split(" ").map((part) => part.startsWith("v1,") ? part.substring(3) : part);
-    const decodedSecret = secret.startsWith("whsec_") ? Buffer.from(secret.replace("whsec_", ""), "base64") : Buffer.from(secret, "utf-8");
-    const signedPayload = webhookId ? `${webhookId}.${timestamp2}.${payload}` : `${timestamp2}.${payload}`;
-    const key = await crypto.subtle.importKey("raw", decodedSecret, { name: "HMAC", hash: "SHA-256" }, false, ["verify"]);
-    for (const signature of signatures) {
-      try {
-        const signatureBytes = Buffer.from(signature, "base64");
-        const isValid = await crypto.subtle.verify("HMAC", key, signatureBytes, new TextEncoder().encode(signedPayload));
-        if (isValid) {
-          return;
-        }
-      } catch {
-        continue;
-      }
-    }
-    throw new InvalidWebhookSignatureError("The given webhook signature does not match the expected signature");
-  }
-};
-_Webhooks_instances = /* @__PURE__ */ new WeakSet(), _Webhooks_validateSecret = function _Webhooks_validateSecret2(secret) {
-  if (typeof secret !== "string" || secret.length === 0) {
-    throw new Error(`The webhook secret must either be set using the env var, OPENAI_WEBHOOK_SECRET, on the client class, OpenAI({ webhookSecret: '123' }), or passed to this function`);
-  }
-}, _Webhooks_getRequiredHeader = function _Webhooks_getRequiredHeader2(headers, name2) {
-  if (!headers) {
-    throw new Error(`Headers are required`);
-  }
-  const value = headers.get(name2);
-  if (value === null || value === void 0) {
-    throw new Error(`Missing required header: ${name2}`);
-  }
-  return value;
-};
-
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/client.mjs
-var _OpenAI_instances;
-var _a3;
-var _OpenAI_encoder;
-var _OpenAI_baseURLOverridden;
-var WORKLOAD_IDENTITY_API_KEY_PLACEHOLDER = "workload-identity-auth";
-var OpenAI = class {
-  /**
-   * API Client for interfacing with the OpenAI API.
-   *
-   * @param {string | undefined} [opts.apiKey=process.env['OPENAI_API_KEY'] ?? undefined]
-   * @param {string | null | undefined} [opts.organization=process.env['OPENAI_ORG_ID'] ?? null]
-   * @param {string | null | undefined} [opts.project=process.env['OPENAI_PROJECT_ID'] ?? null]
-   * @param {string | null | undefined} [opts.webhookSecret=process.env['OPENAI_WEBHOOK_SECRET'] ?? null]
-   * @param {string} [opts.baseURL=process.env['OPENAI_BASE_URL'] ?? https://api.openai.com/v1] - Override the default base URL for the API.
-   * @param {number} [opts.timeout=10 minutes] - The maximum amount of time (in milliseconds) the client will wait for a response before timing out.
-   * @param {MergedRequestInit} [opts.fetchOptions] - Additional `RequestInit` options to be passed to `fetch` calls.
-   * @param {Fetch} [opts.fetch] - Specify a custom `fetch` function implementation.
-   * @param {number} [opts.maxRetries=2] - The maximum number of times the client will retry a request.
-   * @param {HeadersLike} opts.defaultHeaders - Default headers to include with every request to the API.
-   * @param {Record<string, string | undefined>} opts.defaultQuery - Default query parameters to include with every request to the API.
-   * @param {boolean} [opts.dangerouslyAllowBrowser=false] - By default, client-side use of this library is not allowed, as it risks exposing your secret API credentials to attackers.
-   */
-  constructor({ baseURL = readEnv("OPENAI_BASE_URL"), apiKey = readEnv("OPENAI_API_KEY"), organization = readEnv("OPENAI_ORG_ID") ?? null, project = readEnv("OPENAI_PROJECT_ID") ?? null, webhookSecret = readEnv("OPENAI_WEBHOOK_SECRET") ?? null, workloadIdentity, ...opts } = {}) {
-    _OpenAI_instances.add(this);
-    _OpenAI_encoder.set(this, void 0);
-    this.completions = new Completions2(this);
-    this.chat = new Chat(this);
-    this.embeddings = new Embeddings(this);
-    this.files = new Files2(this);
-    this.images = new Images(this);
-    this.audio = new Audio(this);
-    this.moderations = new Moderations(this);
-    this.models = new Models(this);
-    this.fineTuning = new FineTuning(this);
-    this.graders = new Graders2(this);
-    this.vectorStores = new VectorStores(this);
-    this.webhooks = new Webhooks(this);
-    this.beta = new Beta(this);
-    this.batches = new Batches(this);
-    this.uploads = new Uploads(this);
-    this.responses = new Responses(this);
-    this.realtime = new Realtime2(this);
-    this.conversations = new Conversations(this);
-    this.evals = new Evals(this);
-    this.containers = new Containers(this);
-    this.skills = new Skills(this);
-    this.videos = new Videos(this);
-    if (workloadIdentity) {
-      if (apiKey && apiKey !== WORKLOAD_IDENTITY_API_KEY_PLACEHOLDER) {
-        throw new OpenAIError("The `apiKey` and `workloadIdentity` arguments are mutually exclusive; only one can be passed at a time.");
-      }
-      apiKey = WORKLOAD_IDENTITY_API_KEY_PLACEHOLDER;
-    } else if (apiKey === void 0) {
-      throw new OpenAIError("Missing credentials. Please pass an `apiKey`, `workloadIdentity`, or set the `OPENAI_API_KEY` environment variable.");
-    }
-    const options = {
-      apiKey,
-      organization,
-      project,
-      webhookSecret,
-      workloadIdentity,
-      ...opts,
-      baseURL: baseURL || `https://api.openai.com/v1`
-    };
-    if (!options.dangerouslyAllowBrowser && isRunningInBrowser()) {
-      throw new OpenAIError("It looks like you're running in a browser-like environment.\n\nThis is disabled by default, as it risks exposing your secret API credentials to attackers.\nIf you understand the risks and have appropriate mitigations in place,\nyou can set the `dangerouslyAllowBrowser` option to `true`, e.g.,\n\nnew OpenAI({ apiKey, dangerouslyAllowBrowser: true });\n\nhttps://help.openai.com/en/articles/5112595-best-practices-for-api-key-safety\n");
-    }
-    this.baseURL = options.baseURL;
-    this.timeout = options.timeout ?? _a3.DEFAULT_TIMEOUT;
-    this.logger = options.logger ?? console;
-    const defaultLogLevel = "warn";
-    this.logLevel = defaultLogLevel;
-    this.logLevel = parseLogLevel(options.logLevel, "ClientOptions.logLevel", this) ?? parseLogLevel(readEnv("OPENAI_LOG"), "process.env['OPENAI_LOG']", this) ?? defaultLogLevel;
-    this.fetchOptions = options.fetchOptions;
-    this.maxRetries = options.maxRetries ?? 2;
-    this.fetch = options.fetch ?? getDefaultFetch();
-    __classPrivateFieldSet(this, _OpenAI_encoder, FallbackEncoder, "f");
-    this._options = options;
-    if (workloadIdentity) {
-      this._workloadIdentityAuth = new WorkloadIdentityAuth(workloadIdentity, this.fetch);
-    }
-    this.apiKey = typeof apiKey === "string" ? apiKey : "Missing Key";
-    this.organization = organization;
-    this.project = project;
-    this.webhookSecret = webhookSecret;
-  }
-  /**
-   * Create a new client instance re-using the same options given to the current client with optional overriding.
-   */
-  withOptions(options) {
-    const client = new this.constructor({
-      ...this._options,
-      baseURL: this.baseURL,
-      maxRetries: this.maxRetries,
-      timeout: this.timeout,
-      logger: this.logger,
-      logLevel: this.logLevel,
-      fetch: this.fetch,
-      fetchOptions: this.fetchOptions,
-      apiKey: this.apiKey,
-      workloadIdentity: this._options.workloadIdentity,
-      organization: this.organization,
-      project: this.project,
-      webhookSecret: this.webhookSecret,
-      ...options
-    });
-    return client;
-  }
-  defaultQuery() {
-    return this._options.defaultQuery;
-  }
-  validateHeaders({ values: values2, nulls }) {
-    return;
-  }
-  async authHeaders(opts) {
-    return buildHeaders([{ Authorization: `Bearer ${this.apiKey}` }]);
-  }
-  stringifyQuery(query) {
-    return stringifyQuery(query);
-  }
-  getUserAgent() {
-    return `${this.constructor.name}/JS ${VERSION3}`;
-  }
-  defaultIdempotencyKey() {
-    return `stainless-node-retry-${uuid42()}`;
-  }
-  makeStatusError(status, error48, message, headers) {
-    return APIError.generate(status, error48, message, headers);
-  }
-  async _callApiKey() {
-    const apiKey = this._options.apiKey;
-    if (typeof apiKey !== "function")
-      return false;
-    let token;
-    try {
-      token = await apiKey();
-    } catch (err) {
-      if (err instanceof OpenAIError)
-        throw err;
-      throw new OpenAIError(
-        `Failed to get token from 'apiKey' function: ${err.message}`,
-        // @ts-ignore
-        { cause: err }
-      );
-    }
-    if (typeof token !== "string" || !token) {
-      throw new OpenAIError(`Expected 'apiKey' function argument to return a string but it returned ${token}`);
-    }
-    this.apiKey = token;
-    return true;
-  }
-  buildURL(path3, query, defaultBaseURL) {
-    const baseURL = !__classPrivateFieldGet(this, _OpenAI_instances, "m", _OpenAI_baseURLOverridden).call(this) && defaultBaseURL || this.baseURL;
-    const url3 = isAbsoluteURL2(path3) ? new URL(path3) : new URL(baseURL + (baseURL.endsWith("/") && path3.startsWith("/") ? path3.slice(1) : path3));
-    const defaultQuery = this.defaultQuery();
-    const pathQuery = Object.fromEntries(url3.searchParams);
-    if (!isEmptyObj(defaultQuery) || !isEmptyObj(pathQuery)) {
-      query = { ...pathQuery, ...defaultQuery, ...query };
-    }
-    if (typeof query === "object" && query && !Array.isArray(query)) {
-      url3.search = this.stringifyQuery(query);
-    }
-    return url3.toString();
-  }
-  /**
-   * Used as a callback for mutating the given `FinalRequestOptions` object.
-   */
-  async prepareOptions(options) {
-    await this._callApiKey();
-  }
-  /**
-   * Used as a callback for mutating the given `RequestInit` object.
-   *
-   * This is useful for cases where you want to add certain headers based off of
-   * the request properties, e.g. `method` or `url`.
-   */
-  async prepareRequest(request, { url: url3, options }) {
-  }
-  get(path3, opts) {
-    return this.methodRequest("get", path3, opts);
-  }
-  post(path3, opts) {
-    return this.methodRequest("post", path3, opts);
-  }
-  patch(path3, opts) {
-    return this.methodRequest("patch", path3, opts);
-  }
-  put(path3, opts) {
-    return this.methodRequest("put", path3, opts);
-  }
-  delete(path3, opts) {
-    return this.methodRequest("delete", path3, opts);
-  }
-  methodRequest(method, path3, opts) {
-    return this.request(Promise.resolve(opts).then((opts2) => {
-      return { method, path: path3, ...opts2 };
-    }));
-  }
-  request(options, remainingRetries = null) {
-    return new APIPromise(this, this.makeRequest(options, remainingRetries, void 0));
-  }
-  async makeRequest(optionsInput, retriesRemaining, retryOfRequestLogID) {
-    const options = await optionsInput;
-    const maxRetries = options.maxRetries ?? this.maxRetries;
-    if (retriesRemaining == null) {
-      retriesRemaining = maxRetries;
-    }
-    await this.prepareOptions(options);
-    const { req, url: url3, timeout } = await this.buildRequest(options, {
-      retryCount: maxRetries - retriesRemaining
-    });
-    await this.prepareRequest(req, { url: url3, options });
-    const requestLogID = "log_" + (Math.random() * (1 << 24) | 0).toString(16).padStart(6, "0");
-    const retryLogStr = retryOfRequestLogID === void 0 ? "" : `, retryOf: ${retryOfRequestLogID}`;
-    const startTime = Date.now();
-    loggerFor(this).debug(`[${requestLogID}] sending request`, formatRequestDetails({
-      retryOfRequestLogID,
-      method: options.method,
-      url: url3,
-      options,
-      headers: req.headers
-    }));
-    if (options.signal?.aborted) {
-      throw new APIUserAbortError();
-    }
-    const controller = new AbortController();
-    const response = await this.fetchWithAuth(url3, req, timeout, controller).catch(castToError);
-    const headersTime = Date.now();
-    if (response instanceof globalThis.Error) {
-      const retryMessage = `retrying, ${retriesRemaining} attempts remaining`;
-      if (options.signal?.aborted) {
-        throw new APIUserAbortError();
-      }
-      const isTimeout = isAbortError2(response) || /timed? ?out/i.test(String(response) + ("cause" in response ? String(response.cause) : ""));
-      if (retriesRemaining) {
-        loggerFor(this).info(`[${requestLogID}] connection ${isTimeout ? "timed out" : "failed"} - ${retryMessage}`);
-        loggerFor(this).debug(`[${requestLogID}] connection ${isTimeout ? "timed out" : "failed"} (${retryMessage})`, formatRequestDetails({
-          retryOfRequestLogID,
-          url: url3,
-          durationMs: headersTime - startTime,
-          message: response.message
-        }));
-        return this.retryRequest(options, retriesRemaining, retryOfRequestLogID ?? requestLogID);
-      }
-      loggerFor(this).info(`[${requestLogID}] connection ${isTimeout ? "timed out" : "failed"} - error; no more retries left`);
-      loggerFor(this).debug(`[${requestLogID}] connection ${isTimeout ? "timed out" : "failed"} (error; no more retries left)`, formatRequestDetails({
-        retryOfRequestLogID,
-        url: url3,
-        durationMs: headersTime - startTime,
-        message: response.message
-      }));
-      if (response instanceof OAuthError || response instanceof SubjectTokenProviderError) {
-        throw response;
-      }
-      if (isTimeout) {
-        throw new APIConnectionTimeoutError();
-      }
-      throw new APIConnectionError({ cause: response });
-    }
-    const specialHeaders = [...response.headers.entries()].filter(([name2]) => name2 === "x-request-id").map(([name2, value]) => ", " + name2 + ": " + JSON.stringify(value)).join("");
-    const responseInfo = `[${requestLogID}${retryLogStr}${specialHeaders}] ${req.method} ${url3} ${response.ok ? "succeeded" : "failed"} with status ${response.status} in ${headersTime - startTime}ms`;
-    if (!response.ok) {
-      if (response.status === 401 && this._workloadIdentityAuth && !options.__metadata?.["hasStreamingBody"] && !options.__metadata?.["workloadIdentityTokenRefreshed"]) {
-        await CancelReadableStream(response.body);
-        this._workloadIdentityAuth.invalidateToken();
-        return this.makeRequest({
-          ...options,
-          __metadata: {
-            ...options.__metadata,
-            workloadIdentityTokenRefreshed: true
-          }
-        }, retriesRemaining, retryOfRequestLogID ?? requestLogID);
-      }
-      const shouldRetry = await this.shouldRetry(response);
-      if (retriesRemaining && shouldRetry) {
-        const retryMessage2 = `retrying, ${retriesRemaining} attempts remaining`;
-        await CancelReadableStream(response.body);
-        loggerFor(this).info(`${responseInfo} - ${retryMessage2}`);
-        loggerFor(this).debug(`[${requestLogID}] response error (${retryMessage2})`, formatRequestDetails({
-          retryOfRequestLogID,
-          url: response.url,
-          status: response.status,
-          headers: response.headers,
-          durationMs: headersTime - startTime
-        }));
-        return this.retryRequest(options, retriesRemaining, retryOfRequestLogID ?? requestLogID, response.headers);
-      }
-      const retryMessage = shouldRetry ? `error; no more retries left` : `error; not retryable`;
-      loggerFor(this).info(`${responseInfo} - ${retryMessage}`);
-      const errText = await response.text().catch((err2) => castToError(err2).message);
-      const errJSON = safeJSON(errText);
-      const errMessage = errJSON ? void 0 : errText;
-      loggerFor(this).debug(`[${requestLogID}] response error (${retryMessage})`, formatRequestDetails({
-        retryOfRequestLogID,
-        url: response.url,
-        status: response.status,
-        headers: response.headers,
-        message: errMessage,
-        durationMs: Date.now() - startTime
-      }));
-      const err = this.makeStatusError(response.status, errJSON, errMessage, response.headers);
-      throw err;
-    }
-    loggerFor(this).info(responseInfo);
-    loggerFor(this).debug(`[${requestLogID}] response start`, formatRequestDetails({
-      retryOfRequestLogID,
-      url: response.url,
-      status: response.status,
-      headers: response.headers,
-      durationMs: headersTime - startTime
-    }));
-    return { response, options, controller, requestLogID, retryOfRequestLogID, startTime };
-  }
-  getAPIList(path3, Page2, opts) {
-    return this.requestAPIList(Page2, opts && "then" in opts ? opts.then((opts2) => ({ method: "get", path: path3, ...opts2 })) : { method: "get", path: path3, ...opts });
-  }
-  requestAPIList(Page2, options) {
-    const request = this.makeRequest(options, null, void 0);
-    return new PagePromise(this, request, Page2);
-  }
-  async fetchWithAuth(url3, init, timeout, controller) {
-    if (this._workloadIdentityAuth) {
-      const headers = init.headers;
-      const authHeader = headers.get("Authorization");
-      if (!authHeader || authHeader === `Bearer ${WORKLOAD_IDENTITY_API_KEY_PLACEHOLDER}`) {
-        const token = await this._workloadIdentityAuth.getToken();
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-    }
-    const response = await this.fetchWithTimeout(url3, init, timeout, controller);
-    return response;
-  }
-  async fetchWithTimeout(url3, init, ms, controller) {
-    const { signal, method, ...options } = init || {};
-    const abort = this._makeAbort(controller);
-    if (signal)
-      signal.addEventListener("abort", abort, { once: true });
-    const timeout = setTimeout(abort, ms);
-    const isReadableBody = globalThis.ReadableStream && options.body instanceof globalThis.ReadableStream || typeof options.body === "object" && options.body !== null && Symbol.asyncIterator in options.body;
-    const fetchOptions = {
-      signal: controller.signal,
-      ...isReadableBody ? { duplex: "half" } : {},
-      method: "GET",
-      ...options
-    };
-    if (method) {
-      fetchOptions.method = method.toUpperCase();
-    }
-    try {
-      return await this.fetch.call(void 0, url3, fetchOptions);
-    } finally {
-      clearTimeout(timeout);
-    }
-  }
-  async shouldRetry(response) {
-    const shouldRetryHeader = response.headers.get("x-should-retry");
-    if (shouldRetryHeader === "true")
-      return true;
-    if (shouldRetryHeader === "false")
-      return false;
-    if (response.status === 408)
-      return true;
-    if (response.status === 409)
-      return true;
-    if (response.status === 429)
-      return true;
-    if (response.status >= 500)
-      return true;
-    return false;
-  }
-  async retryRequest(options, retriesRemaining, requestLogID, responseHeaders) {
-    let timeoutMillis;
-    const retryAfterMillisHeader = responseHeaders?.get("retry-after-ms");
-    if (retryAfterMillisHeader) {
-      const timeoutMs = parseFloat(retryAfterMillisHeader);
-      if (!Number.isNaN(timeoutMs)) {
-        timeoutMillis = timeoutMs;
-      }
-    }
-    const retryAfterHeader = responseHeaders?.get("retry-after");
-    if (retryAfterHeader && !timeoutMillis) {
-      const timeoutSeconds = parseFloat(retryAfterHeader);
-      if (!Number.isNaN(timeoutSeconds)) {
-        timeoutMillis = timeoutSeconds * 1e3;
-      } else {
-        timeoutMillis = Date.parse(retryAfterHeader) - Date.now();
-      }
-    }
-    if (timeoutMillis === void 0) {
-      const maxRetries = options.maxRetries ?? this.maxRetries;
-      timeoutMillis = this.calculateDefaultRetryTimeoutMillis(retriesRemaining, maxRetries);
-    }
-    await sleep(timeoutMillis);
-    return this.makeRequest(options, retriesRemaining - 1, requestLogID);
-  }
-  calculateDefaultRetryTimeoutMillis(retriesRemaining, maxRetries) {
-    const initialRetryDelay = 0.5;
-    const maxRetryDelay = 8;
-    const numRetries = maxRetries - retriesRemaining;
-    const sleepSeconds = Math.min(initialRetryDelay * Math.pow(2, numRetries), maxRetryDelay);
-    const jitter = 1 - Math.random() * 0.25;
-    return sleepSeconds * jitter * 1e3;
-  }
-  async buildRequest(inputOptions, { retryCount = 0 } = {}) {
-    const options = { ...inputOptions };
-    const { method, path: path3, query, defaultBaseURL } = options;
-    const url3 = this.buildURL(path3, query, defaultBaseURL);
-    if ("timeout" in options)
-      validatePositiveInteger("timeout", options.timeout);
-    options.timeout = options.timeout ?? this.timeout;
-    const { bodyHeaders, body, isStreamingBody } = this.buildBody({ options });
-    if (isStreamingBody) {
-      inputOptions.__metadata = {
-        ...inputOptions.__metadata,
-        hasStreamingBody: true
-      };
-    }
-    const reqHeaders = await this.buildHeaders({ options: inputOptions, method, bodyHeaders, retryCount });
-    const req = {
-      method,
-      headers: reqHeaders,
-      ...options.signal && { signal: options.signal },
-      ...globalThis.ReadableStream && body instanceof globalThis.ReadableStream && { duplex: "half" },
-      ...body && { body },
-      ...this.fetchOptions ?? {},
-      ...options.fetchOptions ?? {}
-    };
-    return { req, url: url3, timeout: options.timeout };
-  }
-  async buildHeaders({ options, method, bodyHeaders, retryCount }) {
-    let idempotencyHeaders = {};
-    if (this.idempotencyHeader && method !== "get") {
-      if (!options.idempotencyKey)
-        options.idempotencyKey = this.defaultIdempotencyKey();
-      idempotencyHeaders[this.idempotencyHeader] = options.idempotencyKey;
-    }
-    const headers = buildHeaders([
-      idempotencyHeaders,
-      {
-        Accept: "application/json",
-        "User-Agent": this.getUserAgent(),
-        "X-Stainless-Retry-Count": String(retryCount),
-        ...options.timeout ? { "X-Stainless-Timeout": String(Math.trunc(options.timeout / 1e3)) } : {},
-        ...getPlatformHeaders(),
-        "OpenAI-Organization": this.organization,
-        "OpenAI-Project": this.project
-      },
-      await this.authHeaders(options),
-      this._options.defaultHeaders,
-      bodyHeaders,
-      options.headers
-    ]);
-    this.validateHeaders(headers);
-    return headers.values;
-  }
-  _makeAbort(controller) {
-    return () => controller.abort();
-  }
-  buildBody({ options: { body, headers: rawHeaders } }) {
-    if (!body) {
-      return { bodyHeaders: void 0, body: void 0, isStreamingBody: false };
-    }
-    const headers = buildHeaders([rawHeaders]);
-    const isReadableStream2 = typeof globalThis.ReadableStream !== "undefined" && body instanceof globalThis.ReadableStream;
-    const isRetryableBody = !isReadableStream2 && (typeof body === "string" || body instanceof ArrayBuffer || ArrayBuffer.isView(body) || typeof globalThis.Blob !== "undefined" && body instanceof globalThis.Blob || body instanceof URLSearchParams || body instanceof FormData);
-    if (
-      // Pass raw type verbatim
-      ArrayBuffer.isView(body) || body instanceof ArrayBuffer || body instanceof DataView || typeof body === "string" && // Preserve legacy string encoding behavior for now
-      headers.values.has("content-type") || // `Blob` is superset of `File`
-      globalThis.Blob && body instanceof globalThis.Blob || // `FormData` -> `multipart/form-data`
-      body instanceof FormData || // `URLSearchParams` -> `application/x-www-form-urlencoded`
-      body instanceof URLSearchParams || // Send chunked stream (each chunk has own `length`)
-      isReadableStream2
-    ) {
-      return { bodyHeaders: void 0, body, isStreamingBody: !isRetryableBody };
-    } else if (typeof body === "object" && (Symbol.asyncIterator in body || Symbol.iterator in body && "next" in body && typeof body.next === "function")) {
-      return {
-        bodyHeaders: void 0,
-        body: ReadableStreamFrom(body),
-        isStreamingBody: true
-      };
-    } else if (typeof body === "object" && headers.values.get("content-type") === "application/x-www-form-urlencoded") {
-      return {
-        bodyHeaders: { "content-type": "application/x-www-form-urlencoded" },
-        body: this.stringifyQuery(body),
-        isStreamingBody: false
-      };
-    } else {
-      return { ...__classPrivateFieldGet(this, _OpenAI_encoder, "f").call(this, { body, headers }), isStreamingBody: false };
-    }
-  }
-};
-_a3 = OpenAI, _OpenAI_encoder = /* @__PURE__ */ new WeakMap(), _OpenAI_instances = /* @__PURE__ */ new WeakSet(), _OpenAI_baseURLOverridden = function _OpenAI_baseURLOverridden2() {
-  return this.baseURL !== "https://api.openai.com/v1";
-};
-OpenAI.OpenAI = _a3;
-OpenAI.DEFAULT_TIMEOUT = 6e5;
-OpenAI.OpenAIError = OpenAIError;
-OpenAI.APIError = APIError;
-OpenAI.APIConnectionError = APIConnectionError;
-OpenAI.APIConnectionTimeoutError = APIConnectionTimeoutError;
-OpenAI.APIUserAbortError = APIUserAbortError;
-OpenAI.NotFoundError = NotFoundError;
-OpenAI.ConflictError = ConflictError;
-OpenAI.RateLimitError = RateLimitError;
-OpenAI.BadRequestError = BadRequestError;
-OpenAI.AuthenticationError = AuthenticationError;
-OpenAI.InternalServerError = InternalServerError;
-OpenAI.PermissionDeniedError = PermissionDeniedError;
-OpenAI.UnprocessableEntityError = UnprocessableEntityError;
-OpenAI.InvalidWebhookSignatureError = InvalidWebhookSignatureError;
-OpenAI.toFile = toFile;
-OpenAI.Completions = Completions2;
-OpenAI.Chat = Chat;
-OpenAI.Embeddings = Embeddings;
-OpenAI.Files = Files2;
-OpenAI.Images = Images;
-OpenAI.Audio = Audio;
-OpenAI.Moderations = Moderations;
-OpenAI.Models = Models;
-OpenAI.FineTuning = FineTuning;
-OpenAI.Graders = Graders2;
-OpenAI.VectorStores = VectorStores;
-OpenAI.Webhooks = Webhooks;
-OpenAI.Beta = Beta;
-OpenAI.Batches = Batches;
-OpenAI.Uploads = Uploads;
-OpenAI.Responses = Responses;
-OpenAI.Realtime = Realtime2;
-OpenAI.Conversations = Conversations;
-OpenAI.Evals = Evals;
-OpenAI.Containers = Containers;
-OpenAI.Skills = Skills;
-OpenAI.Videos = Videos;
-
 // routers/ia.ts
-function getOpenAIClient() {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "OPENAI_API_KEY n\xE3o configurada no servidor." });
-  return new OpenAI({ apiKey });
-}
-var AGENT_PROMPTS = {
-  synapse: `Voc\xEA \xE9 o Synapse AI, assistente inteligente de gest\xE3o de log\xEDstica e frota.
-Voc\xEA tem acesso ao contexto completo do sistema Synapse e pode ajudar com:
-- An\xE1lise de frota e ve\xEDculos
-- Gest\xE3o de motoristas e funcion\xE1rios
-- Controle financeiro (contas a pagar/receber)
-- An\xE1lise de viagens e rotas
-- Checklists e manuten\xE7\xE3o preventiva
-- Relat\xF3rios e indicadores (KPIs)
-- Alertas de vencimento (CNH, licenciamento, documentos)
-- Sugest\xF5es de otimiza\xE7\xE3o de custos
-Responda sempre em portugu\xEAs brasileiro, de forma clara, objetiva e profissional.
-Quando n\xE3o tiver dados suficientes, pe\xE7a mais informa\xE7\xF5es ao usu\xE1rio.`,
-  analista: `Voc\xEA \xE9 o Analista Financeiro do Synapse, especialista em an\xE1lise de custos de transporte e log\xEDstica.
-Foque em:
-- Custo por km rodado
-- DRE por ve\xEDculo/motorista
-- An\xE1lise de rentabilidade por rota
-- Identifica\xE7\xE3o de desperd\xEDcios
-- Benchmarks do setor de transporte
-- Proje\xE7\xF5es e tend\xEAncias financeiras
-Use linguagem t\xE9cnica mas acess\xEDvel. Sempre apresente n\xFAmeros e percentuais quando poss\xEDvel.`,
-  motorista: `Voc\xEA \xE9 o assistente de suporte para motoristas do Synapse.
-Ajude com:
-- D\xFAvidas sobre checklists e procedimentos
-- Informa\xE7\xF5es sobre viagens e rotas
-- Documenta\xE7\xE3o necess\xE1ria
-- Regras de tr\xE2nsito e seguran\xE7a
-- Registro de ocorr\xEAncias
-Seja direto, simples e pr\xE1tico. O motorista precisa de respostas r\xE1pidas.`,
-  manutencao: `Voc\xEA \xE9 o especialista em manuten\xE7\xE3o preventiva e corretiva de frota do Synapse.
-Auxilie com:
-- Planos de manuten\xE7\xE3o preventiva
-- Diagn\xF3stico de problemas mec\xE2nicos
-- Controle de pneus e pe\xE7as
-- Hist\xF3rico de manuten\xE7\xF5es
-- Alertas de revis\xE3o por km/tempo
-- Estimativas de custo de reparo
-Priorize sempre a seguran\xE7a e a preven\xE7\xE3o de falhas.`,
-  juridico: `Voc\xEA \xE9 o assistente jur\xEDdico e de compliance do Synapse para transporte de cargas.
-Auxilie com:
-- Legisla\xE7\xE3o de transporte (ANTT, RNTRC, TAC)
-- Multas e infra\xE7\xF5es de tr\xE2nsito
-- Contratos de transporte
-- Seguro obrigat\xF3rio DPVAT e RCTR-C
-- Documenta\xE7\xE3o de carga (CTE, MDF-e)
-- Compliance trabalhista para motoristas
-Sempre indique que decis\xF5es jur\xEDdicas devem ser validadas por um advogado.`
+init_schema2();
+init_drizzle_orm();
+var PROMPTS_PADRAO = {
+  master: {
+    nome: "Synapse Master",
+    avatar: "\u{1F9E0}",
+    descricao: "IA central que coordena todos os agentes e responde sobre o sistema",
+    systemPrompt: `Voc\xEA \xE9 o Synapse Master, a intelig\xEAncia central do sistema Synapse de gest\xE3o log\xEDstica.
+Voc\xEA tem acesso a todos os m\xF3dulos: Frota, Financeiro, RH, Manuten\xE7\xE3o, Recep\xE7\xE3o, WMS e Jur\xEDdico.
+Responda de forma clara, objetiva e profissional. Quando n\xE3o souber algo espec\xEDfico, oriente o usu\xE1rio ao m\xF3dulo correto.
+Sempre que poss\xEDvel, sugira a\xE7\xF5es pr\xE1ticas baseadas nas informa\xE7\xF5es dispon\xEDveis.`
+  },
+  financeiro: {
+    nome: "Analista Financeiro",
+    avatar: "\u{1F4CA}",
+    descricao: "Especialista em custos, DRE, contas a pagar/receber e an\xE1lise financeira",
+    systemPrompt: `Voc\xEA \xE9 um analista financeiro especializado em log\xEDstica e transporte.
+Voc\xEA analisa custos por km, DRE, contas a pagar e receber, adiantamentos e margens de lucro.
+Forne\xE7a an\xE1lises precisas, identifique tend\xEAncias e sugira otimiza\xE7\xF5es de custo.`
+  },
+  frota: {
+    nome: "Gestor de Frota",
+    avatar: "\u{1F69B}",
+    descricao: "Especialista em ve\xEDculos, rotas, checklists e gest\xE3o operacional de frota",
+    systemPrompt: `Voc\xEA \xE9 um especialista em gest\xE3o de frotas de transporte.
+Voc\xEA conhece sobre ve\xEDculos, checklists, rotas, consumo de combust\xEDvel e efici\xEAncia operacional.
+Ajude a otimizar rotas, reduzir custos de combust\xEDvel e garantir a conformidade dos ve\xEDculos.`
+  },
+  motorista: {
+    nome: "Suporte ao Motorista",
+    avatar: "\u{1F468}\u200D\u2708\uFE0F",
+    descricao: "Assistente para d\xFAvidas operacionais, procedimentos e suporte aos motoristas",
+    systemPrompt: `Voc\xEA \xE9 um assistente de suporte para motoristas e equipe operacional.
+Voc\xEA responde d\xFAvidas sobre procedimentos, documenta\xE7\xE3o (CNH, CRLV, MOPP), regras de tr\xE2nsito e legisla\xE7\xE3o de transporte.
+Use linguagem simples e direta. Seja emp\xE1tico e prestativo.`
+  },
+  manutencao: {
+    nome: "Especialista em Manuten\xE7\xE3o",
+    avatar: "\u{1F527}",
+    descricao: "Especialista em manuten\xE7\xE3o preventiva, corretiva e gest\xE3o de pneus",
+    systemPrompt: `Voc\xEA \xE9 um especialista em manuten\xE7\xE3o de ve\xEDculos pesados e log\xEDstica.
+Voc\xEA conhece sobre manuten\xE7\xE3o preventiva, corretiva, gest\xE3o de pneus, diagn\xF3stico de problemas mec\xE2nicos e planejamento de revis\xF5es.
+Ajude a criar planos de manuten\xE7\xE3o, interpretar alertas e reduzir custos com reparos.`
+  },
+  juridico: {
+    nome: "Assistente Jur\xEDdico",
+    avatar: "\u2696\uFE0F",
+    descricao: "Especialista em legisla\xE7\xE3o de transporte, ANTT, multas e compliance",
+    systemPrompt: `Voc\xEA \xE9 um assistente jur\xEDdico especializado em transporte rodovi\xE1rio de cargas.
+Voc\xEA conhece a legisla\xE7\xE3o da ANTT, CTB, normas de seguran\xE7a, multas, habilita\xE7\xF5es e contratos de transporte.
+IMPORTANTE: Sempre recomende consultar um advogado para casos espec\xEDficos e complexos.`
+  },
+  recepcao: {
+    nome: "Assistente de Recep\xE7\xE3o",
+    avatar: "\u{1F4E6}",
+    descricao: "Especialista em recebimento de mercadorias, confer\xEAncia e gest\xE3o de docas",
+    systemPrompt: `Voc\xEA \xE9 um especialista em recep\xE7\xE3o e confer\xEAncia de mercadorias.
+Voc\xEA conhece sobre processos de recebimento, confer\xEAncia de notas fiscais, gest\xE3o de docas e identifica\xE7\xE3o de diverg\xEAncias.
+Ajude a otimizar o processo de recebimento e garantir a rastreabilidade das mercadorias.`
+  },
+  wms: {
+    nome: "Gestor de Armaz\xE9m",
+    avatar: "\u{1F3ED}",
+    descricao: "Especialista em WMS, gest\xE3o de estoque, localiza\xE7\xE3o e movimenta\xE7\xF5es",
+    systemPrompt: `Voc\xEA \xE9 um especialista em gest\xE3o de armaz\xE9ns e estoque (WMS).
+Voc\xEA conhece sobre organiza\xE7\xE3o de armaz\xE9ns, endere\xE7amento de produtos, controle de estoque, invent\xE1rios, picking e expedi\xE7\xE3o.
+Ajude a otimizar o layout do armaz\xE9m, reduzir perdas e melhorar a efici\xEAncia das opera\xE7\xF5es.`
+  }
 };
-var agentTypes = ["synapse", "analista", "motorista", "manutencao", "juridico"];
+function processarMensagemLocal(mensagem, setor, instrucoes) {
+  const msg = mensagem.toLowerCase();
+  const respostasSetor = {
+    financeiro: {
+      "custo": "Para analisar custos, acesse Financeiro \u2192 DRE por Placa. L\xE1 voc\xEA encontra o custo por km e a margem de lucro por viagem.",
+      "conta": "As contas a pagar e receber est\xE3o no m\xF3dulo Financeiro. Filtre por status (pendente, pago, vencido) e categoria.",
+      "dre": "O DRE est\xE1 dispon\xEDvel em Financeiro \u2192 Relat\xF3rios. Ele consolida receitas, despesas e lucro por per\xEDodo.",
+      "adiantamento": "Os adiantamentos para motoristas s\xE3o gerenciados em Financeiro \u2192 Adiantamentos."
+    },
+    frota: {
+      "veiculo": "Os ve\xEDculos est\xE3o em Frota \u2192 Ve\xEDculos. Veja status, KM atual, motorista vinculado e documenta\xE7\xE3o.",
+      "checklist": "Os checklists est\xE3o em Frota \u2192 Checklists. \xC9 obrigat\xF3rio preencher antes de cada viagem.",
+      "combustivel": "O controle de abastecimento est\xE1 em Frota \u2192 Abastecimentos."
+    },
+    manutencao: {
+      "manutencao": "As manuten\xE7\xF5es est\xE3o em Manuten\xE7\xE3o \u2192 Hist\xF3rico. Registre preventivas e corretivas com custo e pr\xF3xima revis\xE3o.",
+      "pneu": "O controle de pneus est\xE1 em Manuten\xE7\xE3o \u2192 Pneus.",
+      "revisao": "Para planejar revis\xF5es, acesse Manuten\xE7\xE3o \u2192 Preventivas."
+    },
+    recepcao: {
+      "recebimento": "Para registrar um recebimento, acesse Recep\xE7\xE3o \u2192 Novo Recebimento.",
+      "conferencia": "A confer\xEAncia de itens \xE9 feita em Recep\xE7\xE3o \u2192 Recebimentos \u2192 selecione o recebimento \u2192 Conferir Itens.",
+      "doca": "As docas s\xE3o configuradas em Recep\xE7\xE3o \u2192 Docas.",
+      "divergencia": "Diverg\xEAncias s\xE3o registradas durante a confer\xEAncia. Acesse Recep\xE7\xE3o \u2192 Diverg\xEAncias."
+    },
+    wms: {
+      "estoque": "O estoque atual est\xE1 em WMS \u2192 Estoque. Filtre por produto e armaz\xE9m.",
+      "produto": "Os produtos s\xE3o cadastrados em WMS \u2192 Produtos.",
+      "movimentacao": "As movimenta\xE7\xF5es est\xE3o em WMS \u2192 Movimenta\xE7\xF5es.",
+      "armazem": "Os armaz\xE9ns s\xE3o configurados em WMS \u2192 Armaz\xE9ns."
+    }
+  };
+  const respostasGerais = {
+    "ola": "Ol\xE1! Como posso ajudar voc\xEA hoje?",
+    "ajuda": "Posso ajudar com d\xFAvidas sobre o sistema, procedimentos operacionais e an\xE1lise de informa\xE7\xF5es. O que voc\xEA precisa?",
+    "erro": "Se voc\xEA est\xE1 encontrando um erro: 1) Recarregue a p\xE1gina, 2) Verifique os campos obrigat\xF3rios, 3) Verifique sua conex\xE3o.",
+    "relatorio": "Os relat\xF3rios est\xE3o dispon\xEDveis em cada m\xF3dulo. Acesse o m\xF3dulo desejado e procure pela op\xE7\xE3o 'Relat\xF3rios' ou 'Exportar'."
+  };
+  const respostasDoSetor = respostasSetor[setor] ?? {};
+  for (const [chave, resposta] of Object.entries(respostasDoSetor)) {
+    if (msg.includes(chave)) return resposta;
+  }
+  for (const [chave, resposta] of Object.entries(respostasGerais)) {
+    if (msg.includes(chave)) return resposta;
+  }
+  if (instrucoes) {
+    const linhas = instrucoes.split("\n").filter((l) => l.trim());
+    for (const linha of linhas) {
+      if (linha.includes(":")) {
+        const [gatilho, resposta] = linha.split(":").map((s) => s.trim());
+        if (gatilho && resposta && msg.includes(gatilho.toLowerCase())) return resposta;
+      }
+    }
+  }
+  const respostasPadrao = [
+    `Entendi sua pergunta. Para obter informa\xE7\xF5es mais precisas, acesse o m\xF3dulo correspondente no menu lateral ou reformule sua pergunta com mais detalhes.`,
+    `Posso ajudar com isso! Acesse o m\xF3dulo correspondente no menu lateral para realizar essa opera\xE7\xE3o. Precisa de orienta\xE7\xE3o sobre algum passo espec\xEDfico?`,
+    `Boa pergunta! Para isso, voc\xEA pode acessar o m\xF3dulo relevante no sistema. Se precisar de ajuda espec\xEDfica, descreva melhor o que voc\xEA precisa fazer.`
+  ];
+  return respostasPadrao[Math.floor(Math.random() * respostasPadrao.length)];
+}
 var iaRouter = router({
-  // Chat com agente IA
+  listAgentes: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const agentes = await db.select().from(iaAgentes).where(and(eq(iaAgentes.empresaId, empresaId), eq(iaAgentes.ativo, true), isNull2(iaAgentes.deletedAt))).orderBy(iaAgentes.isMaster, iaAgentes.nome);
+    if (agentes.length === 0) {
+      return Object.entries(PROMPTS_PADRAO).map(([setor, info], idx) => ({
+        id: -(idx + 1),
+        empresaId,
+        setor,
+        nome: info.nome,
+        avatar: info.avatar,
+        descricao: info.descricao,
+        systemPrompt: info.systemPrompt,
+        instrucoes: null,
+        contextoEmpresa: null,
+        temperatura: "0.7",
+        modelo: "local",
+        ativo: true,
+        isMaster: setor === "master",
+        usarIaExterna: false,
+        createdAt: /* @__PURE__ */ new Date(),
+        updatedAt: /* @__PURE__ */ new Date(),
+        deletedAt: null
+      }));
+    }
+    return agentes;
+  }),
+  inicializarAgentes: adminProcedure.mutation(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const existentes = await db.select({ id: iaAgentes.id }).from(iaAgentes).where(and(eq(iaAgentes.empresaId, empresaId), isNull2(iaAgentes.deletedAt)));
+    if (existentes.length > 0) return { message: "Agentes j\xE1 inicializados", count: existentes.length };
+    await db.insert(iaAgentes).values(
+      Object.entries(PROMPTS_PADRAO).map(([setor, info]) => ({
+        empresaId,
+        setor,
+        nome: info.nome,
+        avatar: info.avatar,
+        descricao: info.descricao,
+        systemPrompt: info.systemPrompt,
+        isMaster: setor === "master",
+        usarIaExterna: false
+      }))
+    );
+    return { message: "Agentes inicializados", count: Object.keys(PROMPTS_PADRAO).length };
+  }),
+  configurarAgente: adminProcedure.input(external_exports.object({
+    id: external_exports.number().optional(),
+    setor: external_exports.string().optional(),
+    nome: external_exports.string().optional(),
+    avatar: external_exports.string().optional(),
+    descricao: external_exports.string().optional(),
+    systemPrompt: external_exports.string().optional(),
+    instrucoes: external_exports.string().optional(),
+    contextoEmpresa: external_exports.string().optional(),
+    usarIaExterna: external_exports.boolean().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    if (input.id && input.id > 0) {
+      await db.update(iaAgentes).set({
+        nome: input.nome,
+        avatar: input.avatar,
+        descricao: input.descricao,
+        systemPrompt: input.systemPrompt,
+        instrucoes: input.instrucoes,
+        contextoEmpresa: input.contextoEmpresa,
+        usarIaExterna: input.usarIaExterna,
+        updatedAt: /* @__PURE__ */ new Date()
+      }).where(and(eq(iaAgentes.id, input.id), eq(iaAgentes.empresaId, empresaId)));
+      return { success: true, message: "Agente atualizado" };
+    } else {
+      const padrao = PROMPTS_PADRAO[input.setor ?? "custom"];
+      const [novo] = await db.insert(iaAgentes).values({
+        empresaId,
+        setor: input.setor ?? "custom",
+        nome: input.nome ?? padrao?.nome ?? "Novo Agente",
+        avatar: input.avatar ?? padrao?.avatar ?? "\u{1F916}",
+        descricao: input.descricao ?? padrao?.descricao,
+        systemPrompt: input.systemPrompt ?? padrao?.systemPrompt ?? "Voc\xEA \xE9 um assistente do sistema Synapse.",
+        instrucoes: input.instrucoes,
+        contextoEmpresa: input.contextoEmpresa,
+        usarIaExterna: input.usarIaExterna ?? false
+      }).returning();
+      return { success: true, message: "Agente criado", agente: novo };
+    }
+  }),
+  criarSessao: protectedProcedure.input(external_exports.object({ agenteId: external_exports.number(), titulo: external_exports.string().optional() })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [sessao] = await db.insert(iaSessoes).values({
+      empresaId: ctx.user.empresaId,
+      usuarioId: ctx.user.id,
+      agenteId: input.agenteId,
+      titulo: input.titulo ?? "Nova conversa"
+    }).returning();
+    return sessao;
+  }),
+  listSessoes: protectedProcedure.input(external_exports.object({ agenteId: external_exports.number().optional() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const conditions = [eq(iaSessoes.usuarioId, ctx.user.id), isNull2(iaSessoes.deletedAt)];
+    if (input.agenteId) conditions.push(eq(iaSessoes.agenteId, input.agenteId));
+    return db.select().from(iaSessoes).where(and(...conditions)).orderBy(desc(iaSessoes.updatedAt)).limit(20);
+  }),
+  getMensagens: protectedProcedure.input(external_exports.object({ sessaoId: external_exports.number() })).query(async ({ input }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    return db.select().from(iaMensagens).where(eq(iaMensagens.sessaoId, input.sessaoId)).orderBy(iaMensagens.createdAt);
+  }),
+  enviarMensagem: protectedProcedure.input(external_exports.object({
+    sessaoId: external_exports.number(),
+    agenteId: external_exports.number(),
+    mensagem: external_exports.string().min(1).max(2e3)
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    await db.insert(iaMensagens).values({ sessaoId: input.sessaoId, empresaId, role: "user", conteudo: input.mensagem });
+    let agenteConfig;
+    if (input.agenteId < 0) {
+      const setores = Object.keys(PROMPTS_PADRAO);
+      const setor = setores[Math.abs(input.agenteId) - 1] ?? "master";
+      const padrao = PROMPTS_PADRAO[setor];
+      agenteConfig = { ...padrao, setor, instrucoes: null, usarIaExterna: false };
+    } else {
+      const [agente] = await db.select().from(iaAgentes).where(and(eq(iaAgentes.id, input.agenteId), eq(iaAgentes.empresaId, empresaId))).limit(1);
+      if (!agente) throw new TRPCError({ code: "NOT_FOUND" });
+      agenteConfig = { systemPrompt: agente.systemPrompt, instrucoes: agente.instrucoes, setor: agente.setor, usarIaExterna: agente.usarIaExterna };
+    }
+    const historico = await db.select({ role: iaMensagens.role, conteudo: iaMensagens.conteudo }).from(iaMensagens).where(eq(iaMensagens.sessaoId, input.sessaoId)).orderBy(desc(iaMensagens.createdAt)).limit(10);
+    let resposta;
+    let tokens = 0;
+    let modoLocal = true;
+    if (agenteConfig.usarIaExterna && process.env.OPENAI_API_KEY && !process.env.OPENAI_API_KEY.includes("...")) {
+      try {
+        const { default: OpenAI2 } = await Promise.resolve().then(() => (init_openai(), openai_exports));
+        const openai = new OpenAI2({ apiKey: process.env.OPENAI_API_KEY });
+        const messages2 = [
+          { role: "system", content: agenteConfig.systemPrompt + (agenteConfig.instrucoes ? `
+
+Instru\xE7\xF5es:
+${agenteConfig.instrucoes}` : "") },
+          ...historico.reverse().map((h) => ({ role: h.role, content: h.conteudo })),
+          { role: "user", content: input.mensagem }
+        ];
+        const completion = await openai.chat.completions.create({ model: "gpt-4o-mini", messages: messages2, max_tokens: 500, temperature: 0.7 });
+        resposta = completion.choices[0]?.message?.content ?? "N\xE3o foi poss\xEDvel gerar uma resposta.";
+        tokens = completion.usage?.total_tokens ?? 0;
+        modoLocal = false;
+      } catch {
+        resposta = processarMensagemLocal(input.mensagem, agenteConfig.setor, agenteConfig.instrucoes);
+      }
+    } else {
+      resposta = processarMensagemLocal(input.mensagem, agenteConfig.setor, agenteConfig.instrucoes);
+    }
+    await db.insert(iaMensagens).values({ sessaoId: input.sessaoId, empresaId, role: "assistant", conteudo: resposta, tokens });
+    await db.update(iaSessoes).set({ updatedAt: /* @__PURE__ */ new Date() }).where(eq(iaSessoes.id, input.sessaoId));
+    return { resposta, tokens, modoLocal };
+  }),
+  // Manter compatibilidade com o chat antigo (OpenAI direto)
   chat: protectedProcedure.input(external_exports.object({
     message: external_exports.string().min(1).max(2e3),
-    agent: external_exports.enum(agentTypes).default("synapse"),
-    history: external_exports.array(external_exports.object({
-      role: external_exports.enum(["user", "assistant"]),
-      content: external_exports.string()
-    })).max(20).default([]),
-    context: external_exports.object({
-      empresaId: external_exports.number().optional(),
-      totalVeiculos: external_exports.number().optional(),
-      totalMotoristas: external_exports.number().optional(),
-      viagensAtivas: external_exports.number().optional(),
-      alertas: external_exports.array(external_exports.string()).optional()
-    }).optional()
+    agent: external_exports.enum(["synapse", "analista", "motorista", "manutencao", "juridico"]).default("synapse"),
+    history: external_exports.array(external_exports.object({ role: external_exports.enum(["user", "assistant"]), content: external_exports.string() })).max(20).default([])
   })).mutation(async ({ input }) => {
-    const openai = getOpenAIClient();
-    const systemPrompt = AGENT_PROMPTS[input.agent];
-    let contextInfo = "";
-    if (input.context) {
-      const ctx = input.context;
-      contextInfo = "\n\n[CONTEXTO DO SISTEMA]\n";
-      if (ctx.totalVeiculos !== void 0) contextInfo += `- Total de ve\xEDculos: ${ctx.totalVeiculos}
-`;
-      if (ctx.totalMotoristas !== void 0) contextInfo += `- Total de motoristas: ${ctx.totalMotoristas}
-`;
-      if (ctx.viagensAtivas !== void 0) contextInfo += `- Viagens ativas: ${ctx.viagensAtivas}
-`;
-      if (ctx.alertas?.length) contextInfo += `- Alertas ativos: ${ctx.alertas.join(", ")}
-`;
-    }
-    const messages2 = [
-      { role: "system", content: systemPrompt + contextInfo },
-      ...input.history.map((h) => ({ role: h.role, content: h.content })),
-      { role: "user", content: input.message }
-    ];
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: messages2,
-      max_tokens: 1e3,
-      temperature: 0.7
-    });
-    const reply = completion.choices[0]?.message?.content ?? "N\xE3o consegui gerar uma resposta. Tente novamente.";
-    return {
-      reply,
-      agent: input.agent,
-      tokensUsed: completion.usage?.total_tokens ?? 0
+    const agentMap = {
+      synapse: "master",
+      analista: "financeiro",
+      motorista: "motorista",
+      manutencao: "manutencao",
+      juridico: "juridico"
     };
-  }),
-  // Análise automática de dados da empresa
-  analisarEmpresa: protectedProcedure.input(external_exports.object({
-    empresaId: external_exports.number(),
-    dados: external_exports.object({
-      totalVeiculos: external_exports.number(),
-      veiculosAtivos: external_exports.number(),
-      totalMotoristas: external_exports.number(),
-      viagensUltimos30Dias: external_exports.number(),
-      receitaUltimos30Dias: external_exports.number(),
-      despesaUltimos30Dias: external_exports.number(),
-      multasAbertas: external_exports.number(),
-      documentosVencendo: external_exports.number(),
-      kmMedioMensal: external_exports.number().optional()
-    })
-  })).mutation(async ({ input }) => {
-    const openai = getOpenAIClient();
-    const { dados } = input;
-    const lucro = dados.receitaUltimos30Dias - dados.despesaUltimos30Dias;
-    const margemLucro = dados.receitaUltimos30Dias > 0 ? (lucro / dados.receitaUltimos30Dias * 100).toFixed(1) : "0";
-    const taxaOcupacao = dados.totalVeiculos > 0 ? (dados.veiculosAtivos / dados.totalVeiculos * 100).toFixed(1) : "0";
-    const prompt = `Analise os seguintes dados operacionais de uma empresa de transporte/log\xEDstica e forne\xE7a:
-1. Um diagn\xF3stico geral (3-4 frases)
-2. Principais pontos de aten\xE7\xE3o (m\xE1ximo 3)
-3. Recomenda\xE7\xF5es priorit\xE1rias (m\xE1ximo 3)
-4. Uma nota de desempenho geral de 0 a 10
-
-DADOS:
-- Frota total: ${dados.totalVeiculos} ve\xEDculos (${dados.veiculosAtivos} ativos = ${taxaOcupacao}% de ocupa\xE7\xE3o)
-- Motoristas: ${dados.totalMotoristas}
-- Viagens nos \xFAltimos 30 dias: ${dados.viagensUltimos30Dias}
-- Receita: R$ ${dados.receitaUltimos30Dias.toLocaleString("pt-BR")}
-- Despesa: R$ ${dados.despesaUltimos30Dias.toLocaleString("pt-BR")}
-- Lucro: R$ ${lucro.toLocaleString("pt-BR")} (margem: ${margemLucro}%)
-- Multas abertas: ${dados.multasAbertas}
-- Documentos vencendo em 30 dias: ${dados.documentosVencendo}
-${dados.kmMedioMensal ? `- KM m\xE9dio mensal por ve\xEDculo: ${dados.kmMedioMensal.toLocaleString("pt-BR")} km` : ""}
-
-Responda em formato JSON com as chaves: diagnostico, pontos_atencao (array), recomendacoes (array), nota (n\xFAmero).`;
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: AGENT_PROMPTS.analista },
-        { role: "user", content: prompt }
-      ],
-      max_tokens: 800,
-      temperature: 0.5,
-      response_format: { type: "json_object" }
-    });
-    const raw = completion.choices[0]?.message?.content ?? "{}";
-    try {
-      const parsed = JSON.parse(raw);
-      return {
-        diagnostico: parsed.diagnostico ?? "An\xE1lise n\xE3o dispon\xEDvel.",
-        pontos_atencao: parsed.pontos_atencao ?? [],
-        recomendacoes: parsed.recomendacoes ?? [],
-        nota: parsed.nota ?? 5,
-        tokensUsed: completion.usage?.total_tokens ?? 0
-      };
-    } catch {
-      return {
-        diagnostico: raw,
-        pontos_atencao: [],
-        recomendacoes: [],
-        nota: 5,
-        tokensUsed: completion.usage?.total_tokens ?? 0
-      };
+    const setor = agentMap[input.agent] ?? "master";
+    const padrao = PROMPTS_PADRAO[setor];
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (apiKey && !apiKey.includes("...")) {
+      try {
+        const { default: OpenAI2 } = await Promise.resolve().then(() => (init_openai(), openai_exports));
+        const openai = new OpenAI2({ apiKey });
+        const messages2 = [
+          { role: "system", content: padrao.systemPrompt },
+          ...input.history.map((h) => ({ role: h.role, content: h.content })),
+          { role: "user", content: input.message }
+        ];
+        const completion = await openai.chat.completions.create({ model: "gpt-4o-mini", messages: messages2, max_tokens: 1e3, temperature: 0.7 });
+        return { reply: completion.choices[0]?.message?.content ?? "Sem resposta.", agent: input.agent, tokensUsed: completion.usage?.total_tokens ?? 0 };
+      } catch {
+      }
     }
+    return { reply: processarMensagemLocal(input.message, setor, null), agent: input.agent, tokensUsed: 0 };
   }),
-  // Gerar relatório automático
-  gerarRelatorio: protectedProcedure.input(external_exports.object({
-    tipo: external_exports.enum(["mensal", "semanal", "viagem", "motorista", "veiculo"]),
-    dados: external_exports.record(external_exports.any())
-  })).mutation(async ({ input }) => {
-    const openai = getOpenAIClient();
-    const tipoLabels = {
-      mensal: "relat\xF3rio mensal de opera\xE7\xF5es",
-      semanal: "relat\xF3rio semanal de opera\xE7\xF5es",
-      viagem: "relat\xF3rio de viagem",
-      motorista: "relat\xF3rio de desempenho de motorista",
-      veiculo: "relat\xF3rio de desempenho de ve\xEDculo"
-    };
-    const prompt = `Gere um ${tipoLabels[input.tipo]} profissional e detalhado com base nos dados abaixo.
-O relat\xF3rio deve ter: resumo executivo, an\xE1lise detalhada, indicadores-chave e conclus\xE3o.
-Dados: ${JSON.stringify(input.dados, null, 2)}`;
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: AGENT_PROMPTS.analista },
-        { role: "user", content: prompt }
-      ],
-      max_tokens: 1500,
-      temperature: 0.6
-    });
-    return {
-      relatorio: completion.choices[0]?.message?.content ?? "N\xE3o foi poss\xEDvel gerar o relat\xF3rio.",
-      tokensUsed: completion.usage?.total_tokens ?? 0
-    };
-  }),
-  // Sugestão de manutenção preventiva
-  sugerirManutencao: protectedProcedure.input(external_exports.object({
-    veiculo: external_exports.object({
-      placa: external_exports.string(),
-      modelo: external_exports.string(),
-      ano: external_exports.number(),
-      kmAtual: external_exports.number(),
-      ultimaRevisao: external_exports.string().optional(),
-      kmUltimaRevisao: external_exports.number().optional(),
-      historicoManutencoes: external_exports.array(external_exports.object({
-        tipo: external_exports.string(),
-        data: external_exports.string(),
-        km: external_exports.number()
-      })).optional()
-    })
-  })).mutation(async ({ input }) => {
-    const openai = getOpenAIClient();
-    const { veiculo } = input;
-    const kmDesdeRevisao = veiculo.kmUltimaRevisao ? veiculo.kmAtual - veiculo.kmUltimaRevisao : null;
-    const prompt = `Analise o hist\xF3rico de manuten\xE7\xE3o do ve\xEDculo abaixo e forne\xE7a recomenda\xE7\xF5es de manuten\xE7\xE3o preventiva.
-
-VE\xCDCULO: ${veiculo.modelo} (${veiculo.ano}) - Placa: ${veiculo.placa}
-KM Atual: ${veiculo.kmAtual.toLocaleString("pt-BR")} km
-${veiculo.ultimaRevisao ? `\xDAltima revis\xE3o: ${veiculo.ultimaRevisao}` : "Sem registro de \xFAltima revis\xE3o"}
-${kmDesdeRevisao !== null ? `KM desde \xFAltima revis\xE3o: ${kmDesdeRevisao.toLocaleString("pt-BR")} km` : ""}
-${veiculo.historicoManutencoes?.length ? `Hist\xF3rico: ${JSON.stringify(veiculo.historicoManutencoes)}` : "Sem hist\xF3rico registrado"}
-
-Responda em JSON com: urgentes (array de manuten\xE7\xF5es necess\xE1rias agora), proximas (array de pr\xF3ximas manuten\xE7\xF5es), estimativa_custo_total (n\xFAmero em R$), observacoes (string).`;
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: AGENT_PROMPTS.manutencao },
-        { role: "user", content: prompt }
-      ],
-      max_tokens: 800,
-      temperature: 0.4,
-      response_format: { type: "json_object" }
-    });
-    const raw = completion.choices[0]?.message?.content ?? "{}";
-    try {
-      const parsed = JSON.parse(raw);
-      return {
-        urgentes: parsed.urgentes ?? [],
-        proximas: parsed.proximas ?? [],
-        estimativa_custo_total: parsed.estimativa_custo_total ?? 0,
-        observacoes: parsed.observacoes ?? "",
-        tokensUsed: completion.usage?.total_tokens ?? 0
-      };
-    } catch {
-      return { urgentes: [], proximas: [], estimativa_custo_total: 0, observacoes: raw, tokensUsed: 0 };
-    }
-  }),
-  // Listar agentes disponíveis
   listarAgentes: protectedProcedure.query(() => {
-    return [
-      { id: "synapse", nome: "Synapse AI", descricao: "Assistente geral de gest\xE3o de frota e log\xEDstica", icone: "\u{1F9E0}" },
-      { id: "analista", nome: "Analista Financeiro", descricao: "Especialista em custos, DRE e an\xE1lise financeira", icone: "\u{1F4CA}" },
-      { id: "motorista", nome: "Suporte ao Motorista", descricao: "Assistente para d\xFAvidas operacionais dos motoristas", icone: "\u{1F69B}" },
-      { id: "manutencao", nome: "Especialista em Manuten\xE7\xE3o", descricao: "Diagn\xF3stico e planos de manuten\xE7\xE3o preventiva", icone: "\u{1F527}" },
-      { id: "juridico", nome: "Assistente Jur\xEDdico", descricao: "Legisla\xE7\xE3o de transporte, multas e compliance", icone: "\u2696\uFE0F" }
+    return Object.entries(PROMPTS_PADRAO).map(([id, info]) => ({
+      id,
+      nome: info.nome,
+      descricao: info.descricao,
+      icone: info.avatar
+    }));
+  }),
+  listConhecimento: adminProcedure.input(external_exports.object({ agenteId: external_exports.number().optional() })).query(async ({ ctx, input }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const conditions = [eq(iaConhecimento.empresaId, ctx.user.empresaId), isNull2(iaConhecimento.deletedAt), eq(iaConhecimento.ativo, true)];
+    if (input.agenteId) conditions.push(eq(iaConhecimento.agenteId, input.agenteId));
+    return db.select().from(iaConhecimento).where(and(...conditions)).orderBy(desc(iaConhecimento.createdAt));
+  }),
+  addConhecimento: adminProcedure.input(external_exports.object({
+    agenteId: external_exports.number().optional(),
+    titulo: external_exports.string().min(3),
+    conteudo: external_exports.string().min(10),
+    categoria: external_exports.string().optional(),
+    tags: external_exports.array(external_exports.string()).optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [novo] = await db.insert(iaConhecimento).values({
+      empresaId: ctx.user.empresaId,
+      agenteId: input.agenteId,
+      titulo: input.titulo,
+      conteudo: input.conteudo,
+      categoria: input.categoria,
+      tags: input.tags ? JSON.stringify(input.tags) : null,
+      createdBy: ctx.user.id
+    }).returning();
+    return novo;
+  }),
+  deleteConhecimento: adminProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await db.update(iaConhecimento).set({ deletedAt: /* @__PURE__ */ new Date() }).where(and(eq(iaConhecimento.id, input.id), eq(iaConhecimento.empresaId, ctx.user.empresaId)));
+    return { success: true };
+  }),
+  dashboardUso: adminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const [s] = await db.select({ total: sql`count(*)` }).from(iaSessoes).where(and(eq(iaSessoes.empresaId, empresaId), isNull2(iaSessoes.deletedAt)));
+    const [m] = await db.select({ total: sql`count(*)` }).from(iaMensagens).where(eq(iaMensagens.empresaId, empresaId));
+    const [c] = await db.select({ total: sql`count(*)` }).from(iaConhecimento).where(and(eq(iaConhecimento.empresaId, empresaId), isNull2(iaConhecimento.deletedAt)));
+    return { totalSessoes: s.total, totalMensagens: m.total, totalConhecimento: c.total, modoAtual: "gratuito" };
+  })
+});
+
+// routers/recepcao.ts
+init_schema2();
+init_drizzle_orm();
+var recepcaoRouter = router({
+  // ─── RECEBIMENTOS ──────────────────────────────────────────────────────────
+  listRecebimentos: protectedProcedure.input(external_exports.object({
+    status: external_exports.string().optional(),
+    search: external_exports.string().optional(),
+    limit: external_exports.number().default(50),
+    offset: external_exports.number().default(0)
+  })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indispon\xEDvel" });
+    const empresaId = ctx.user.empresaId;
+    const conditions = [
+      eq(recebimentos.empresaId, empresaId),
+      isNull2(recebimentos.deletedAt)
     ];
+    if (input.status) conditions.push(eq(recebimentos.status, input.status));
+    if (input.search) conditions.push(ilike(recebimentos.numero, `%${input.search}%`));
+    const rows = await db.select().from(recebimentos).where(and(...conditions)).orderBy(desc(recebimentos.createdAt)).limit(input.limit).offset(input.offset);
+    return rows;
+  }),
+  getRecebimento: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const [rec] = await db.select().from(recebimentos).where(and(eq(recebimentos.id, input.id), eq(recebimentos.empresaId, empresaId), isNull2(recebimentos.deletedAt))).limit(1);
+    if (!rec) throw new TRPCError({ code: "NOT_FOUND", message: "Recebimento n\xE3o encontrado" });
+    const itens = await db.select().from(itensRecebimento).where(and(eq(itensRecebimento.recebimentoId, input.id), isNull2(itensRecebimento.deletedAt)));
+    return { ...rec, itens };
+  }),
+  createRecebimento: protectedProcedure.input(external_exports.object({
+    tipo: external_exports.enum(["nf_entrada", "devolucao", "transferencia", "bonificacao", "outro"]).default("nf_entrada"),
+    fornecedorNome: external_exports.string().optional(),
+    fornecedorCnpj: external_exports.string().optional(),
+    nfNumero: external_exports.string().optional(),
+    nfSerie: external_exports.string().optional(),
+    nfChave: external_exports.string().optional(),
+    nfValorTotal: external_exports.string().optional(),
+    nfDataEmissao: external_exports.string().optional(),
+    transportadoraNome: external_exports.string().optional(),
+    veiculoPlaca: external_exports.string().optional(),
+    docaId: external_exports.number().optional(),
+    armazemId: external_exports.number().optional(),
+    dataAgendamento: external_exports.string().optional(),
+    observacoes: external_exports.string().optional(),
+    itens: external_exports.array(external_exports.object({
+      codigoProduto: external_exports.string().optional(),
+      descricaoProduto: external_exports.string(),
+      unidade: external_exports.string().optional(),
+      ean: external_exports.string().optional(),
+      quantidadeEsperada: external_exports.string(),
+      valorUnitario: external_exports.string().optional()
+    })).optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const [lastRec] = await db.select({ id: recebimentos.id }).from(recebimentos).where(eq(recebimentos.empresaId, empresaId)).orderBy(desc(recebimentos.id)).limit(1);
+    const nextNum = (lastRec?.id ?? 0) + 1;
+    const numero = `REC-${String(nextNum).padStart(6, "0")}`;
+    const [newRec] = await db.insert(recebimentos).values({
+      empresaId,
+      numero,
+      tipo: input.tipo,
+      status: "aguardando",
+      fornecedorNome: input.fornecedorNome,
+      fornecedorCnpj: input.fornecedorCnpj,
+      nfNumero: input.nfNumero,
+      nfSerie: input.nfSerie,
+      nfChave: input.nfChave,
+      nfValorTotal: input.nfValorTotal,
+      nfDataEmissao: input.nfDataEmissao,
+      transportadoraNome: input.transportadoraNome,
+      veiculoPlaca: input.veiculoPlaca,
+      docaId: input.docaId,
+      armazemId: input.armazemId,
+      dataAgendamento: input.dataAgendamento ? new Date(input.dataAgendamento) : void 0,
+      observacoes: input.observacoes,
+      totalItensEsperados: input.itens?.length ?? 0,
+      createdBy: ctx.user.id
+    }).returning();
+    if (input.itens && input.itens.length > 0) {
+      await db.insert(itensRecebimento).values(
+        input.itens.map((item) => ({
+          recebimentoId: newRec.id,
+          empresaId,
+          descricaoProduto: item.descricaoProduto,
+          codigoProduto: item.codigoProduto,
+          unidade: item.unidade ?? "UN",
+          ean: item.ean,
+          quantidadeEsperada: item.quantidadeEsperada,
+          valorUnitario: item.valorUnitario,
+          status: "pendente"
+        }))
+      );
+    }
+    return newRec;
+  }),
+  updateStatus: protectedProcedure.input(external_exports.object({
+    id: external_exports.number(),
+    status: external_exports.enum(["aguardando", "em_conferencia", "conferido", "divergencia", "recusado", "finalizado"]),
+    observacoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const updateData = {
+      status: input.status,
+      updatedAt: /* @__PURE__ */ new Date()
+    };
+    if (input.observacoes) updateData.observacoes = input.observacoes;
+    if (input.status === "em_conferencia") updateData.dataInicio = /* @__PURE__ */ new Date();
+    if (input.status === "finalizado" || input.status === "recusado") updateData.dataFim = /* @__PURE__ */ new Date();
+    await db.update(recebimentos).set(updateData).where(and(eq(recebimentos.id, input.id), eq(recebimentos.empresaId, empresaId)));
+    return { success: true };
+  }),
+  conferirItem: protectedProcedure.input(external_exports.object({
+    itemId: external_exports.number(),
+    quantidadeRecebida: external_exports.string(),
+    status: external_exports.enum(["conferido", "divergencia_quantidade", "divergencia_qualidade", "recusado"]),
+    localizacao: external_exports.string().optional(),
+    observacoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await db.update(itensRecebimento).set({
+      quantidadeRecebida: input.quantidadeRecebida,
+      status: input.status,
+      localizacao: input.localizacao,
+      observacoes: input.observacoes,
+      updatedAt: /* @__PURE__ */ new Date()
+    }).where(eq(itensRecebimento.id, input.itemId));
+    return { success: true };
+  }),
+  deleteRecebimento: adminProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    await db.update(recebimentos).set({ deletedAt: /* @__PURE__ */ new Date(), deletedBy: ctx.user.id }).where(and(eq(recebimentos.id, input.id), eq(recebimentos.empresaId, empresaId)));
+    return { success: true };
+  }),
+  // ─── DOCAS ─────────────────────────────────────────────────────────────────
+  listDocas: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    return db.select().from(docas).where(and(eq(docas.empresaId, ctx.user.empresaId), eq(docas.ativo, true)));
+  }),
+  createDoca: adminProcedure.input(external_exports.object({
+    armazemId: external_exports.number(),
+    nome: external_exports.string(),
+    codigo: external_exports.string().optional(),
+    tipo: external_exports.enum(["recebimento", "expedicao", "misto"]).default("recebimento")
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [doca] = await db.insert(docas).values({
+      empresaId: ctx.user.empresaId,
+      ...input
+    }).returning();
+    return doca;
+  }),
+  // ─── DASHBOARD ─────────────────────────────────────────────────────────────
+  dashboard: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const [totais] = await db.select({
+      total: sql`count(*)`,
+      aguardando: sql`count(*) filter (where status = 'aguardando')`,
+      emConferencia: sql`count(*) filter (where status = 'em_conferencia')`,
+      finalizados: sql`count(*) filter (where status = 'finalizado')`,
+      divergencias: sql`count(*) filter (where status = 'divergencia')`
+    }).from(recebimentos).where(and(eq(recebimentos.empresaId, empresaId), isNull2(recebimentos.deletedAt)));
+    const recentes = await db.select().from(recebimentos).where(and(eq(recebimentos.empresaId, empresaId), isNull2(recebimentos.deletedAt))).orderBy(desc(recebimentos.createdAt)).limit(5);
+    return { totais, recentes };
+  })
+});
+
+// routers/wms.ts
+init_schema2();
+init_drizzle_orm();
+var wmsRouter = router({
+  // ─── ARMAZÉNS ──────────────────────────────────────────────────────────────
+  listArmazens: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    return db.select().from(armazens).where(and(eq(armazens.empresaId, ctx.user.empresaId), isNull2(armazens.deletedAt)));
+  }),
+  createArmazem: adminProcedure.input(external_exports.object({
+    nome: external_exports.string().min(2),
+    codigo: external_exports.string().optional(),
+    descricao: external_exports.string().optional(),
+    endereco: external_exports.string().optional(),
+    capacidadeTotal: external_exports.string().optional(),
+    unidadeCapacidade: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [arm] = await db.insert(armazens).values({
+      empresaId: ctx.user.empresaId,
+      ...input
+    }).returning();
+    return arm;
+  }),
+  // ─── LOCALIZAÇÕES ──────────────────────────────────────────────────────────
+  listLocalizacoes: protectedProcedure.input(external_exports.object({ armazemId: external_exports.number().optional() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const conditions = [eq(localizacoes.empresaId, empresaId), eq(localizacoes.ativo, true)];
+    if (input.armazemId) conditions.push(eq(localizacoes.armazemId, input.armazemId));
+    return db.select().from(localizacoes).where(and(...conditions)).orderBy(localizacoes.codigo);
+  }),
+  createLocalizacao: adminProcedure.input(external_exports.object({
+    armazemId: external_exports.number(),
+    codigo: external_exports.string(),
+    corredor: external_exports.string().optional(),
+    bloco: external_exports.string().optional(),
+    prateleira: external_exports.string().optional(),
+    posicao: external_exports.string().optional(),
+    tipo: external_exports.enum(["padrao", "picking", "bulk", "refrigerado"]).default("padrao"),
+    capacidade: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [loc] = await db.insert(localizacoes).values({
+      empresaId: ctx.user.empresaId,
+      ...input
+    }).returning();
+    return loc;
+  }),
+  // ─── PRODUTOS ──────────────────────────────────────────────────────────────
+  listProdutos: protectedProcedure.input(external_exports.object({
+    search: external_exports.string().optional(),
+    categoria: external_exports.string().optional(),
+    limit: external_exports.number().default(50),
+    offset: external_exports.number().default(0)
+  })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const conditions = [eq(produtos.empresaId, empresaId), isNull2(produtos.deletedAt), eq(produtos.ativo, true)];
+    if (input.search) conditions.push(ilike(produtos.descricao, `%${input.search}%`));
+    if (input.categoria) conditions.push(eq(produtos.categoria, input.categoria));
+    return db.select().from(produtos).where(and(...conditions)).orderBy(produtos.descricao).limit(input.limit).offset(input.offset);
+  }),
+  createProduto: protectedProcedure.input(external_exports.object({
+    codigo: external_exports.string(),
+    ean: external_exports.string().optional(),
+    descricao: external_exports.string().min(2),
+    unidade: external_exports.string().default("UN"),
+    categoria: external_exports.string().optional(),
+    marca: external_exports.string().optional(),
+    pesoUnitario: external_exports.string().optional(),
+    volumeUnitario: external_exports.string().optional(),
+    estoqueMinimo: external_exports.string().optional(),
+    estoqueMaximo: external_exports.string().optional(),
+    localizacaoPadrao: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const [existing] = await db.select().from(produtos).where(and(eq(produtos.empresaId, empresaId), eq(produtos.codigo, input.codigo), isNull2(produtos.deletedAt))).limit(1);
+    if (existing) throw new TRPCError({ code: "CONFLICT", message: "C\xF3digo de produto j\xE1 cadastrado" });
+    const [prod] = await db.insert(produtos).values({ empresaId, ...input }).returning();
+    return prod;
+  }),
+  updateProduto: protectedProcedure.input(external_exports.object({
+    id: external_exports.number(),
+    descricao: external_exports.string().optional(),
+    categoria: external_exports.string().optional(),
+    marca: external_exports.string().optional(),
+    estoqueMinimo: external_exports.string().optional(),
+    estoqueMaximo: external_exports.string().optional(),
+    localizacaoPadrao: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const { id, ...data } = input;
+    await db.update(produtos).set({ ...data, updatedAt: /* @__PURE__ */ new Date() }).where(and(eq(produtos.id, id), eq(produtos.empresaId, ctx.user.empresaId)));
+    return { success: true };
+  }),
+  // ─── ESTOQUE ───────────────────────────────────────────────────────────────
+  listEstoque: protectedProcedure.input(external_exports.object({
+    armazemId: external_exports.number().optional(),
+    search: external_exports.string().optional(),
+    apenasAbaixoMinimo: external_exports.boolean().optional()
+  })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const rows = await db.select({
+      estoqueId: estoque.id,
+      produtoId: estoque.produtoId,
+      codigoProduto: produtos.codigo,
+      descricaoProduto: produtos.descricao,
+      unidade: produtos.unidade,
+      categoria: produtos.categoria,
+      estoqueMinimo: produtos.estoqueMinimo,
+      localizacaoPadrao: produtos.localizacaoPadrao,
+      quantidade: estoque.quantidade,
+      quantidadeReservada: estoque.quantidadeReservada,
+      lote: estoque.lote,
+      dataValidade: estoque.dataValidade,
+      armazemId: estoque.armazemId,
+      localizacaoId: estoque.localizacaoId,
+      localizacaoCodigo: localizacoes.codigo
+    }).from(estoque).innerJoin(produtos, eq(estoque.produtoId, produtos.id)).leftJoin(localizacoes, eq(estoque.localizacaoId, localizacoes.id)).where(
+      and(
+        eq(estoque.empresaId, empresaId),
+        input.armazemId ? eq(estoque.armazemId, input.armazemId) : void 0,
+        input.search ? ilike(produtos.descricao, `%${input.search}%`) : void 0
+      )
+    ).orderBy(produtos.descricao);
+    return rows;
+  }),
+  movimentar: protectedProcedure.input(external_exports.object({
+    produtoId: external_exports.number(),
+    armazemId: external_exports.number(),
+    tipo: external_exports.enum(["entrada", "saida", "transferencia", "ajuste", "inventario", "devolucao"]),
+    quantidade: external_exports.string(),
+    localizacaoOrigemId: external_exports.number().optional(),
+    localizacaoDestinoId: external_exports.number().optional(),
+    lote: external_exports.string().optional(),
+    documento: external_exports.string().optional(),
+    recebimentoId: external_exports.number().optional(),
+    observacoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const qtd = parseFloat(input.quantidade);
+    const [saldoAtual] = await db.select({ quantidade: estoque.quantidade }).from(estoque).where(and(
+      eq(estoque.empresaId, empresaId),
+      eq(estoque.produtoId, input.produtoId),
+      eq(estoque.armazemId, input.armazemId)
+    )).limit(1);
+    const saldoAnterior = parseFloat(saldoAtual?.quantidade ?? "0");
+    let novoSaldo = saldoAnterior;
+    if (input.tipo === "entrada" || input.tipo === "devolucao") novoSaldo += qtd;
+    else if (input.tipo === "saida") {
+      if (saldoAnterior < qtd) throw new TRPCError({ code: "BAD_REQUEST", message: "Saldo insuficiente" });
+      novoSaldo -= qtd;
+    } else if (input.tipo === "ajuste" || input.tipo === "inventario") {
+      novoSaldo = qtd;
+    }
+    await db.insert(estoque).values({
+      empresaId,
+      produtoId: input.produtoId,
+      armazemId: input.armazemId,
+      localizacaoId: input.localizacaoDestinoId ?? input.localizacaoOrigemId,
+      quantidade: String(novoSaldo),
+      lote: input.lote
+    }).onConflictDoUpdate({
+      target: [estoque.empresaId, estoque.produtoId, estoque.armazemId],
+      set: { quantidade: String(novoSaldo), updatedAt: /* @__PURE__ */ new Date() }
+    });
+    await db.insert(movimentacoesEstoque).values({
+      empresaId,
+      produtoId: input.produtoId,
+      armazemId: input.armazemId,
+      localizacaoOrigemId: input.localizacaoOrigemId,
+      localizacaoDestinoId: input.localizacaoDestinoId,
+      tipo: input.tipo,
+      quantidade: input.quantidade,
+      saldoAnterior: String(saldoAnterior),
+      saldoAtual: String(novoSaldo),
+      lote: input.lote,
+      documento: input.documento,
+      recebimentoId: input.recebimentoId,
+      observacoes: input.observacoes,
+      operadorId: ctx.user.id
+    });
+    return { success: true, novoSaldo };
+  }),
+  listMovimentacoes: protectedProcedure.input(external_exports.object({
+    produtoId: external_exports.number().optional(),
+    armazemId: external_exports.number().optional(),
+    limit: external_exports.number().default(50)
+  })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const conditions = [eq(movimentacoesEstoque.empresaId, empresaId)];
+    if (input.produtoId) conditions.push(eq(movimentacoesEstoque.produtoId, input.produtoId));
+    if (input.armazemId) conditions.push(eq(movimentacoesEstoque.armazemId, input.armazemId));
+    return db.select().from(movimentacoesEstoque).where(and(...conditions)).orderBy(desc(movimentacoesEstoque.createdAt)).limit(input.limit);
+  }),
+  // ─── DASHBOARD WMS ─────────────────────────────────────────────────────────
+  dashboard: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const [totaisProdutos] = await db.select({
+      total: sql`count(distinct ${produtos.id})`,
+      totalAtivos: sql`count(distinct ${produtos.id}) filter (where ${produtos.ativo} = true)`
+    }).from(produtos).where(and(eq(produtos.empresaId, empresaId), isNull2(produtos.deletedAt)));
+    const [totaisEstoque] = await db.select({
+      totalItens: sql`count(*)`,
+      totalQuantidade: sql`sum(${estoque.quantidade}::numeric)`
+    }).from(estoque).where(eq(estoque.empresaId, empresaId));
+    const [totalArmazens] = await db.select({
+      total: sql`count(*)`
+    }).from(armazens).where(and(eq(armazens.empresaId, empresaId), isNull2(armazens.deletedAt)));
+    const ultimasMovimentacoes = await db.select({
+      id: movimentacoesEstoque.id,
+      tipo: movimentacoesEstoque.tipo,
+      quantidade: movimentacoesEstoque.quantidade,
+      descricaoProduto: produtos.descricao,
+      createdAt: movimentacoesEstoque.createdAt
+    }).from(movimentacoesEstoque).innerJoin(produtos, eq(movimentacoesEstoque.produtoId, produtos.id)).where(eq(movimentacoesEstoque.empresaId, empresaId)).orderBy(desc(movimentacoesEstoque.createdAt)).limit(5);
+    return {
+      totalProdutos: totaisProdutos.total,
+      totalArmazens: totalArmazens.total,
+      totalItensEstoque: totaisEstoque.totalItens,
+      ultimasMovimentacoes
+    };
   })
 });
 
@@ -75223,7 +77058,9 @@ var appRouter = router({
   empresas: empresasRouter,
   licenciamento: licenciamentoRouter,
   documentos: documentosRouter,
-  ia: iaRouter
+  ia: iaRouter,
+  recepcao: recepcaoRouter,
+  wms: wmsRouter
 });
 
 // _core/context.ts
@@ -75242,7 +77079,7 @@ async function createContext(opts) {
 }
 
 // index.ts
-var import_cors = __toESM(require_lib3(), 1);
+var import_cors = __toESM(require_lib3());
 
 // node_modules/.pnpm/helmet@8.1.0/node_modules/helmet/index.mjs
 var dangerouslyDisableDefaultSrc = /* @__PURE__ */ Symbol("dangerouslyDisableDefaultSrc");
@@ -75788,7 +77625,7 @@ var helmet = Object.assign(
 
 // index.ts
 if (typeof globalThis.crypto === "undefined") {
-  globalThis.crypto = webcrypto;
+  globalThis.crypto = import_crypto4.webcrypto;
 }
 var ALLOWED_ORIGINS = [
   "http://localhost:5173",

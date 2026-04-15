@@ -1,4 +1,4 @@
-import { protectedProcedure, router } from "../_core/trpc";
+import { protectedProcedure, publicProcedure, router } from "../_core/trpc";
 import { requireDb } from "../helpers/errorHandler";
 import { z } from "zod";
 import { getDb } from "../db";

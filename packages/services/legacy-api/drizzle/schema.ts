@@ -853,3 +853,281 @@ export const documentos = pgTable("documentos", {
 
 export type Documento = typeof documentos.$inferSelect;
 export type InsertDocumento = typeof documentos.$inferInsert;
+
+// ─── MÓDULO DE RECEPÇÃO ───────────────────────────────────────────────────────
+
+export const statusRecebimentoEnum = pgEnum("status_recebimento", [
+  "aguardando", "em_conferencia", "conferido", "divergencia", "recusado", "finalizado"
+]);
+
+export const tipoRecebimentoEnum = pgEnum("tipo_recebimento", [
+  "nf_entrada", "devolucao", "transferencia", "bonificacao", "outro"
+]);
+
+export const recebimentos = pgTable("recebimentos", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+
+  // Identificação
+  numero: varchar("numero", { length: 50 }).notNull(), // Número interno do recebimento
+  tipo: tipoRecebimentoEnum("tipo").notNull().default("nf_entrada"),
+  status: statusRecebimentoEnum("status").notNull().default("aguardando"),
+
+  // Fornecedor / Origem
+  fornecedorNome: varchar("fornecedorNome", { length: 255 }),
+  fornecedorCnpj: varchar("fornecedorCnpj", { length: 18 }),
+  origemCidade: varchar("origemCidade", { length: 100 }),
+  origemEstado: varchar("origemEstado", { length: 2 }),
+
+  // Nota Fiscal
+  nfNumero: varchar("nfNumero", { length: 50 }),
+  nfSerie: varchar("nfSerie", { length: 10 }),
+  nfChave: varchar("nfChave", { length: 50 }),
+  nfValorTotal: decimal("nfValorTotal", { precision: 12, scale: 2 }),
+  nfDataEmissao: date("nfDataEmissao"),
+
+  // Transporte
+  transportadoraNome: varchar("transportadoraNome", { length: 255 }),
+  veiculoPlaca: varchar("veiculoPlaca", { length: 10 }),
+  motoristaId: integer("motoristaId"),
+
+  // Doca / Armazém
+  docaId: integer("docaId"),
+  armazemId: integer("armazemId"),
+
+  // Datas
+  dataAgendamento: timestamp("dataAgendamento"),
+  dataChegada: timestamp("dataChegada"),
+  dataInicio: timestamp("dataInicio"),
+  dataFim: timestamp("dataFim"),
+
+  // Conferência
+  conferenteId: integer("conferenteId"),
+  observacoes: text("observacoes"),
+  observacoesDivergencia: text("observacoesDivergencia"),
+
+  // Totais conferidos
+  totalItensEsperados: integer("totalItensEsperados").default(0),
+  totalItensRecebidos: integer("totalItensRecebidos").default(0),
+  totalItensComDivergencia: integer("totalItensComDivergencia").default(0),
+
+  createdBy: integer("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type Recebimento = typeof recebimentos.$inferSelect;
+export type InsertRecebimento = typeof recebimentos.$inferInsert;
+
+export const statusItemRecebimentoEnum = pgEnum("status_item_recebimento", [
+  "pendente", "conferido", "divergencia_quantidade", "divergencia_qualidade", "recusado"
+]);
+
+export const itensRecebimento = pgTable("itens_recebimento", {
+  id: serial("id").primaryKey(),
+  recebimentoId: integer("recebimentoId").notNull(),
+  empresaId: integer("empresaId").notNull(),
+
+  // Produto
+  codigoProduto: varchar("codigoProduto", { length: 100 }),
+  descricaoProduto: varchar("descricaoProduto", { length: 255 }).notNull(),
+  unidade: varchar("unidade", { length: 20 }),
+  ean: varchar("ean", { length: 20 }),
+
+  // Quantidades
+  quantidadeEsperada: decimal("quantidadeEsperada", { precision: 10, scale: 3 }).notNull(),
+  quantidadeRecebida: decimal("quantidadeRecebida", { precision: 10, scale: 3 }),
+  quantidadeDivergente: decimal("quantidadeDivergente", { precision: 10, scale: 3 }),
+
+  // Valores
+  valorUnitario: decimal("valorUnitario", { precision: 10, scale: 4 }),
+  valorTotal: decimal("valorTotal", { precision: 12, scale: 2 }),
+
+  // Localização no armazém
+  localizacao: varchar("localizacao", { length: 50 }), // ex: A-01-01
+
+  status: statusItemRecebimentoEnum("status").notNull().default("pendente"),
+  observacoes: text("observacoes"),
+
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+export type ItemRecebimento = typeof itensRecebimento.$inferSelect;
+
+// ─── MÓDULO WMS (Warehouse Management System) ────────────────────────────────
+
+export const tipoMovimentacaoEnum = pgEnum("tipo_movimentacao_estoque", [
+  "entrada", "saida", "transferencia", "ajuste", "inventario", "devolucao"
+]);
+
+export const armazens = pgTable("armazens", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  nome: varchar("nome", { length: 100 }).notNull(),
+  codigo: varchar("codigo", { length: 20 }),
+  descricao: text("descricao"),
+  endereco: text("endereco"),
+  capacidadeTotal: decimal("capacidadeTotal", { precision: 10, scale: 2 }),
+  unidadeCapacidade: varchar("unidadeCapacidade", { length: 20 }).default("m²"),
+  ativo: boolean("ativo").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type Armazem = typeof armazens.$inferSelect;
+
+export const docas = pgTable("docas", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  armazemId: integer("armazemId").notNull(),
+  nome: varchar("nome", { length: 50 }).notNull(),
+  codigo: varchar("codigo", { length: 20 }),
+  tipo: varchar("tipo", { length: 20 }).default("recebimento"), // recebimento | expedicao | misto
+  ativo: boolean("ativo").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type Doca = typeof docas.$inferSelect;
+
+export const localizacoes = pgTable("localizacoes", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  armazemId: integer("armazemId").notNull(),
+  codigo: varchar("codigo", { length: 30 }).notNull(), // ex: A-01-01-01 (corredor-bloco-prateleira-posição)
+  corredor: varchar("corredor", { length: 10 }),
+  bloco: varchar("bloco", { length: 10 }),
+  prateleira: varchar("prateleira", { length: 10 }),
+  posicao: varchar("posicao", { length: 10 }),
+  tipo: varchar("tipo", { length: 20 }).default("padrao"), // padrao | picking | bulk | refrigerado
+  capacidade: decimal("capacidade", { precision: 8, scale: 2 }),
+  ocupado: boolean("ocupado").default(false).notNull(),
+  ativo: boolean("ativo").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+export type Localizacao = typeof localizacoes.$inferSelect;
+
+export const produtos = pgTable("produtos", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  codigo: varchar("codigo", { length: 100 }).notNull(),
+  ean: varchar("ean", { length: 20 }),
+  descricao: varchar("descricao", { length: 255 }).notNull(),
+  unidade: varchar("unidade", { length: 20 }).notNull().default("UN"),
+  categoria: varchar("categoria", { length: 100 }),
+  marca: varchar("marca", { length: 100 }),
+  pesoUnitario: decimal("pesoUnitario", { precision: 8, scale: 3 }),
+  volumeUnitario: decimal("volumeUnitario", { precision: 8, scale: 3 }),
+  estoqueMinimo: decimal("estoqueMinimo", { precision: 10, scale: 3 }).default("0"),
+  estoqueMaximo: decimal("estoqueMaximo", { precision: 10, scale: 3 }),
+  localizacaoPadrao: varchar("localizacaoPadrao", { length: 30 }),
+  ativo: boolean("ativo").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type Produto = typeof produtos.$inferSelect;
+export type InsertProduto = typeof produtos.$inferInsert;
+
+export const estoque = pgTable("estoque", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  produtoId: integer("produtoId").notNull(),
+  localizacaoId: integer("localizacaoId"),
+  armazemId: integer("armazemId").notNull(),
+  quantidade: decimal("quantidade", { precision: 12, scale: 3 }).notNull().default("0"),
+  quantidadeReservada: decimal("quantidadeReservada", { precision: 12, scale: 3 }).default("0"),
+  lote: varchar("lote", { length: 50 }),
+  dataValidade: date("dataValidade"),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+export type Estoque = typeof estoque.$inferSelect;
+
+export const movimentacoesEstoque = pgTable("movimentacoes_estoque", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  produtoId: integer("produtoId").notNull(),
+  armazemId: integer("armazemId").notNull(),
+  localizacaoOrigemId: integer("localizacaoOrigemId"),
+  localizacaoDestinoId: integer("localizacaoDestinoId"),
+  tipo: tipoMovimentacaoEnum("tipo").notNull(),
+  quantidade: decimal("quantidade", { precision: 12, scale: 3 }).notNull(),
+  saldoAnterior: decimal("saldoAnterior", { precision: 12, scale: 3 }),
+  saldoAtual: decimal("saldoAtual", { precision: 12, scale: 3 }),
+  lote: varchar("lote", { length: 50 }),
+  documento: varchar("documento", { length: 100 }), // NF, pedido, etc.
+  recebimentoId: integer("recebimentoId"),
+  observacoes: text("observacoes"),
+  operadorId: integer("operadorId"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type MovimentacaoEstoque = typeof movimentacoesEstoque.$inferSelect;
+
+// ─── SISTEMA DE IA MODULAR ────────────────────────────────────────────────────
+
+export const iaAgenteSetorEnum = pgEnum("ia_agente_setor", [
+  "master", "financeiro", "frota", "motorista", "manutencao",
+  "juridico", "operacional", "rh", "recepcao", "wms", "custom"
+]);
+
+export const iaAgentes = pgTable("ia_agentes", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  nome: varchar("nome", { length: 100 }).notNull(),
+  setor: iaAgenteSetorEnum("setor").notNull().default("custom"),
+  descricao: text("descricao"),
+  avatar: varchar("avatar", { length: 10 }).default("🤖"),
+  systemPrompt: text("systemPrompt").notNull(),
+  instrucoes: text("instrucoes"),
+  contextoEmpresa: text("contextoEmpresa"),
+  temperatura: varchar("temperatura", { length: 5 }).default("0.7"),
+  modelo: varchar("modelo", { length: 50 }).default("gpt-4o-mini"),
+  ativo: boolean("ativo").default(true).notNull(),
+  isMaster: boolean("isMaster").default(false).notNull(),
+  usarIaExterna: boolean("usarIaExterna").default(false).notNull(), // false = modo gratuito
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type IaAgente = typeof iaAgentes.$inferSelect;
+export type InsertIaAgente = typeof iaAgentes.$inferInsert;
+
+export const iaSessoes = pgTable("ia_sessoes", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  usuarioId: integer("usuarioId").notNull(),
+  agenteId: integer("agenteId").notNull(),
+  titulo: varchar("titulo", { length: 200 }).default("Nova conversa"),
+  resumo: text("resumo"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type IaSessao = typeof iaSessoes.$inferSelect;
+
+export const iaMensagens = pgTable("ia_mensagens", {
+  id: serial("id").primaryKey(),
+  sessaoId: integer("sessaoId").notNull(),
+  empresaId: integer("empresaId").notNull(),
+  role: varchar("role", { length: 20 }).notNull(),
+  conteudo: text("conteudo").notNull(),
+  tokens: integer("tokens"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type IaMensagem = typeof iaMensagens.$inferSelect;
+
+export const iaConhecimento = pgTable("ia_conhecimento", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  agenteId: integer("agenteId"),
+  titulo: varchar("titulo", { length: 200 }).notNull(),
+  conteudo: text("conteudo").notNull(),
+  categoria: varchar("categoria", { length: 100 }),
+  tags: text("tags"),
+  ativo: boolean("ativo").default(true).notNull(),
+  createdBy: integer("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type IaConhecimento = typeof iaConhecimento.$inferSelect;
+export type InsertIaConhecimento = typeof iaConhecimento.$inferInsert;

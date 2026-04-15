@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Truck, BarChart3, Users, Fuel, Wrench, Shield, ArrowRight,
   MapPin, FileText, Package, DollarSign, Bell, CheckSquare,
-  Zap, Globe, ChevronRight, Star, TrendingUp, Clock, Lock, X, Brain,
+  Zap, Globe, ChevronRight, Star, TrendingUp, Clock, Lock, X, Brain, PackageCheck, Warehouse,
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
@@ -141,6 +141,14 @@ export default function Home() {
       tagline: lang === "pt" ? "Inteligência artificial integrada" : "Integrated artificial intelligence",
       desc: lang === "pt" ? "5 agentes especializados com IA generativa: assistente geral, analista financeiro, suporte ao motorista, especialista em manutenção e assistente jurídico. Powered by OpenAI." : "5 specialized AI agents: general assistant, financial analyst, driver support, maintenance expert and legal assistant. Powered by OpenAI.",
       features: lang === "pt" ? ["Synapse AI: assistente geral de frota e logística","Analista Financeiro: custo por km, DRE e margens","Suporte ao Motorista: dúvidas operacionais e procedimentos","Especialista em Manutenção: diagnóstico e planos preventivos","Assistente Jurídico: legislação ANTT, multas e compliance","Análise automática de dados da empresa com nota de desempenho"] : ["Synapse AI: general fleet and logistics assistant","Financial Analyst: cost per km, P&L and margins","Driver Support: operational questions and procedures","Maintenance Expert: diagnosis and preventive plans","Legal Assistant: ANTT legislation, fines and compliance","Automatic company data analysis with performance score"] },
+    { icon: PackageCheck, label: lang === "pt" ? "Recepção" : "Receiving", color: "text-yellow-400", bg: "bg-yellow-500/10", border: "border-yellow-500/30", route: "/recepcao",
+      tagline: lang === "pt" ? "Controle total de recebimentos" : "Full receiving control",
+      desc: lang === "pt" ? "Gerencie recebimentos de mercadorias, docas, conferência de itens e status de entrega em tempo real." : "Manage goods receiving, docks, item inspection and delivery status in real time.",
+      features: lang === "pt" ? ["Cadastro de recebimentos com NF e fornecedor","Controle de docas e agendamento","Conferência de itens com status","Histórico completo de recebimentos","Alertas de divergências e avarias","Integração com WMS para entrada no estoque"] : ["Receiving registration with invoice and supplier","Dock control and scheduling","Item inspection with status","Complete receiving history","Divergence and damage alerts","WMS integration for stock entry"] },
+    { icon: Warehouse, label: lang === "pt" ? "WMS" : "WMS", color: "text-teal-400", bg: "bg-teal-500/10", border: "border-teal-500/30", route: "/wms",
+      tagline: lang === "pt" ? "Gestão completa de armazém" : "Complete warehouse management",
+      desc: lang === "pt" ? "Sistema completo de gestão de armazém: controle de estoque, produtos, movimentações, armazéns e localizações." : "Complete warehouse management system: stock control, products, movements, warehouses and locations.",
+      features: lang === "pt" ? ["Cadastro de produtos com código e EAN","Controle de estoque por armazém e localização","Movimentações: entrada, saída, ajuste, transferência","Alertas de estoque mínimo","Inventário e rastreabilidade","Relatórios de giro e posição de estoque"] : ["Product registration with code and EAN","Stock control by warehouse and location","Movements: entry, exit, adjustment, transfer","Minimum stock alerts","Inventory and traceability","Turnover and stock position reports"] },
   ];
 
   const benefits = [
