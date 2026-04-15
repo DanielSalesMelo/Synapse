@@ -11,6 +11,8 @@ import { createContext } from "./_core/context";
 import cors from "cors";
 import helmet from "helmet";
 import { getDb } from "./db";
+import { migrate } from "drizzle-orm/postgres-js/migrator";
+import path from "path";
 
 // ─── Origens permitidas (CORS) ─────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
@@ -37,10 +39,8 @@ async function runMigrations() {
   const db = await getDb();
   if (!db) { console.warn("[Migration] DB indisponível, pulando migrações"); return; }
   try {
-    const rawDb = (db as any).$client ?? (db as any).session ?? (db as any);
-
-    // (mantenha aqui todo o bloco de migrações que você já tem)
-    // ... seu código de migrações ...
+    const migrationsFolder = path.join(__dirname, "drizzle", "migrations");
+    await migrate(db, { migrationsFolder });
     console.log("[Migration] Migrações aplicadas com sucesso");
   } catch (err) {
     console.error("[Migration] Erro ao aplicar migrações:", err);

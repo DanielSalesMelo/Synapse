@@ -8,6 +8,48 @@
       "when": 1774629370926,
       "tag": "0000_nervous_zarda",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1774629370927,
+      "tag": "0001_add_empresa_to_users",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774629370928,
+      "tag": "0002_notas_fiscais_viagem",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1774629370929,
+      "tag": "0003_add_grupo_empresarial",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1774629370930,
+      "tag": "0004_inteligencia_pneus",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1774629370931,
+      "tag": "0005_gestao_documentos",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1774629370932,
+      "tag": "0006_add_missing_user_columns",
+      "breakpoints": true
     }
   ]
 }
