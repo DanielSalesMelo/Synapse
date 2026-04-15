@@ -1,0 +1,1 @@
+ALTER TABLE "viagens" ADD COLUMN "tipo" text DEFAULT 'viagem' NOT NULL;ALTER TABLE "viagens" ADD COLUMN "tipoCarga" text;ALTER TABLE "viagens" ADD COLUMN "teveProblema" boolean DEFAULT FALSE;ALTER TABLE "viagens" ADD COLUMN "voltouComCarga" boolean DEFAULT FALSE;ALTER TABLE "viagens" ADD COLUMN "observacoesChegada" text;

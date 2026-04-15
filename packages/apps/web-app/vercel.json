@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "env": {
+    "VITE_API_URL": "https://rotiq-production.up.railway.app"
+  },
+  "rewrites": [
+    {
+      "source": "/api/trpc/:path*",
+      "destination": "https://rotiq-production.up.railway.app/api/trpc/:path*"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/index.html"
+    }
+  ]
+}

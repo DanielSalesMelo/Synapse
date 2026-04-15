@@ -1,0 +1,67 @@
+import os
+import psycopg2
+import bcrypt
+import datetime
+
+# Configurações do Banco de Dados da Railway
+DATABASE_URL = "postgresql://postgres:JXaYfLedIWpwfXXOFuRkhSityLMAfole@crossover.proxy.rlwy.net:40549/railway"
+
+# Dados do Usuário Master Admin
+EMAIL = "Danielmoraessales@outlook.com.br"
+PASSWORD = "Dan124578@#"
+NAME = "Daniel Moraes Sales"
+ROLE = "master_admin"
+STATUS = "active"
+LOGIN_METHOD = "local"
+
+def setup_master_admin():
+    try:
+        # Conectar ao banco de dados
+        conn = psycopg2.connect(DATABASE_URL)
+        cur = conn.cursor()
+        
+        # Gerar hash da senha
+        hashed_password = bcrypt.hashpw(PASSWORD.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        
+        # Gerar um openId único para o usuário
+        open_id = f"local_{int(datetime.datetime.now().timestamp())}_master"
+        
+        # Verificar se o usuário já existe
+        cur.execute('SELECT id, "openId" FROM users WHERE email = %s', (EMAIL,))
+        user = cur.fetchone()
+        
+        if user:
+            user_id, existing_open_id = user
+            print(f"Usuário {EMAIL} já existe. Atualizando para Master Admin...")
+            cur.execute(
+                "UPDATE users SET password = %s, role = %s, status = %s, name = %s WHERE id = %s",
+                (hashed_password, ROLE, STATUS, NAME, user_id)
+            )
+            final_open_id = existing_open_id
+        else:
+            print(f"Criando novo usuário Master Admin: {EMAIL}...")
+            cur.execute(
+                'INSERT INTO users (email, password, name, role, status, "openId", "loginMethod") VALUES (%s, %s, %s, %s, %s, %s, %s)',
+                (EMAIL, hashed_password, NAME, ROLE, STATUS, open_id, LOGIN_METHOD)
+            )
+            final_open_id = open_id
+            
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+        print("\n" + "="*50)
+        print("SUCESSO: Usuário Master Admin configurado!")
+        print(f"E-mail: {EMAIL}")
+        print(f"Senha: {PASSWORD}")
+        print(f"Cargo: {ROLE}")
+        print(f"Status: {STATUS}")
+        print(f"OWNER_OPEN_ID: {final_open_id}")
+        print("="*50)
+        print("\nCOPIE O OWNER_OPEN_ID ACIMA E COLOQUE NO SEU ARQUIVO .env")
+        
+    except Exception as e:
+        print(f"ERRO ao configurar Master Admin: {e}")
+
+if __name__ == "__main__":
+    setup_master_admin()

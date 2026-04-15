@@ -1,0 +1,18 @@
+{
+  "name": "@nexcore/db-schemas",
+  "version": "1.0.0",
+  "description": "Pacote central para schemas e migrations do Prisma.",
+  "prisma": {
+    "schema": "prisma/schema.prisma"
+  },
+  "scripts": {
+    "db:studio": "prisma studio",
+    "db:generate": "prisma generate"
+  },
+  "devDependencies": {
+    "prisma": "4.16.2"
+  },
+  "dependencies": {
+    "@prisma/client": "4.16.2"
+  }
+}

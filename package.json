@@ -1,6 +1,6 @@
 {
   "name": "synapse",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,20 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@prisma/client": "latest",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "@prisma/client": "latest"
   },
   "devDependencies": {
     "prisma": "latest",
     "typescript": "latest",
     "@types/node": "latest",
     "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "postcss": "latest",
-    "tailwindcss": "latest",
-    "eslint": "latest",
-    "eslint-config-next": "latest"
+    "@types/react-dom": "latest"
   }
 }

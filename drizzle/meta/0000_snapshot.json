@@ -1,0 +1,4432 @@
+{
+  "id": "8ec0c42a-5af9-48d5-a5f2-172691d0271e",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.abastecimentos": {
+      "name": "abastecimentos",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "veiculoId": {
+          "name": "veiculoId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "motoristaId": {
+          "name": "motoristaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "data": {
+          "name": "data",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tipoCombustivel": {
+          "name": "tipoCombustivel",
+          "type": "tipo_combustivel",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quantidade": {
+          "name": "quantidade",
+          "type": "numeric(8, 3)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "valorUnitario": {
+          "name": "valorUnitario",
+          "type": "numeric(8, 3)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valorTotal": {
+          "name": "valorTotal",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kmAtual": {
+          "name": "kmAtual",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kmRodado": {
+          "name": "kmRodado",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mediaConsumo": {
+          "name": "mediaConsumo",
+          "type": "numeric(5, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "local": {
+          "name": "local",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tipoAbastecimento": {
+          "name": "tipoAbastecimento",
+          "type": "tipo_abastecimento",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'interno'"
+        },
+        "notaFiscal": {
+          "name": "notaFiscal",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deletedBy": {
+          "name": "deletedBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleteReason": {
+          "name": "deleteReason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.acertos_carga": {
+      "name": "acertos_carga",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "viagemId": {
+          "name": "viagemId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "motoristaId": {
+          "name": "motoristaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dataAcerto": {
+          "name": "dataAcerto",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "status_acerto_carga",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'aberto'"
+        },
+        "adiantamentoConcedido": {
+          "name": "adiantamentoConcedido",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "freteRecebido": {
+          "name": "freteRecebido",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "despesasPedagio": {
+          "name": "despesasPedagio",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "despesasCombustivel": {
+          "name": "despesasCombustivel",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "despesasAlimentacao": {
+          "name": "despesasAlimentacao",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "despesasEstacionamento": {
+          "name": "despesasEstacionamento",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "despesasOutras": {
+          "name": "despesasOutras",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "descricaoOutras": {
+          "name": "descricaoOutras",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valorDevolvido": {
+          "name": "valorDevolvido",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "percentualComissao": {
+          "name": "percentualComissao",
+          "type": "numeric(5, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "valorComissao": {
+          "name": "valorComissao",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "saldoFinal": {
+          "name": "saldoFinal",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "aprovadoPor": {
+          "name": "aprovadoPor",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dataAprovacao": {
+          "name": "dataAprovacao",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.acidentes": {
+      "name": "acidentes",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "veiculoId": {
+          "name": "veiculoId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "motoristaId": {
+          "name": "motoristaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "data": {
+          "name": "data",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "local": {
+          "name": "local",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "descricao": {
+          "name": "descricao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "boletimOcorrencia": {
+          "name": "boletimOcorrencia",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valorDano": {
+          "name": "valorDano",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "status_acidente",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'aberto'"
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deletedBy": {
+          "name": "deletedBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleteReason": {
+          "name": "deleteReason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.adiantamentos": {
+      "name": "adiantamentos",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "funcionarioId": {
+          "name": "funcionarioId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "viagemId": {
+          "name": "viagemId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valor": {
+          "name": "valor",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "formaPagamento": {
+          "name": "formaPagamento",
+          "type": "forma_pagamento",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data": {
+          "name": "data",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "status_adiantamento",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pendente'"
+        },
+        "valorAcertado": {
+          "name": "valorAcertado",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dataAcerto": {
+          "name": "dataAcerto",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "saldo": {
+          "name": "saldo",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deletedBy": {
+          "name": "deletedBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleteReason": {
+          "name": "deleteReason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.audit_log": {
+      "name": "audit_log",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "audit_log_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "9223372036854775807",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "userId": {
+          "name": "userId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "userName": {
+          "name": "userName",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "acao": {
+          "name": "acao",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tabela": {
+          "name": "tabela",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "registroId": {
+          "name": "registroId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dadosAntes": {
+          "name": "dadosAntes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dadosDepois": {
+          "name": "dadosDepois",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ip": {
+          "name": "ip",
+          "type": "varchar(45)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "userAgent": {
+          "name": "userAgent",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.carregamentos": {
+      "name": "carregamentos",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "numero": {
+          "name": "numero",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "data": {
+          "name": "data",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "veiculoId": {
+          "name": "veiculoId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "veiculoPlaca": {
+          "name": "veiculoPlaca",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "motoristaId": {
+          "name": "motoristaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "motoristaNome": {
+          "name": "motoristaNome",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ajudanteId": {
+          "name": "ajudanteId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ajudanteNome": {
+          "name": "ajudanteNome",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rotaDescricao": {
+          "name": "rotaDescricao",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cidadesRota": {
+          "name": "cidadesRota",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "status_carregamento",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'montando'"
+        },
+        "dataSaida": {
+          "name": "dataSaida",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dataRetorno": {
+          "name": "dataRetorno",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kmSaida": {
+          "name": "kmSaida",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kmRetorno": {
+          "name": "kmRetorno",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "totalNfs": {
+          "name": "totalNfs",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "totalVolumes": {
+          "name": "totalVolumes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "totalPesoKg": {
+          "name": "totalPesoKg",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "totalValorNfs": {
+          "name": "totalValorNfs",
+          "type": "numeric(12, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.chat_conversations": {
+      "name": "chat_conversations",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "isGroup": {
+          "name": "isGroup",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "lastMessageAt": {
+          "name": "lastMessageAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.chat_members": {
+      "name": "chat_members",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "conversationId": {
+          "name": "conversationId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "chat_role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'member'"
+        },
+        "joinedAt": {
+          "name": "joinedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "lastReadAt": {
+          "name": "lastReadAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.chat_messages": {
+      "name": "chat_messages",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "conversationId": {
+          "name": "conversationId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "senderId": {
+          "name": "senderId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "chat_message_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'text'"
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.checklists": {
+      "name": "checklists",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "veiculoId": {
+          "name": "veiculoId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cavaloPrincipalId": {
+          "name": "cavaloPrincipalId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "motoristaId": {
+          "name": "motoristaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "turno": {
+          "name": "turno",
+          "type": "turno",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "tipo_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'retorno'"
+        },
+        "cracha": {
+          "name": "cracha",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cnh": {
+          "name": "cnh",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "documentosVeiculo": {
+          "name": "documentosVeiculo",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "epi": {
+          "name": "epi",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "computadorBordo": {
+          "name": "computadorBordo",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cinto": {
+          "name": "cinto",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "banco": {
+          "name": "banco",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "direcao": {
+          "name": "direcao",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "luzesPainel": {
+          "name": "luzesPainel",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tacografo": {
+          "name": "tacografo",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "extintor": {
+          "name": "extintor",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "portas": {
+          "name": "portas",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "limpador": {
+          "name": "limpador",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "buzina": {
+          "name": "buzina",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "freioDeMao": {
+          "name": "freioDeMao",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alarmeCacamba": {
+          "name": "alarmeCacamba",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cabineLimpa": {
+          "name": "cabineLimpa",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "objetosSoltos": {
+          "name": "objetosSoltos",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pneus": {
+          "name": "pneus",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vazamentos": {
+          "name": "vazamentos",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "trianguloCones": {
+          "name": "trianguloCones",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "espelhos": {
+          "name": "espelhos",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lonaCarga": {
+          "name": "lonaCarga",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "faixasRefletivas": {
+          "name": "faixasRefletivas",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "luzesLaterais": {
+          "name": "luzesLaterais",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "luzesFreio": {
+          "name": "luzesFreio",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "farol": {
+          "name": "farol",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "piscaAlerta": {
+          "name": "piscaAlerta",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "re": {
+          "name": "re",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "setas": {
+          "name": "setas",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "macacoEstepe": {
+          "name": "macacoEstepe",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lanternas": {
+          "name": "lanternas",
+          "type": "item_checklist",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "itensNaoConformes": {
+          "name": "itensNaoConformes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "assinaturaMotorista": {
+          "name": "assinaturaMotorista",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deletedBy": {
+          "name": "deletedBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleteReason": {
+          "name": "deleteReason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.cobrancas": {
+      "name": "cobrancas",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "licencaId": {
+          "name": "licencaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "planoCod": {
+          "name": "planoCod",
+          "type": "plano_cod",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ciclo": {
+          "name": "ciclo",
+          "type": "ciclo_cobranca",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'mensal'"
+        },
+        "periodoInicio": {
+          "name": "periodoInicio",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "periodoFim": {
+          "name": "periodoFim",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "valorBruto": {
+          "name": "valorBruto",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "desconto": {
+          "name": "desconto",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "valorLiquido": {
+          "name": "valorLiquido",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "status_cobranca",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pendente'"
+        },
+        "formaPagamento": {
+          "name": "formaPagamento",
+          "type": "forma_pagamento_saas",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dataPagamento": {
+          "name": "dataPagamento",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dataVencimento": {
+          "name": "dataVencimento",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "comprovante": {
+          "name": "comprovante",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "criadoPor": {
+          "name": "criadoPor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.contas_pagar": {
+      "name": "contas_pagar",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "descricao": {
+          "name": "descricao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "categoria": {
+          "name": "categoria",
+          "type": "categoria_conta_pagar",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "valor": {
+          "name": "valor",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dataVencimento": {
+          "name": "dataVencimento",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dataPagamento": {
+          "name": "dataPagamento",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "status_conta_pagar",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pendente'"
+        },
+        "fornecedor": {
+          "name": "fornecedor",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notaFiscal": {
+          "name": "notaFiscal",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "veiculoId": {
+          "name": "veiculoId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "funcionarioId": {
+          "name": "funcionarioId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "viagemId": {
+          "name": "viagemId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "comprovante": {
+          "name": "comprovante",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deletedBy": {
+          "name": "deletedBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleteReason": {
+          "name": "deleteReason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.contas_receber": {
+      "name": "contas_receber",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "descricao": {
+          "name": "descricao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "categoria": {
+          "name": "categoria",
+          "type": "categoria_conta_receber",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "valor": {
+          "name": "valor",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dataVencimento": {
+          "name": "dataVencimento",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dataRecebimento": {
+          "name": "dataRecebimento",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "status_conta_receber",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pendente'"
+        },
+        "cliente": {
+          "name": "cliente",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notaFiscal": {
+          "name": "notaFiscal",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cteNumero": {
+          "name": "cteNumero",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "viagemId": {
+          "name": "viagemId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deletedBy": {
+          "name": "deletedBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleteReason": {
+          "name": "deleteReason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ativo": {
+          "name": "ativo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "dataNascimento": {
+          "name": "dataNascimento",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "estadoCivil": {
+          "name": "estadoCivil",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "escolaridade": {
+          "name": "escolaridade",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tituloEleitor": {
+          "name": "tituloEleitor",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pis": {
+          "name": "pis",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ctps": {
+          "name": "ctps",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "serieCtps": {
+          "name": "serieCtps",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ufCtps": {
+          "name": "ufCtps",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dataExpedicaoRg": {
+          "name": "dataExpedicaoRg",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "orgaoEmissorRg": {
+          "name": "orgaoEmissorRg",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "temPlanoSaude": {
+          "name": "temPlanoSaude",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "temValeRefeicao": {
+          "name": "temValeRefeicao",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "temValeTransporte": {
+          "name": "temValeTransporte",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "valorValeRefeicao": {
+          "name": "valorValeRefeicao",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.controle_tanque": {
+      "name": "controle_tanque",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "tipo_tanque",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data": {
+          "name": "data",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "operacao": {
+          "name": "operacao",
+          "type": "operacao_tanque",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quantidade": {
+          "name": "quantidade",
+          "type": "numeric(8, 3)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "valorUnitario": {
+          "name": "valorUnitario",
+          "type": "numeric(8, 3)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valorTotal": {
+          "name": "valorTotal",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fornecedor": {
+          "name": "fornecedor",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notaFiscal": {
+          "name": "notaFiscal",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "veiculoId": {
+          "name": "veiculoId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "motoristaId": {
+          "name": "motoristaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "saldoAnterior": {
+          "name": "saldoAnterior",
+          "type": "numeric(8, 3)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "saldoAtual": {
+          "name": "saldoAtual",
+          "type": "numeric(8, 3)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deletedBy": {
+          "name": "deletedBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleteReason": {
+          "name": "deleteReason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.despesas_viagem": {
+      "name": "despesas_viagem",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "viagemId": {
+          "name": "viagemId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "tipo_despesa",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "descricao": {
+          "name": "descricao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valor": {
+          "name": "valor",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data": {
+          "name": "data",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "comprovante": {
+          "name": "comprovante",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deletedBy": {
+          "name": "deletedBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleteReason": {
+          "name": "deleteReason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.documentos": {
+      "name": "documentos",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "tipo_documento",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nome": {
+          "name": "nome",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "extensao": {
+          "name": "extensao",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tamanho": {
+          "name": "tamanho",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "veiculoId": {
+          "name": "veiculoId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "funcionarioId": {
+          "name": "funcionarioId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "viagemId": {
+          "name": "viagemId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "manutencaoId": {
+          "name": "manutencaoId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dataVencimento": {
+          "name": "dataVencimento",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deletedBy": {
+          "name": "deletedBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.empresas": {
+      "name": "empresas",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nome": {
+          "name": "nome",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cnpj": {
+          "name": "cnpj",
+          "type": "varchar(18)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "telefone": {
+          "name": "telefone",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(320)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "endereco": {
+          "name": "endereco",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cidade": {
+          "name": "cidade",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "estado": {
+          "name": "estado",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "codigoConvite": {
+          "name": "codigoConvite",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tipoEmpresa": {
+          "name": "tipoEmpresa",
+          "type": "tipo_empresa",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'independente'"
+        },
+        "matrizId": {
+          "name": "matrizId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ativo": {
+          "name": "ativo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deletedBy": {
+          "name": "deletedBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleteReason": {
+          "name": "deleteReason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "empresas_codigoConvite_unique": {
+          "name": "empresas_codigoConvite_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "codigoConvite"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.funcionarios": {
+      "name": "funcionarios",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nome": {
+          "name": "nome",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cpf": {
+          "name": "cpf",
+          "type": "varchar(14)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rg": {
+          "name": "rg",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "telefone": {
+          "name": "telefone",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(320)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "funcao": {
+          "name": "funcao",
+          "type": "funcao",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tipoContrato": {
+          "name": "tipoContrato",
+          "type": "tipo_contrato",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "salario": {
+          "name": "salario",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dataAdmissao": {
+          "name": "dataAdmissao",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dataDemissao": {
+          "name": "dataDemissao",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valorDiaria": {
+          "name": "valorDiaria",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valorMensal": {
+          "name": "valorMensal",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tipoCobranca": {
+          "name": "tipoCobranca",
+          "type": "tipo_cobranca",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dataInicioContrato": {
+          "name": "dataInicioContrato",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dataFimContrato": {
+          "name": "dataFimContrato",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "diaPagamento": {
+          "name": "diaPagamento",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cnh": {
+          "name": "cnh",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "categoriaCnh": {
+          "name": "categoriaCnh",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vencimentoCnh": {
+          "name": "vencimentoCnh",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mopp": {
+          "name": "mopp",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "vencimentoMopp": {
+          "name": "vencimentoMopp",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vencimentoAso": {
+          "name": "vencimentoAso",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "banco": {
+          "name": "banco",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "agencia": {
+          "name": "agencia",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "conta": {
+          "name": "conta",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tipoConta": {
+          "name": "tipoConta",
+          "type": "tipo_conta",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chavePix": {
+          "name": "chavePix",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "foto": {
+          "name": "foto",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ativo": {
+          "name": "ativo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deletedBy": {
+          "name": "deletedBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleteReason": {
+          "name": "deleteReason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.historico_pneus": {
+      "name": "historico_pneus",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pneuId": {
+          "name": "pneuId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data": {
+          "name": "data",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "veiculoId": {
+          "name": "veiculoId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "posicao": {
+          "name": "posicao",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kmVeiculo": {
+          "name": "kmVeiculo",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kmPneu": {
+          "name": "kmPneu",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custo": {
+          "name": "custo",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.itens_carregamento": {
+      "name": "itens_carregamento",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "carregamentoId": {
+          "name": "carregamentoId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "numeroNf": {
+          "name": "numeroNf",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "serie": {
+          "name": "serie",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chaveAcesso": {
+          "name": "chaveAcesso",
+          "type": "varchar(44)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "destinatario": {
+          "name": "destinatario",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cnpjDestinatario": {
+          "name": "cnpjDestinatario",
+          "type": "varchar(18)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "enderecoEntrega": {
+          "name": "enderecoEntrega",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cidade": {
+          "name": "cidade",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "uf": {
+          "name": "uf",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valorNf": {
+          "name": "valorNf",
+          "type": "numeric(12, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pesoKg": {
+          "name": "pesoKg",
+          "type": "numeric(8, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "volumes": {
+          "name": "volumes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "descricaoCarga": {
+          "name": "descricaoCarga",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ordemEntrega": {
+          "name": "ordemEntrega",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "status_nf",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pendente'"
+        },
+        "dataCanhoto": {
+          "name": "dataCanhoto",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "recebidoPor": {
+          "name": "recebidoPor",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "motivoDevolucao": {
+          "name": "motivoDevolucao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.licencas": {
+      "name": "licencas",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "planoCod": {
+          "name": "planoCod",
+          "type": "plano_cod",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'trial'"
+        },
+        "status": {
+          "name": "status",
+          "type": "status_licenca",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'trial'"
+        },
+        "ciclo": {
+          "name": "ciclo",
+          "type": "ciclo_cobranca",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'mensal'"
+        },
+        "dataInicio": {
+          "name": "dataInicio",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "dataFim": {
+          "name": "dataFim",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dataTrialFim": {
+          "name": "dataTrialFim",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dataUltimoPagamento": {
+          "name": "dataUltimoPagamento",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dataProximoVencimento": {
+          "name": "dataProximoVencimento",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valorContratado": {
+          "name": "valorContratado",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "descontoPercent": {
+          "name": "descontoPercent",
+          "type": "numeric(5, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "motivoSuspensao": {
+          "name": "motivoSuspensao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "criadoPor": {
+          "name": "criadoPor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updatedBy": {
+          "name": "updatedBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "licencas_empresaId_unique": {
+          "name": "licencas_empresaId_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "empresaId"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.manutencoes": {
+      "name": "manutencoes",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "veiculoId": {
+          "name": "veiculoId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data": {
+          "name": "data",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "tipo_manutencao",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "descricao": {
+          "name": "descricao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "empresa": {
+          "name": "empresa",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valor": {
+          "name": "valor",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kmAtual": {
+          "name": "kmAtual",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "proximaManutencaoKm": {
+          "name": "proximaManutencaoKm",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "proximaManutencaoData": {
+          "name": "proximaManutencaoData",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notaFiscal": {
+          "name": "notaFiscal",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deletedBy": {
+          "name": "deletedBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleteReason": {
+          "name": "deleteReason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.notas_fiscais_viagem": {
+      "name": "notas_fiscais_viagem",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "viagemId": {
+          "name": "viagemId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "numeroNf": {
+          "name": "numeroNf",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "serie": {
+          "name": "serie",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chaveAcesso": {
+          "name": "chaveAcesso",
+          "type": "varchar(44)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "destinatario": {
+          "name": "destinatario",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cnpjDestinatario": {
+          "name": "cnpjDestinatario",
+          "type": "varchar(18)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "enderecoEntrega": {
+          "name": "enderecoEntrega",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cidade": {
+          "name": "cidade",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "uf": {
+          "name": "uf",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valorNf": {
+          "name": "valorNf",
+          "type": "numeric(12, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pesoKg": {
+          "name": "pesoKg",
+          "type": "numeric(8, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "volumes": {
+          "name": "volumes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "status_nf",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pendente'"
+        },
+        "dataCanhoto": {
+          "name": "dataCanhoto",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dataEntrega": {
+          "name": "dataEntrega",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "recebidoPor": {
+          "name": "recebidoPor",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "motivoDevolucao": {
+          "name": "motivoDevolucao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ordemEntrega": {
+          "name": "ordemEntrega",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fotoCanhoto": {
+          "name": "fotoCanhoto",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.planos": {
+      "name": "planos",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "codigo": {
+          "name": "codigo",
+          "type": "plano_cod",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nome": {
+          "name": "nome",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "descricao": {
+          "name": "descricao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "precoMensal": {
+          "name": "precoMensal",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'0'"
+        },
+        "precoTrimestral": {
+          "name": "precoTrimestral",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "precoSemestral": {
+          "name": "precoSemestral",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "precoAnual": {
+          "name": "precoAnual",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "limiteUsuarios": {
+          "name": "limiteUsuarios",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 5
+        },
+        "limiteVeiculos": {
+          "name": "limiteVeiculos",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 10
+        },
+        "limiteMotoristas": {
+          "name": "limiteMotoristas",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 10
+        },
+        "modulosAtivos": {
+          "name": "modulosAtivos",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'basico'"
+        },
+        "temIntegracaoWinthor": {
+          "name": "temIntegracaoWinthor",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "temIntegracaoArquivei": {
+          "name": "temIntegracaoArquivei",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "temRelatoriosAvancados": {
+          "name": "temRelatoriosAvancados",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "temMultiEmpresa": {
+          "name": "temMultiEmpresa",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "temSuportePrioritario": {
+          "name": "temSuportePrioritario",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "diasTrial": {
+          "name": "diasTrial",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 14
+        },
+        "ativo": {
+          "name": "ativo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "planos_codigo_unique": {
+          "name": "planos_codigo_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "codigo"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.pneus": {
+      "name": "pneus",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "numeroSerie": {
+          "name": "numeroSerie",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "marca": {
+          "name": "marca",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "modelo": {
+          "name": "modelo",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "medida": {
+          "name": "medida",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kmInicial": {
+          "name": "kmInicial",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "kmAtual": {
+          "name": "kmAtual",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "status": {
+          "name": "status",
+          "type": "status_pneu",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'novo'"
+        },
+        "veiculoId": {
+          "name": "veiculoId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "posicao": {
+          "name": "posicao",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dataAquisicao": {
+          "name": "dataAquisicao",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valorAquisicao": {
+          "name": "valorAquisicao",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deletedBy": {
+          "name": "deletedBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleteReason": {
+          "name": "deleteReason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "openId": {
+          "name": "openId",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lastName": {
+          "name": "lastName",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(320)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "phone": {
+          "name": "phone",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "loginMethod": {
+          "name": "loginMethod",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "role": {
+          "name": "role",
+          "type": "user_role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'user'"
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "lastSignedIn": {
+          "name": "lastSignedIn",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "users_openId_unique": {
+          "name": "users_openId_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "openId"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.veiculos": {
+      "name": "veiculos",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "placa": {
+          "name": "placa",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "tipo_veiculo",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cavaloPrincipalId": {
+          "name": "cavaloPrincipalId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "marca": {
+          "name": "marca",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "modelo": {
+          "name": "modelo",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ano": {
+          "name": "ano",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cor": {
+          "name": "cor",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "renavam": {
+          "name": "renavam",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chassi": {
+          "name": "chassi",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "capacidadeCarga": {
+          "name": "capacidadeCarga",
+          "type": "numeric(8, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "motoristaId": {
+          "name": "motoristaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ajudanteId": {
+          "name": "ajudanteId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kmAtual": {
+          "name": "kmAtual",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mediaConsumo": {
+          "name": "mediaConsumo",
+          "type": "numeric(5, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vencimentoCrlv": {
+          "name": "vencimentoCrlv",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vencimentoSeguro": {
+          "name": "vencimentoSeguro",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "classificacao": {
+          "name": "classificacao",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ativo": {
+          "name": "ativo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deletedBy": {
+          "name": "deletedBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleteReason": {
+          "name": "deleteReason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.viagens": {
+      "name": "viagens",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "empresaId": {
+          "name": "empresaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "tipo_viagem",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'viagem'"
+        },
+        "veiculoId": {
+          "name": "veiculoId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cavaloPrincipalId": {
+          "name": "cavaloPrincipalId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "motoristaId": {
+          "name": "motoristaId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ajudante1Id": {
+          "name": "ajudante1Id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ajudante2Id": {
+          "name": "ajudante2Id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ajudante3Id": {
+          "name": "ajudante3Id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "origem": {
+          "name": "origem",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "destino": {
+          "name": "destino",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dataSaida": {
+          "name": "dataSaida",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dataChegada": {
+          "name": "dataChegada",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kmSaida": {
+          "name": "kmSaida",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kmChegada": {
+          "name": "kmChegada",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kmRodado": {
+          "name": "kmRodado",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "descricaoCarga": {
+          "name": "descricaoCarga",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tipoCarga": {
+          "name": "tipoCarga",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pesoCarga": {
+          "name": "pesoCarga",
+          "type": "numeric(8, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "freteTotalIda": {
+          "name": "freteTotalIda",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "freteTotalVolta": {
+          "name": "freteTotalVolta",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "freteTotal": {
+          "name": "freteTotal",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "adiantamento": {
+          "name": "adiantamento",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "saldoViagem": {
+          "name": "saldoViagem",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "totalDespesas": {
+          "name": "totalDespesas",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mediaConsumo": {
+          "name": "mediaConsumo",
+          "type": "numeric(5, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notaFiscal": {
+          "name": "notaFiscal",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "status_viagem",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'planejada'"
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "teveProblema": {
+          "name": "teveProblema",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "voltouComCarga": {
+          "name": "voltouComCarga",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "observacoesChegada": {
+          "name": "observacoesChegada",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deletedBy": {
+          "name": "deletedBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleteReason": {
+          "name": "deleteReason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.categoria_conta_pagar": {
+      "name": "categoria_conta_pagar",
+      "schema": "public",
+      "values": [
+        "combustivel",
+        "manutencao",
+        "salario",
+        "freelancer",
+        "pedagio",
+        "seguro",
+        "ipva",
+        "licenciamento",
+        "pneu",
+        "outro"
+      ]
+    },
+    "public.categoria_conta_receber": {
+      "name": "categoria_conta_receber",
+      "schema": "public",
+      "values": [
+        "frete",
+        "cte",
+        "devolucao",
+        "outro"
+      ]
+    },
+    "public.chat_message_type": {
+      "name": "chat_message_type",
+      "schema": "public",
+      "values": [
+        "text",
+        "image",
+        "file"
+      ]
+    },
+    "public.chat_role": {
+      "name": "chat_role",
+      "schema": "public",
+      "values": [
+        "admin",
+        "member"
+      ]
+    },
+    "public.ciclo_cobranca": {
+      "name": "ciclo_cobranca",
+      "schema": "public",
+      "values": [
+        "mensal",
+        "trimestral",
+        "semestral",
+        "anual"
+      ]
+    },
+    "public.forma_pagamento": {
+      "name": "forma_pagamento",
+      "schema": "public",
+      "values": [
+        "dinheiro",
+        "pix",
+        "transferencia",
+        "cartao"
+      ]
+    },
+    "public.forma_pagamento_saas": {
+      "name": "forma_pagamento_saas",
+      "schema": "public",
+      "values": [
+        "pix",
+        "boleto",
+        "cartao_credito",
+        "transferencia",
+        "cortesia"
+      ]
+    },
+    "public.funcao": {
+      "name": "funcao",
+      "schema": "public",
+      "values": [
+        "motorista",
+        "ajudante",
+        "despachante",
+        "gerente",
+        "admin",
+        "outro"
+      ]
+    },
+    "public.item_checklist": {
+      "name": "item_checklist",
+      "schema": "public",
+      "values": [
+        "conforme",
+        "nao_conforme",
+        "na"
+      ]
+    },
+    "public.operacao_tanque": {
+      "name": "operacao_tanque",
+      "schema": "public",
+      "values": [
+        "entrada",
+        "saida"
+      ]
+    },
+    "public.plano_cod": {
+      "name": "plano_cod",
+      "schema": "public",
+      "values": [
+        "trial",
+        "basico",
+        "pro",
+        "enterprise"
+      ]
+    },
+    "public.status_acerto_carga": {
+      "name": "status_acerto_carga",
+      "schema": "public",
+      "values": [
+        "aberto",
+        "em_analise",
+        "fechado",
+        "pago"
+      ]
+    },
+    "public.status_acidente": {
+      "name": "status_acidente",
+      "schema": "public",
+      "values": [
+        "aberto",
+        "em_reparo",
+        "resolvido"
+      ]
+    },
+    "public.status_adiantamento": {
+      "name": "status_adiantamento",
+      "schema": "public",
+      "values": [
+        "pendente",
+        "acertado",
+        "cancelado"
+      ]
+    },
+    "public.status_carregamento": {
+      "name": "status_carregamento",
+      "schema": "public",
+      "values": [
+        "montando",
+        "pronto",
+        "em_rota",
+        "retornado",
+        "encerrado"
+      ]
+    },
+    "public.status_cobranca": {
+      "name": "status_cobranca",
+      "schema": "public",
+      "values": [
+        "pendente",
+        "pago",
+        "vencido",
+        "cancelado",
+        "estornado"
+      ]
+    },
+    "public.status_conta_pagar": {
+      "name": "status_conta_pagar",
+      "schema": "public",
+      "values": [
+        "pendente",
+        "pago",
+        "vencido",
+        "cancelado"
+      ]
+    },
+    "public.status_conta_receber": {
+      "name": "status_conta_receber",
+      "schema": "public",
+      "values": [
+        "pendente",
+        "recebido",
+        "vencido",
+        "cancelado"
+      ]
+    },
+    "public.status_licenca": {
+      "name": "status_licenca",
+      "schema": "public",
+      "values": [
+        "trial",
+        "ativa",
+        "suspensa",
+        "vencida",
+        "cancelada"
+      ]
+    },
+    "public.status_nf": {
+      "name": "status_nf",
+      "schema": "public",
+      "values": [
+        "pendente",
+        "entregue",
+        "devolvida",
+        "parcial",
+        "extraviada"
+      ]
+    },
+    "public.status_pneu": {
+      "name": "status_pneu",
+      "schema": "public",
+      "values": [
+        "novo",
+        "em_uso",
+        "recapado",
+        "sucata",
+        "estoque"
+      ]
+    },
+    "public.status_viagem": {
+      "name": "status_viagem",
+      "schema": "public",
+      "values": [
+        "planejada",
+        "em_andamento",
+        "concluida",
+        "cancelada"
+      ]
+    },
+    "public.tipo_abastecimento": {
+      "name": "tipo_abastecimento",
+      "schema": "public",
+      "values": [
+        "interno",
+        "externo"
+      ]
+    },
+    "public.tipo_checklist": {
+      "name": "tipo_checklist",
+      "schema": "public",
+      "values": [
+        "saida",
+        "retorno"
+      ]
+    },
+    "public.tipo_cobranca": {
+      "name": "tipo_cobranca",
+      "schema": "public",
+      "values": [
+        "diaria",
+        "mensal",
+        "por_viagem"
+      ]
+    },
+    "public.tipo_combustivel": {
+      "name": "tipo_combustivel",
+      "schema": "public",
+      "values": [
+        "diesel",
+        "arla",
+        "gasolina",
+        "etanol",
+        "gas",
+        "outro"
+      ]
+    },
+    "public.tipo_conta": {
+      "name": "tipo_conta",
+      "schema": "public",
+      "values": [
+        "corrente",
+        "poupanca",
+        "pix"
+      ]
+    },
+    "public.tipo_contrato": {
+      "name": "tipo_contrato",
+      "schema": "public",
+      "values": [
+        "clt",
+        "freelancer",
+        "terceirizado",
+        "estagiario"
+      ]
+    },
+    "public.tipo_despesa": {
+      "name": "tipo_despesa",
+      "schema": "public",
+      "values": [
+        "combustivel",
+        "pedagio",
+        "borracharia",
+        "estacionamento",
+        "oficina",
+        "telefone",
+        "descarga",
+        "diaria",
+        "alimentacao",
+        "outro"
+      ]
+    },
+    "public.tipo_documento": {
+      "name": "tipo_documento",
+      "schema": "public",
+      "values": [
+        "cnh",
+        "crlv",
+        "aso",
+        "mopp",
+        "nota_fiscais",
+        "seguro",
+        "licenciamento",
+        "contrato",
+        "outro"
+      ]
+    },
+    "public.tipo_empresa": {
+      "name": "tipo_empresa",
+      "schema": "public",
+      "values": [
+        "independente",
+        "matriz",
+        "filial"
+      ]
+    },
+    "public.tipo_manutencao": {
+      "name": "tipo_manutencao",
+      "schema": "public",
+      "values": [
+        "preventiva",
+        "corretiva",
+        "revisao",
+        "pneu",
+        "eletrica",
+        "funilaria",
+        "outro"
+      ]
+    },
+    "public.tipo_tanque": {
+      "name": "tipo_tanque",
+      "schema": "public",
+      "values": [
+        "diesel",
+        "arla"
+      ]
+    },
+    "public.tipo_veiculo": {
+      "name": "tipo_veiculo",
+      "schema": "public",
+      "values": [
+        "van",
+        "toco",
+        "truck",
+        "cavalo",
+        "carreta",
+        "empilhadeira",
+        "paletera",
+        "outro"
+      ]
+    },
+    "public.tipo_viagem": {
+      "name": "tipo_viagem",
+      "schema": "public",
+      "values": [
+        "entrega",
+        "viagem"
+      ]
+    },
+    "public.turno": {
+      "name": "turno",
+      "schema": "public",
+      "values": [
+        "manha",
+        "tarde",
+        "noite"
+      ]
+    },
+    "public.user_role": {
+      "name": "user_role",
+      "schema": "public",
+      "values": [
+        "user",
+        "admin",
+        "master_admin",
+        "monitor",
+        "dispatcher"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
