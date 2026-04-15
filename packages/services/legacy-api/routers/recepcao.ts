@@ -4,14 +4,13 @@ import { getDb } from "../db";
 import {
   recebimentos, itensRecebimento, docas, armazens
 } from "../drizzle/schema";
-import { eq, and, desc, ilike, isNull, sql } from "drizzle-orm";
+import { eq, and, desc, ilike, isNull, sql, or } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 
 export const recepcaoRouter = router({
-
-  // ─── RECEBIMENTOS ──────────────────────────────────────────────────────────
-
-  listRecebimentos: protectedProcedure
+  // ─── RECEBIMENTOS (Nomes e campos usados pelo Frontend) ───────────────────
+  
+  list: protectedProcedure
     .input(z.object({
       status: z.string().optional(),
       search: z.string().optional(),
@@ -27,8 +26,15 @@ export const recepcaoRouter = router({
         eq(recebimentos.empresaId, empresaId),
         isNull(recebimentos.deletedAt),
       ];
-      if (input.status) conditions.push(eq(recebimentos.status, input.status as any));
-      if (input.search) conditions.push(ilike(recebimentos.numero, `%${input.search}%`));
+      if (input.status && input.status !== "todos") conditions.push(eq(recebimentos.status, input.status as any));
+      
+      if (input.search) {
+        conditions.push(or(
+          ilike(recebimentos.fornecedorNome, `%${input.search}%`),
+          ilike(recebimentos.nfNumero, `%${input.search}%`),
+          ilike(recebimentos.transportadoraNome, `%${input.search}%`)
+        ));
+      }
 
       const rows = await db.select().from(recebimentos)
         .where(and(...conditions))
@@ -36,7 +42,112 @@ export const recepcaoRouter = router({
         .limit(input.limit)
         .offset(input.offset);
 
-      return rows;
+      // Mapear campos do DB para o que o frontend espera
+      return rows.map(r => ({
+        id: r.id,
+        status: r.status,
+        fornecedor: r.fornecedorNome,
+        notaFiscal: r.nfNumero,
+        transportadora: r.transportadoraNome,
+        doca: r.docaId ? `Doca ${r.docaId}` : null, // Simplificação para exibição
+        previsaoChegada: r.dataAgendamento,
+        observacoes: r.observacoes,
+        createdAt: r.createdAt
+      }));
+    }),
+
+  create: protectedProcedure
+    .input(z.object({
+      fornecedor: z.string(),
+      notaFiscal: z.string().optional(),
+      transportadora: z.string().optional(),
+      doca: z.string().optional(),
+      previsaoChegada: z.date().optional(),
+      observacoes: z.string().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const empresaId = ctx.user.empresaId!;
+
+      // Gerar número sequencial
+      const [lastRec] = await db.select({ id: recebimentos.id })
+        .from(recebimentos).where(eq(recebimentos.empresaId, empresaId))
+        .orderBy(desc(recebimentos.id)).limit(1);
+      const nextNum = (lastRec?.id ?? 0) + 1;
+      const numero = `REC-${String(nextNum).padStart(6, "0")}`;
+
+      const [newRec] = await db.insert(recebimentos).values({
+        empresaId,
+        numero,
+        status: "aguardando",
+        fornecedorNome: input.fornecedor,
+        nfNumero: input.notaFiscal,
+        transportadoraNome: input.transportadora,
+        dataAgendamento: input.previsaoChegada,
+        observacoes: input.observacoes,
+        createdBy: ctx.user.id,
+      }).returning();
+
+      return newRec;
+    }),
+
+  iniciarConferencia: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const empresaId = ctx.user.empresaId!;
+
+      await db.update(recebimentos)
+        .set({ 
+          status: "em_conferencia", 
+          dataInicio: new Date(),
+          updatedAt: new Date() 
+        })
+        .where(and(eq(recebimentos.id, input.id), eq(recebimentos.empresaId, empresaId)));
+
+      return { success: true };
+    }),
+
+  concluir: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const empresaId = ctx.user.empresaId!;
+
+      await db.update(recebimentos)
+        .set({ 
+          status: "concluido", 
+          dataFim: new Date(),
+          updatedAt: new Date() 
+        })
+        .where(and(eq(recebimentos.id, input.id), eq(recebimentos.empresaId, empresaId)));
+
+      return { success: true };
+    }),
+
+  // ─── MÉTODOS ORIGINAIS (Para manutenção e outros usos) ───────────────────
+
+  listRecebimentos: protectedProcedure
+    .input(z.object({
+      status: z.string().optional(),
+      search: z.string().optional(),
+    }))
+    .query(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const empresaId = ctx.user.empresaId!;
+      const conditions = [
+        eq(recebimentos.empresaId, empresaId),
+        isNull(recebimentos.deletedAt),
+      ];
+      if (input.status) conditions.push(eq(recebimentos.status, input.status as any));
+      
+      return db.select().from(recebimentos)
+        .where(and(...conditions))
+        .orderBy(desc(recebimentos.createdAt));
     }),
 
   getRecebimento: protectedProcedure
@@ -57,88 +168,10 @@ export const recepcaoRouter = router({
       return { ...rec, itens };
     }),
 
-  createRecebimento: protectedProcedure
-    .input(z.object({
-      tipo: z.enum(["nf_entrada", "devolucao", "transferencia", "bonificacao", "outro"]).default("nf_entrada"),
-      fornecedorNome: z.string().optional(),
-      fornecedorCnpj: z.string().optional(),
-      nfNumero: z.string().optional(),
-      nfSerie: z.string().optional(),
-      nfChave: z.string().optional(),
-      nfValorTotal: z.string().optional(),
-      nfDataEmissao: z.string().optional(),
-      transportadoraNome: z.string().optional(),
-      veiculoPlaca: z.string().optional(),
-      docaId: z.number().optional(),
-      armazemId: z.number().optional(),
-      dataAgendamento: z.string().optional(),
-      observacoes: z.string().optional(),
-      itens: z.array(z.object({
-        codigoProduto: z.string().optional(),
-        descricaoProduto: z.string(),
-        unidade: z.string().optional(),
-        ean: z.string().optional(),
-        quantidadeEsperada: z.string(),
-        valorUnitario: z.string().optional(),
-      })).optional(),
-    }))
-    .mutation(async ({ input, ctx }) => {
-      const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-      const empresaId = ctx.user.empresaId!;
-
-      // Gerar número sequencial
-      const [lastRec] = await db.select({ id: recebimentos.id })
-        .from(recebimentos).where(eq(recebimentos.empresaId, empresaId))
-        .orderBy(desc(recebimentos.id)).limit(1);
-      const nextNum = (lastRec?.id ?? 0) + 1;
-      const numero = `REC-${String(nextNum).padStart(6, "0")}`;
-
-      const [newRec] = await db.insert(recebimentos).values({
-        empresaId,
-        numero,
-        tipo: input.tipo,
-        status: "aguardando",
-        fornecedorNome: input.fornecedorNome,
-        fornecedorCnpj: input.fornecedorCnpj,
-        nfNumero: input.nfNumero,
-        nfSerie: input.nfSerie,
-        nfChave: input.nfChave,
-        nfValorTotal: input.nfValorTotal,
-        nfDataEmissao: input.nfDataEmissao,
-        transportadoraNome: input.transportadoraNome,
-        veiculoPlaca: input.veiculoPlaca,
-        docaId: input.docaId,
-        armazemId: input.armazemId,
-        dataAgendamento: input.dataAgendamento ? new Date(input.dataAgendamento) : undefined,
-        observacoes: input.observacoes,
-        totalItensEsperados: input.itens?.length ?? 0,
-        createdBy: ctx.user.id,
-      }).returning();
-
-      if (input.itens && input.itens.length > 0) {
-        await db.insert(itensRecebimento).values(
-          input.itens.map(item => ({
-            recebimentoId: newRec.id,
-            empresaId,
-            descricaoProduto: item.descricaoProduto,
-            codigoProduto: item.codigoProduto,
-            unidade: item.unidade ?? "UN",
-            ean: item.ean,
-            quantidadeEsperada: item.quantidadeEsperada,
-            valorUnitario: item.valorUnitario,
-            status: "pendente" as const,
-          }))
-        );
-      }
-
-      return newRec;
-    }),
-
   updateStatus: protectedProcedure
     .input(z.object({
       id: z.number(),
-      status: z.enum(["aguardando", "em_conferencia", "conferido", "divergencia", "recusado", "finalizado"]),
+      status: z.enum(["aguardando", "em_conferencia", "conferido", "divergencia", "recusado", "finalizado", "concluido"]),
       observacoes: z.string().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
@@ -152,7 +185,7 @@ export const recepcaoRouter = router({
       };
       if (input.observacoes) updateData.observacoes = input.observacoes;
       if (input.status === "em_conferencia") updateData.dataInicio = new Date();
-      if (input.status === "finalizado" || input.status === "recusado") updateData.dataFim = new Date();
+      if (input.status === "finalizado" || input.status === "concluido" || input.status === "recusado") updateData.dataFim = new Date();
 
       await db.update(recebimentos)
         .set(updateData)
@@ -200,33 +233,12 @@ export const recepcaoRouter = router({
       return { success: true };
     }),
 
-  // ─── DOCAS ─────────────────────────────────────────────────────────────────
-
   listDocas: protectedProcedure.query(async ({ ctx }) => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     return db.select().from(docas)
       .where(and(eq(docas.empresaId, ctx.user.empresaId!), eq(docas.ativo, true)));
   }),
-
-  createDoca: adminProcedure
-    .input(z.object({
-      armazemId: z.number(),
-      nome: z.string(),
-      codigo: z.string().optional(),
-      tipo: z.enum(["recebimento", "expedicao", "misto"]).default("recebimento"),
-    }))
-    .mutation(async ({ input, ctx }) => {
-      const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-      const [doca] = await db.insert(docas).values({
-        empresaId: ctx.user.empresaId!,
-        ...input,
-      }).returning();
-      return doca;
-    }),
-
-  // ─── DASHBOARD ─────────────────────────────────────────────────────────────
 
   dashboard: protectedProcedure.query(async ({ ctx }) => {
     const db = await getDb();
@@ -237,7 +249,7 @@ export const recepcaoRouter = router({
       total: sql<number>`count(*)`,
       aguardando: sql<number>`count(*) filter (where status = 'aguardando')`,
       emConferencia: sql<number>`count(*) filter (where status = 'em_conferencia')`,
-      finalizados: sql<number>`count(*) filter (where status = 'finalizado')`,
+      finalizados: sql<number>`count(*) filter (where status = 'concluido' or status = 'finalizado')`,
       divergencias: sql<number>`count(*) filter (where status = 'divergencia')`,
     }).from(recebimentos)
       .where(and(eq(recebimentos.empresaId, empresaId), isNull(recebimentos.deletedAt)));
@@ -247,6 +259,15 @@ export const recepcaoRouter = router({
       .orderBy(desc(recebimentos.createdAt))
       .limit(5);
 
-    return { totais, recentes };
+    return { 
+      totais, 
+      recentes: recentes.map(r => ({
+        id: r.id,
+        status: r.status,
+        fornecedor: r.fornecedorNome,
+        notaFiscal: r.nfNumero,
+        createdAt: r.createdAt
+      }))
+    };
   }),
 });
