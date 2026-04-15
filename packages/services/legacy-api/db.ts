@@ -14,11 +14,28 @@ import { ENV } from './_core/env';
 let _db: ReturnType<typeof drizzle> | null = null;
 let _client: ReturnType<typeof postgres> | null = null;
 
+// Sanitiza a DATABASE_URL removendo prefixos inválidos e quebras de linha
+function sanitizeDatabaseUrl(url: string): string {
+  // Remove quebras de linha e espaços
+  let clean = url.trim();
+  // Remove prefixo "DATABASE_URL=" se existir (Railway às vezes injeta assim)
+  if (clean.startsWith('DATABASE_URL=')) {
+    clean = clean.slice('DATABASE_URL='.length).trim();
+  }
+  // Remove aspas se existirem
+  if ((clean.startsWith('"') && clean.endsWith('"')) || (clean.startsWith("'") && clean.endsWith("'"))) {
+    clean = clean.slice(1, -1);
+  }
+  return clean;
+}
+
 // Lazily create the drizzle instance so local tooling can run without a DB.
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      _client = postgres(process.env.DATABASE_URL);
+      const dbUrl = sanitizeDatabaseUrl(process.env.DATABASE_URL);
+      console.log('[Database] Connecting to:', dbUrl.replace(/:[^:@]+@/, ':***@'));
+      _client = postgres(dbUrl);
       _db = drizzle(_client);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
