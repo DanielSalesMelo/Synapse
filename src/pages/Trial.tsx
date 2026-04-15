@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import {
   Truck, CheckCircle, ArrowRight, ArrowLeft,
   Building2, User, Mail, Lock, Phone, MapPin, Eye, EyeOff,
-  Star, Shield, Zap, Clock,
+  Star, Shield, Zap, Clock, Hash,
 } from "lucide-react";
 
 // ─── Benefícios exibidos na lateral ──────────────────────────────────────────
@@ -19,22 +19,28 @@ const BENEFICIOS = [
   { icon: <Star className="w-5 h-5 text-yellow-400" />,  text: "Suporte incluso durante o trial" },
 ];
 
-// ─── Etapas do formulário ─────────────────────────────────────────────────────
 type Etapa = 1 | 2 | 3;
+type TipoEmpresa = "independente" | "matriz" | "filial";
 
 export default function Trial() {
   const [, navigate] = useLocation();
   const [etapa, setEtapa] = useState<Etapa>(1);
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [aceite, setAceite] = useState(false);
-  const [sucesso, setSucesso] = useState<{ codigoConvite: string; dataTrialFim: string } | null>(null);
+  const [sucesso, setSucesso] = useState<{
+    codigoConvite: string;
+    dataTrialFim: string;
+    empresaId: number;
+    tipoEmpresa: TipoEmpresa;
+  } | null>(null);
 
-  // Dados do formulário
   const [form, setForm] = useState({
     nomeEmpresa: "",
     cnpj: "",
     cidade: "",
     estado: "",
+    tipoEmpresa: "independente" as TipoEmpresa,
+    matrizId: "",
     nomeUsuario: "",
     email: "",
     senha: "",
@@ -47,7 +53,12 @@ export default function Trial() {
 
   const registrarMut = trpc.licenciamento.registrarTrial.useMutation({
     onSuccess: (data) => {
-      setSucesso({ codigoConvite: data.codigoConvite, dataTrialFim: data.dataTrialFim });
+      setSucesso({
+        codigoConvite: data.codigoConvite,
+        dataTrialFim: data.dataTrialFim,
+        empresaId: data.empresaId,
+        tipoEmpresa: form.tipoEmpresa,
+      });
       setEtapa(3);
     },
     onError: (e) => toast.error(e.message),
@@ -55,6 +66,7 @@ export default function Trial() {
 
   const avancarEtapa1 = () => {
     if (!form.nomeEmpresa.trim()) return toast.error("Informe o nome da empresa");
+    if (form.tipoEmpresa === "filial" && !form.matrizId) return toast.error("Informe o ID da empresa matriz");
     setEtapa(2);
   };
 
@@ -70,6 +82,8 @@ export default function Trial() {
       cnpj: form.cnpj || undefined,
       cidade: form.cidade || undefined,
       estado: form.estado || undefined,
+      tipoEmpresa: form.tipoEmpresa,
+      matrizId: form.matrizId ? parseInt(form.matrizId) : undefined,
       nomeUsuario: form.nomeUsuario,
       email: form.email,
       senha: form.senha,
@@ -81,12 +95,14 @@ export default function Trial() {
   const fmtData = (iso: string) =>
     new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
 
+  const tipoLabel = (t: TipoEmpresa) =>
+    t === "independente" ? "Independente" : t === "matriz" ? "Matriz" : "Filial";
+
   return (
     <div className="min-h-screen bg-[#0a0a0f] flex">
       {/* ── Lateral esquerda (desktop) ── */}
       <div className="hidden lg:flex flex-col justify-between w-[420px] flex-shrink-0 bg-gradient-to-b from-blue-950/60 to-[#0a0a0f] border-r border-white/5 p-10">
         <div>
-          {/* Logo */}
           <button onClick={() => navigate("/")} className="flex items-center gap-2.5 text-white mb-12 hover:opacity-80 transition-opacity">
             <div className="h-9 w-9 rounded-xl bg-blue-600 flex items-center justify-center">
               <Truck className="h-5 w-5 text-white" />
@@ -118,7 +134,6 @@ export default function Trial() {
           </div>
         </div>
 
-        {/* Módulos incluídos */}
         <div className="mt-8">
           <p className="text-xs text-white/30 uppercase tracking-wider mb-3">Módulos incluídos no trial</p>
           <div className="flex flex-wrap gap-1.5">
@@ -145,7 +160,7 @@ export default function Trial() {
         <div className="w-full max-w-md">
           {/* ── ETAPA 3: SUCESSO ── */}
           {etapa === 3 && sucesso && (
-            <div className="text-center space-y-6">
+            <div className="text-center space-y-5">
               <div className="h-20 w-20 rounded-full bg-green-500/15 border-2 border-green-500/30 flex items-center justify-center mx-auto">
                 <CheckCircle className="h-10 w-10 text-green-400" />
               </div>
@@ -157,8 +172,36 @@ export default function Trial() {
                 </p>
               </div>
 
+              {/* ID e tipo da empresa */}
               <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-left space-y-3">
-                <p className="text-xs text-white/40 uppercase tracking-wider">Seu código de convite (para convidar equipe)</p>
+                <p className="text-xs text-white/40 uppercase tracking-wider font-semibold">Dados da sua empresa</p>
+                <div className="flex items-center justify-between py-1 border-b border-white/5">
+                  <span className="text-sm text-white/60 flex items-center gap-1.5"><Hash className="w-3.5 h-3.5" /> ID da Empresa</span>
+                  <div className="flex items-center gap-2">
+                    <code className="text-base font-mono font-bold text-yellow-400">#{sucesso.empresaId}</code>
+                    <button
+                      className="text-xs text-white/40 hover:text-white/70 border border-white/10 rounded-lg px-2 py-1 transition-colors"
+                      onClick={() => { navigator.clipboard.writeText(String(sucesso.empresaId)); toast.success("ID copiado!"); }}>
+                      Copiar
+                    </button>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between py-1">
+                  <span className="text-sm text-white/60">Tipo</span>
+                  <span className={`text-sm font-semibold px-2.5 py-0.5 rounded-full ${
+                    sucesso.tipoEmpresa === "matriz" ? "bg-purple-500/15 text-purple-400" :
+                    sucesso.tipoEmpresa === "filial" ? "bg-blue-500/15 text-blue-400" :
+                    "bg-white/10 text-white/70"
+                  }`}>{tipoLabel(sucesso.tipoEmpresa)}</span>
+                </div>
+                <p className="text-xs text-white/30 pt-1">
+                  Guarde o ID da empresa — ele é necessário para vincular filiais a esta {sucesso.tipoEmpresa === "matriz" ? "matriz" : "empresa"}.
+                </p>
+              </div>
+
+              {/* Código de convite */}
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-left space-y-3">
+                <p className="text-xs text-white/40 uppercase tracking-wider font-semibold">Código de convite (para convidar equipe)</p>
                 <div className="flex items-center gap-3">
                   <code className="text-xl font-mono font-bold text-cyan-400 tracking-widest">{sucesso.codigoConvite}</code>
                   <button
@@ -239,6 +282,51 @@ export default function Trial() {
                       />
                     </div>
 
+                    {/* Tipo de empresa */}
+                    <div>
+                      <Label className="text-white/70 text-sm mb-1.5 block">Tipo de empresa *</Label>
+                      <div className="grid grid-cols-3 gap-2">
+                        {(["independente", "matriz", "filial"] as TipoEmpresa[]).map(tipo => (
+                          <button
+                            key={tipo}
+                            type="button"
+                            onClick={() => setForm(f => ({ ...f, tipoEmpresa: tipo, matrizId: tipo !== "filial" ? "" : f.matrizId }))}
+                            className={`py-2.5 rounded-xl border text-sm font-medium transition-all ${
+                              form.tipoEmpresa === tipo
+                                ? tipo === "matriz" ? "bg-purple-600 border-purple-500 text-white"
+                                : tipo === "filial" ? "bg-blue-600 border-blue-500 text-white"
+                                : "bg-white/15 border-white/30 text-white"
+                                : "bg-white/5 border-white/10 text-white/50 hover:border-white/30"
+                            }`}>
+                            {tipoLabel(tipo)}
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-xs text-white/30 mt-1.5">
+                        {form.tipoEmpresa === "independente" && "Empresa autônoma, sem vínculo com outras."}
+                        {form.tipoEmpresa === "matriz" && "Empresa principal que pode ter filiais vinculadas."}
+                        {form.tipoEmpresa === "filial" && "Unidade vinculada a uma empresa matriz."}
+                      </p>
+                    </div>
+
+                    {/* ID da matriz (só aparece quando filial) */}
+                    {form.tipoEmpresa === "filial" && (
+                      <div>
+                        <Label className="text-white/70 text-sm mb-1.5 block">ID da empresa matriz *</Label>
+                        <div className="relative">
+                          <Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+                          <Input
+                            type="number"
+                            placeholder="Ex: 42"
+                            value={form.matrizId}
+                            onChange={e => setForm(f => ({ ...f, matrizId: e.target.value }))}
+                            className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-blue-500/50 h-11 rounded-xl"
+                          />
+                        </div>
+                        <p className="text-xs text-white/30 mt-1">Solicite o ID da empresa matriz ao administrador dela.</p>
+                      </div>
+                    )}
+
                     <div className="grid grid-cols-3 gap-3">
                       <div className="col-span-2">
                         <Label className="text-white/70 text-sm mb-1.5 block">Cidade <span className="text-white/30">(opcional)</span></Label>
@@ -271,7 +359,6 @@ export default function Trial() {
                     Continuar
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
-
                   <p className="text-center text-xs text-white/30">
                     Já tem conta?{" "}
                     <button className="text-blue-400 hover:text-blue-300 underline" onClick={() => navigate("/login")}>
@@ -285,10 +372,12 @@ export default function Trial() {
               {etapa === 2 && (
                 <div className="space-y-5">
                   <div>
-                    <button onClick={() => setEtapa(1)} className="flex items-center gap-1.5 text-white/40 hover:text-white/70 text-sm mb-4 transition-colors">
+                    <button
+                      className="flex items-center gap-1.5 text-white/40 hover:text-white/70 text-sm mb-4 transition-colors"
+                      onClick={() => setEtapa(1)}>
                       <ArrowLeft className="h-4 w-4" /> Voltar
                     </button>
-                    <h2 className="text-2xl font-bold text-white mb-1">Criar seu acesso</h2>
+                    <h2 className="text-2xl font-bold text-white mb-1">Dados de acesso</h2>
                     <p className="text-white/40 text-sm">Você será o administrador da empresa <strong className="text-white/70">{form.nomeEmpresa}</strong>.</p>
                   </div>
 
@@ -298,7 +387,7 @@ export default function Trial() {
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
                         <Input
-                          placeholder="João Silva"
+                          placeholder="Ex: João Silva"
                           value={form.nomeUsuario}
                           onChange={set("nomeUsuario")}
                           className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-blue-500/50 h-11 rounded-xl"
@@ -312,7 +401,7 @@ export default function Trial() {
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
                         <Input
                           type="email"
-                          placeholder="joao@empresa.com.br"
+                          placeholder="seu@email.com"
                           value={form.email}
                           onChange={set("email")}
                           className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-blue-500/50 h-11 rounded-xl"
@@ -325,6 +414,7 @@ export default function Trial() {
                       <div className="relative">
                         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
                         <Input
+                          type="tel"
                           placeholder="(11) 99999-9999"
                           value={form.telefone}
                           onChange={set("telefone")}
@@ -373,7 +463,6 @@ export default function Trial() {
                     </div>
                   </div>
 
-                  {/* Aceite de termos */}
                   <label className="flex items-start gap-3 cursor-pointer group">
                     <div
                       className={`mt-0.5 h-5 w-5 rounded-md border flex items-center justify-center flex-shrink-0 transition-all ${
@@ -407,7 +496,6 @@ export default function Trial() {
                       </>
                     )}
                   </Button>
-
                   <p className="text-center text-xs text-white/30">
                     Já tem conta?{" "}
                     <button className="text-blue-400 hover:text-blue-300 underline" onClick={() => navigate("/login")}>
