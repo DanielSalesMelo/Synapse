@@ -567,7 +567,7 @@ export const licenciamentoRouter = router({
 
       return {
         ok: true,
-        mensagem: `Bem-vindo ao Rotiq! Seu trial de ${input.diasTrial} dias está ativo.`,
+        mensagem: `Bem-vindo ao Synapse! Seu trial de ${input.diasTrial} dias está ativo.`,
         empresaId: novaEmpresa.id,
         codigoConvite,
         dataTrialFim: dataTrialFim.toISOString(),

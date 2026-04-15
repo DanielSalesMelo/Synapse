@@ -2,14 +2,14 @@
  * Configurações globais do sistema para facilitar Rebranding e Customização.
  */
 export const APP_CONFIG = {
-  // Nome atual do sistema (mude aqui para refletir em todo o backend)
-  name: "Rotiq 360",
-  
+  // Nome atual do sistema
+  name: "Synapse",
+
   // Versão do sistema
   version: "1.0.0",
-  
+
   // Configurações de exibição
-  displayName: "Rotiq 360 - Gestão de Logística",
+  displayName: "Synapse — Gestão Inteligente de Logística",
   
   // Módulos habilitados por padrão
   modules: {

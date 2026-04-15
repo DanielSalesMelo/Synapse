@@ -154,7 +154,7 @@ class SDKServer {
   }
 
   private getSessionSecret() {
-    const secret = ENV.cookieSecret || "rotiq-secret-key-123";
+    const secret = ENV.cookieSecret || "synapse-secret-key-prod";
     return new TextEncoder().encode(secret);
   }
 
@@ -182,7 +182,7 @@ class SDKServer {
     options: { expiresInMs?: number } = {}
   ): Promise<string> {
     const expiresInMs = options.expiresInMs ?? ONE_YEAR_MS;
-    const secret = ENV.cookieSecret || "rotiq-secret-key-123";
+    const secret = ENV.cookieSecret || "synapse-secret-key-prod";
     return jwt.sign(
       { openId: payload.openId, appId: payload.appId, name: payload.name },
       secret,
@@ -198,11 +198,11 @@ class SDKServer {
     }
 
     try {
-      const secret = ENV.cookieSecret || "rotiq-secret-key-123";
+      const secret = ENV.cookieSecret || "synapse-secret-key-prod";
       const payload = jwt.verify(cookieValue, secret, { algorithms: ["HS256"] }) as any;
       const openId = (payload.openId || payload.id) as string;
       const name = (payload.name || "Usuário") as string;
-      const appId = (payload.appId || ENV.appId || "rotiq") as string;
+      const appId = (payload.appId || ENV.appId || "synapse") as string;
 
       if (!openId) {
         console.warn("[Auth] Session payload missing openId/id");

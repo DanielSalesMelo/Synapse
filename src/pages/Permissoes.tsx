@@ -90,7 +90,7 @@ export default function Permissoes() {
 
   const [perfis, setPerfis] = useState<any[]>(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem("rotiq_perfis") || "null");
+      const saved = JSON.parse(localStorage.getItem("synapse_perfis") || "null");
       return saved || perfisIniciais;
     } catch { return perfisIniciais; }
   });
@@ -114,7 +114,7 @@ export default function Permissoes() {
       return { ...p, permissoes: perms };
     });
     setPerfis(atualizados);
-    localStorage.setItem("rotiq_perfis", JSON.stringify(atualizados));
+    localStorage.setItem("synapse_perfis", JSON.stringify(atualizados));
   };
 
   const criarPerfil = () => {
@@ -128,7 +128,7 @@ export default function Permissoes() {
     };
     const novos = [...perfis, novo];
     setPerfis(novos);
-    localStorage.setItem("rotiq_perfis", JSON.stringify(novos));
+    localStorage.setItem("synapse_perfis", JSON.stringify(novos));
     setPerfilSelecionado(novo.id);
     setModalNovoPerfil(false);
     setNovoPerfilNome("");

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Truck, BarChart3, Users, Fuel, Wrench, Shield, ArrowRight,
   MapPin, FileText, Package, DollarSign, Bell, CheckSquare,
-  Zap, Globe, ChevronRight, Star, TrendingUp, Clock, Lock, X,
+  Zap, Globe, ChevronRight, Star, TrendingUp, Clock, Lock, X, Brain,
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
@@ -137,6 +137,10 @@ export default function Home() {
       tagline: lang === "pt" ? "Conectado ao seu ecossistema" : "Connected to your ecosystem",
       desc: lang === "pt" ? "Integração nativa com Arquivei para consulta e download de NF-e, e Winthor com 65 rotinas disponíveis para sincronização de dados com o Oracle." : "Native integration with Arquivei for NF-e query and download, and Winthor with 65 routines for Oracle data synchronization.",
       features: lang === "pt" ? ["Arquivei: busca de NF-e por chave de acesso (44 dígitos)","Download de XML e DANFE via Arquivei/Qive","Winthor: 65 rotinas reais (521, 901–1474)","Conexão Oracle: Host, Porta, Usuário, Senha, SID","Módulos: Veículos, Carregamento, Acerto, Expedição, Rota, Vendas","Exportação de relatórios em PDF e Excel"] : ["Arquivei: NF-e search by access key (44 digits)","XML and DANFE download via Arquivei/Qive","Winthor: 65 real routines (521, 901–1474)","Oracle connection: Host, Port, User, Password, SID","Modules: Vehicles, Loading, Settlement, Dispatch, Route, Sales","Report export in PDF and Excel"] },
+    { icon: Brain,       label: lang === "pt" ? "Synapse AI"      : "Synapse AI",   color: "text-violet-400", bg: "bg-violet-500/10", border: "border-violet-500/30", route: "/ia",
+      tagline: lang === "pt" ? "Inteligência artificial integrada" : "Integrated artificial intelligence",
+      desc: lang === "pt" ? "5 agentes especializados com IA generativa: assistente geral, analista financeiro, suporte ao motorista, especialista em manutenção e assistente jurídico. Powered by OpenAI." : "5 specialized AI agents: general assistant, financial analyst, driver support, maintenance expert and legal assistant. Powered by OpenAI.",
+      features: lang === "pt" ? ["Synapse AI: assistente geral de frota e logística","Analista Financeiro: custo por km, DRE e margens","Suporte ao Motorista: dúvidas operacionais e procedimentos","Especialista em Manutenção: diagnóstico e planos preventivos","Assistente Jurídico: legislação ANTT, multas e compliance","Análise automática de dados da empresa com nota de desempenho"] : ["Synapse AI: general fleet and logistics assistant","Financial Analyst: cost per km, P&L and margins","Driver Support: operational questions and procedures","Maintenance Expert: diagnosis and preventive plans","Legal Assistant: ANTT legislation, fines and compliance","Automatic company data analysis with performance score"] },
   ];
 
   const benefits = [
@@ -198,10 +202,10 @@ export default function Home() {
       <header className="relative z-10 border-b border-white/5 backdrop-blur-sm bg-black/20 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30">
-              <Truck className="h-5 w-5 text-white" />
+            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
+              <Zap className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-bold tracking-tight">Rotiq</span>
+            <span className="text-xl font-bold tracking-tight">Synapse</span>
           </div>
           <div className="flex items-center gap-3">
             <div className="hidden sm:flex items-center gap-1 bg-white/5 rounded-lg p-1">
@@ -328,7 +332,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              {lang === "pt" ? "Por que escolher o Rotiq?" : lang === "en" ? "Why choose Rotiq?" : lang === "es" ? "¿Por qué elegir Rotiq?" : lang === "fr" ? "Pourquoi choisir Rotiq?" : "為什麼選擇 Rotiq？"}
+              {lang === "pt" ? "Por que escolher o Synapse?" : lang === "en" ? "Why choose Synapse?" : lang === "es" ? "¿Por qué elegir Synapse?" : lang === "fr" ? "Pourquoi choisir Synapse?" : "為什麼選擇 Synapse？"}
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -397,7 +401,7 @@ export default function Home() {
               onClick={() => setLocation("/login")}
               className="bg-blue-600 hover:bg-blue-500 text-white border-0 text-base px-10 py-6 shadow-xl shadow-blue-600/30 rounded-xl"
             >
-              {lang === "pt" ? "Acessar o Rotiq" : lang === "en" ? "Access Rotiq" : lang === "es" ? "Acceder a Rotiq" : lang === "fr" ? "Accéder à Rotiq" : "訪問 Rotiq"}
+              {lang === "pt" ? "Acessar o Synapse" : lang === "en" ? "Access Synapse" : lang === "es" ? "Acceder a Synapse" : lang === "fr" ? "Accéder à Synapse" : "訪問 Synapse"}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
@@ -408,13 +412,13 @@ export default function Home() {
       <footer className="relative z-10 border-t border-white/5 px-6 py-8">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
-              <Truck className="h-4 w-4 text-white" />
+            <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+              <Zap className="h-4 w-4 text-white" />
             </div>
-            <span className="font-bold text-white/80">Rotiq</span>
+            <span className="font-bold text-white/80">Synapse</span>
           </div>
           <p className="text-white/30 text-sm">
-            © 2025 Rotiq —{" "}
+            © 2026 Synapse —{" "}
             {lang === "pt" ? "Sistema de Gestão de Frota e Logística" : lang === "en" ? "Fleet & Logistics Management System" : lang === "es" ? "Sistema de Gestión de Flota y Logística" : lang === "fr" ? "Système de Gestion de Flotte et Logistique" : "車隊與物流管理系統"}
           </p>
           <div className="flex items-center gap-1 bg-white/5 rounded-lg p-1">

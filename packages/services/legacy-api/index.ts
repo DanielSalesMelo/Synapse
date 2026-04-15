@@ -17,7 +17,7 @@ const ALLOWED_ORIGINS = [
   "http://localhost:5173",
   "http://localhost:3000",
   "http://localhost:4173",
-  "https://rotiq-cbhi.vercel.app",
+  "https://synapse-seven-nu.vercel.app",
   ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
 ];
 
@@ -94,13 +94,13 @@ app.get("/health", (req, res) => {
 runMigrations()
   .then(() => {
     app.listen(port, () => {
-      console.log(`[Server] Rotiq Backend running on port ${port}`);
+      console.log(`[Server] Synapse Backend running on port ${port}`);
     });
   })
   .catch((err) => {
     console.error("[Server] Falha nas migrações, iniciando mesmo assim:", err);
     app.listen(port, () => {
-      console.log(`[Server] Rotiq Backend running on port ${port}`);
+      console.log(`[Server] Synapse Backend running on port ${port}`);
     });
   });
 

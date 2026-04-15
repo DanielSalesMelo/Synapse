@@ -91,7 +91,7 @@ export default function Trial() {
             <div className="h-9 w-9 rounded-xl bg-blue-600 flex items-center justify-center">
               <Truck className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-bold tracking-tight">Rotiq</span>
+            <span className="text-xl font-bold tracking-tight">Synapse</span>
           </button>
 
           <div className="mb-8">
@@ -99,7 +99,7 @@ export default function Trial() {
               <Star className="w-3.5 h-3.5" /> 14 dias grátis
             </div>
             <h1 className="text-3xl font-extrabold text-white leading-tight mb-3">
-              Comece a usar o Rotiq hoje mesmo
+              Comece a usar o Synapse hoje mesmo
             </h1>
             <p className="text-white/50 text-sm leading-relaxed">
               Cadastre sua empresa e tenha acesso imediato a todos os módulos do sistema. Sem cartão de crédito.
@@ -137,7 +137,7 @@ export default function Trial() {
             <div className="h-8 w-8 rounded-xl bg-blue-600 flex items-center justify-center">
               <Truck className="h-4 w-4 text-white" />
             </div>
-            <span className="font-bold">Rotiq</span>
+            <span className="font-bold">Synapse</span>
           </button>
           <span className="text-xs text-white/40 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-3 py-1 rounded-full font-medium">14 dias grátis</span>
         </div>
@@ -387,7 +387,7 @@ export default function Trial() {
                       <span className="text-blue-400 underline cursor-pointer">Termos de Uso</span>{" "}
                       e{" "}
                       <span className="text-blue-400 underline cursor-pointer">Política de Privacidade</span>{" "}
-                      do Rotiq. Entendo que o trial é gratuito por 14 dias.
+                      do Synapse. Entendo que o trial é gratuito por 14 dias.
                     </span>
                   </label>
 

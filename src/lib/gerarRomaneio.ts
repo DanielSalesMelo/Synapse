@@ -126,7 +126,7 @@ export function gerarRomaneio(dados: DadosRomaneio) {
           <div class="subtitle">Carregamento ${dados.numero} — ${dataFormatada}</div>
         </div>
         <div style="text-align: right;">
-          <div class="empresa">${dados.empresaNome ?? "Rotiq"}</div>
+          <div class="empresa">${dados.empresaNome ?? "Synapse"}</div>
           <div style="font-size: 11px; color: #6b7280; margin-top: 4px;">Emitido em: ${agora}</div>
         </div>
       </div>
@@ -198,7 +198,7 @@ export function gerarRomaneio(dados: DadosRomaneio) {
       </div>
 
       <div class="rodape">
-        Rotiq — Sistema de Gestão de Transporte | Romaneio ${dados.numero} | ${agora}
+        Synapse — Sistema de Gestão de Transporte | Romaneio ${dados.numero} | ${agora}
       </div>
     </body>
     </html>

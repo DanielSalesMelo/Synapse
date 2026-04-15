@@ -39,7 +39,7 @@ export default function Acertos() {
   const { data: viagens = [] } = trpc.viagens.list.useQuery({ empresaId: EMPRESA_ID });
 
   const [acertos, setAcertos] = useState<any[]>(() => {
-    try { return JSON.parse(localStorage.getItem("rotiq_acertos") || "[]"); } catch { return []; }
+    try { return JSON.parse(localStorage.getItem("synapse_acertos") || "[]"); } catch { return []; }
   });
 
   const viagensMotorista = viagens.filter((v: any) =>
@@ -77,7 +77,7 @@ export default function Acertos() {
     };
     const novos = [novoAcerto, ...acertos];
     setAcertos(novos);
-    localStorage.setItem("rotiq_acertos", JSON.stringify(novos));
+    localStorage.setItem("synapse_acertos", JSON.stringify(novos));
     toast.success("Acerto registrado com sucesso!");
     setModalOpen(false);
     setForm({ motoristaId: "", viagemId: "", dataAcerto: new Date().toISOString().split("T")[0], freteRecebido: "", adiantamento: "", combustivelPago: "", pedagioPago: "", refeicaoPago: "", outrosDescontos: "", outrosCreditos: "", observacoes: "" });
@@ -86,7 +86,7 @@ export default function Acertos() {
   const pagarAcerto = (id: number) => {
     const atualizados = acertos.map((a: any) => a.id === id ? { ...a, status: "pago" } : a);
     setAcertos(atualizados);
-    localStorage.setItem("rotiq_acertos", JSON.stringify(atualizados));
+    localStorage.setItem("synapse_acertos", JSON.stringify(atualizados));
     toast.success("Acerto marcado como pago!");
   };
 

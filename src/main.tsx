@@ -24,17 +24,7 @@ import "./lib/i18n";
 
 const queryClient = new QueryClient();
 
-let UNAUTHED_ERR_MSG = 'Please login (10001)'; // Fallback
-
-// Busca configurações da API de forma assíncrona
-fetch('https://rotiq-production.up.railway.app/api/config')
-  .then(res => res.json())
-  .then(config => {
-    if (config.UNAUTHED_ERR_MSG) {
-      UNAUTHED_ERR_MSG = config.UNAUTHED_ERR_MSG;
-    }
-  })
-  .catch(err => console.error('Erro ao carregar config da API:', err));
+const UNAUTHED_ERR_MSG = 'Please login (10001)';
 
 // Função para redirecionar ao login se o usuário não estiver autenticado
 const redirectToLoginIfUnauthorized = (error: unknown) => {
@@ -71,7 +61,7 @@ const getBaseUrl = () => {
       return "http://localhost:3000";
     }
     // Na Vercel ou em produção, usa o backend Railway
-    return "https://rotiq-production.up.railway.app";
+    return import.meta.env.VITE_API_URL || "https://synapse-producion.up.railway.app";
   }
   // Fallback para requisições relativas
   return "";
@@ -83,7 +73,7 @@ const trpcClient = trpc.createClient({
       url: `${getBaseUrl()}/api/trpc`,
       transformer: superjson,
       headers() {
-        const token = localStorage.getItem("rotiq-auth-token");
+        const token = localStorage.getItem("synapse-auth-token");
         return {
           Authorization: token ? `Bearer ${token}` : undefined,
         };

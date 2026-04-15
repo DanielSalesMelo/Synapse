@@ -14,7 +14,7 @@ import {
   Wallet, BarChart3, Sun, Moon, Monitor, UserCog, Send, RotateCcw,
   Navigation, AlertTriangle, FileText, Bell, Calendar, Gauge,
   ClipboardList, BookOpen, Shield, Settings, Star, ChevronLeft,
-  ChevronRight, Calculator, MessageSquare, Scale, FileSpreadsheet, HelpCircle,
+  ChevronRight, Calculator, MessageSquare, Scale, FileSpreadsheet, HelpCircle, Brain,
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useViewAs } from "@/contexts/ViewAsContext";
@@ -87,6 +87,7 @@ const getMenuGroups = (t: any): MenuGroup[] => [
       { icon: TrendingUp, label: "Relatórios Avançados", path: "/relatorios-avancados" },
       { icon: FileSpreadsheet, label: "Importar/Exportar", path: "/import-export" },
       { icon: HelpCircle, label: "Ajuda e Documentação", path: "/ajuda" },
+      { icon: Brain, label: "Synapse AI", path: "/ia" },
       { icon: UserCog, label: t("common.users"), path: "/usuarios" },
       { icon: Settings, label: t("common.settings"), path: "/empresa" },
     ],
@@ -173,11 +174,11 @@ function Sidebar({
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 h-14 border-b border-border shrink-0">
-        <div className="h-7 w-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
-          <Truck className="h-4 w-4 text-primary-foreground" />
+        <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shrink-0">
+          <Brain className="h-4 w-4 text-white" />
         </div>
         {!collapsed && (
-          <span className="font-bold text-foreground tracking-tight">Rotiq 360</span>
+          <span className="font-bold text-foreground tracking-tight">Synapse</span>
         )}
         {!collapsed && (
           <button
@@ -316,7 +317,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center">
               <Truck className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="text-2xl font-bold tracking-tight">Rotiq</span>
+            <span className="text-2xl font-bold tracking-tight">Synapse</span>
           </div>
           <p className="text-center text-muted-foreground">Sessão expirada ou não autenticada.</p>
           <Button onClick={() => { setLocation("/login"); }} size="lg" className="w-full">

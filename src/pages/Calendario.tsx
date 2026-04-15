@@ -40,7 +40,7 @@ export default function Calendario() {
   const { data: multas = [] } = trpc.multas.list.useQuery({ empresaId: EMPRESA_ID });
 
   const documentos: any[] = useMemo(() => {
-    try { return JSON.parse(localStorage.getItem("rotiq_documentos") || "[]"); } catch { return []; }
+    try { return JSON.parse(localStorage.getItem("synapse_documentos") || "[]"); } catch { return []; }
   }, []);
 
   // Mapear eventos por dia

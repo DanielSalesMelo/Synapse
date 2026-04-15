@@ -10,7 +10,7 @@ const t = initTRPC.context<TrpcContext>().create({
 export const router = t.router;
 export const publicProcedure = t.procedure;
 
-// Roles do sistema Rotiq:
+// Roles do sistema Synapse:
 // - user: operador básico (adiciona e edita, não deleta)
 // - dispatcher: despachante (cria e gerencia viagens)
 // - monitor: pode mover para lixeira (soft delete), mas não restaurar

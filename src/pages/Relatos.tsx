@@ -52,7 +52,7 @@ export default function Relatos() {
 
   // Relatos são armazenados localmente (sem backend dedicado ainda — usamos localStorage como fallback)
   const [relatos, setRelatos] = useState<any[]>(() => {
-    try { return JSON.parse(localStorage.getItem("rotiq_relatos") || "[]"); } catch { return []; }
+    try { return JSON.parse(localStorage.getItem("synapse_relatos") || "[]"); } catch { return []; }
   });
 
   const salvarRelato = () => {
@@ -74,7 +74,7 @@ export default function Relatos() {
     };
     const novos = [novoRelato, ...relatos];
     setRelatos(novos);
-    localStorage.setItem("rotiq_relatos", JSON.stringify(novos));
+    localStorage.setItem("synapse_relatos", JSON.stringify(novos));
     toast.success("Relato registrado com sucesso!");
     setModalOpen(false);
     setForm({ veiculoId: "", motoristaId: "", tipo: "", urgencia: "media", titulo: "", descricao: "", data: new Date().toISOString().split("T")[0] });
@@ -83,7 +83,7 @@ export default function Relatos() {
   const encerrarRelato = (id: number) => {
     const atualizados = relatos.map((r: any) => r.id === id ? { ...r, status: "encerrado" } : r);
     setRelatos(atualizados);
-    localStorage.setItem("rotiq_relatos", JSON.stringify(atualizados));
+    localStorage.setItem("synapse_relatos", JSON.stringify(atualizados));
     toast.success("Relato encerrado!");
   };
 

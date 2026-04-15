@@ -19,13 +19,13 @@ const SECOES = [
     id: "introducao",
     icon: BookOpen,
     titulo: "Introdução",
-    descricao: "O que é o Rotiq e como começar",
+    descricao: "O que é o Synapse e como começar",
     badge: "Início",
     badgeColor: "bg-blue-500/20 text-blue-400",
     conteudo: [
       {
         tipo: "texto",
-        conteudo: "O **Rotiq** é um sistema ERP especializado em gestão de frotas de transporte e distribuição. Ele centraliza o controle de veículos, motoristas, viagens, carregamentos, notas fiscais, financeiro e muito mais — eliminando planilhas e retrabalho.",
+        conteudo: "O **Synapse** é um sistema ERP especializado em gestão de frotas de transporte e distribuição. Ele centraliza o controle de veículos, motoristas, viagens, carregamentos, notas fiscais, financeiro e muito mais — eliminando planilhas e retrabalho.",
       },
       {
         tipo: "titulo",
@@ -49,7 +49,7 @@ const SECOES = [
       {
         tipo: "passos",
         conteudo: [
-          "Acesse o sistema em rotiq-cbhi.vercel.app",
+          "Acesse o sistema em synapse-seven-nu.vercel.app",
           "Clique em 'Entrar' e informe seu email e senha",
           "Se for o primeiro acesso, aguarde aprovação do administrador",
           "Após aprovado, você será redirecionado ao Dashboard",
@@ -767,7 +767,7 @@ const SECOES = [
     conteudo: [
       {
         tipo: "texto",
-        conteudo: "O Rotiq possui integrações nativas com Arquivei (consulta e download de NF-e) e Winthor (sistema Oracle com 65 rotinas disponíveis).",
+        conteudo: "O Synapse possui integrações nativas com Arquivei (consulta e download de NF-e) e Winthor (sistema Oracle com 65 rotinas disponíveis).",
       },
       {
         tipo: "titulo",
@@ -980,7 +980,7 @@ const SECOES = [
         cabecalho: ["Pergunta", "Resposta"],
         linhas: [
           ["Como recuperar uma viagem deletada?", "Viagens deletadas ficam em soft-delete por 30 dias. Contate o suporte para recuperação."],
-          ["Posso usar o Rotiq offline?", "Não. O Rotiq é um sistema web que requer conexão com a internet."],
+          ["Posso usar o Synapse offline?", "Não. O Synapse é um sistema web que requer conexão com a internet."],
           ["Como exportar todos os dados?", "Vá para Analytics → Importar/Exportar e clique em 'Exportar' em cada módulo."],
           ["Qual é o limite de usuários?", "Não há limite. Você pode criar quantos usuários precisar."],
           ["Como mudar a empresa de um usuário?", "Vá para Admin → Master Panel → Usuários, clique no usuário e selecione a nova empresa."],
@@ -1012,7 +1012,7 @@ export default function Ajuda() {
   const secaoAtual = SECOES.find((s) => s.id === secaoAtiva);
 
   const handleCopiarEmail = () => {
-    navigator.clipboard.writeText("suporte@rotiq.com.br");
+    navigator.clipboard.writeText("suporte@synapse.com.br");
     setCopiado(true);
     setTimeout(() => setCopiado(false), 2000);
   };
@@ -1099,7 +1099,7 @@ export default function Ajuda() {
         </div>
         <div>
           <h1 className="text-2xl font-bold">Ajuda e Documentação</h1>
-          <p className="text-muted-foreground text-sm">Manual completo do sistema Rotiq</p>
+          <p className="text-muted-foreground text-sm">Manual completo do sistema Synapse</p>
         </div>
       </div>
 
@@ -1225,7 +1225,7 @@ export default function Ajuda() {
             <p className="text-sm font-semibold">Email de Suporte</p>
             <div className="flex items-center gap-2">
               <code className="text-xs bg-muted px-2 py-1.5 rounded flex-1 font-mono">
-                suporte@rotiq.com.br
+                suporte@synapse.com.br
               </code>
               <Button
                 size="sm"
@@ -1247,7 +1247,7 @@ export default function Ajuda() {
             <p className="text-sm font-semibold">Versão do Sistema</p>
             <div className="flex items-center gap-2">
               <Badge variant="outline" className="text-xs">v2.0.0</Badge>
-              <span className="text-xs text-muted-foreground">Rotiq ERP</span>
+              <span className="text-xs text-muted-foreground">Synapse</span>
             </div>
           </div>
         </CardContent>

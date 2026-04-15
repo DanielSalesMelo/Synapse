@@ -47,6 +47,7 @@ import ImportExport from "./pages/ImportExport";
 import RelatoriosAvancados from "./pages/RelatoriosAvancados";
 import DrePorPlaca from "./pages/DrePorPlaca";
 import Ajuda from "./pages/Ajuda";
+import IA from "./pages/IA";
 
 function DashboardRoutes() {
   return (
@@ -109,6 +110,7 @@ function DashboardRoutes() {
         <Route path="/relatorios-avancados" component={RelatoriosAvancados} />
         <Route path="/import-export" component={ImportExport} />
         <Route path="/ajuda" component={Ajuda} />
+        <Route path="/ia" component={IA} />
 
         {/* Master */}
         <Route path="/master/painel" component={PainelMaster} />

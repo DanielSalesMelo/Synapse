@@ -114,7 +114,7 @@ export const authRouter = router({
       const token = await sdk.signSession(
         {
           openId: user.openId,
-          appId: process.env.VITE_APP_ID || "rotiq",
+          appId: process.env.VITE_APP_ID || "synapse",
           name: user.name || user.email || "Usuário",
         },
         { expiresInMs: SESSION_MAX_AGE * 1000 }

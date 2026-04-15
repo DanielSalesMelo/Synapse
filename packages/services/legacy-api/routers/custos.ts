@@ -1,5 +1,5 @@
 /**
- * Router de Custos Operacionais — Rotiq
+ * Router de Custos Operacionais — Synapse
  *
  * Calcula o custo REAL de operação de cada veículo considerando:
  * - Combustível (abastecimentos reais)

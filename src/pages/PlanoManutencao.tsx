@@ -58,7 +58,7 @@ export default function PlanoManutencao() {
   const { data: veiculos = [] } = trpc.veiculos.list.useQuery({ empresaId: EMPRESA_ID });
 
   const [planos, setPlanos] = useState<any[]>(() => {
-    try { return JSON.parse(localStorage.getItem("rotiq_planos_manutencao") || "[]"); } catch { return []; }
+    try { return JSON.parse(localStorage.getItem("synapse_planos_manutencao") || "[]"); } catch { return []; }
   });
 
   const salvarPlano = () => {
@@ -82,7 +82,7 @@ export default function PlanoManutencao() {
     };
     const novos = [novo, ...planos];
     setPlanos(novos);
-    localStorage.setItem("rotiq_planos_manutencao", JSON.stringify(novos));
+    localStorage.setItem("synapse_planos_manutencao", JSON.stringify(novos));
     toast.success("Plano de manutenção criado!");
     setModalOpen(false);
     setForm({ veiculoId: "", tipo: "", frequenciaKm: "", frequenciaDias: "", ultimaExecucaoKm: "", ultimaExecucaoData: "", observacoes: "" });

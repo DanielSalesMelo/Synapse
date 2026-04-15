@@ -23,7 +23,7 @@ export function ThemeProvider({
 }: ThemeProviderProps) {
   const [theme, setThemeState] = useState<Theme>(() => {
     if (switchable) {
-      const stored = localStorage.getItem("rotiq-theme") as Theme | null;
+      const stored = localStorage.getItem("synapse-theme") as Theme | null;
       if (stored === "light" || stored === "dark" || stored === "gray") return stored;
     }
     return defaultTheme;
@@ -34,7 +34,7 @@ export function ThemeProvider({
     root.classList.remove("dark", "gray");
     if (theme === "dark") root.classList.add("dark");
     if (theme === "gray") root.classList.add("gray");
-    if (switchable) localStorage.setItem("rotiq-theme", theme);
+    if (switchable) localStorage.setItem("synapse-theme", theme);
   }, [theme, switchable]);
 
   const setTheme = (t: Theme) => setThemeState(t);

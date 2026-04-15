@@ -463,9 +463,8 @@ export const financeiroRouter = router({
         };
       }, "financeiro.dashboard");
     }),
-});
 
-  // ─── DRE POR PLACA (Estratégico) ──────────────────────────────────────────
+  // ─── DRE POR PLACA (Estratégico) ────────────────────────────────────────────────────────────────────────────────────────
   drePorPlaca: protectedProcedure
     .input(z.object({
       empresaId: z.number(),
@@ -478,51 +477,52 @@ export const financeiroRouter = router({
         const db = requireDb(await getDb(), "financeiro.drePorPlaca");
         
         // 1. Buscar Receitas (Contas a Receber vinculadas a viagens do veículo)
-        // Nota: Precisamos de um join ou subquery para pegar viagens do veículo
+        const veiculoFiltroReceita = input.veiculoId ? sql` AND v."veiculoId" = ${input.veiculoId}` : sql``;
+        const dataInicioFiltroReceita = input.dataInicio ? sql` AND cr."dataRecebimento" >= ${input.dataInicio}` : sql``;
+        const dataFimFiltroReceita = input.dataFim ? sql` AND cr."dataRecebimento" <= ${input.dataFim}` : sql``;
         const receitas = await db.execute(sql`
-          SELECT 
-            v."veiculoId",
-            SUM(cr.valor) as total_receita
+          SELECT v."veiculoId", SUM(cr.valor) as total_receita
           FROM contas_receber cr
           JOIN viagens v ON cr."viagemId" = v.id
           WHERE cr."empresaId" = ${input.empresaId}
             AND cr."deletedAt" IS NULL
             AND cr.status = 'recebido'
-            ${input.veiculoId ? sql`AND v."veiculoId" = ${input.veiculoId}` : sql``}
-            ${input.dataInicio ? sql`AND cr."dataRecebimento" >= ${input.dataInicio}` : sql``}
-            ${input.dataFim ? sql`AND cr."dataRecebimento" <= ${input.dataFim}` : sql``}
+            ${veiculoFiltroReceita}
+            ${dataInicioFiltroReceita}
+            ${dataFimFiltroReceita}
           GROUP BY v."veiculoId"
         `);
 
         // 2. Buscar Despesas (Contas a Pagar vinculadas ao veículo)
+        const veiculoFiltroDespesa = input.veiculoId ? sql` AND "veiculoId" = ${input.veiculoId}` : sql``;
+        const dataInicioFiltroDespesa = input.dataInicio ? sql` AND "dataPagamento" >= ${input.dataInicio}` : sql``;
+        const dataFimFiltroDespesa = input.dataFim ? sql` AND "dataPagamento" <= ${input.dataFim}` : sql``;
         const despesas = await db.execute(sql`
-          SELECT 
-            "veiculoId",
-            categoria,
-            SUM(valor) as total_despesa
+          SELECT "veiculoId", categoria, SUM(valor) as total_despesa
           FROM contas_pagar
           WHERE "empresaId" = ${input.empresaId}
             AND "deletedAt" IS NULL
             AND status = 'pago'
             AND "veiculoId" IS NOT NULL
-            ${input.veiculoId ? sql`AND "veiculoId" = ${input.veiculoId}` : sql``}
-            ${input.dataInicio ? sql`AND "dataPagamento" >= ${input.dataInicio}` : sql``}
-            ${input.dataFim ? sql`AND "dataPagamento" <= ${input.dataFim}` : sql``}
+            ${veiculoFiltroDespesa}
+            ${dataInicioFiltroDespesa}
+            ${dataFimFiltroDespesa}
           GROUP BY "veiculoId", categoria
         `);
 
         // 3. Buscar KM Rodado no período para cálculo de custo/km
+        const veiculoFiltroKm = input.veiculoId ? sql` AND "veiculoId" = ${input.veiculoId}` : sql``;
+        const dataInicioFiltroKm = input.dataInicio ? sql` AND "dataFim" >= ${input.dataInicio}` : sql``;
+        const dataFimFiltroKm = input.dataFim ? sql` AND "dataFim" <= ${input.dataFim}` : sql``;
         const kmRodado = await db.execute(sql`
-          SELECT 
-            "veiculoId",
-            SUM(COALESCE("kmChegada", 0) - COALESCE("kmSaida", 0)) as total_km
+          SELECT "veiculoId", SUM(COALESCE("kmChegada", 0) - COALESCE("kmSaida", 0)) as total_km
           FROM viagens
           WHERE "empresaId" = ${input.empresaId}
             AND "deletedAt" IS NULL
             AND status = 'concluida'
-            ${input.veiculoId ? sql`AND "veiculoId" = ${input.veiculoId}` : sql``}
-            ${input.dataInicio ? sql`AND "dataFim" >= ${input.dataInicio}` : sql``}
-            ${input.dataFim ? sql`AND "dataFim" <= ${input.dataFim}` : sql``}
+            ${veiculoFiltroKm}
+            ${dataInicioFiltroKm}
+            ${dataFimFiltroKm}
           GROUP BY "veiculoId"
         `);
 

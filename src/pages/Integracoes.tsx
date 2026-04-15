@@ -709,7 +709,7 @@ function WinthorTab() {
                 ao banco Oracle via JDBC/ODBC. As rotinas listadas acima são as principais do sistema.
               </p>
               <p>
-                Para integração em produção, o backend do Rotiq precisa ter acesso à rede interna onde
+                Para integração em produção, o backend do Synapse precisa ter acesso à rede interna onde
                 o servidor Oracle do Winthor está instalado. Entre em contato para configurar o conector.
               </p>
             </div>
@@ -752,7 +752,7 @@ export default function Integracoes() {
         <div>
           <h1 className="text-xl font-bold">Integrações</h1>
           <p className="text-sm text-muted-foreground">
-            Conecte o Rotiq com sistemas externos como Arquivei e Winthor.
+            Conecte o Synapse com sistemas externos como Arquivei e Winthor.
           </p>
         </div>
       </div>

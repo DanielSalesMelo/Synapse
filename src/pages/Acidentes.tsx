@@ -56,7 +56,7 @@ export default function Acidentes() {
   const { data: motoristas = [] } = trpc.funcionarios.listMotoristas.useQuery({ empresaId: EMPRESA_ID });
 
   const [acidentes, setAcidentes] = useState<any[]>(() => {
-    try { return JSON.parse(localStorage.getItem("rotiq_acidentes") || "[]"); } catch { return []; }
+    try { return JSON.parse(localStorage.getItem("synapse_acidentes") || "[]"); } catch { return []; }
   });
 
   const salvarAcidente = () => {
@@ -80,7 +80,7 @@ export default function Acidentes() {
     };
     const novos = [novo, ...acidentes];
     setAcidentes(novos);
-    localStorage.setItem("rotiq_acidentes", JSON.stringify(novos));
+    localStorage.setItem("synapse_acidentes", JSON.stringify(novos));
     toast.success("Acidente registrado!");
     setModalOpen(false);
     setForm({ veiculoId: "", motoristaId: "", data: new Date().toISOString().split("T")[0], hora: "", tipo: "", gravidade: "leve", local: "", boletimOcorrencia: "", terceirosEnvolvidos: "nao", danoVeiculo: "", danoCarga: "", feridos: "nao", descricao: "", custoEstimado: "" });
@@ -89,7 +89,7 @@ export default function Acidentes() {
   const encerrar = (id: number) => {
     const atualizados = acidentes.map((a: any) => a.id === id ? { ...a, status: "encerrado" } : a);
     setAcidentes(atualizados);
-    localStorage.setItem("rotiq_acidentes", JSON.stringify(atualizados));
+    localStorage.setItem("synapse_acidentes", JSON.stringify(atualizados));
     toast.success("Acidente encerrado!");
   };
 
