@@ -26,6 +26,7 @@ model Tenant {
   companies   Company[]
   roles       Role[]
   pipelines   Pipeline[]
+  funnels     Funnel[]
   deals       Deal[]
   contacts    Contact[]
   activities  Activity[]
@@ -210,6 +211,10 @@ model Deal {
   ownerId           String
   owner             User          @relation("OwnedDeals", fields: [ownerId], references: [id])
   activities        Activity[]
+  funnelId          String?
+  funnel            Funnel?       @relation(fields: [funnelId], references: [id])
+  funnelStageId     String?
+  funnelStage       Stage?        @relation(fields: [funnelStageId], references: [id])
 
   @@map("deals")
 }
@@ -460,45 +465,3 @@ model Stage {
   @@index([funnelId, order])
 }
 
-// Representa uma negociação ou "card" no funil.
-model Deal {
-  id          String    @id @default(cuid())
-  title       String    // Ex: "Projeto de ERP para Empresa X"
-  value       Float     @default(0)
-  status      String    @default("OPEN") // "OPEN", "WON", "LOST"
-  
-  funnelId    String
-  funnel      Funnel    @relation(fields: [funnelId], references: [id])
-
-  stageId     String
-  stage       Stage     @relation(fields: [stageId], references: [id])
-
-  ownerId     String?   // ID do vendedor responsável
-  owner       User?     @relation(fields: [ownerId], references: [id])
-
-  contactId   String
-  contact     Contact   @relation(fields: [contactId], references: [id])
-
-  tenantId    String
-  tenant      Tenant    @relation(fields: [tenantId], references: [id])
-
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-}
-
-// Representa um contato (pessoa ou empresa).
-model Contact {
-  id          String   @id @default(cuid())
-  name        String
-  email       String?  @unique
-  phone       String?
-  companyName String?
-  
-  deals       Deal[]
-  
-  tenantId    String
-  tenant      Tenant   @relation(fields: [tenantId], references: [id])
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
