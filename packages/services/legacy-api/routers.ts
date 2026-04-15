@@ -24,6 +24,18 @@ import { documentosRouter } from "./routers/documentos";
 import { iaRouter } from "./routers/ia";
 import { recepcaoRouter } from "./routers/recepcao";
 import { wmsRouter } from "./routers/wms";
+// ─── NOVOS MÓDULOS ───────────────────────────────────────────────────────────
+import { crmRouter } from "./routers/crm";
+import { vendasRouter } from "./routers/vendas";
+import { auditoriaRouter } from "./routers/auditoria";
+import { tiRouter } from "./routers/ti";
+import { biRouter } from "./routers/bi";
+import { pontoRouter } from "./routers/ponto";
+import { conferenciaRouter } from "./routers/conferencia";
+import { integracoesRouter } from "./routers/integracoes";
+import { permissoesRouter } from "./routers/permissoes";
+import { recepcionistaRouter } from "./routers/recepcionista";
+import { logisticaRouter } from "./routers/logistica";
 
 export const appRouter = router({
   system: systemRouter,
@@ -31,6 +43,7 @@ export const appRouter = router({
   users: usersRouter,
   chat: chatRouter,
 
+  // Módulos existentes
   veiculos: veiculosRouter,
   checklists: checklistsRouter,
   funcionarios: funcionariosRouter,
@@ -50,6 +63,19 @@ export const appRouter = router({
   ia: iaRouter,
   recepcao: recepcaoRouter,
   wms: wmsRouter,
+
+  // Novos módulos
+  crm: crmRouter,
+  vendas: vendasRouter,
+  auditoria: auditoriaRouter,
+  ti: tiRouter,
+  bi: biRouter,
+  ponto: pontoRouter,
+  conferencia: conferenciaRouter,
+  integracoes: integracoesRouter,
+  permissoes: permissoesRouter,
+  recepcionista: recepcionistaRouter,
+  logistica: logisticaRouter,
 });
 
 export type AppRouter = typeof appRouter;

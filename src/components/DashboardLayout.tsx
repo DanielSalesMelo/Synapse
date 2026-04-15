@@ -16,6 +16,7 @@ import {
   ClipboardList, BookOpen, Shield, Settings, Star, ChevronLeft,
   ChevronRight, Calculator, MessageSquare, Scale, FileSpreadsheet, HelpCircle, Brain,
   PackageCheck, Warehouse, Package, ArrowLeftRight,
+  Target, ShoppingCart, Clock, UserCheck, Headphones, Activity,
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useViewAs } from "@/contexts/ViewAsContext";
@@ -120,6 +121,103 @@ const getMenuGroups = (t: any): MenuGroup[] => [
     ],
   },
   {
+    label: "CRM",
+    items: [
+      { icon: Target, label: "Clientes", path: "/crm" },
+      { icon: Users, label: "Leads", path: "/crm/leads" },
+      { icon: BarChart3, label: "Funil de Vendas", path: "/crm/funil" },
+    ],
+  },
+  {
+    label: "Vendas",
+    items: [
+      { icon: ShoppingCart, label: "Pedidos", path: "/vendas" },
+      { icon: FileText, label: "Propostas", path: "/vendas/propostas" },
+    ],
+  },
+  {
+    label: "Recepcionista",
+    items: [
+      { icon: UserCheck, label: "Visitas", path: "/recepcionista" },
+    ],
+  },
+  {
+    label: "Logística",
+    items: [
+      { icon: Headphones, label: "SAC", path: "/logistica" },
+      { icon: Shield, label: "Licenças (ANVISA/VISA)", path: "/logistica/licencas" },
+    ],
+  },
+  {
+    label: "Conferência",
+    items: [
+      { icon: ClipboardCheck, label: "Conferência de Veículos", path: "/conferencia-veiculos" },
+    ],
+  },
+  {
+    label: "RH",
+    items: [
+      { icon: Clock, label: "Ponto Eletrônico", path: "/ponto" },
+    ],
+  },
+  {
+    label: "BI & Análises",
+    items: [
+      { icon: Activity, label: "Business Intelligence", path: "/bi" },
+    ],
+  },
+  {
+    label: "CRM",
+    items: [
+      { icon: Target, label: "Clientes & Leads", path: "/crm" },
+      { icon: BarChart3, label: "Funil de Vendas", path: "/crm/funil" },
+    ],
+  },
+  {
+    label: "Vendas",
+    items: [
+      { icon: ShoppingCart, label: "Pedidos", path: "/vendas" },
+      { icon: FileText, label: "Propostas", path: "/vendas/propostas" },
+    ],
+  },
+  {
+    label: "Recepcionista",
+    items: [
+      { icon: UserCheck, label: "Visitas", path: "/recepcionista" },
+    ],
+  },
+  {
+    label: "Logística",
+    items: [
+      { icon: Headphones, label: "SAC", path: "/logistica" },
+      { icon: Shield, label: "Licenças ANVISA/VISA", path: "/logistica/licencas" },
+    ],
+  },
+  {
+    label: "Conferência",
+    items: [
+      { icon: ClipboardCheck, label: "Conferência de Veículos", path: "/conferencia-veiculos" },
+    ],
+  },
+  {
+    label: "RH",
+    items: [
+      { icon: Clock, label: "Ponto Eletrônico", path: "/ponto" },
+    ],
+  },
+  {
+    label: "BI & Análises",
+    items: [
+      { icon: Activity, label: "Business Intelligence", path: "/bi" },
+    ],
+  },
+  {
+    label: "TI",
+    items: [
+      { icon: Monitor, label: "Tickets & Ativos", path: "/ti" },
+    ],
+  },
+  {
     label: t("menu.integracoes") || "Integrações",
     requiredRole: "admin_or_master",
     items: [
@@ -132,6 +230,7 @@ const getMenuGroups = (t: any): MenuGroup[] => [
     items: [
       { icon: Star, label: t("pages.painel_master"), path: "/master/painel" },
       { icon: Shield, label: t("pages.permissoes"), path: "/master/permissoes" },
+      { icon: Activity, label: "Auditoria", path: "/auditoria" },
     ],
   },
 ];

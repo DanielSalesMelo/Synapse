@@ -1131,3 +1131,687 @@ export const iaConhecimento = pgTable("ia_conhecimento", {
 });
 export type IaConhecimento = typeof iaConhecimento.$inferSelect;
 export type InsertIaConhecimento = typeof iaConhecimento.$inferInsert;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MÓDULO: RECEPCIONISTA (Controle de Visitantes e Acesso)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export const statusVisitanteEnum = pgEnum("status_visitante", [
+  "agendado", "aguardando", "em_atendimento", "finalizado", "cancelado"
+]);
+
+export const visitantes = pgTable("visitantes", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  nome: varchar("nome", { length: 255 }).notNull(),
+  documento: varchar("documento", { length: 20 }),
+  telefone: varchar("telefone", { length: 20 }),
+  email: varchar("email", { length: 320 }),
+  empresa: varchar("empresa", { length: 255 }),
+  foto: text("foto"),
+  observacoes: text("observacoes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+export type Visitante = typeof visitantes.$inferSelect;
+
+export const visitas = pgTable("visitas", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  visitanteId: integer("visitanteId").notNull(),
+  status: statusVisitanteEnum("status").default("agendado").notNull(),
+  motivo: varchar("motivo", { length: 255 }).notNull(),
+  setor: varchar("setor", { length: 100 }),
+  pessoaContato: varchar("pessoaContato", { length: 255 }),
+  cracha: varchar("cracha", { length: 50 }),
+  dataAgendamento: timestamp("dataAgendamento"),
+  dataEntrada: timestamp("dataEntrada"),
+  dataSaida: timestamp("dataSaida"),
+  observacoes: text("observacoes"),
+  createdBy: integer("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type Visita = typeof visitas.$inferSelect;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MÓDULO: LOGÍSTICA (SAC, ANVISA/VISA, Compliance, Rastreamento)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export const statusSacEnum = pgEnum("status_sac", [
+  "aberto", "em_andamento", "aguardando_cliente", "resolvido", "fechado"
+]);
+
+export const prioridadeSacEnum = pgEnum("prioridade_sac", [
+  "baixa", "media", "alta", "urgente"
+]);
+
+export const chamadosSac = pgTable("chamados_sac", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  protocolo: varchar("protocolo", { length: 20 }).notNull(),
+  clienteNome: varchar("clienteNome", { length: 255 }).notNull(),
+  clienteEmail: varchar("clienteEmail", { length: 320 }),
+  clienteTelefone: varchar("clienteTelefone", { length: 20 }),
+  assunto: varchar("assunto", { length: 255 }).notNull(),
+  descricao: text("descricao").notNull(),
+  categoria: varchar("categoria", { length: 100 }),
+  status: statusSacEnum("status").default("aberto").notNull(),
+  prioridade: prioridadeSacEnum("prioridade").default("media").notNull(),
+  responsavelId: integer("responsavelId"),
+  viagemId: integer("viagemId"),
+  resolucao: text("resolucao"),
+  resolvidoEm: timestamp("resolvidoEm"),
+  createdBy: integer("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type ChamadoSac = typeof chamadosSac.$inferSelect;
+
+export const interacoesSac = pgTable("interacoes_sac", {
+  id: serial("id").primaryKey(),
+  chamadoId: integer("chamadoId").notNull(),
+  userId: integer("userId"),
+  tipo: varchar("tipo", { length: 50 }).default("mensagem").notNull(),
+  conteudo: text("conteudo").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const statusLicencaLogEnum = pgEnum("status_licenca_log", [
+  "pendente", "em_analise", "aprovada", "vencida", "rejeitada"
+]);
+
+export const licencasRegulatorias = pgTable("licencas_regulatorias", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  tipo: varchar("tipo", { length: 100 }).notNull(), // ANVISA, VISA, IBAMA, etc.
+  numero: varchar("numero", { length: 100 }),
+  orgaoEmissor: varchar("orgaoEmissor", { length: 200 }),
+  descricao: text("descricao"),
+  status: statusLicencaLogEnum("status_licenca_log").default("pendente").notNull(),
+  dataEmissao: timestamp("dataEmissao"),
+  dataVencimento: timestamp("dataVencimento"),
+  arquivo: text("arquivo"),
+  responsavelId: integer("responsavelId"),
+  observacoes: text("observacoes"),
+  createdBy: integer("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type LicencaRegulatoria = typeof licencasRegulatorias.$inferSelect;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MÓDULO: CRM (Gestão de Relacionamento com Clientes)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export const statusLeadEnum = pgEnum("status_lead", [
+  "novo", "qualificado", "em_negociacao", "proposta_enviada", "ganho", "perdido"
+]);
+
+export const clientes = pgTable("clientes", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  nome: varchar("nome", { length: 255 }).notNull(),
+  cnpjCpf: varchar("cnpjCpf", { length: 20 }),
+  email: varchar("email", { length: 320 }),
+  telefone: varchar("telefone", { length: 20 }),
+  endereco: text("endereco"),
+  cidade: varchar("cidade", { length: 100 }),
+  estado: varchar("estado", { length: 2 }),
+  segmento: varchar("segmento", { length: 100 }),
+  responsavelId: integer("responsavelId"),
+  observacoes: text("observacoes"),
+  ativo: boolean("ativo").default(true).notNull(),
+  createdBy: integer("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type Cliente = typeof clientes.$inferSelect;
+
+export const leads = pgTable("leads", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  clienteId: integer("clienteId"),
+  nome: varchar("nome", { length: 255 }).notNull(),
+  email: varchar("email", { length: 320 }),
+  telefone: varchar("telefone", { length: 20 }),
+  empresa: varchar("empresa", { length: 255 }),
+  origem: varchar("origem", { length: 100 }),
+  status: statusLeadEnum("status").default("novo").notNull(),
+  valorEstimado: varchar("valorEstimado", { length: 20 }),
+  responsavelId: integer("responsavelId"),
+  proximoContato: timestamp("proximoContato"),
+  observacoes: text("observacoes"),
+  createdBy: integer("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type Lead = typeof leads.$inferSelect;
+
+export const contatosCrm = pgTable("contatos_crm", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  clienteId: integer("clienteId"),
+  leadId: integer("leadId"),
+  tipo: varchar("tipo", { length: 50 }).notNull(), // ligação, email, reunião, visita
+  descricao: text("descricao").notNull(),
+  resultado: text("resultado"),
+  userId: integer("userId"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type ContatoCrm = typeof contatosCrm.$inferSelect;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MÓDULO: VENDAS (Pedidos, Propostas, Comissões)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export const statusPedidoEnum = pgEnum("status_pedido", [
+  "rascunho", "enviado", "aprovado", "em_separacao", "expedido", "entregue", "cancelado"
+]);
+
+export const pedidos = pgTable("pedidos", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  clienteId: integer("clienteId"),
+  numero: varchar("numero", { length: 30 }).notNull(),
+  status: statusPedidoEnum("status").default("rascunho").notNull(),
+  clienteNome: varchar("clienteNome", { length: 255 }).notNull(),
+  valorTotal: varchar("valorTotal", { length: 20 }).default("0"),
+  desconto: varchar("desconto", { length: 20 }).default("0"),
+  frete: varchar("frete", { length: 20 }).default("0"),
+  formaPagamento: varchar("formaPagamento", { length: 100 }),
+  condicaoPagamento: varchar("condicaoPagamento", { length: 100 }),
+  previsaoEntrega: timestamp("previsaoEntrega"),
+  observacoes: text("observacoes"),
+  vendedorId: integer("vendedorId"),
+  createdBy: integer("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type Pedido = typeof pedidos.$inferSelect;
+
+export const itensPedido = pgTable("itens_pedido", {
+  id: serial("id").primaryKey(),
+  pedidoId: integer("pedidoId").notNull(),
+  produtoId: integer("produtoId"),
+  descricao: varchar("descricao", { length: 255 }).notNull(),
+  quantidade: varchar("quantidade", { length: 20 }).notNull(),
+  valorUnitario: varchar("valorUnitario", { length: 20 }).notNull(),
+  valorTotal: varchar("valorTotal", { length: 20 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type ItemPedido = typeof itensPedido.$inferSelect;
+
+export const statusPropostaEnum = pgEnum("status_proposta", [
+  "rascunho", "enviada", "em_analise", "aprovada", "rejeitada", "expirada"
+]);
+
+export const propostas = pgTable("propostas", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  clienteId: integer("clienteId"),
+  leadId: integer("leadId"),
+  numero: varchar("numero", { length: 30 }).notNull(),
+  titulo: varchar("titulo", { length: 255 }).notNull(),
+  status: statusPropostaEnum("status").default("rascunho").notNull(),
+  valorTotal: varchar("valorTotal", { length: 20 }).default("0"),
+  validade: timestamp("validade"),
+  descricao: text("descricao"),
+  condicoes: text("condicoes"),
+  vendedorId: integer("vendedorId"),
+  createdBy: integer("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type Proposta = typeof propostas.$inferSelect;
+
+export const comissoes = pgTable("comissoes", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  vendedorId: integer("vendedorId").notNull(),
+  pedidoId: integer("pedidoId"),
+  percentual: varchar("percentual", { length: 10 }).notNull(),
+  valorBase: varchar("valorBase", { length: 20 }).notNull(),
+  valorComissao: varchar("valorComissao", { length: 20 }).notNull(),
+  pago: boolean("pago").default(false).notNull(),
+  dataPagamento: timestamp("dataPagamento"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+export type Comissao = typeof comissoes.$inferSelect;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MÓDULO: PERMISSÕES POR MÓDULO (Controle de acesso granular)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export const moduloPermissoes = pgTable("modulo_permissoes", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  role: userRoleEnum("role").notNull(),
+  modulo: varchar("modulo", { length: 100 }).notNull(),
+  podeVer: boolean("podeVer").default(false).notNull(),
+  podeCriar: boolean("podeCriar").default(false).notNull(),
+  podeEditar: boolean("podeEditar").default(false).notNull(),
+  podeDeletar: boolean("podeDeletar").default(false).notNull(),
+  podeExportar: boolean("podeExportar").default(false).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+export type ModuloPermissao = typeof moduloPermissoes.$inferSelect;
+
+// Permissões individuais por usuário (sobrescreve role)
+export const userPermissoes = pgTable("user_permissoes", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  empresaId: integer("empresaId").notNull(),
+  modulo: varchar("modulo", { length: 100 }).notNull(),
+  podeVer: boolean("podeVer").default(false).notNull(),
+  podeCriar: boolean("podeCriar").default(false).notNull(),
+  podeEditar: boolean("podeEditar").default(false).notNull(),
+  podeDeletar: boolean("podeDeletar").default(false).notNull(),
+  podeExportar: boolean("podeExportar").default(false).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+export type UserPermissao = typeof userPermissoes.$inferSelect;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MÓDULO: AUDITORIA AVANÇADA (Trilha completa de ações)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export const tipoEventoAuditoriaEnum = pgEnum("tipo_evento_auditoria", [
+  "login", "logout", "create", "update", "delete", "restore",
+  "export", "import", "permission_change", "config_change",
+  "access_denied", "password_change", "role_change"
+]);
+
+export const auditoriaDetalhada = pgTable("auditoria_detalhada", {
+  id: bigint("id", { mode: "number" }).generatedAlwaysAsIdentity().primaryKey(),
+  empresaId: integer("empresaId"),
+  userId: integer("userId").notNull(),
+  userName: varchar("userName", { length: 255 }),
+  userRole: varchar("userRole", { length: 50 }),
+  tipoEvento: tipoEventoAuditoriaEnum("tipoEvento").notNull(),
+  modulo: varchar("modulo", { length: 100 }),
+  tabela: varchar("tabela", { length: 100 }),
+  registroId: integer("registroId"),
+  descricao: text("descricao").notNull(),
+  dadosAntes: text("dadosAntes"),
+  dadosDepois: text("dadosDepois"),
+  ip: varchar("ip", { length: 45 }),
+  userAgent: text("userAgent"),
+  sessionId: varchar("sessionId", { length: 100 }),
+  risco: varchar("risco", { length: 20 }).default("baixo"), // baixo, medio, alto, critico
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type AuditoriaDetalhada = typeof auditoriaDetalhada.$inferSelect;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MÓDULO: TI (Gestão de Infraestrutura e Suporte)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export const statusTicketTiEnum = pgEnum("status_ticket_ti", [
+  "aberto", "em_andamento", "aguardando", "resolvido", "fechado"
+]);
+
+export const prioridadeTicketTiEnum = pgEnum("prioridade_ticket_ti", [
+  "baixa", "media", "alta", "critica"
+]);
+
+export const categoriaTicketTiEnum = pgEnum("categoria_ticket_ti", [
+  "hardware", "software", "rede", "acesso", "email", "impressora", "outro"
+]);
+
+export const ticketsTi = pgTable("tickets_ti", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  protocolo: varchar("protocolo", { length: 20 }).notNull(),
+  solicitanteId: integer("solicitanteId").notNull(),
+  titulo: varchar("titulo", { length: 255 }).notNull(),
+  descricao: text("descricao").notNull(),
+  categoria: categoriaTicketTiEnum("categoria").default("outro").notNull(),
+  prioridade: prioridadeTicketTiEnum("prioridade_ticket_ti").default("media").notNull(),
+  status: statusTicketTiEnum("status_ticket_ti").default("aberto").notNull(),
+  responsavelId: integer("responsavelId"),
+  resolucao: text("resolucao"),
+  resolvidoEm: timestamp("resolvidoEm"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type TicketTi = typeof ticketsTi.$inferSelect;
+
+export const ativosTi = pgTable("ativos_ti", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  tipo: varchar("tipo", { length: 100 }).notNull(), // notebook, desktop, impressora, servidor, switch, etc.
+  marca: varchar("marca", { length: 100 }),
+  modelo: varchar("modelo", { length: 100 }),
+  patrimonio: varchar("patrimonio", { length: 50 }),
+  serial: varchar("serial", { length: 100 }),
+  responsavelId: integer("responsavelId"),
+  setor: varchar("setor", { length: 100 }),
+  status: varchar("status", { length: 50 }).default("ativo").notNull(),
+  dataAquisicao: timestamp("dataAquisicao"),
+  garantiaAte: timestamp("garantiaAte"),
+  observacoes: text("observacoes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type AtivoTi = typeof ativosTi.$inferSelect;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MÓDULO: BI (Business Intelligence - Dashboards de Decisão)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export const biDashboards = pgTable("bi_dashboards", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  nome: varchar("nome", { length: 255 }).notNull(),
+  descricao: text("descricao"),
+  tipo: varchar("tipo", { length: 50 }).default("custom").notNull(), // financeiro, operacional, vendas, rh, custom
+  config: text("config"), // JSON com configuração dos widgets
+  publico: boolean("publico").default(false).notNull(),
+  createdBy: integer("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type BiDashboard = typeof biDashboards.$inferSelect;
+
+export const biWidgets = pgTable("bi_widgets", {
+  id: serial("id").primaryKey(),
+  dashboardId: integer("dashboardId").notNull(),
+  empresaId: integer("empresaId").notNull(),
+  titulo: varchar("titulo", { length: 255 }).notNull(),
+  tipo: varchar("tipo", { length: 50 }).notNull(), // kpi, grafico_linha, grafico_barra, grafico_pizza, tabela, mapa
+  fonte: varchar("fonte", { length: 100 }).notNull(), // viagens, financeiro, frota, vendas, rh, etc.
+  metrica: varchar("metrica", { length: 100 }).notNull(), // total, media, contagem, soma, etc.
+  filtros: text("filtros"), // JSON com filtros
+  posicao: integer("posicao").default(0),
+  largura: integer("largura").default(6), // grid 12 colunas
+  altura: integer("altura").default(4),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+export type BiWidget = typeof biWidgets.$inferSelect;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MÓDULO: GRUPOS EMPRESARIAIS (Hierarquia Matriz/Filial)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export const gruposEmpresariais = pgTable("grupos_empresariais", {
+  id: serial("id").primaryKey(),
+  nome: varchar("nome", { length: 255 }).notNull(),
+  cnpj: varchar("cnpj", { length: 18 }),
+  descricao: text("descricao"),
+  adminUserId: integer("adminUserId"),
+  ativo: boolean("ativo").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+export type GrupoEmpresarial = typeof gruposEmpresariais.$inferSelect;
+
+export const grupoEmpresas = pgTable("grupo_empresas", {
+  id: serial("id").primaryKey(),
+  grupoId: integer("grupoId").notNull(),
+  empresaId: integer("empresaId").notNull(),
+  papel: varchar("papel", { length: 20 }).default("filial").notNull(), // matriz, filial
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type GrupoEmpresa = typeof grupoEmpresas.$inferSelect;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MÓDULO: SESSÕES DE SEGURANÇA
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export const sessoes = pgTable("sessoes", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  token: varchar("token", { length: 500 }).notNull(),
+  ip: varchar("ip", { length: 45 }),
+  userAgent: text("userAgent"),
+  ativo: boolean("ativo").default(true).notNull(),
+  expiresAt: timestamp("expiresAt").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  lastActivityAt: timestamp("lastActivityAt").defaultNow().notNull(),
+});
+export type Sessao = typeof sessoes.$inferSelect;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MÓDULO: PONTO ELETRÔNICO (Registro de Entrada/Saída, Banco de Horas)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export const tipoPontoEnum = pgEnum("tipo_ponto", ["entrada", "saida", "inicio_intervalo", "fim_intervalo"]);
+
+export const registrosPonto = pgTable("registros_ponto", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  funcionarioId: integer("funcionarioId").notNull(),
+  tipo: tipoPontoEnum("tipo_ponto").notNull(),
+  dataHora: timestamp("dataHora").defaultNow().notNull(),
+  latitude: varchar("latitude", { length: 20 }),
+  longitude: varchar("longitude", { length: 20 }),
+  ip: varchar("ip", { length: 45 }),
+  foto: text("foto"),
+  observacao: text("observacao"),
+  ajustadoPor: integer("ajustadoPor"),
+  motivoAjuste: text("motivoAjuste"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type RegistroPonto = typeof registrosPonto.$inferSelect;
+
+export const bancoHoras = pgTable("banco_horas", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  funcionarioId: integer("funcionarioId").notNull(),
+  data: date("data").notNull(),
+  horasTrabalhadas: varchar("horasTrabalhadas", { length: 10 }),
+  horasExtras: varchar("horasExtras", { length: 10 }),
+  horasDevidas: varchar("horasDevidas", { length: 10 }),
+  saldo: varchar("saldo", { length: 10 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type BancoHoras = typeof bancoHoras.$inferSelect;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MÓDULO: FUNIL DE VENDAS (Kanban estilo Piperun/Pipedrive)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export const funis = pgTable("funis", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  nome: varchar("nome", { length: 255 }).notNull(),
+  descricao: text("descricao"),
+  ativo: boolean("ativo").default(true).notNull(),
+  createdBy: integer("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+export type Funil = typeof funis.$inferSelect;
+
+export const etapasFunil = pgTable("etapas_funil", {
+  id: serial("id").primaryKey(),
+  funilId: integer("funilId").notNull(),
+  empresaId: integer("empresaId").notNull(),
+  nome: varchar("nome", { length: 255 }).notNull(),
+  cor: varchar("cor", { length: 20 }).default("#3b82f6"),
+  posicao: integer("posicao").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type EtapaFunil = typeof etapasFunil.$inferSelect;
+
+export const negociacoes = pgTable("negociacoes", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  funilId: integer("funilId").notNull(),
+  etapaId: integer("etapaId").notNull(),
+  clienteId: integer("clienteId"),
+  leadId: integer("leadId"),
+  titulo: varchar("titulo", { length: 255 }).notNull(),
+  valor: varchar("valor", { length: 20 }).default("0"),
+  responsavelId: integer("responsavelId"),
+  probabilidade: integer("probabilidade").default(50),
+  previsaoFechamento: timestamp("previsaoFechamento"),
+  motivoPerda: text("motivoPerda"),
+  ganho: boolean("ganho"),
+  observacoes: text("observacoes"),
+  createdBy: integer("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type Negociacao = typeof negociacoes.$inferSelect;
+
+export const atividadesFunil = pgTable("atividades_funil", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  negociacaoId: integer("negociacaoId").notNull(),
+  tipo: varchar("tipo", { length: 50 }).notNull(), // ligacao, email, reuniao, tarefa, nota
+  titulo: varchar("titulo", { length: 255 }).notNull(),
+  descricao: text("descricao"),
+  dataAgendada: timestamp("dataAgendada"),
+  concluida: boolean("concluida").default(false).notNull(),
+  userId: integer("userId"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type AtividadeFunil = typeof atividadesFunil.$inferSelect;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MÓDULO: INTEGRAÇÕES (WhatsApp, Winthor, Webhooks)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export const statusIntegracaoEnum = pgEnum("status_integracao", ["ativa", "inativa", "erro", "configurando"]);
+
+export const integracoes = pgTable("integracoes", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  tipo: varchar("tipo", { length: 50 }).notNull(), // whatsapp, winthor, webhook, api_externa
+  nome: varchar("nome", { length: 255 }).notNull(),
+  status: statusIntegracaoEnum("status_integracao").default("configurando").notNull(),
+  config: text("config"), // JSON criptografado com credenciais
+  webhookUrl: text("webhookUrl"),
+  webhookSecret: varchar("webhookSecret", { length: 255 }),
+  ultimaSincronizacao: timestamp("ultimaSincronizacao"),
+  erroUltimo: text("erroUltimo"),
+  ativo: boolean("ativo").default(true).notNull(),
+  createdBy: integer("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+export type Integracao = typeof integracoes.$inferSelect;
+
+export const logIntegracoes = pgTable("log_integracoes", {
+  id: bigint("id", { mode: "number" }).generatedAlwaysAsIdentity().primaryKey(),
+  integracaoId: integer("integracaoId").notNull(),
+  empresaId: integer("empresaId").notNull(),
+  direcao: varchar("direcao", { length: 10 }).notNull(), // entrada, saida
+  endpoint: varchar("endpoint", { length: 500 }),
+  payload: text("payload"),
+  resposta: text("resposta"),
+  statusCode: integer("statusCode"),
+  sucesso: boolean("sucesso").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type LogIntegracao = typeof logIntegracoes.$inferSelect;
+
+// Configurações específicas do Winthor
+export const winthorSync = pgTable("winthor_sync", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  integracaoId: integer("integracaoId").notNull(),
+  tabelaOrigem: varchar("tabelaOrigem", { length: 100 }).notNull(), // PCPRODUT, PCFORNEC, PCNFSAID, etc.
+  tabelaDestino: varchar("tabelaDestino", { length: 100 }).notNull(),
+  ultimoId: integer("ultimoId").default(0),
+  ultimaSincronizacao: timestamp("ultimaSincronizacao"),
+  registrosSincronizados: integer("registrosSincronizados").default(0),
+  ativo: boolean("ativo").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+export type WinthorSync = typeof winthorSync.$inferSelect;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MÓDULO: CONFERÊNCIA DE VEÍCULO (Saída → Retorno → Conferência → Confirmação)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export const statusConferenciaEnum = pgEnum("status_conferencia", [
+  "saida_registrada", "em_viagem", "retorno_registrado",
+  "em_conferencia", "aguardando_motorista", "confirmado_motorista", "finalizado"
+]);
+
+export const conferenciaVeiculos = pgTable("conferencia_veiculos", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  veiculoId: integer("veiculoId").notNull(),
+  motoristaId: integer("motoristaId"),
+  viagemId: integer("viagemId"),
+  status: statusConferenciaEnum("status_conferencia").default("saida_registrada").notNull(),
+  // Saída
+  despachanteSaidaId: integer("despachanteSaidaId"),
+  dataSaida: timestamp("dataSaida"),
+  kmSaida: varchar("kmSaida", { length: 20 }),
+  observacoesSaida: text("observacoesSaida"),
+  // Retorno
+  despachanteRetornoId: integer("despachanteRetornoId"),
+  dataRetorno: timestamp("dataRetorno"),
+  kmRetorno: varchar("kmRetorno", { length: 20 }),
+  observacoesRetorno: text("observacoesRetorno"),
+  // Conferência (feita pelo conferente/despachante)
+  conferenteId: integer("conferenteId"),
+  dataConferencia: timestamp("dataConferencia"),
+  cargaOk: boolean("cargaOk"),
+  cargaObservacoes: text("cargaObservacoes"),
+  avariasEncontradas: boolean("avariasEncontradas").default(false),
+  avariasDescricao: text("avariasDescricao"),
+  batidasEncontradas: boolean("batidasEncontradas").default(false),
+  batidasDescricao: text("batidasDescricao"),
+  pneusOk: boolean("pneusOk"),
+  pneusObservacoes: text("pneusObservacoes"),
+  limpezaOk: boolean("limpezaOk"),
+  documentosOk: boolean("documentosOk"),
+  nivelCombustivel: varchar("nivelCombustivel", { length: 20 }),
+  observacoesConferencia: text("observacoesConferencia"),
+  // Confirmação do motorista
+  motoristaConfirmou: boolean("motoristaConfirmou").default(false),
+  motoristaConfirmouEm: timestamp("motoristaConfirmouEm"),
+  motoristaContestacao: text("motoristaContestacao"),
+  assinaturaMotorista: text("assinaturaMotorista"), // base64 da assinatura digital
+  createdBy: integer("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+export type ConferenciaVeiculo = typeof conferenciaVeiculos.$inferSelect;
+
+// Fotos da conferência (antes/depois, avarias, batidas)
+export const fotosConferencia = pgTable("fotos_conferencia", {
+  id: serial("id").primaryKey(),
+  conferenciaId: integer("conferenciaId").notNull(),
+  empresaId: integer("empresaId").notNull(),
+  tipo: varchar("tipo", { length: 50 }).notNull(), // saida_frente, saida_traseira, saida_lateral_esq, saida_lateral_dir, retorno_frente, retorno_traseira, avaria, batida, carga, pneu, outro
+  descricao: varchar("descricao", { length: 255 }),
+  url: text("url").notNull(),
+  momento: varchar("momento", { length: 20 }).notNull(), // saida, retorno, conferencia
+  uploadedBy: integer("uploadedBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type FotoConferencia = typeof fotosConferencia.$inferSelect;
+
+// Itens de checklist da conferência
+export const itensConferencia = pgTable("itens_conferencia", {
+  id: serial("id").primaryKey(),
+  conferenciaId: integer("conferenciaId").notNull(),
+  item: varchar("item", { length: 255 }).notNull(),
+  conforme: boolean("conforme"),
+  observacao: text("observacao"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type ItemConferencia = typeof itensConferencia.$inferSelect;

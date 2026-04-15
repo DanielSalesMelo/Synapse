@@ -51,6 +51,17 @@ import IA from "./pages/IA";
 import Recepcao from "./pages/Recepcao";
 import WMS from "./pages/WMS";
 
+// Novos módulos
+import CRM from "./pages/CRM";
+import Vendas from "./pages/Vendas";
+import Auditoria from "./pages/Auditoria";
+import BI from "./pages/BI";
+import TI from "./pages/TI";
+import Ponto from "./pages/Ponto";
+import ConferenciaVeiculos from "./pages/ConferenciaVeiculos";
+import Recepcionista from "./pages/Recepcionista";
+import Logistica from "./pages/Logistica";
+
 function DashboardRoutes() {
   return (
     <DashboardLayout>
@@ -114,7 +125,7 @@ function DashboardRoutes() {
         <Route path="/ajuda" component={Ajuda} />
         <Route path="/ia" component={IA} />
 
-        {/* Recepção */}
+        {/* Recepção (legado) */}
         <Route path="/recepcao" component={Recepcao} />
         <Route path="/recepcao/docas" component={Recepcao} />
 
@@ -123,6 +134,44 @@ function DashboardRoutes() {
         <Route path="/wms/produtos" component={WMS} />
         <Route path="/wms/movimentacoes" component={WMS} />
         <Route path="/wms/armazens" component={WMS} />
+
+        {/* === NOVOS MÓDULOS === */}
+
+        {/* CRM */}
+        <Route path="/crm" component={CRM} />
+        <Route path="/crm/clientes" component={CRM} />
+        <Route path="/crm/leads" component={CRM} />
+        <Route path="/crm/funil" component={CRM} />
+
+        {/* Vendas */}
+        <Route path="/vendas" component={Vendas} />
+        <Route path="/vendas/pedidos" component={Vendas} />
+        <Route path="/vendas/propostas" component={Vendas} />
+
+        {/* Auditoria */}
+        <Route path="/auditoria" component={Auditoria} />
+
+        {/* BI - Business Intelligence */}
+        <Route path="/bi" component={BI} />
+
+        {/* TI - Suporte e Ativos */}
+        <Route path="/ti" component={TI} />
+        <Route path="/ti/tickets" component={TI} />
+        <Route path="/ti/ativos" component={TI} />
+
+        {/* Ponto Eletrônico */}
+        <Route path="/ponto" component={Ponto} />
+
+        {/* Conferência de Veículos */}
+        <Route path="/conferencia-veiculos" component={ConferenciaVeiculos} />
+
+        {/* Recepcionista (visitantes) */}
+        <Route path="/recepcionista" component={Recepcionista} />
+
+        {/* Logística (SAC, ANVISA, VISA) */}
+        <Route path="/logistica" component={Logistica} />
+        <Route path="/logistica/sac" component={Logistica} />
+        <Route path="/logistica/licencas" component={Logistica} />
 
         {/* Master */}
         <Route path="/master/painel" component={PainelMaster} />
