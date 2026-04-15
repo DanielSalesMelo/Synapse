@@ -500,7 +500,8 @@ export const licenciamentoRouter = router({
       cnpj: z.string().optional(),
       cidade: z.string().optional(),
       estado: z.string().max(2).optional(),
-      tipoEmpresa: z.enum(["independente", "matriz", "filial"]).default("independente"),
+      tipoEmpresa: z.enum(["independente", "matriz", "filial", "grupo"]).default("independente"),
+      grupoId: z.number().optional(),
       matrizId: z.number().optional(),
       nomeUsuario: z.string().min(2, "Seu nome deve ter ao menos 2 caracteres"),
       email: z.string().email("E-mail inválido"),
@@ -532,6 +533,7 @@ export const licenciamentoRouter = router({
         telefone: input.telefone ?? null,
         tipoEmpresa: input.tipoEmpresa as any,
         matrizId: input.matrizId ?? null,
+        grupoId: input.grupoId ?? null,
         codigoConvite,
         ativo: true,
       }).returning();

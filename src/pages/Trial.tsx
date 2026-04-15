@@ -20,7 +20,7 @@ const BENEFICIOS = [
 ];
 
 type Etapa = 1 | 2 | 3;
-type TipoEmpresa = "independente" | "matriz" | "filial";
+type TipoEmpresa = "independente" | "matriz" | "filial" | "grupo";
 
 export default function Trial() {
   const [, navigate] = useLocation();
@@ -41,6 +41,7 @@ export default function Trial() {
     estado: "",
     tipoEmpresa: "independente" as TipoEmpresa,
     matrizId: "",
+    grupoId: "",
     nomeUsuario: "",
     email: "",
     senha: "",
@@ -84,6 +85,7 @@ export default function Trial() {
       estado: form.estado || undefined,
       tipoEmpresa: form.tipoEmpresa,
       matrizId: form.matrizId ? parseInt(form.matrizId) : undefined,
+      grupoId: form.grupoId ? parseInt(form.grupoId) : undefined,
       nomeUsuario: form.nomeUsuario,
       email: form.email,
       senha: form.senha,
@@ -96,7 +98,7 @@ export default function Trial() {
     new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
 
   const tipoLabel = (t: TipoEmpresa) =>
-    t === "independente" ? "Independente" : t === "matriz" ? "Matriz" : "Filial";
+    t === "independente" ? "Independente" : t === "matriz" ? "Matriz" : t === "filial" ? "Filial" : "Grupo";
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] flex">
@@ -191,6 +193,7 @@ export default function Trial() {
                   <span className={`text-sm font-semibold px-2.5 py-0.5 rounded-full ${
                     sucesso.tipoEmpresa === "matriz" ? "bg-purple-500/15 text-purple-400" :
                     sucesso.tipoEmpresa === "filial" ? "bg-blue-500/15 text-blue-400" :
+                    sucesso.tipoEmpresa === "grupo" ? "bg-emerald-500/15 text-emerald-400" :
                     "bg-white/10 text-white/70"
                   }`}>{tipoLabel(sucesso.tipoEmpresa)}</span>
                 </div>
@@ -286,15 +289,16 @@ export default function Trial() {
                     <div>
                       <Label className="text-white/70 text-sm mb-1.5 block">Tipo de empresa *</Label>
                       <div className="grid grid-cols-3 gap-2">
-                        {(["independente", "matriz", "filial"] as TipoEmpresa[]).map(tipo => (
+                        {(["independente", "matriz", "filial", "grupo"] as TipoEmpresa[]).map(tipo => (
                           <button
                             key={tipo}
                             type="button"
-                            onClick={() => setForm(f => ({ ...f, tipoEmpresa: tipo, matrizId: tipo !== "filial" ? "" : f.matrizId }))}
+                            onClick={() => setForm(f => ({ ...f, tipoEmpresa: tipo, matrizId: tipo !== "filial" ? "" : f.matrizId, grupoId: tipo !== "grupo" ? "" : f.grupoId }))}
                             className={`py-2.5 rounded-xl border text-sm font-medium transition-all ${
                               form.tipoEmpresa === tipo
                                 ? tipo === "matriz" ? "bg-purple-600 border-purple-500 text-white"
                                 : tipo === "filial" ? "bg-blue-600 border-blue-500 text-white"
+                                : tipo === "grupo" ? "bg-emerald-600 border-emerald-500 text-white"
                                 : "bg-white/15 border-white/30 text-white"
                                 : "bg-white/5 border-white/10 text-white/50 hover:border-white/30"
                             }`}>
@@ -306,9 +310,27 @@ export default function Trial() {
                         {form.tipoEmpresa === "independente" && "Empresa autônoma, sem vínculo com outras."}
                         {form.tipoEmpresa === "matriz" && "Empresa principal que pode ter filiais vinculadas."}
                         {form.tipoEmpresa === "filial" && "Unidade vinculada a uma empresa matriz."}
+                        {form.tipoEmpresa === "grupo" && "Empresas do mesmo dono com CNPJs diferentes, sem hierarquia de matriz/filial."}
                       </p>
                     </div>
 
+                    {/* ID do grupo (só aparece quando grupo) */}
+                    {form.tipoEmpresa === "grupo" && (
+                      <div>
+                        <Label className="text-white/70 text-sm mb-1.5 block">ID do grupo empresarial <span className="text-white/30">(opcional)</span></Label>
+                        <div className="relative">
+                          <Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+                          <Input
+                            type="number"
+                            placeholder="Ex: 10"
+                            value={form.grupoId}
+                            onChange={e => setForm(f => ({ ...f, grupoId: e.target.value }))}
+                            className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-blue-500/50 h-11 rounded-xl"
+                          />
+                        </div>
+                        <p className="text-xs text-white/30 mt-1">Deixe em branco para criar um novo grupo. Informe o ID para vincular a um grupo existente.</p>
+                      </div>
+                    )}
                     {/* ID da matriz (só aparece quando filial) */}
                     {form.tipoEmpresa === "filial" && (
                       <div>

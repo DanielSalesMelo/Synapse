@@ -22,7 +22,39 @@ import { Toaster } from "sonner";
 import "./index.css";
 import "./lib/i18n";
 
-const queryClient = new QueryClient();
+// ─── Recupera usuário do localStorage para pré-popular o cache ────────────────
+function getPersistedUser() {
+  try {
+    const raw = localStorage.getItem("app-user-info");
+    if (!raw || raw === "null" || raw === "undefined") return undefined;
+    return JSON.parse(raw);
+  } catch {
+    return undefined;
+  }
+}
+
+// ─── QueryClient com staleTime global e cache pré-populado ───────────────────
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // Dados ficam "frescos" por 5 minutos — evita refetch desnecessário após deploy
+      staleTime: 5 * 60 * 1000,
+      // Mantém dados em cache por 10 minutos após ficarem inativos
+      gcTime: 10 * 60 * 1000,
+      retry: 1,
+      retryDelay: 1000,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
+// Pré-popula o cache com o usuário do localStorage ANTES do primeiro render
+// Isso evita o flash de redirecionamento para /login após deploys do Railway
+const persistedUser = getPersistedUser();
+if (persistedUser) {
+  // tRPC v11 usa [splitPath] como query key, onde splitPath = ["auth", "me"]
+  queryClient.setQueryData([["auth", "me"]], persistedUser);
+}
 
 const UNAUTHED_ERR_MSG = 'Please login (10001)';
 
@@ -32,6 +64,9 @@ const redirectToLoginIfUnauthorized = (error: unknown) => {
   if (typeof window === "undefined") return;
   const isUnauthorized = error.message === UNAUTHED_ERR_MSG;
   if (!isUnauthorized) return;
+  // Limpa o cache do usuário antes de redirecionar
+  localStorage.removeItem("app-user-info");
+  localStorage.removeItem("synapse-auth-token");
   window.location.href = "/login";
 };
 
