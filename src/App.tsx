@@ -53,6 +53,7 @@ import WMS from "./pages/WMS";
 
 // Novos módulos
 import CRM from "./pages/CRM";
+import Marketing from "./pages/Marketing";
 import Vendas from "./pages/Vendas";
 import Auditoria from "./pages/Auditoria";
 import BI from "./pages/BI";
@@ -112,6 +113,8 @@ function DashboardRoutes() {
         <Route path="/adiantamentos" component={Adiantamentos} />
         <Route path="/custos" component={Custos} />
         <Route path="/financeiro/dre" component={DrePorPlaca} />
+        <Route path="/financeiro/fluxo-caixa" component={Financeiro} />
+        <Route path="/financeiro/conciliacao" component={Financeiro} />
         <Route path="/simulador-viagem" component={SimuladorViagem} />
 
         {/* Integrações */}
@@ -154,10 +157,24 @@ function DashboardRoutes() {
         {/* BI - Business Intelligence */}
         <Route path="/bi" component={BI} />
 
-        {/* TI - Suporte e Ativos */}
+        {/* TI - ITSM & ITAM */}
         <Route path="/ti" component={TI} />
-        <Route path="/ti/tickets" component={TI} />
-        <Route path="/ti/ativos" component={TI} />
+        <Route path="/ti/inventario" component={TI} />
+        <Route path="/ti/hardware" component={TI} />
+        <Route path="/ti/servidores" component={TI} />
+        <Route path="/ti/acessos" component={TI} />
+        <Route path="/ti/licencas" component={TI} />
+        <Route path="/ti/mudancas" component={TI} />
+        <Route path="/ti/compras" component={TI} />
+        <Route path="/ti/cmdb" component={TI} />
+
+        {/* Marketing */}
+        <Route path="/marketing/campanhas" component={Marketing} />
+        <Route path="/marketing/email" component={Marketing} />
+        <Route path="/marketing/landing-pages" component={Marketing} />
+        <Route path="/marketing/segmentacao" component={Marketing} />
+        <Route path="/marketing/analytics" component={Marketing} />
+        <Route path="/marketing/automacoes" component={Marketing} />
 
         {/* Ponto Eletrônico */}
         <Route path="/ponto" component={Ponto} />
@@ -175,7 +192,38 @@ function DashboardRoutes() {
 
         {/* Master */}
         <Route path="/master/painel" component={PainelMaster} />
+        <Route path="/master/empresas" component={PainelMaster} />
         <Route path="/master/permissoes" component={Permissoes} />
+        <Route path="/master/ia-training" component={IA} />
+        <Route path="/master/bi" component={BI} />
+
+        {/* CRM extras */}
+        <Route path="/crm/pos-venda" component={CRM} />
+
+        {/* RH extras */}
+        <Route path="/rh/funcionarios" component={Funcionarios} />
+        <Route path="/rh/folha" component={Financeiro} />
+        <Route path="/rh/beneficios" component={Funcionarios} />
+        <Route path="/rh/treinamentos" component={Funcionarios} />
+        <Route path="/rh/analytics" component={BI} />
+        <Route path="/rh/clima" component={Funcionarios} />
+
+        {/* WMS extras */}
+        <Route path="/wms/inventario" component={WMS} />
+        <Route path="/wms/acuracidade" component={WMS} />
+
+        {/* Recepcionista extras */}
+        <Route path="/recepcionista/agendamentos" component={Recepcionista} />
+
+        {/* Logística extras */}
+        <Route path="/logistica/temperatura" component={Logistica} />
+        <Route path="/logistica/rastreabilidade" component={Logistica} />
+
+        {/* Qualidade */}
+        <Route path="/qualidade/nao-conformidades" component={Auditoria} />
+        <Route path="/qualidade/auditorias" component={Auditoria} />
+        <Route path="/qualidade/documentos" component={Auditoria} />
+        <Route path="/qualidade/calibracao" component={Auditoria} />
 
         {/* Fallback dentro do dashboard */}
         <Route component={NotFound} />
