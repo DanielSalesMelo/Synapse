@@ -32,10 +32,14 @@ if "%PAIR_CODE%"=="" (
 set INSTALL_DIR=%APPDATA%\SynapseAgent
 if not exist "%INSTALL_DIR%" mkdir "%INSTALL_DIR%"
 
+:: Limpa configs antigas para evitar conflitos
+if exist "%INSTALL_DIR%\config.json" del /f /q "%INSTALL_DIR%\config.json"
+if exist "%INSTALL_DIR%\synapse_agent.conf" del /f /q "%INSTALL_DIR%\synapse_agent.conf"
+
 echo Copiando arquivos...
 copy /Y "%~dp0synapse_agent.py" "%INSTALL_DIR%\synapse_agent.py" >nul
 
-:: Cria o script de inicializacao sem perguntar nada
+:: Cria o script de inicializacao
 (
 echo @echo off
 echo cd /d "%INSTALL_DIR%"
@@ -46,11 +50,13 @@ echo python "%INSTALL_DIR%\synapse_agent.py"
 schtasks /create /tn "SynapseAgent" /tr "\"%INSTALL_DIR%\start_agent.bat\"" /sc onlogon /ru "%USERNAME%" /f >nul 2>&1
 
 echo.
-echo Realizando pareamento...
+echo Realizando pareamento com o servidor oficial...
+:: Chama o script com a flag --pair e o codigo, sem chance de pedir URL
 python "%INSTALL_DIR%\synapse_agent.py" --pair %PAIR_CODE%
 if errorlevel 1 (
     echo.
-    echo [ERRO] Falha no pareamento. Verifique o codigo no painel.
+    echo [ERRO] Falha no pareamento. 
+    echo Certifique-se de que o codigo %PAIR_CODE% e valido no painel.
     pause
     exit /b
 )

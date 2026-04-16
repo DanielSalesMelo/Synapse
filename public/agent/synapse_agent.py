@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-SYNAPSE MONITORING AGENT v1.2.0 - ULTRA SIMPLE VERSION
+SYNAPSE MONITORING AGENT v1.3.0 - FINAL FIXED VERSION
 """
 
 import os
@@ -30,8 +30,9 @@ try:
 except ImportError:
     HAS_REQUESTS = False
 
-# ─── Configuração Fixa ────────────────────────────────────────────────────────
-VERSION = "1.2.0"
+# ─── Configuração FIXA E IMUTÁVEL ─────────────────────────────────────────────
+VERSION = "1.3.0"
+# URL DO BACKEND (RAILWAY) - NUNCA USE VERCEL AQUI
 SERVER_URL = "https://synapse-backend.railway.app"
 AGENT_DIR = Path(os.environ.get("SYNAPSE_AGENT_DIR", Path.home() / ".synapse-agent"))
 CONFIG_FILE = AGENT_DIR / "config.json"
@@ -47,15 +48,19 @@ logging.basicConfig(
 log = logging.getLogger("synapse-agent")
 
 def load_config() -> Dict:
+    # Força a URL correta sempre
     config = {"server_url": SERVER_URL, "token": "", "collect_interval": 60, "send_interval": 60}
     if CONFIG_FILE.exists():
         try:
             with open(CONFIG_FILE, "r") as f:
-                config.update(json.load(f))
+                saved = json.load(f)
+                config.update(saved)
         except: pass
+    config["server_url"] = SERVER_URL # Sobrescreve qualquer lixo de config antiga
     return config
 
 def save_config(config: Dict):
+    config["server_url"] = SERVER_URL # Garante que salve a URL certa
     with open(CONFIG_FILE, "w") as f:
         json.dump(config, f, indent=2)
 
@@ -98,7 +103,7 @@ def pair_agent(codigo: str) -> bool:
             "anydesk_id": get_anydesk_id(),
             "versao_agente": VERSION,
         }
-        log.info(f"Tentando pareamento com {codigo}...")
+        log.info(f"Pareando com {SERVER_URL} usando código {codigo}...")
         resp = requests.post(url, json=payload, timeout=15)
         if resp.status_code == 200:
             data = resp.json()
@@ -144,10 +149,11 @@ def main():
                 send_metrics(config)
             except Exception as e: log.error(f"Erro no loop: {e}")
         else:
-            log.warning("Agente não pareado. Aguardando comando --pair")
+            log.warning("Agente não pareado.")
         time.sleep(60)
 
 if __name__ == "__main__":
+    # Remove qualquer lógica de prompt interativo aqui
     if "--pair" in sys.argv:
         idx = sys.argv.index("--pair")
         if len(sys.argv) > idx + 1:
