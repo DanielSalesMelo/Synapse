@@ -62,6 +62,7 @@ import Ponto from "./pages/Ponto";
 import ConferenciaVeiculos from "./pages/ConferenciaVeiculos";
 import Recepcionista from "./pages/Recepcionista";
 import Logistica from "./pages/Logistica";
+import RH from "./pages/RH";
 
 function DashboardRoutes() {
   return (
@@ -200,13 +201,14 @@ function DashboardRoutes() {
         {/* CRM extras */}
         <Route path="/crm/pos-venda" component={CRM} />
 
-        {/* RH extras */}
-        <Route path="/rh/funcionarios" component={Funcionarios} />
-        <Route path="/rh/folha" component={Financeiro} />
-        <Route path="/rh/beneficios" component={Funcionarios} />
-        <Route path="/rh/treinamentos" component={Funcionarios} />
-        <Route path="/rh/analytics" component={BI} />
-        <Route path="/rh/clima" component={Funcionarios} />
+        {/* RH — Módulo Completo */}
+        <Route path="/rh" component={RH} />
+        <Route path="/rh/funcionarios" component={RH} />
+        <Route path="/rh/folha" component={RH} />
+        <Route path="/rh/beneficios" component={RH} />
+        <Route path="/rh/treinamentos" component={RH} />
+        <Route path="/rh/analytics" component={RH} />
+        <Route path="/rh/clima" component={RH} />
 
         {/* WMS extras */}
         <Route path="/wms/inventario" component={WMS} />

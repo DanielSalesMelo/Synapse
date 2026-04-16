@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, TrendingDown, TrendingUp, Wallet, CheckCircle2, AlertCircle } from "lucide-react";
+import { Plus, TrendingDown, TrendingUp, Wallet, CheckCircle2, AlertCircle, DollarSign, BarChart3, RefreshCw, Banknote, PieChart, FileSpreadsheet, Receipt } from "lucide-react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 
@@ -220,10 +220,50 @@ function ContaReceberForm({ onSave, onClose }: { onSave: (d: any) => void; onClo
   );
 }
 
+// ─── Mock data para Fluxo de Caixa ─────────────────────────────────────────
+const MOCK_FLUXO = [
+  { data: "2025-04-01", descricao: "Recebimento Frete ABC", tipo: "entrada", valor: 12500, saldo: 45200 },
+  { data: "2025-04-02", descricao: "Combustível Posto BR", tipo: "saida", valor: 3200, saldo: 42000 },
+  { data: "2025-04-03", descricao: "Manutenção Veículo KJH-1234", tipo: "saida", valor: 1800, saldo: 40200 },
+  { data: "2025-04-04", descricao: "Recebimento CTE-00892", tipo: "entrada", valor: 8700, saldo: 48900 },
+  { data: "2025-04-05", descricao: "Salários Motoristas", tipo: "saida", valor: 15600, saldo: 33300 },
+  { data: "2025-04-07", descricao: "Recebimento Frete XYZ", tipo: "entrada", valor: 22000, saldo: 55300 },
+  { data: "2025-04-08", descricao: "Pedágio Mensal", tipo: "saida", valor: 2100, saldo: 53200 },
+];
+
+const MOCK_CONCILIACAO = [
+  { id: 1, data: "2025-04-15", descricao: "Dep. Transportes ABC", valorBanco: 12500, valorSistema: 12500, status: "conciliado" },
+  { id: 2, data: "2025-04-14", descricao: "Deb. Posto Ipiranga", valorBanco: -3200, valorSistema: -3200, status: "conciliado" },
+  { id: 3, data: "2025-04-13", descricao: "Dep. Logística Sul", valorBanco: 8700, valorSistema: null, status: "pendente" },
+  { id: 4, data: "2025-04-12", descricao: "Deb. Manutenção", valorBanco: -1850, valorSistema: -1800, status: "divergente" },
+  { id: 5, data: "2025-04-11", descricao: "Dep. Frete Nacional", valorBanco: 22000, valorSistema: 22000, status: "conciliado" },
+];
+
+const MOCK_DRE = [
+  { categoria: "Receita Bruta de Fretes", valor: 185000, tipo: "receita" },
+  { categoria: "Deduções (Impostos s/ Serviço)", valor: -9250, tipo: "deducao" },
+  { categoria: "Receita Líquida", valor: 175750, tipo: "subtotal" },
+  { categoria: "Combustível", valor: -42000, tipo: "custo" },
+  { categoria: "Manutenção", valor: -18500, tipo: "custo" },
+  { categoria: "Pneus", valor: -8200, tipo: "custo" },
+  { categoria: "Pedágios", valor: -12400, tipo: "custo" },
+  { categoria: "Lucro Bruto", valor: 94650, tipo: "subtotal" },
+  { categoria: "Salários e Encargos", valor: -48200, tipo: "despesa" },
+  { categoria: "Despesas Administrativas", valor: -8500, tipo: "despesa" },
+  { categoria: "Depreciação de Frota", valor: -12000, tipo: "despesa" },
+  { categoria: "EBITDA", valor: 25950, tipo: "resultado" },
+];
+
+const CONCIL_COLORS: Record<string, string> = {
+  conciliado: "bg-green-100 text-green-700",
+  pendente: "bg-yellow-100 text-yellow-700",
+  divergente: "bg-red-100 text-red-700",
+};
+
 export default function Financeiro() {
   const { t } = useTranslation();
   const [location] = useLocation();
-  const activeTab = location.includes("receber") ? "receber" : location.includes("adiantamentos") ? "adiantamentos" : "pagar";
+  const activeTab = location.includes("receber") ? "receber" : location.includes("adiantamentos") ? "adiantamentos" : location.includes("fluxo") ? "fluxo" : location.includes("conciliacao") ? "conciliacao" : location.includes("dre") ? "dre" : "pagar";
   const [openPagar, setOpenPagar] = useState(false);
   const [openReceber, setOpenReceber] = useState(false);
   const utils = trpc.useUtils();
@@ -250,7 +290,12 @@ export default function Financeiro() {
 
   return (
 <div className="space-y-5">
-        <h1 className="text-2xl font-bold">Financeiro</h1>
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div>
+            <h1 className="text-2xl font-bold flex items-center gap-2"><DollarSign className="h-6 w-6 text-primary" />Financeiro</h1>
+            <p className="text-muted-foreground text-sm">Contas · Fluxo de Caixa · Conciliação Bancária · DRE · Adiantamentos</p>
+          </div>
+        </div>
 
         {/* KPIs */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -299,10 +344,13 @@ export default function Financeiro() {
 
         {/* Tabs */}
         <Tabs value={activeTab}>
-          <div className="flex items-center justify-between gap-4">
-            <TabsList>
-              <TabsTrigger value="pagar">Contas a Pagar</TabsTrigger>
-              <TabsTrigger value="receber">Contas a Receber</TabsTrigger>
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <TabsList className="flex-wrap h-auto gap-1">
+              <TabsTrigger value="pagar"><TrendingDown className="h-3.5 w-3.5 mr-1" />A Pagar</TabsTrigger>
+              <TabsTrigger value="receber"><TrendingUp className="h-3.5 w-3.5 mr-1" />A Receber</TabsTrigger>
+              <TabsTrigger value="fluxo"><Banknote className="h-3.5 w-3.5 mr-1" />Fluxo de Caixa</TabsTrigger>
+              <TabsTrigger value="conciliacao"><Receipt className="h-3.5 w-3.5 mr-1" />Conciliação</TabsTrigger>
+              <TabsTrigger value="dre"><PieChart className="h-3.5 w-3.5 mr-1" />DRE</TabsTrigger>
             </TabsList>
             <div className="flex gap-2">
               <Dialog open={openPagar} onOpenChange={setOpenPagar}>
@@ -416,6 +464,113 @@ export default function Financeiro() {
                   </Table>
                 </div>
               </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* ── FLUXO DE CAIXA ── */}
+          <TabsContent value="fluxo" className="mt-4">
+            <Card>
+              <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Banknote className="h-4 w-4" />Fluxo de Caixa — Abril/2025</CardTitle></CardHeader>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Data</TableHead>
+                    <TableHead>Descrição</TableHead>
+                    <TableHead>Tipo</TableHead>
+                    <TableHead className="text-right">Valor</TableHead>
+                    <TableHead className="text-right">Saldo Acumulado</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {MOCK_FLUXO.map((f, i) => (
+                    <TableRow key={i}>
+                      <TableCell className="text-xs text-muted-foreground">{new Date(f.data).toLocaleDateString("pt-BR")}</TableCell>
+                      <TableCell className="font-medium text-sm">{f.descricao}</TableCell>
+                      <TableCell><Badge className={`text-xs ${f.tipo === "entrada" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>{f.tipo}</Badge></TableCell>
+                      <TableCell className={`text-right font-bold text-sm ${f.tipo === "entrada" ? "text-green-600" : "text-red-600"}`}>
+                        {f.tipo === "entrada" ? "+" : "-"}{formatCurrency(f.valor)}
+                      </TableCell>
+                      <TableCell className="text-right font-mono text-sm">{formatCurrency(f.saldo)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Card>
+          </TabsContent>
+
+          {/* ── CONCILIAÇÃO BANCÁRIA ── */}
+          <TabsContent value="conciliacao" className="mt-4">
+            <div className="flex justify-between items-center mb-3">
+              <p className="text-sm text-muted-foreground">Conciliação automática entre extrato bancário e lançamentos do sistema.</p>
+              <Button size="sm" variant="outline"><RefreshCw className="h-4 w-4 mr-2" />Importar Extrato OFX</Button>
+            </div>
+            <Card>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Data</TableHead>
+                    <TableHead>Descrição</TableHead>
+                    <TableHead className="text-right">Banco</TableHead>
+                    <TableHead className="text-right">Sistema</TableHead>
+                    <TableHead>Diferença</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {MOCK_CONCILIACAO.map(c => (
+                    <TableRow key={c.id}>
+                      <TableCell className="text-xs text-muted-foreground">{new Date(c.data).toLocaleDateString("pt-BR")}</TableCell>
+                      <TableCell className="font-medium text-sm">{c.descricao}</TableCell>
+                      <TableCell className={`text-right font-mono text-sm ${(c.valorBanco ?? 0) >= 0 ? "text-green-600" : "text-red-600"}`}>{formatCurrency(c.valorBanco)}</TableCell>
+                      <TableCell className={`text-right font-mono text-sm ${c.valorSistema === null ? "text-muted-foreground" : (c.valorSistema ?? 0) >= 0 ? "text-green-600" : "text-red-600"}`}>{c.valorSistema !== null ? formatCurrency(c.valorSistema) : "—"}</TableCell>
+                      <TableCell className="text-sm">
+                        {c.valorSistema !== null ? (
+                          <span className={Math.abs(c.valorBanco - (c.valorSistema ?? 0)) > 0 ? "text-red-600 font-bold" : "text-green-600"}>
+                            {formatCurrency(c.valorBanco - (c.valorSistema ?? 0))}
+                          </span>
+                        ) : "—"}
+                      </TableCell>
+                      <TableCell><Badge className={`text-xs ${CONCIL_COLORS[c.status]}`}>{c.status}</Badge></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Card>
+          </TabsContent>
+
+          {/* ── DRE ── */}
+          <TabsContent value="dre" className="mt-4">
+            <div className="flex justify-between items-center mb-3">
+              <p className="text-sm text-muted-foreground">Demonstrativo de Resultado do Exercício — Abril/2025</p>
+              <Button size="sm" variant="outline"><FileSpreadsheet className="h-4 w-4 mr-2" />Exportar Excel</Button>
+            </div>
+            <Card>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Categoria</TableHead>
+                    <TableHead className="text-right">Valor (R$)</TableHead>
+                    <TableHead className="text-right">% Receita</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {MOCK_DRE.map((d, i) => (
+                    <TableRow key={i} className={d.tipo === "subtotal" || d.tipo === "resultado" ? "font-bold bg-muted/30" : ""}>
+                      <TableCell className={`text-sm ${d.tipo === "resultado" ? "text-primary" : d.tipo === "subtotal" ? "font-semibold" : ""}`}>
+                        {d.tipo === "custo" || d.tipo === "despesa" || d.tipo === "deducao" ? (
+                          <span className="pl-4">{d.categoria}</span>
+                        ) : d.categoria}
+                      </TableCell>
+                      <TableCell className={`text-right font-mono text-sm ${d.valor >= 0 ? "text-green-600" : "text-red-600"}`}>
+                        {formatCurrency(Math.abs(d.valor))}
+                      </TableCell>
+                      <TableCell className="text-right text-xs text-muted-foreground">
+                        {Math.abs(Math.round((d.valor / 185000) * 100))}%
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </Card>
           </TabsContent>
         </Tabs>
