@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import {
@@ -58,9 +58,16 @@ const ROLES = [
 ];
 
 export default function Home() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const [, navigate] = useLocation();
   const [hoveredModule, setHoveredModule] = useState<number | null>(null);
+
+  // Se já está autenticado, redireciona direto para o dashboard
+  useEffect(() => {
+    if (!loading && user) {
+      navigate("/dashboard");
+    }
+  }, [user, loading, navigate]);
 
   const handleAccess = () => {
     if (user) navigate("/dashboard");

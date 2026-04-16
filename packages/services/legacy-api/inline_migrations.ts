@@ -1451,6 +1451,70 @@ const MIGRATION_STATEMENTS: string[] = [
   `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "departamento" varchar(100)`,
   `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "idioma" varchar(10) DEFAULT 'pt'`,
   `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "tema" varchar(20) DEFAULT 'dark'`,
+
+  // ── Agentes de Monitoramento ─────────────────────────────────────────────────
+  `CREATE TABLE IF NOT EXISTS "agent_pair_codes" (
+    "id" serial PRIMARY KEY,
+    "empresaId" integer NOT NULL,
+    "code" varchar(30) NOT NULL UNIQUE,
+    "label" varchar(100),
+    "used" boolean DEFAULT false,
+    "usedAt" timestamptz,
+    "createdBy" integer,
+    "createdAt" timestamptz DEFAULT now(),
+    "expiresAt" timestamptz
+  )`,
+  `CREATE TABLE IF NOT EXISTS "agent_devices" (
+    "id" serial PRIMARY KEY,
+    "empresaId" integer NOT NULL,
+    "deviceId" varchar(50) NOT NULL UNIQUE,
+    "hostname" varchar(200),
+    "token" varchar(200) NOT NULL,
+    "platform" jsonb,
+    "agentVersion" varchar(20),
+    "status" varchar(20) DEFAULT 'online',
+    "lastSeenAt" timestamptz DEFAULT now(),
+    "pairedAt" timestamptz DEFAULT now(),
+    "label" varchar(100),
+    "createdAt" timestamptz DEFAULT now()
+  )`,
+  `CREATE TABLE IF NOT EXISTS "agent_metrics" (
+    "id" serial PRIMARY KEY,
+    "deviceId" varchar(50) NOT NULL,
+    "empresaId" integer,
+    "timestamp" timestamptz NOT NULL,
+    "cpu" jsonb,
+    "ram" jsonb,
+    "disks" jsonb,
+    "network" jsonb,
+    "temperatures" jsonb,
+    "topProcesses" jsonb,
+    "uptimeHours" real,
+    "bootTime" timestamptz,
+    "createdAt" timestamptz DEFAULT now()
+  )`,
+  `CREATE INDEX IF NOT EXISTS "agent_metrics_deviceId_idx" ON "agent_metrics" ("deviceId")`,
+  `CREATE INDEX IF NOT EXISTS "agent_metrics_timestamp_idx" ON "agent_metrics" ("timestamp" DESC)`,
+
+  // ── Acessos Remotos TI ───────────────────────────────────────────────────────
+  `CREATE TABLE IF NOT EXISTS "acessos_ti" (
+    "id" serial PRIMARY KEY,
+    "empresaId" integer NOT NULL,
+    "usuarioId" integer,
+    "nome" varchar(200) NOT NULL,
+    "tipo" varchar(30) DEFAULT 'outro',
+    "host" varchar(255),
+    "porta" integer,
+    "usuario" varchar(100),
+    "anydesk_id" varchar(50),
+    "setor" varchar(100),
+    "observacoes" text,
+    "ativo" boolean DEFAULT true,
+    "createdAt" timestamptz DEFAULT now(),
+    "updatedAt" timestamptz DEFAULT now(),
+    "deletedAt" timestamptz
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_acessos_ti_empresa ON "acessos_ti"("empresaId")`,
 ];
 
 export async function runInlineMigrations(): Promise<void> {

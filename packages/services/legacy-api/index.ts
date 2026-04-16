@@ -15,6 +15,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { sdk } from "./_core/sdk";
+import { getRawClient } from "./db";
 
 // ─── Origens permitidas (CORS) ─────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
@@ -120,15 +121,11 @@ const upload = multer({
 // Endpoint de upload de arquivo
 app.post("/api/upload", upload.single("file"), async (req: any, res: any) => {
   try {
-    // Verificar autenticação
-    const token = req.headers.authorization?.replace("Bearer ", "");
-    if (!token) {
-      return res.status(401).json({ error: "N\u00e3o autenticado" });
-    }
+    // Verificar autenticação usando o mesmo método do tRPC (suporta Bearer token e cookie)
     try {
-      await sdk.verifySession(token);
+      await sdk.authenticateRequest(req);
     } catch {
-      return res.status(401).json({ error: "Token inv\u00e1lido" });
+      return res.status(401).json({ error: "N\u00e3o autenticado. Fa\u00e7a login novamente." });
     }
 
     if (!req.file) {
@@ -160,6 +157,137 @@ app.post("/api/upload", upload.single("file"), async (req: any, res: any) => {
 
 // Servir arquivos estáticos de uploads
 app.use("/uploads", express.static(UPLOADS_DIR));
+
+// ── Endpoints do Agente de Monitoramento ────────────────────────────────────
+// Usa as mesmas tabelas do router TI: agent_pairing_codes, monitor_agentes, monitor_metricas
+
+// Pareamento: o agente Python chama este endpoint com o código gerado no frontend
+app.post("/api/agent/pair", async (req: any, res: any) => {
+  try {
+    const { pairCode, hostname, ip, so, mac, fingerprint, anydesk_id, versao_agente } = req.body;
+    if (!pairCode) return res.status(400).json({ error: "pairCode obrigatório" });
+
+    const db = getRawClient ? await getRawClient() : null;
+    if (!db) return res.status(503).json({ error: "DB indisponível" });
+
+    // Verificar código de pareamento na tabela correta
+    const codes = await db`
+      SELECT * FROM agent_pairing_codes
+      WHERE codigo = ${pairCode} AND usado = false AND "expiresAt" > now()
+    `.catch(() => []) as any[];
+
+    if (!codes || codes.length === 0) {
+      return res.status(404).json({ error: "Código inválido, expirado ou já utilizado" });
+    }
+
+    const pairRecord = codes[0];
+    const token = `agt_${require('crypto').randomBytes(24).toString('hex')}`;
+
+    // Registrar agente na tabela monitor_agentes
+    const agentes = await db`
+      INSERT INTO monitor_agentes (
+        "empresaId", hostname, ip, so, mac, fingerprint, "anydeskId",
+        "ultimaVersao", token, status, "pairingCode", "createdAt", "updatedAt"
+      ) VALUES (
+        ${pairRecord.empresaId}, ${hostname || 'unknown'}, ${ip || null},
+        ${so || null}, ${mac || null}, ${fingerprint || null}, ${anydesk_id || null},
+        ${versao_agente || '1.0.0'}, ${token}, 'online', ${pairCode}, now(), now()
+      )
+      ON CONFLICT (token) DO UPDATE SET hostname = ${hostname || 'unknown'}, "updatedAt" = now()
+      RETURNING id
+    `.catch(() => []) as any[];
+
+    // Marcar código como usado e vincular ao agente
+    if (agentes && agentes[0]) {
+      await db`
+        UPDATE agent_pairing_codes
+        SET usado = true, "usadoEm" = now(), "hostnameVinculado" = ${hostname || null}, "agenteId" = ${agentes[0].id}
+        WHERE id = ${pairRecord.id}
+      `.catch(() => {});
+    }
+
+    return res.json({ token, empresaId: pairRecord.empresaId, agenteId: agentes?.[0]?.id });
+  } catch (err: any) {
+    console.error('[Agent Pair]', err);
+    return res.status(500).json({ error: err?.message || 'Erro interno' });
+  }
+});
+
+// Receber métricas do agente
+app.post("/api/agent/metrics", async (req: any, res: any) => {
+  try {
+    const authHeader = req.headers.authorization || '';
+    const token = authHeader.replace('Bearer ', '').trim();
+    if (!token) return res.status(401).json({ error: 'Token obrigatório' });
+
+    const db = getRawClient ? await getRawClient() : null;
+    if (!db) return res.status(503).json({ error: 'DB indisponível' });
+
+    // Verificar token do agente na tabela monitor_agentes
+    const agentes = await db`SELECT * FROM monitor_agentes WHERE token = ${token}`.catch(() => []) as any[];
+    if (!agentes || agentes.length === 0) {
+      return res.status(401).json({ error: 'Token inválido' });
+    }
+
+    const agente = agentes[0];
+    const body = req.body;
+
+    // Salvar métrica na tabela monitor_metricas
+    await db`
+      INSERT INTO monitor_metricas (
+        "agenteId", "empresaId", "coletadoEm",
+        "cpuPercent", "ramPercent", "ramUsadoGb", "ramTotalGb",
+        "diskPercent", "diskUsadoGb", "diskTotalGb",
+        "netEnviadoMb", "netRecebidoMb", "topProcessos"
+      ) VALUES (
+        ${agente.id}, ${agente.empresaId}, now(),
+        ${body.cpu?.percent ?? null}, ${body.ram?.percent ?? null},
+        ${body.ram?.used_gb ?? null}, ${body.ram?.total_gb ?? null},
+        ${body.disk?.percent ?? null}, ${body.disk?.used_gb ?? null}, ${body.disk?.total_gb ?? null},
+        ${body.network?.sent_mb ?? null}, ${body.network?.recv_mb ?? null},
+        ${body.top_processes ? JSON.stringify(body.top_processes) : null}
+      )
+    `.catch(() => {});
+
+    // Atualizar status e última coleta
+    await db`
+      UPDATE monitor_agentes
+      SET status = 'online', "updatedAt" = now()
+      WHERE id = ${agente.id}
+    `.catch(() => {});
+
+    // Limpar métricas antigas (manter últimas 1440 por agente — 24h em coletas de 1min)
+    await db`
+      DELETE FROM monitor_metricas WHERE id IN (
+        SELECT id FROM monitor_metricas WHERE "agenteId" = ${agente.id}
+        ORDER BY "coletadoEm" DESC OFFSET 1440
+      )
+    `.catch(() => {});
+
+    return res.json({ ok: true });
+  } catch (err: any) {
+    console.error('[Agent Metrics]', err);
+    return res.status(500).json({ error: err?.message || 'Erro interno' });
+  }
+});
+
+// Download dos arquivos do agente
+const AGENT_FILES_DIR = path.join(process.cwd(), '..', '..', '..', 'public', 'agent');
+app.get('/api/agent/download/windows', (_req: any, res: any) => {
+  const file = path.join(AGENT_FILES_DIR, 'install_windows.bat');
+  if (!fs.existsSync(file)) return res.status(404).json({ error: 'Arquivo não encontrado' });
+  res.download(file, 'install_synapse_windows.bat');
+});
+app.get('/api/agent/download/linux', (_req: any, res: any) => {
+  const file = path.join(AGENT_FILES_DIR, 'install_linux.sh');
+  if (!fs.existsSync(file)) return res.status(404).json({ error: 'Arquivo não encontrado' });
+  res.download(file, 'install_synapse_linux.sh');
+});
+app.get('/api/agent/download/agent', (_req: any, res: any) => {
+  const file = path.join(AGENT_FILES_DIR, 'synapse_agent.py');
+  if (!fs.existsSync(file)) return res.status(404).json({ error: 'Arquivo não encontrado' });
+  res.download(file, 'synapse_agent.py');
+});
 
 // 4. Middleware do tRPC
 app.use(

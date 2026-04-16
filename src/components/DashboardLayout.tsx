@@ -27,6 +27,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useViewAs } from "@/contexts/ViewAsContext";
 import { SeletorEmpresa } from "./SeletorEmpresa";
 import { useRef, useState, useEffect } from "react";
+import { trpc } from "@/lib/trpc";
 import { DashboardLayoutSkeleton } from "./DashboardLayoutSkeleton";
 import { Button } from "./ui/button";
 import { useTranslation } from "react-i18next";
@@ -246,12 +247,22 @@ function Sidebar({
   const isGroupActive = (items: MenuItem[]) =>
     items.some((item) => isActive(item.path));
 
-  // Badges de notificação por rota (mock — será substituído por dados reais)
+  // Badges de notificação por rota — dados reais do backend
+  const chatUnreadQ = trpc.chat.listConversas.useQuery(undefined, { refetchInterval: 15000 });
+  const tiDashQ = trpc.ti.dashboard.useQuery(undefined, { refetchInterval: 30000 });
+  const chatUnread = (chatUnreadQ.data ?? []).reduce((acc: number, c: any) => acc + (c.unreadCount ?? 0), 0);
+  const tiOpen = (tiDashQ.data as any)?.abertos ?? 0;
+  const totalNotifs = chatUnread + tiOpen;
+
+  // Atualiza título da aba com contador de notificações
+  useEffect(() => {
+    document.title = totalNotifs > 0 ? `(${totalNotifs > 99 ? '99+' : totalNotifs}) Synapse` : 'Synapse';
+    return () => { document.title = 'Synapse'; };
+  }, [totalNotifs]);
+
   const BADGES: Record<string, number> = {
-    "/chat": 3,
-    "/ti": 2,
-    "/tarefas": 5,
-    "/gestao/alertas": 1,
+    "/chat": chatUnread,
+    "/ti": tiOpen,
   };
 
   const initials = user?.name
