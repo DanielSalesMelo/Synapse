@@ -94,8 +94,9 @@ export const empresasRouter = router({
       telefone: z.string().optional(),
       cidade: z.string().optional(),
       estado: z.string().max(2).optional(),
-      tipoEmpresa: z.enum(["independente", "matriz", "filial"]).default("independente"),
+      tipoEmpresa: z.enum(["independente", "matriz", "filial", "grupo"]).default("independente"),
       matrizId: z.number().optional(),
+      grupoId: z.number().optional(),
     }))
     .mutation(async ({ input }) => {
       const db = await getDb();
@@ -119,6 +120,7 @@ export const empresasRouter = router({
         codigoConvite,
         tipoEmpresa: input.tipoEmpresa as any,
         matrizId: input.matrizId || null,
+        grupoId: input.grupoId || null,
         ativo: true,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -137,8 +139,9 @@ export const empresasRouter = router({
       telefone: z.string().optional(),
       cidade: z.string().optional(),
       estado: z.string().max(2).optional(),
-      tipoEmpresa: z.enum(["independente", "matriz", "filial"]).optional(),
+      tipoEmpresa: z.enum(["independente", "matriz", "filial", "grupo"]).optional(),
       matrizId: z.number().nullable().optional(),
+      grupoId: z.number().nullable().optional(),
     }))
     .mutation(async ({ input }) => {
       const db = await getDb();

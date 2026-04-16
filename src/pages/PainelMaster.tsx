@@ -468,7 +468,7 @@ export default function PainelMaster() {
     trpc.licenciamento.dashboardLicencas.useQuery(undefined, { enabled: isMaster });
 
   const criarEmpresaMut = trpc.empresas.criar.useMutation({
-    onSuccess: (d) => { toast.success(d.mensagem || "Empresa criada!"); setModalEmpresa(false); setFormEmpresa({ nome: "", cnpj: "", email: "", telefone: "", cidade: "", estado: "", tipoEmpresa: "independente" }); refetchEmpresas(); },
+        onSuccess: (d) => { toast.success(d.mensagem || "Empresa criada!"); setModalEmpresa(false); setFormEmpresa({ nome: "", cnpj: "", email: "", telefone: "", cidade: "", estado: "", tipoEmpresa: "independente", matrizId: "", grupoId: "" }); refetchEmpresas(); },
     onError: (e) => toast.error(e.message),
   });
   const toggleAtivoMut = trpc.empresas.toggleAtivo.useMutation({
@@ -492,7 +492,7 @@ export default function PainelMaster() {
     onError: (e) => toast.error(e.message),
   });
 
-  const [formEmpresa, setFormEmpresa] = useState({ nome: "", cnpj: "", email: "", telefone: "", cidade: "", estado: "", tipoEmpresa: "independente" as any });
+  const [formEmpresa, setFormEmpresa] = useState({ nome: "", cnpj: "", email: "", telefone: "", cidade: "", estado: "", tipoEmpresa: "independente" as any, matrizId: "", grupoId: "" });
 
   useEffect(() => {
     if (!loading && user && (user as any).role !== "master_admin") navigate("/dashboard");
@@ -642,9 +642,47 @@ export default function PainelMaster() {
                     <div><Label>Cidade</Label><Input value={formEmpresa.cidade} onChange={e => setFormEmpresa(f => ({ ...f, cidade: e.target.value }))} /></div>
                     <div><Label>Estado</Label><Input maxLength={2} value={formEmpresa.estado} onChange={e => setFormEmpresa(f => ({ ...f, estado: e.target.value.toUpperCase() }))} /></div>
                   </div>
+
+                  <div>
+                    <Label className="mb-1.5 block">Tipo de Empresa *</Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {["independente", "matriz", "filial", "grupo"].map(tipo => (
+                        <button
+                          key={tipo}
+                          type="button"
+                          onClick={() => setFormEmpresa(f => ({ ...f, tipoEmpresa: tipo, matrizId: tipo !== "filial" ? "" : f.matrizId, grupoId: tipo !== "grupo" ? "" : f.grupoId }))}
+                          className={`py-2 rounded-lg border text-xs font-medium transition-all ${
+                            formEmpresa.tipoEmpresa === tipo
+                              ? "bg-primary border-primary text-primary-foreground"
+                              : "bg-background border-input hover:border-primary/50"
+                          }`}>
+                          {tipo.charAt(0).toUpperCase() + tipo.slice(1)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {formEmpresa.tipoEmpresa === "filial" && (
+                    <div>
+                      <Label>ID da Empresa Matriz *</Label>
+                      <Input type="number" placeholder="Ex: 1" value={formEmpresa.matrizId} onChange={e => setFormEmpresa(f => ({ ...f, matrizId: e.target.value }))} />
+                    </div>
+                  )}
+
+                  {formEmpresa.tipoEmpresa === "grupo" && (
+                    <div>
+                      <Label>ID do Grupo Empresarial (opcional)</Label>
+                      <Input type="number" placeholder="Deixe em branco para novo" value={formEmpresa.grupoId} onChange={e => setFormEmpresa(f => ({ ...f, grupoId: e.target.value }))} />
+                    </div>
+                  )}
+
                   <div className="flex justify-end gap-2 pt-2">
                     <Button variant="outline" onClick={() => setModalEmpresa(false)}>Cancelar</Button>
-                    <Button onClick={() => criarEmpresaMut.mutate(formEmpresa)} disabled={criarEmpresaMut.isPending}>
+                    <Button onClick={() => criarEmpresaMut.mutate({
+                      ...formEmpresa,
+                      matrizId: formEmpresa.matrizId ? parseInt(formEmpresa.matrizId) : undefined,
+                      grupoId: formEmpresa.grupoId ? parseInt(formEmpresa.grupoId) : undefined,
+                    })} disabled={criarEmpresaMut.isPending}>
                       {criarEmpresaMut.isPending ? "Criando..." : "Criar Empresa"}
                     </Button>
                   </div>
