@@ -20,12 +20,13 @@ import {
   Megaphone, Server, Cpu, HardDrive, Network, Key, Bug, GitMerge,
   Building2, Receipt, Banknote, PieChart, UserPlus, GraduationCap,
   HeartHandshake, Award, Clipboard, Microscope, Thermometer, Leaf,
-  Globe, Plug, Zap, Search, ChevronDown, ChevronUp,
+  Globe, Plug, Zap, Search, ChevronDown, ChevronUp, X, CheckCircle,
+  Info, Ticket, Wrench as WrenchIcon,
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useViewAs } from "@/contexts/ViewAsContext";
 import { SeletorEmpresa } from "./SeletorEmpresa";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { DashboardLayoutSkeleton } from "./DashboardLayoutSkeleton";
 import { Button } from "./ui/button";
 import { useTranslation } from "react-i18next";
@@ -42,19 +43,37 @@ type MenuGroup = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ESTRUTURA DO MENU — Organizada, sem duplicatas, com todos os módulos
+// ESTRUTURA DO MENU — Limpa, intuitiva, máximo 10 grupos principais
 // ─────────────────────────────────────────────────────────────────────────────
 const getMenuGroups = (t: any): MenuGroup[] => [
-  // ── PRINCIPAL ──────────────────────────────────────────────────────────────
+  // ── INÍCIO ─────────────────────────────────────────────────────────────────
   {
-    label: "Principal",
+    label: "Início",
     icon: LayoutDashboard,
     items: [
       { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-      { icon: Brain, label: "Synapse AI", path: "/ia" },
+      { icon: Brain, label: "IA Synapse", path: "/ia" },
       { icon: MessageSquare, label: "Chat", path: "/chat" },
       { icon: Bell, label: "Alertas", path: "/gestao/alertas" },
       { icon: Calendar, label: "Calendário", path: "/gestao/calendario" },
+      { icon: CheckCircle, label: "Tarefas & Projetos", path: "/tarefas" },
+    ],
+  },
+
+  // ── FROTA & OPERAÇÕES ──────────────────────────────────────────────────────
+  {
+    label: "Frota & Operações",
+    icon: Truck,
+    items: [
+      { icon: Truck, label: "Veículos", path: "/veiculos" },
+      { icon: Users, label: "Motoristas", path: "/funcionarios" },
+      { icon: Navigation, label: "Viagens", path: "/viagens" },
+      { icon: Fuel, label: "Abastecimentos", path: "/abastecimentos" },
+      { icon: Calculator, label: "Simulador de Viagem", path: "/simulador-viagem" },
+      { icon: Wrench, label: "Manutenções", path: "/manutencoes" },
+      { icon: ClipboardList, label: "Plano de Manutenção", path: "/plano-manutencao" },
+      { icon: Gauge, label: "Combustível", path: "/gestao/estoque-combustivel" },
+      { icon: ClipboardCheck, label: "Conferência de Veículos", path: "/conferencia-veiculos" },
     ],
   },
 
@@ -69,36 +88,42 @@ const getMenuGroups = (t: any): MenuGroup[] => [
       { icon: FileText, label: "Notas Fiscais", path: "/notas-fiscais" },
       { icon: Scale, label: "Acerto de Carga", path: "/acerto-carga" },
       { icon: ClipboardList, label: "Carregamento", path: "/carregamento" },
-    ],
-  },
-
-  // ── OPERACIONAL ────────────────────────────────────────────────────────────
-  {
-    label: "Operacional",
-    icon: Navigation,
-    items: [
-      { icon: Navigation, label: "Viagens", path: "/viagens" },
-      { icon: Fuel, label: "Abastecimentos", path: "/abastecimentos" },
-      { icon: Calculator, label: "Simulador de Viagem", path: "/simulador-viagem" },
-      { icon: ClipboardCheck, label: "Checklist", path: "/checklist" },
-      { icon: BookOpen, label: "Relatos / Ocorrências", path: "/gestao/relatos" },
+      { icon: BookOpen, label: "Ocorrências", path: "/gestao/relatos" },
       { icon: AlertTriangle, label: "Multas", path: "/gestao/multas" },
       { icon: Shield, label: "Acidentes", path: "/gestao/acidentes" },
-      { icon: FileText, label: "Documentos da Frota", path: "/gestao/documentos" },
+      { icon: FileText, label: "Documentos", path: "/gestao/documentos" },
     ],
   },
 
-  // ── FROTA ──────────────────────────────────────────────────────────────────
+  // ── COMERCIAL ─────────────────────────────────────────────────────────────
   {
-    label: "Frota",
-    icon: Truck,
+    label: "Comercial",
+    icon: Target,
     items: [
-      { icon: Truck, label: "Veículos", path: "/veiculos" },
-      { icon: Users, label: "Motoristas", path: "/funcionarios" },
-      { icon: Wrench, label: "Manutenções", path: "/manutencoes" },
-      { icon: ClipboardList, label: "Plano de Manutenção", path: "/plano-manutencao" },
-      { icon: Gauge, label: "Estoque de Combustível", path: "/gestao/estoque-combustivel" },
-      { icon: ClipboardCheck, label: "Conferência de Veículos", path: "/conferencia-veiculos" },
+      { icon: Target, label: "Clientes", path: "/crm" },
+      { icon: TrendingUp, label: "Leads & Funil", path: "/crm/funil" },
+      { icon: ShoppingCart, label: "Pedidos de Venda", path: "/vendas" },
+      { icon: FileText, label: "Propostas", path: "/vendas/propostas" },
+      { icon: HeartHandshake, label: "Pós-Venda", path: "/crm/pos-venda" },
+      { icon: Megaphone, label: "Campanhas de Marketing", path: "/marketing/campanhas" },
+      { icon: Zap, label: "Automações de Marketing", path: "/marketing/automacoes" },
+      { icon: BarChart3, label: "Performance de Marketing", path: "/marketing/analytics" },
+    ],
+  },
+
+  // ── ESTOQUE & LOGÍSTICA ────────────────────────────────────────────────────
+  {
+    label: "Estoque & Logística",
+    icon: Warehouse,
+    items: [
+      { icon: PackageCheck, label: "Recebimento", path: "/recepcao" },
+      { icon: Warehouse, label: "Estoque", path: "/wms/estoque" },
+      { icon: Package, label: "Produtos", path: "/wms/produtos" },
+      { icon: ArrowLeftRight, label: "Movimentações", path: "/wms/movimentacoes" },
+      { icon: MapPin, label: "Endereçamento", path: "/wms/armazens" },
+      { icon: ClipboardCheck, label: "Inventário", path: "/wms/inventario" },
+      { icon: Thermometer, label: "Controle de Temperatura", path: "/logistica/temperatura" },
+      { icon: Leaf, label: "Rastreabilidade de Lote", path: "/logistica/rastreabilidade" },
     ],
   },
 
@@ -118,65 +143,9 @@ const getMenuGroups = (t: any): MenuGroup[] => [
     ],
   },
 
-  // ── CRM & VENDAS ───────────────────────────────────────────────────────────
+  // ── PESSOAS ────────────────────────────────────────────────────────────────
   {
-    label: "CRM & Vendas",
-    icon: Target,
-    items: [
-      { icon: Target, label: "Clientes & Leads", path: "/crm" },
-      { icon: Users, label: "Leads", path: "/crm/leads" },
-      { icon: BarChart3, label: "Funil de Vendas", path: "/crm/funil" },
-      { icon: ShoppingCart, label: "Pedidos de Venda", path: "/vendas" },
-      { icon: FileText, label: "Propostas Comerciais", path: "/vendas/propostas" },
-      { icon: HeartHandshake, label: "Pós-Venda / CS", path: "/crm/pos-venda" },
-    ],
-  },
-
-  // ── MARKETING ─────────────────────────────────────────────────────────────
-  {
-    label: "Marketing",
-    icon: Megaphone,
-    items: [
-      { icon: Megaphone, label: "Campanhas", path: "/marketing/campanhas" },
-      { icon: FileText, label: "E-mail Marketing", path: "/marketing/email" },
-      { icon: Globe, label: "Landing Pages", path: "/marketing/landing-pages" },
-      { icon: Users, label: "Segmentação de Leads", path: "/marketing/segmentacao" },
-      { icon: BarChart3, label: "Análise de Performance", path: "/marketing/analytics" },
-      { icon: Zap, label: "Automações", path: "/marketing/automacoes" },
-    ],
-  },
-
-  // ── WMS ────────────────────────────────────────────────────────────────────
-  {
-    label: "WMS / Armazém",
-    icon: Warehouse,
-    items: [
-      { icon: PackageCheck, label: "Recebimento (Putaway)", path: "/recepcao" },
-      { icon: Package, label: "Docas", path: "/recepcao/docas" },
-      { icon: Warehouse, label: "Estoque", path: "/wms/estoque" },
-      { icon: Package, label: "Produtos", path: "/wms/produtos" },
-      { icon: ArrowLeftRight, label: "Movimentações", path: "/wms/movimentacoes" },
-      { icon: MapPin, label: "Endereçamento", path: "/wms/armazens" },
-      { icon: ClipboardCheck, label: "Inventário", path: "/wms/inventario" },
-      { icon: BarChart3, label: "Acuracidade de Estoque", path: "/wms/acuracidade" },
-    ],
-  },
-
-  // ── LOGÍSTICA ──────────────────────────────────────────────────────────────
-  {
-    label: "Logística",
-    icon: Headphones,
-    items: [
-      { icon: Headphones, label: "SAC / Atendimento", path: "/logistica" },
-      { icon: Shield, label: "Licenças ANVISA/VISA", path: "/logistica/licencas" },
-      { icon: Thermometer, label: "Controle de Temperatura", path: "/logistica/temperatura" },
-      { icon: Leaf, label: "Rastreabilidade de Lote", path: "/logistica/rastreabilidade" },
-    ],
-  },
-
-  // ── RH ─────────────────────────────────────────────────────────────────────
-  {
-    label: "RH / Pessoas",
+    label: "Pessoas",
     icon: UserPlus,
     items: [
       { icon: Users, label: "Funcionários", path: "/rh/funcionarios" },
@@ -186,56 +155,35 @@ const getMenuGroups = (t: any): MenuGroup[] => [
       { icon: GraduationCap, label: "Treinamentos", path: "/rh/treinamentos" },
       { icon: PieChart, label: "People Analytics", path: "/rh/analytics" },
       { icon: HeartHandshake, label: "Clima Organizacional", path: "/rh/clima" },
+      { icon: UserCheck, label: "Controle de Visitas", path: "/recepcionista" },
     ],
   },
 
   // ── TI ─────────────────────────────────────────────────────────────────────
   {
-    label: "TI / Infraestrutura",
+    label: "TI",
     icon: Monitor,
     items: [
-      { icon: Bug, label: "Chamados (ITSM)", path: "/ti" },
+      { icon: Bug, label: "Chamados", path: "/ti" },
       { icon: HardDrive, label: "Inventário de Ativos", path: "/ti/inventario" },
-      { icon: Cpu, label: "Monitoramento de Hardware", path: "/ti/hardware" },
+      { icon: Cpu, label: "Monitoramento", path: "/ti/hardware" },
       { icon: Server, label: "Servidores & Rede", path: "/ti/servidores" },
-      { icon: Key, label: "Acessos Remotos (AnyDesk)", path: "/ti/acessos" },
+      { icon: Key, label: "Acessos Remotos", path: "/ti/acessos" },
       { icon: Shield, label: "Licenças de Software", path: "/ti/licencas" },
-      { icon: GitMerge, label: "Gestão de Mudanças", path: "/ti/mudancas" },
       { icon: ShoppingCart, label: "Compras de TI", path: "/ti/compras" },
       { icon: Network, label: "CMDB", path: "/ti/cmdb" },
     ],
   },
 
-  // ── RECEPÇÃO ───────────────────────────────────────────────────────────────
+  // ── RELATÓRIOS & BI ────────────────────────────────────────────────────────
   {
-    label: "Recepção",
-    icon: UserCheck,
-    items: [
-      { icon: UserCheck, label: "Controle de Visitas", path: "/recepcionista" },
-      { icon: ClipboardList, label: "Agendamentos", path: "/recepcionista/agendamentos" },
-    ],
-  },
-
-  // ── QUALIDADE ──────────────────────────────────────────────────────────────
-  {
-    label: "Qualidade (QMS)",
-    icon: Microscope,
-    items: [
-      { icon: Clipboard, label: "Não Conformidades", path: "/qualidade/nao-conformidades" },
-      { icon: Microscope, label: "Auditorias", path: "/qualidade/auditorias" },
-      { icon: FileText, label: "Documentos da Qualidade", path: "/qualidade/documentos" },
-      { icon: Thermometer, label: "Calibração", path: "/qualidade/calibracao" },
-    ],
-  },
-
-  // ── BI & RELATÓRIOS ────────────────────────────────────────────────────────
-  {
-    label: "BI & Relatórios",
+    label: "Relatórios & BI",
     icon: Activity,
     items: [
       { icon: Activity, label: "Business Intelligence", path: "/bi" },
       { icon: BarChart3, label: "Relatórios", path: "/relatorios" },
       { icon: TrendingUp, label: "Relatórios Avançados", path: "/relatorios-avancados" },
+      { icon: Clipboard, label: "Não Conformidades", path: "/qualidade/nao-conformidades" },
       { icon: FileSpreadsheet, label: "Importar / Exportar", path: "/import-export" },
     ],
   },
@@ -246,18 +194,9 @@ const getMenuGroups = (t: any): MenuGroup[] => [
     icon: Settings,
     items: [
       { icon: UserCog, label: "Usuários", path: "/usuarios" },
-      { icon: Settings, label: "Configurações da Empresa", path: "/empresa" },
-      { icon: HelpCircle, label: "Ajuda e Documentação", path: "/ajuda" },
-    ],
-  },
-
-  // ── INTEGRAÇÕES ────────────────────────────────────────────────────────────
-  {
-    label: "Integrações",
-    icon: Plug,
-    requiredRole: "admin_or_master",
-    items: [
+      { icon: Settings, label: "Configurações", path: "/empresa" },
       { icon: Plug, label: "Integrações", path: "/integracoes" },
+      { icon: HelpCircle, label: "Ajuda", path: "/ajuda" },
     ],
   },
 
@@ -301,8 +240,7 @@ function Sidebar({
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
   const [search, setSearch] = useState("");
 
-  const isActive = (path: string) =>
-    location === path || (path !== "/" && location.startsWith(path + "/"));
+  const isActive = (path: string) => location === path;
 
   const isGroupActive = (items: MenuItem[]) =>
     items.some((item) => isActive(item.path));
@@ -570,6 +508,183 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 // ─────────────────────────────────────────────────────────────────────────────
 // APP SHELL
 // ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// NOTIFICATION BELL COMPONENT
+// ─────────────────────────────────────────────────────────────────────────────
+type Notification = {
+  id: number;
+  tipo: "mensagem" | "chamado" | "alerta" | "ti" | "sistema";
+  titulo: string;
+  descricao: string;
+  lido: boolean;
+  createdAt: Date;
+};
+
+function NotificationBell() {
+  const [open, setOpen] = useState(false);
+  const [notifs, setNotifs] = useState<Notification[]>([
+    { id: 1, tipo: "mensagem", titulo: "Nova mensagem", descricao: "Carlos enviou uma mensagem no chat", lido: false, createdAt: new Date(Date.now() - 2 * 60000) },
+    { id: 2, tipo: "chamado", titulo: "Chamado SAC #0042", descricao: "Cliente BSB Transportes aguardando resposta", lido: false, createdAt: new Date(Date.now() - 15 * 60000) },
+    { id: 3, tipo: "ti", titulo: "Ticket TI #0018", descricao: "Impressora do setor fiscal sem papel", lido: false, createdAt: new Date(Date.now() - 30 * 60000) },
+    { id: 4, tipo: "alerta", titulo: "Estoque crítico", descricao: "Produto DIESEL S10 abaixo do mínimo", lido: true, createdAt: new Date(Date.now() - 60 * 60000) },
+    { id: 5, tipo: "sistema", titulo: "Backup concluído", descricao: "Backup automático realizado com sucesso", lido: true, createdAt: new Date(Date.now() - 120 * 60000) },
+  ]);
+
+  const unread = notifs.filter((n) => !n.lido).length;
+
+  const markAllRead = () => setNotifs((prev) => prev.map((n) => ({ ...n, lido: true })));
+  const markRead = (id: number) => setNotifs((prev) => prev.map((n) => n.id === id ? { ...n, lido: true } : n));
+  const removeNotif = (id: number) => setNotifs((prev) => prev.filter((n) => n.id !== id));
+
+  const iconMap = {
+    mensagem: <MessageSquare className="h-4 w-4 text-blue-500" />,
+    chamado: <Headphones className="h-4 w-4 text-orange-500" />,
+    ti: <Cpu className="h-4 w-4 text-purple-500" />,
+    alerta: <AlertTriangle className="h-4 w-4 text-red-500" />,
+    sistema: <CheckCircle className="h-4 w-4 text-green-500" />,
+  };
+
+  const timeAgo = (date: Date) => {
+    const mins = Math.floor((Date.now() - date.getTime()) / 60000);
+    if (mins < 1) return "agora";
+    if (mins < 60) return `${mins}min`;
+    return `${Math.floor(mins / 60)}h`;
+  };
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className="relative p-2 rounded-lg hover:bg-accent transition-colors"
+        title="Notificações"
+      >
+        <Bell className="h-5 w-5 text-muted-foreground" />
+        {unread > 0 && (
+          <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">
+            {unread > 9 ? "9+" : unread}
+          </span>
+        )}
+      </button>
+
+      {open && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
+          <div className="absolute right-0 top-10 z-50 w-80 bg-card border border-border rounded-xl shadow-2xl overflow-hidden">
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/30">
+              <div className="flex items-center gap-2">
+                <Bell className="h-4 w-4 text-primary" />
+                <span className="text-sm font-semibold">Notificações</span>
+                {unread > 0 && (
+                  <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{unread}</span>
+                )}
+              </div>
+              <div className="flex items-center gap-1">
+                {unread > 0 && (
+                  <button onClick={markAllRead} className="text-xs text-primary hover:underline">
+                    Marcar todas
+                  </button>
+                )}
+                <button onClick={() => setOpen(false)} className="p-1 rounded hover:bg-accent">
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* List */}
+            <div className="max-h-96 overflow-y-auto">
+              {notifs.length === 0 ? (
+                <div className="flex flex-col items-center gap-2 py-8 text-muted-foreground">
+                  <CheckCircle className="h-8 w-8 opacity-30" />
+                  <p className="text-sm">Nenhuma notificação</p>
+                </div>
+              ) : (
+                notifs.map((n) => (
+                  <div
+                    key={n.id}
+                    onClick={() => markRead(n.id)}
+                    className={`flex items-start gap-3 px-4 py-3 border-b border-border/50 cursor-pointer transition-colors hover:bg-accent/50 ${
+                      !n.lido ? "bg-primary/5" : ""
+                    }`}
+                  >
+                    <div className="mt-0.5 shrink-0">{iconMap[n.tipo]}</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className={`text-xs font-medium truncate ${!n.lido ? "text-foreground" : "text-muted-foreground"}`}>
+                          {n.titulo}
+                        </p>
+                        <span className="text-[10px] text-muted-foreground shrink-0">{timeAgo(n.createdAt)}</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground truncate mt-0.5">{n.descricao}</p>
+                    </div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); removeNotif(n.id); }}
+                      className="shrink-0 p-0.5 rounded hover:bg-accent opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="px-4 py-2 border-t border-border bg-muted/20">
+              <button className="text-xs text-primary hover:underline w-full text-center">
+                Ver todas as notificações
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FLOATING ACTION BUTTONS (Chat + IA)
+// ─────────────────────────────────────────────────────────────────────────────
+function FloatingActions({ navigate }: { navigate: (path: string) => void }) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div className="fixed bottom-6 left-4 z-30 flex flex-col-reverse items-start gap-2">
+      {/* Main toggle button */}
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="h-11 w-11 rounded-full bg-gradient-to-br from-blue-600 to-cyan-500 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center"
+        title="Ações rápidas"
+      >
+        {expanded ? <X className="h-5 w-5" /> : <Zap className="h-5 w-5" />}
+      </button>
+
+      {/* Chat button */}
+      {expanded && (
+        <button
+          onClick={() => { navigate("/chat"); setExpanded(false); }}
+          className="flex items-center gap-2 h-10 px-3 rounded-full bg-card border border-border text-foreground shadow-lg hover:bg-accent hover:scale-105 transition-all text-sm font-medium"
+          title="Abrir Chat"
+        >
+          <MessageSquare className="h-4 w-4 text-blue-500" />
+          <span>Chat</span>
+        </button>
+      )}
+
+      {/* IA button */}
+      {expanded && (
+        <button
+          onClick={() => { navigate("/ia"); setExpanded(false); }}
+          className="flex items-center gap-2 h-10 px-3 rounded-full bg-card border border-border text-foreground shadow-lg hover:bg-accent hover:scale-105 transition-all text-sm font-medium"
+          title="Abrir IA Synapse"
+        >
+          <Brain className="h-4 w-4 text-purple-500" />
+          <span>IA Synapse</span>
+        </button>
+      )}
+    </div>
+  );
+}
+
 function AppShell({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth();
   const { viewAs, exitAdminView, isSimulating } = useViewAs();
@@ -644,6 +759,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
           </button>
           <div className="flex-1" />
           <SeletorEmpresa />
+          <NotificationBell />
           {isSimulating && (
             <div className="flex items-center gap-2 bg-amber-500/15 border border-amber-500/40 text-amber-600 dark:text-amber-400 rounded-lg px-3 py-1.5 text-xs font-medium">
               <Shield className="h-3.5 w-3.5" />
@@ -659,6 +775,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
         </header>
         <main className="flex-1 overflow-auto p-4 md:p-6">{children}</main>
       </div>
+      <FloatingActions navigate={navigate} />
     </div>
   );
 }

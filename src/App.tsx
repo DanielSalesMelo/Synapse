@@ -63,6 +63,7 @@ import ConferenciaVeiculos from "./pages/ConferenciaVeiculos";
 import Recepcionista from "./pages/Recepcionista";
 import Logistica from "./pages/Logistica";
 import RH from "./pages/RH";
+import Tarefas from "./pages/Tarefas";
 
 function DashboardRoutes() {
   return (
@@ -220,6 +221,12 @@ function DashboardRoutes() {
         {/* Logística extras */}
         <Route path="/logistica/temperatura" component={Logistica} />
         <Route path="/logistica/rastreabilidade" component={Logistica} />
+
+        {/* Tarefas */}
+        <Route path="/tarefas" component={Tarefas} />
+        <Route path="/tarefas/kanban" component={Tarefas} />
+        <Route path="/tarefas/sprint" component={Tarefas} />
+        <Route path="/tarefas/lista" component={Tarefas} />
 
         {/* Qualidade */}
         <Route path="/qualidade/nao-conformidades" component={Auditoria} />

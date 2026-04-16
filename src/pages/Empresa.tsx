@@ -9,11 +9,13 @@ import { Building2, Users, Truck, MapPin, Phone, Mail, FileText, Shield, Save } 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { useLocation } from "wouter";
 
 export default function Empresa() {
   const { t } = useTranslation();
   const { data: stats } = trpc.dashboard.resumo.useQuery({ empresaId: 1 });
   const [editMode, setEditMode] = useState(false);
+  const [, navigate] = useLocation();
   const [form, setForm] = useState({
     nome: "BSB Transportes",
     cnpj: "",
@@ -252,7 +254,7 @@ export default function Empresa() {
               <p className="text-xs text-muted-foreground mb-4">
                 Defina níveis de acesso para cada membro da equipe: Operador, Despachante, Monitor ou Admin.
               </p>
-              <Button variant="outline" onClick={() => toast.info("Módulo de usuários em desenvolvimento — disponível em breve!")}>
+              <Button variant="outline" onClick={() => navigate("/usuarios")}>
                 <Users className="h-4 w-4 mr-2" />
                 Gerenciar Usuários
               </Button>

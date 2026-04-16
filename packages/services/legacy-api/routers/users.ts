@@ -1,14 +1,83 @@
-import { publicProcedure, router, adminProcedure, masterAdminProcedure } from "../_core/trpc";
+import { router, adminProcedure, masterAdminProcedure, protectedProcedure } from "../_core/trpc";
 import { z } from "zod";
-import { getAllUsers, updateUser, deleteUser, getDb } from "../db";
+import { getAllUsers, updateUser, deleteUser, getDb, getUserByEmail } from "../db";
 import { TRPCError } from "@trpc/server";
 import { users } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
+import bcrypt from "bcryptjs";
+
+// ─── Todos os perfis de acesso do Synapse ────────────────────────────────────
+const ALL_ROLES = [
+  "user",
+  "admin",
+  "master_admin",
+  "monitor",
+  "dispatcher",
+  "ti_master",
+  "financeiro",
+  "comercial",
+  "motorista",
+  "operador_wms",
+  "rh",
+] as const;
 
 export const usersRouter = router({
-  // Listar todos os usuários (apenas para admins)
-  listAll: adminProcedure.query(async ({ ctx }) => {
 
+  // ── Criar usuário (admin cria para sua empresa; master_admin pode escolher) ──
+  create: adminProcedure
+    .input(z.object({
+      name: z.string().min(2),
+      lastName: z.string().optional(),
+      email: z.string().email(),
+      password: z.string().min(6, "Senha deve ter ao menos 6 caracteres"),
+      phone: z.string().optional(),
+      role: z.enum(ALL_ROLES).default("user"),
+      empresaId: z.number().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+
+        // Verificar e-mail duplicado
+        const existing = await getUserByEmail(input.email).catch(() => null);
+        if (existing) throw new TRPCError({ code: "CONFLICT", message: "E-mail já cadastrado no sistema" });
+
+        // Determinar empresa vinculada
+        let targetEmpresaId = input.empresaId;
+        if (ctx.user.role !== "master_admin") {
+          targetEmpresaId = (ctx.user as any).empresaId;
+        }
+        if (!targetEmpresaId) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "É obrigatório vincular o usuário a uma empresa" });
+        }
+
+        // Apenas master_admin pode criar outro master_admin
+        if (input.role === "master_admin" && ctx.user.role !== "master_admin") {
+          throw new TRPCError({ code: "FORBIDDEN", message: "Apenas Master ADM pode criar outro Master ADM" });
+        }
+
+        const hashedPassword = await bcrypt.hash(input.password, 10);
+        await db.insert(users).values({
+          name: input.name,
+          lastName: input.lastName ?? "",
+          email: input.email,
+          password: hashedPassword,
+          phone: input.phone ?? "",
+          role: input.role as any,
+          status: "approved", // criado pelo admin já vem aprovado
+          empresaId: targetEmpresaId,
+        } as any);
+
+        return { success: true };
+      } catch (error) {
+        if (error instanceof TRPCError) throw error;
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao criar usuário" });
+      }
+    }),
+
+  // ── Listar todos os usuários ──────────────────────────────────────────────
+  listAll: adminProcedure.query(async ({ ctx }) => {
     try {
       const allUsers = await getAllUsers();
       // Admin só vê usuários da sua empresa; master_admin vê todos
@@ -33,7 +102,7 @@ export const usersRouter = router({
     }
   }),
 
-  // Atualizar dados do usuário
+  // ── Atualizar dados do usuário ────────────────────────────────────────────
   update: adminProcedure
     .input(z.object({
       id: z.number(),
@@ -41,11 +110,10 @@ export const usersRouter = router({
       lastName: z.string().optional(),
       email: z.string().email().optional(),
       phone: z.string().optional(),
-      role: z.enum(["user", "admin", "master_admin", "monitor", "dispatcher"]).optional(),
+      role: z.enum(ALL_ROLES).optional(),
       empresaId: z.number().nullable().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
-
       try {
         const updateData: Record<string, unknown> = {};
         if (input.name !== undefined) updateData.name = input.name;
@@ -54,7 +122,7 @@ export const usersRouter = router({
         if (input.phone !== undefined) updateData.phone = input.phone;
         if (input.role !== undefined) {
           if (input.role === "master_admin" && ctx.user.role !== "master_admin") {
-            throw new TRPCError({ code: "FORBIDDEN", message: "Apenas master_admin pode promover a master_admin" });
+            throw new TRPCError({ code: "FORBIDDEN", message: "Apenas Master ADM pode promover a Master ADM" });
           }
           updateData.role = input.role;
         }
@@ -63,19 +131,73 @@ export const usersRouter = router({
         await updateUser(input.id, updateData);
         return { success: true };
       } catch (error) {
-        console.error("Erro ao atualizar usuário:", error);
+        if (error instanceof TRPCError) throw error;
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao atualizar usuário" });
       }
     }),
 
-  // Aprovar usuário (mudar status de pending para approved)
+  // ── Trocar senha de qualquer usuário (admin/master) ───────────────────────
+  changePassword: adminProcedure
+    .input(z.object({
+      userId: z.number(),
+      newPassword: z.string().min(6, "Senha deve ter ao menos 6 caracteres"),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+
+        // Admin só pode trocar senha de usuários da mesma empresa
+        if (ctx.user.role !== "master_admin") {
+          const [target] = await db.select().from(users).where(eq(users.id, input.userId));
+          if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "Usuário não encontrado" });
+          if ((target as any).empresaId !== (ctx.user as any).empresaId) {
+            throw new TRPCError({ code: "FORBIDDEN", message: "Sem permissão para alterar este usuário" });
+          }
+        }
+
+        const hashedPassword = await bcrypt.hash(input.newPassword, 10);
+        await db.update(users).set({ password: hashedPassword } as any).where(eq(users.id, input.userId));
+        return { success: true };
+      } catch (error) {
+        if (error instanceof TRPCError) throw error;
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao trocar senha" });
+      }
+    }),
+
+  // ── Alterar própria senha (usuário logado) ────────────────────────────────
+  changeOwnPassword: protectedProcedure
+    .input(z.object({
+      currentPassword: z.string().min(1, "Informe a senha atual"),
+      newPassword: z.string().min(6, "Nova senha deve ter ao menos 6 caracteres"),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+
+        const [currentUser] = await db.select().from(users).where(eq(users.id, ctx.user.id));
+        if (!currentUser) throw new TRPCError({ code: "NOT_FOUND", message: "Usuário não encontrado" });
+
+        const valid = await bcrypt.compare(input.currentPassword, currentUser.password);
+        if (!valid) throw new TRPCError({ code: "UNAUTHORIZED", message: "Senha atual incorreta" });
+
+        const hashedPassword = await bcrypt.hash(input.newPassword, 10);
+        await db.update(users).set({ password: hashedPassword } as any).where(eq(users.id, ctx.user.id));
+        return { success: true };
+      } catch (error) {
+        if (error instanceof TRPCError) throw error;
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao alterar senha" });
+      }
+    }),
+
+  // ── Aprovar usuário ───────────────────────────────────────────────────────
   approve: adminProcedure
     .input(z.object({
       id: z.number(),
       empresaId: z.number().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
-
       try {
         const updateData: Record<string, unknown> = { status: "approved" };
         if (ctx.user.role === "admin" && (ctx.user as any).empresaId) {
@@ -86,44 +208,35 @@ export const usersRouter = router({
         await updateUser(input.id, updateData);
         return { success: true };
       } catch (error) {
-        console.error("Erro ao aprovar usuário:", error);
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao aprovar usuário" });
       }
     }),
 
-  // Rejeitar usuário (mudar status de pending para rejected)
+  // ── Rejeitar usuário ──────────────────────────────────────────────────────
   reject: adminProcedure
-    .input(z.object({
-      id: z.number(),
-    }))
-    .mutation(async ({ input, ctx }) => {
-
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input }) => {
       try {
         await updateUser(input.id, { status: "rejected" });
         return { success: true };
       } catch (error) {
-        console.error("Erro ao rejeitar usuário:", error);
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao rejeitar usuário" });
       }
     }),
 
-  // Deletar usuário
+  // ── Deletar usuário ───────────────────────────────────────────────────────
   delete: adminProcedure
-    .input(z.object({
-      id: z.number(),
-    }))
-    .mutation(async ({ input, ctx }) => {
-
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input }) => {
       try {
         await deleteUser(input.id);
         return { success: true };
       } catch (error) {
-        console.error("Erro ao deletar usuário:", error);
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao deletar usuário" });
       }
     }),
 
-  // Vincular usuário a uma empresa (master_admin only)
+  // ── Vincular usuário a empresa (master_admin only) ────────────────────────
   setEmpresa: masterAdminProcedure
     .input(z.object({
       userId: z.number(),
@@ -140,4 +253,20 @@ export const usersRouter = router({
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao vincular empresa" });
       }
     }),
+
+  // ── Listar empresas disponíveis para vínculo ──────────────────────────────
+  listEmpresas: adminProcedure.query(async ({ ctx }) => {
+    try {
+      const db = await getDb();
+      if (!db) return [];
+      const { empresas } = await import("../drizzle/schema");
+      const all = await db.select({ id: empresas.id, nome: empresas.nome }).from(empresas);
+      if (ctx.user.role !== "master_admin") {
+        return all.filter((e) => e.id === (ctx.user as any).empresaId);
+      }
+      return all;
+    } catch {
+      return [];
+    }
+  }),
 });

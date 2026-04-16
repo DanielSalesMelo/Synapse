@@ -57,6 +57,13 @@
       "when": 1774629370933,
       "tag": "0007_add_grupo_tipo_empresa",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1774629370934,
+      "tag": "0008_all_missing_tables",
+      "breakpoints": true
     }
   ]
 }
