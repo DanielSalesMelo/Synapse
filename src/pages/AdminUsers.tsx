@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Users, Edit2, Trash2, CheckCircle, XCircle, Search,
+  Users, Edit2, Trash2, CheckCircle, XCircle, Search, KeyRound,
   AlertCircle, Loader2, Eye, EyeOff, UserPlus,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
@@ -48,7 +48,28 @@ export default function AdminUsers() {
     phone: "",
     role: "user",
     password: "",
+    empresaId: 1,
+    setor: "",
+    cargo: "",
   });
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [passwordUserId, setPasswordUserId] = useState<number | null>(null);
+
+  const ALL_ROLES = [
+    { value: "master_admin",  label: "Master ADM",       desc: "Acesso total a todas as empresas" },
+    { value: "ti_master",     label: "TI Master",         desc: "TI completo + todas as empresas" },
+    { value: "admin",         label: "Admin",             desc: "Tudo da empresa, exceto master" },
+    { value: "financeiro",    label: "Financeiro",        desc: "Financeiro + Relatórios" },
+    { value: "comercial",     label: "Comercial",         desc: "CRM + Vendas + Marketing" },
+    { value: "dispatcher",    label: "Despachante",       desc: "Despachante + Frota" },
+    { value: "motorista",     label: "Motorista",         desc: "Viagens + Checklist" },
+    { value: "wms_operator",  label: "Operador WMS",      desc: "Estoque + Logística" },
+    { value: "rh",            label: "RH",                desc: "Pessoas + Ponto" },
+    { value: "ti",            label: "TI",                desc: "TI da empresa" },
+    { value: "monitor",       label: "Monitor",           desc: "Dashboard + BI (leitura)" },
+    { value: "user",          label: "Usuário",           desc: "Acesso básico" },
+  ];
   const [showCreateDialog, setShowCreateDialog] = useState(false);
 
   // Queries e Mutations
@@ -95,8 +116,29 @@ export default function AdminUsers() {
       phone: user.phone,
       role: user.role,
       password: "",
+      empresaId: (user as any).empresaId || 1,
+      setor: (user as any).setor || "",
+      cargo: (user as any).cargo || "",
     });
     setShowEditDialog(true);
+  };
+
+  const handleChangePassword = (userId: number) => {
+    setPasswordUserId(userId);
+    setNewPassword("");
+    setShowPasswordDialog(true);
+  };
+
+  const handleSavePassword = async () => {
+    if (!passwordUserId || !newPassword || newPassword.length < 6) return;
+    try {
+      await updateMutation.mutateAsync({ id: passwordUserId, password: newPassword } as any);
+      setShowPasswordDialog(false);
+      setNewPassword("");
+      setPasswordUserId(null);
+    } catch (error) {
+      console.error("Erro ao alterar senha:", error);
+    }
   };
 
   const handleCreateClick = () => {
@@ -107,6 +149,9 @@ export default function AdminUsers() {
       phone: "",
       role: "user",
       password: "",
+      empresaId: 1,
+      setor: "",
+      cargo: "",
     });
     setShowCreateDialog(true);
   };
@@ -119,9 +164,12 @@ export default function AdminUsers() {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        password: formData.password || "123456", // Senha padrão se não informada
+        password: formData.password || "123456",
         role: formData.role as any,
-      });
+        empresaId: formData.empresaId,
+        setor: formData.setor,
+        cargo: formData.cargo,
+      } as any);
       setShowCreateDialog(false);
       refetch();
     } catch (error) {
@@ -387,6 +435,15 @@ export default function AdminUsers() {
                             size="sm"
                             variant="outline"
                             className="h-8 w-8 p-0"
+                            onClick={() => handleChangePassword(user.id)}
+                            title="Alterar Senha"
+                          >
+                            <KeyRound className="h-4 w-4 text-blue-500" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 w-8 p-0"
                             onClick={() => handleDeleteClick(user.id)}
                             title="Deletar"
                           >
@@ -458,11 +515,38 @@ export default function AdminUsers() {
                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                 className="w-full px-3 py-2 border border-input rounded-md bg-background text-sm"
               >
-                <option value="user">Usuário</option>
-                <option value="admin">Administrador</option>
-                <option value="monitor">Monitor</option>
-                <option value="dispatcher">Despachante</option>
+                {ALL_ROLES.map(r => (
+                  <option key={r.value} value={r.value}>{r.label} — {r.desc}</option>
+                ))}
               </select>
+            </div>
+            <div>
+              <Label htmlFor="edit-empresaId">ID da Empresa</Label>
+              <Input
+                id="edit-empresaId"
+                type="number"
+                value={formData.empresaId}
+                onChange={(e) => setFormData({ ...formData, empresaId: Number(e.target.value) })}
+                placeholder="ID da empresa (ex: 1)"
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-setor">Setor</Label>
+              <Input
+                id="edit-setor"
+                value={formData.setor}
+                onChange={(e) => setFormData({ ...formData, setor: e.target.value })}
+                placeholder="Ex: Financeiro, TI, Logística"
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-cargo">Cargo</Label>
+              <Input
+                id="edit-cargo"
+                value={formData.cargo}
+                onChange={(e) => setFormData({ ...formData, cargo: e.target.value })}
+                placeholder="Ex: Analista, Gerente, Motorista"
+              />
             </div>
           </div>
           <DialogFooter>
@@ -536,11 +620,38 @@ export default function AdminUsers() {
                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                 className="w-full px-3 py-2 border border-input rounded-md bg-background text-sm"
               >
-                <option value="user">Usuário</option>
-                <option value="admin">Administrador</option>
-                <option value="monitor">Monitor</option>
-                <option value="dispatcher">Despachante</option>
+                {ALL_ROLES.map(r => (
+                  <option key={r.value} value={r.value}>{r.label} — {r.desc}</option>
+                ))}
               </select>
+            </div>
+            <div>
+              <Label htmlFor="create-empresaId">ID da Empresa</Label>
+              <Input
+                id="create-empresaId"
+                type="number"
+                value={formData.empresaId}
+                onChange={(e) => setFormData({ ...formData, empresaId: Number(e.target.value) })}
+                placeholder="ID da empresa (ex: 1)"
+              />
+            </div>
+            <div>
+              <Label htmlFor="create-setor">Setor</Label>
+              <Input
+                id="create-setor"
+                value={formData.setor}
+                onChange={(e) => setFormData({ ...formData, setor: e.target.value })}
+                placeholder="Ex: Financeiro, TI, Logística"
+              />
+            </div>
+            <div>
+              <Label htmlFor="create-cargo">Cargo</Label>
+              <Input
+                id="create-cargo"
+                value={formData.cargo}
+                onChange={(e) => setFormData({ ...formData, cargo: e.target.value })}
+                placeholder="Ex: Analista, Gerente, Motorista"
+              />
             </div>
           </div>
           <DialogFooter>
@@ -549,6 +660,37 @@ export default function AdminUsers() {
             </Button>
             <Button onClick={handleSaveCreate} disabled={registerMutation.isPending}>
               {registerMutation.isPending ? "Criando..." : "Criar Usuário"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Change Password Dialog */}
+      <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Alterar Senha do Usuário</DialogTitle>
+            <DialogDescription>Digite a nova senha para este usuário. Mínimo 6 caracteres.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="new-password">Nova Senha</Label>
+              <Input
+                id="new-password"
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Nova senha (mín. 6 caracteres)"
+              />
+            </div>
+            {newPassword.length > 0 && newPassword.length < 6 && (
+              <p className="text-xs text-red-500">A senha deve ter pelo menos 6 caracteres.</p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowPasswordDialog(false)}>Cancelar</Button>
+            <Button onClick={handleSavePassword} disabled={newPassword.length < 6}>
+              Salvar Nova Senha
             </Button>
           </DialogFooter>
         </DialogContent>

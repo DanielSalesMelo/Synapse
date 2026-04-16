@@ -251,9 +251,16 @@ function Sidebar({
 
   const roleLabel =
     user?.role === "master_admin" ? "Master ADM" :
-    user?.role === "admin" ? "Administrador" :
-    user?.role === "dispatcher" ? "Despachante" :
-    user?.role === "monitor" ? "Monitor" : "Usuário";
+    user?.role === "ti_master"    ? "TI Master" :
+    user?.role === "admin"        ? "Administrador" :
+    user?.role === "financeiro"   ? "Financeiro" :
+    user?.role === "comercial"    ? "Comercial" :
+    user?.role === "dispatcher"   ? "Despachante" :
+    user?.role === "motorista"    ? "Motorista" :
+    user?.role === "wms_operator" ? "Operador WMS" :
+    user?.role === "rh"           ? "RH" :
+    user?.role === "ti"           ? "TI" :
+    user?.role === "monitor"      ? "Monitor" : "Usuário";
 
   const handleNav = (path: string) => {
     const scrollTop = navRef.current?.scrollTop ?? 0;
@@ -283,13 +290,42 @@ function Sidebar({
       })).filter((g) => g.items.length > 0)
     : menuGroups;
 
-  const visibleGroups = filteredGroups.filter(
-    (group) =>
-      !group.requiredRole ||
-      user?.role === group.requiredRole ||
-      (group.requiredRole === "admin_or_master" &&
-        (user?.role === "admin" || user?.role === "master_admin"))
-  );
+  // Roles que têm acesso total (vêem tudo)
+  const FULL_ACCESS_ROLES = ["master_admin", "ti_master", "admin"];
+
+  // Mapa de acesso por grupo: quais roles podem ver cada grupo
+  const GROUP_ACCESS: Record<string, string[]> = {
+    "INÍCIO":               [...FULL_ACCESS_ROLES, "financeiro", "comercial", "dispatcher", "motorista", "wms_operator", "rh", "ti", "monitor", "user"],
+    "FROTA & OPERAÇÕES":   [...FULL_ACCESS_ROLES, "dispatcher", "motorista"],
+    "CRM & VENDAS":         [...FULL_ACCESS_ROLES, "comercial"],
+    "MARKETING":            [...FULL_ACCESS_ROLES, "comercial"],
+    "WMS / ARMÁZEM":       [...FULL_ACCESS_ROLES, "wms_operator"],
+    "LOGÍSTICA":            [...FULL_ACCESS_ROLES, "wms_operator", "dispatcher"],
+    "FINANCEIRO":           [...FULL_ACCESS_ROLES, "financeiro"],
+    "RH / PESSOAS":         [...FULL_ACCESS_ROLES, "rh"],
+    "TI / INFRAESTRUTURA":  [...FULL_ACCESS_ROLES, "ti"],
+    "RECEPÇÃO":            [...FULL_ACCESS_ROLES, "user"],
+    "QUALIDADE (QMS)":      [...FULL_ACCESS_ROLES],
+    "BI & RELATÓRIOS":     [...FULL_ACCESS_ROLES, "financeiro", "monitor"],
+    "SISTEMA":              [...FULL_ACCESS_ROLES, "ti"],
+    "INTEGRAÇÕES":         [...FULL_ACCESS_ROLES, "ti"],
+    "MASTER ADMIN":         ["master_admin", "ti_master"],
+  };
+
+  const canSeeGroup = (groupLabel: string): boolean => {
+    if (!user?.role) return false;
+    // Master ADM e TI Master vêem tudo sempre
+    if (user.role === "master_admin" || user.role === "ti_master") return true;
+    // Verifica requiredRole legado
+    const group = filteredGroups.find(g => g.label === groupLabel);
+    if (group?.requiredRole === "master_admin") return false;
+    // Verifica mapa de acesso
+    const allowed = GROUP_ACCESS[groupLabel];
+    if (!allowed) return true; // grupo sem restrição = todos vêem
+    return allowed.includes(user.role);
+  };
+
+  const visibleGroups = filteredGroups.filter((group) => canSeeGroup(group.label));
 
   const languages = [
     { code: "pt", label: "PT", flag: "🇧🇷" },
