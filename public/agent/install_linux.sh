@@ -49,11 +49,11 @@ if [ -z "$PAIR_CODE" ]; then
     exit 1
 fi
 
-# Pergunta a URL do servidor
-read -p "URL do servidor Synapse (ex: https://seu-servidor.com): " SERVER_URL
+# Pergunta a URL do servidor (com valor padrão)
+DEFAULT_URL="https://synapse-backend.railway.app"
+read -p "URL do servidor Synapse [$DEFAULT_URL]: " SERVER_URL
 if [ -z "$SERVER_URL" ]; then
-    echo -e "${RED}[ERRO] URL do servidor não pode ser vazia.${NC}"
-    exit 1
+    SERVER_URL=$DEFAULT_URL
 fi
 
 # Cria pasta de instalação
@@ -85,6 +85,7 @@ Wants=network-online.target
 
 [Service]
 Type=simple
+WorkingDirectory=$INSTALL_DIR
 ExecStart=/usr/bin/python3 $INSTALL_DIR/synapse_agent.py --config $INSTALL_DIR/synapse_agent.conf
 Restart=always
 RestartSec=30
@@ -101,7 +102,7 @@ EOF
 else
     # Cria script de inicialização via cron
     echo "Registrando inicialização via cron..."
-    CRON_CMD="@reboot python3 $INSTALL_DIR/synapse_agent.py --config $INSTALL_DIR/synapse_agent.conf >> /var/log/synapse-agent.log 2>&1"
+    CRON_CMD="@reboot cd $INSTALL_DIR && python3 $INSTALL_DIR/synapse_agent.py --config $INSTALL_DIR/synapse_agent.conf >> /var/log/synapse-agent.log 2>&1"
     (crontab -l 2>/dev/null | grep -v synapse_agent; echo "$CRON_CMD") | crontab -
     echo -e "${GREEN}[OK] Agente registrado no cron para iniciar no boot.${NC}"
 fi
@@ -109,6 +110,9 @@ fi
 # Realiza o pareamento inicial
 echo ""
 echo "Realizando pareamento com o servidor Synapse..."
+echo "Servidor: $SERVER_URL"
+echo "Código: $PAIR_CODE"
+echo ""
 python3 "$INSTALL_DIR/synapse_agent.py" --config "$INSTALL_DIR/synapse_agent.conf" --pair-only && \
     echo -e "${GREEN}[OK] Pareamento realizado com sucesso!${NC}" || \
     echo -e "${YELLOW}[AVISO] Pareamento não concluído. O agente tentará novamente ao iniciar.${NC}"

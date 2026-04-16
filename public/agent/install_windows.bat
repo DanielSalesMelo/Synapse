@@ -43,13 +43,10 @@ if "%PAIR_CODE%"=="" (
     exit /b
 )
 
-:: Pergunta a URL do servidor
-set /p SERVER_URL="URL do servidor Synapse (ex: https://seu-servidor.com): "
-if "%SERVER_URL%"=="" (
-    echo [ERRO] URL do servidor nao pode ser vazia.
-    pause
-    exit /b
-)
+:: Pergunta a URL do servidor (com valor padrao)
+set DEFAULT_URL=https://synapse-backend.railway.app
+set /p SERVER_URL="URL do servidor Synapse [%DEFAULT_URL%]: "
+if "%SERVER_URL%"=="" set SERVER_URL=%DEFAULT_URL%
 
 :: Cria pasta de instalacao na pasta do usuario para evitar erros de permissao
 set INSTALL_DIR=%APPDATA%\SynapseAgent
@@ -69,6 +66,7 @@ echo PAIR_CODE=%PAIR_CODE%
 :: Cria o script de inicializacao
 (
 echo @echo off
+echo cd /d "%INSTALL_DIR%"
 echo python "%INSTALL_DIR%\synapse_agent.py" --config "%INSTALL_DIR%\synapse_agent.conf"
 ) > "%INSTALL_DIR%\start_agent.bat"
 
@@ -84,10 +82,16 @@ if errorlevel 1 (
 :: Executa o pareamento inicial
 echo.
 echo Realizando pareamento com o servidor Synapse...
+echo Servidor: %SERVER_URL%
+echo Codigo: %PAIR_CODE%
+echo.
 python "%INSTALL_DIR%\synapse_agent.py" --config "%INSTALL_DIR%\synapse_agent.conf" --pair-only
 if errorlevel 1 (
+    echo.
     echo [AVISO] Pareamento nao foi concluido. O agente tentara novamente ao iniciar.
+    echo Verifique se o codigo esta correto e se o servidor esta online.
 ) else (
+    echo.
     echo [OK] Pareamento realizado com sucesso!
 )
 
