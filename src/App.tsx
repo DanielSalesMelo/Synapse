@@ -171,6 +171,7 @@ function DashboardRoutes() {
         <Route path="/ti/mudancas" component={TI} />
         <Route path="/ti/compras" component={TI} />
         <Route path="/ti/cmdb" component={TI} />
+        <Route path="/ti/certificados" component={TI} />
 
         {/* Marketing */}
         <Route path="/marketing/campanhas" component={Marketing} />

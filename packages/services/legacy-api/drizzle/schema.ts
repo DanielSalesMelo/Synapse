@@ -1492,12 +1492,12 @@ export type TicketTi = typeof ticketsTi.$inferSelect;
 export const ativosTi = pgTable("ativos_ti", {
   id: serial("id").primaryKey(),
   empresaId: integer("empresaId").notNull(),
-  tipo: varchar("tipo", { length: 100 }).notNull(), // notebook, desktop, impressora, servidor, switch, etc.
-  marca: varchar("marca", { length: 100 }),
-  modelo: varchar("modelo", { length: 100 }),
-  patrimonio: varchar("patrimonio", { length: 50 }),
-  serial: varchar("serial", { length: 100 }),
-  responsavelId: integer("responsavelId"),
+  hostname: varchar("hostname", { length: 255 }).notNull(),
+  ip: varchar("ip", { length: 45 }),
+  so: varchar("so", { length: 100 }),
+  mac: varchar("mac", { length: 100 }),
+  anydeskId: varchar("anydeskId", { length: 50 }),
+  token: varchar("token", { length: 255 }).unique(),
   setor: varchar("setor", { length: 100 }),
   status: varchar("status", { length: 50 }).default("ativo").notNull(),
   dataAquisicao: timestamp("dataAquisicao"),
@@ -1508,6 +1508,21 @@ export const ativosTi = pgTable("ativos_ti", {
   deletedAt: timestamp("deletedAt"),
 });
 export type AtivoTi = typeof ativosTi.$inferSelect;
+
+export const certificadosTi = pgTable("certificados_ti", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  nome: varchar("nome", { length: 255 }).notNull(),
+  tipo: varchar("tipo", { length: 50 }).notNull(),
+  vencimento: timestamp("vencimento").notNull(),
+  senha: text("senha"),
+  observacoes: text("observacoes"),
+  alertaEnviado: boolean("alertaEnviado").default(false),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type CertificadoTi = typeof certificadosTi.$inferSelect;
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // MÓDULO: BI (Business Intelligence - Dashboards de Decisão)

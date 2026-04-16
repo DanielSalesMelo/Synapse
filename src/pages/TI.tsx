@@ -403,7 +403,18 @@ export default function TI() {
   const { user } = useAuth();
   const empresaId = user?.empresaId ?? 0;
 
-  const [tab, setTab] = useState("dashboard");
+  const [location, setLocation] = useLocation();
+  const [tab, setTab] = useState(location.split("/")[2] || "dashboard");
+
+  useEffect(() => {
+    const currentTab = location.split("/")[2] || "dashboard";
+    if (currentTab !== tab) setTab(currentTab);
+  }, [location]);
+
+  const handleTabChange = (newTab: string) => {
+    setTab(newTab);
+    setLocation(`/ti/${newTab === "dashboard" ? "" : newTab}`);
+  };
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("todos");
   const [showNew, setShowNew] = useState(false);
@@ -412,6 +423,7 @@ export default function TI() {
   const [showNewCompra, setShowNewCompra] = useState(false);
   const [showNewManutencao, setShowNewManutencao] = useState(false);
   const [showNewAcesso, setShowNewAcesso] = useState(false);
+  const [showNewCertificado, setShowNewCertificado] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState<any>(null);
   const [selectedAgente, setSelectedAgente] = useState<any>(null);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
@@ -431,6 +443,7 @@ export default function TI() {
   const alertasQ = trpc.ti.listAlertas.useQuery({ limit: 20 }, { refetchInterval: 15000 });
   const manutencoesQ = trpc.ti.listManutencoes.useQuery(undefined, { refetchInterval: 60000 });
   const codigosQ = trpc.ti.listCodigosPareamento.useQuery(undefined, { refetchInterval: 30000 });
+  const certificadosQ = trpc.ti.listCertificados.useQuery({ search }, { refetchInterval: 60000 });
   const agenteMetricas = trpc.ti.getAgenteMetricas.useQuery(
     { agenteId: selectedAgente?.id, periodo: "24h" },
     { enabled: !!selectedAgente?.id, refetchInterval: 30000 }
@@ -458,6 +471,13 @@ export default function TI() {
   });
   const createAcesso = trpc.ti.createAcesso.useMutation({
     onSuccess: () => { acessosQ.refetch(); setShowNewAcesso(false); toast.success("Acesso cadastrado!"); },
+  });
+  const createCertificado = trpc.ti.createCertificado.useMutation({
+    onSuccess: () => { certificadosQ.refetch(); setShowNewCertificado(false); toast.success("Certificado cadastrado!"); },
+    onError: (err) => toast.error("Erro ao cadastrar: " + err.message),
+  });
+  const deleteCertificado = trpc.ti.deleteCertificado.useMutation({
+    onSuccess: () => { certificadosQ.refetch(); toast.success("Certificado removido!"); },
   });
   const gerarCodigo = trpc.ti.gerarCodigoPareamento.useMutation({
     onSuccess: () => { codigosQ.refetch(); toast.success("Código gerado!"); },
@@ -524,6 +544,9 @@ export default function TI() {
   const [acessoForm, setAcessoForm] = useState({
     maquina: "", setor: "", anydesk: "", teamviewer: "", responsavel: "", senha: "",
   });
+  const [certificadoForm, setCertificadoForm] = useState({
+    nome: "", tipo: "A1", vencimento: "", senha: "", observacoes: "",
+  });
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -541,6 +564,9 @@ export default function TI() {
   const kpiAtencao = (alertasQ.data ?? []).filter((a: any) => a.severidade === "atencao").length;
   const kpiCriticos = (alertasQ.data ?? []).filter((a: any) => a.severidade === "critico").length;
   const kpiLicencas = licencasQ.data?.length ?? 0;
+  const kpiCertificados = dashboard.data?.certificados?.total ?? 0;
+  const kpiCertificadosExpirando = dashboard.data?.certificados?.expirando ?? 0;
+  const kpiCertificadosVencidos = dashboard.data?.certificados?.vencidos ?? 0;
 
   return (
     <div className="space-y-6">
@@ -644,7 +670,8 @@ export default function TI() {
           { label: "Online", value: kpiOnline, color: "text-green-600", border: "border-green-200" },
           { label: "Atenção", value: kpiAtencao, color: "text-yellow-600", border: "border-yellow-200" },
           { label: "Críticos", value: kpiCriticos, color: "text-red-600", border: "border-red-200" },
-          { label: "Licenças", value: kpiLicencas, color: "" },
+          { label: "Certificados", value: kpiCertificados, color: "" },
+          { label: "Vencendo/Vencidos", value: `${kpiCertificadosExpirando}/${kpiCertificadosVencidos}`, color: (kpiCertificadosExpirando + kpiCertificadosVencidos) > 0 ? "text-orange-600" : "" },
         ].map((k) => (
           <Card key={k.label} className={k.border ?? ""}>
             <CardHeader className="pb-1 pt-3 px-3">
@@ -658,7 +685,7 @@ export default function TI() {
       </div>
 
       {/* ── Tabs ── */}
-      <Tabs value={tab} onValueChange={setTab}>
+      <Tabs value={tab} onValueChange={handleTabChange}>
         <TabsList className="flex-wrap h-auto gap-1">
           <TabsTrigger value="dashboard"><Activity className="h-4 w-4 mr-1" />Visão Geral</TabsTrigger>
           <TabsTrigger value="tickets" className="relative">
@@ -672,6 +699,7 @@ export default function TI() {
           <TabsTrigger value="compras"><ShoppingCart className="h-4 w-4 mr-1" />Compras</TabsTrigger>
           <TabsTrigger value="manutencao"><Wrench className="h-4 w-4 mr-1" />Manutenção</TabsTrigger>
           <TabsTrigger value="agentes"><Network className="h-4 w-4 mr-1" />Agentes</TabsTrigger>
+          <TabsTrigger value="certificados"><Shield className="h-4 w-4 mr-1" />Certificados</TabsTrigger>
           <TabsTrigger value="alertas" className="relative">
             <Bell className="h-4 w-4 mr-1" />Alertas
             {kpiCriticos > 0 && <span className="ml-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full bg-red-500 text-white text-[10px] animate-pulse">{kpiCriticos}</span>}
@@ -1103,6 +1131,91 @@ export default function TI() {
                 ))}
                 {(acessosQ.data ?? []).length === 0 && (
                   <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">Nenhum acesso cadastrado</TableCell></TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </Card>
+        </TabsContent>
+
+        {/* ══ CERTIFICADOS DIGITAIS ══ */}
+        <TabsContent value="certificados" className="space-y-4 mt-4">
+          <div className="flex justify-between items-center flex-wrap gap-2">
+            <p className="text-sm text-muted-foreground">Gerenciamento de certificados digitais (A1, A3, SSL) e alertas de vencimento.</p>
+            <Dialog open={showNewCertificado} onOpenChange={setShowNewCertificado}>
+              <DialogTrigger asChild>
+                <Button size="sm"><Plus className="h-4 w-4 mr-2" />Novo Certificado</Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-lg">
+                <DialogHeader><DialogTitle>Cadastrar Certificado Digital</DialogTitle></DialogHeader>
+                <form onSubmit={(e) => { e.preventDefault(); createCertificado.mutate(certificadoForm); }} className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="col-span-2"><Label>Nome / Titular *</Label><Input value={certificadoForm.nome} onChange={(e) => setCertificadoForm((p) => ({ ...p, nome: e.target.value }))} placeholder="Ex: Empresa LTDA - E-CNPJ" required /></div>
+                    <div><Label>Tipo</Label>
+                      <Select value={certificadoForm.tipo} onValueChange={(v) => setCertificadoForm((p) => ({ ...p, tipo: v }))}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="A1">A1 (Arquivo)</SelectItem>
+                          <SelectItem value="A3">A3 (Token/Cartão)</SelectItem>
+                          <SelectItem value="SSL">SSL (Website)</SelectItem>
+                          <SelectItem value="Outro">Outro</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div><Label>Vencimento *</Label><Input type="date" value={certificadoForm.vencimento} onChange={(e) => setCertificadoForm((p) => ({ ...p, vencimento: e.target.value }))} required /></div>
+                    <div className="col-span-2"><Label>Senha / PIN</Label><Input value={certificadoForm.senha} onChange={(e) => setCertificadoForm((p) => ({ ...p, senha: e.target.value }))} placeholder="Senha do certificado" /></div>
+                    <div className="col-span-2"><Label>Observações</Label><Textarea value={certificadoForm.observacoes} onChange={(e) => setCertificadoForm((p) => ({ ...p, observacoes: e.target.value }))} placeholder="Detalhes adicionais..." rows={2} /></div>
+                  </div>
+                  <Button type="submit" className="w-full" disabled={createCertificado.isPending}>Cadastrar Certificado</Button>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
+          <Card>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Certificado</TableHead>
+                  <TableHead>Tipo</TableHead>
+                  <TableHead>Vencimento</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Senha</TableHead>
+                  <TableHead className="text-right">Ações</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {(certificadosQ.data ?? []).map((c: any) => {
+                  const diasParaVencer = Math.ceil((new Date(c.vencimento).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+                  const status = diasParaVencer < 0 ? "vencido" : diasParaVencer <= 30 ? "expirando" : "valido";
+                  return (
+                    <TableRow key={c.id}>
+                      <TableCell className="font-medium">{c.nome}</TableCell>
+                      <TableCell><Badge variant="outline">{c.tipo}</Badge></TableCell>
+                      <TableCell className="text-sm">{new Date(c.vencimento).toLocaleDateString("pt-BR")}</TableCell>
+                      <TableCell>
+                        {status === "vencido" ? <Badge className="bg-red-500">Vencido</Badge> :
+                         status === "expirando" ? <Badge className="bg-orange-500 animate-pulse">Vence em {diasParaVencer} dias</Badge> :
+                         <Badge className="bg-green-500">Válido</Badge>}
+                      </TableCell>
+                      <TableCell>
+                        {c.senha ? (
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono text-xs">********</span>
+                            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => copyToClipboard(c.senha)}>
+                              <Copy className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ) : "—"}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => { if(confirm("Remover este certificado?")) deleteCertificado.mutate({ id: c.id }); }}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+                {(certificadosQ.data ?? []).length === 0 && (
+                  <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">Nenhum certificado cadastrado</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>

@@ -1,7 +1,7 @@
 import { protectedProcedure, publicProcedure, router } from "../_core/trpc";
 import { z } from "zod";
 import { getDb, getRawClient } from "../db";
-import { ticketsTi, ativosTi } from "../drizzle/schema";
+import { ticketsTi, ativosTi, certificadosTi } from "../drizzle/schema";
 import { eq, and, desc, ilike, isNull, or, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 
@@ -36,7 +36,12 @@ export const tiRouter = router({
       atencao: sql<number>`count(*) filter (where status = 'atencao')`,
       critico: sql<number>`count(*) filter (where status = 'critico')`,
     }).from(ativosTi).where(and(eq(ativosTi.empresaId, empresaId), isNull(ativosTi.deletedAt)));
-    return { tickets: ticketStats, ativos: ativoStats, licencas: { total: 0 } };
+    const [certStats] = await db.select({
+      total: sql<number>`count(*)`,
+      expirando: sql<number>`count(*) filter (where vencimento <= (current_date + interval '30 days') AND vencimento >= current_date)`,
+      vencidos: sql<number>`count(*) filter (where vencimento < current_date)`,
+    }).from(certificadosTi).where(and(eq(certificadosTi.empresaId, empresaId), isNull(certificadosTi.deletedAt)));
+    return { tickets: ticketStats, ativos: ativoStats, certificados: certStats, licencas: { total: 0 } };
   }),
 
   getUnreadCount: protectedProcedure.query(async ({ ctx }) => {
@@ -658,6 +663,48 @@ export const tiRouter = router({
       ORDER BY p."createdAt" DESC LIMIT 50
     `.catch(()=>[]);
   }),
+
+  // ── Certificados Digitais ──────────────────────────────────────────────────
+  listCertificados: protectedProcedure
+    .input(z.object({ search: z.string().optional() }))
+    .query(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const conds: any[] = [eq(certificadosTi.empresaId, ctx.user.empresaId!), isNull(certificadosTi.deletedAt)];
+      if (input.search) conds.push(ilike(certificadosTi.nome, `%${input.search}%`));
+      return db.select().from(certificadosTi).where(and(...conds)).orderBy(certificadosTi.vencimento);
+    }),
+
+  createCertificado: protectedProcedure
+    .input(z.object({
+      nome: z.string().min(2),
+      tipo: z.string(),
+      vencimento: z.string(),
+      senha: z.string().optional(),
+      observacoes: z.string().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const [novo] = await db.insert(certificadosTi).values({
+        empresaId: ctx.user.empresaId!,
+        nome: input.nome,
+        tipo: input.tipo,
+        vencimento: new Date(input.vencimento),
+        senha: input.senha,
+        observacoes: input.observacoes,
+      }).returning();
+      return novo;
+    }),
+
+  deleteCertificado: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      await db.update(certificadosTi).set({ deletedAt: new Date() }).where(and(eq(certificadosTi.id, input.id), eq(certificadosTi.empresaId, ctx.user.empresaId!)));
+      return { success: true };
+    }),
 
   revogarCodigoPareamento: protectedProcedure
     .input(z.object({ id: z.number() }))

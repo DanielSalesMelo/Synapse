@@ -174,6 +174,7 @@ const getMenuGroups = (t: any): MenuGroup[] => [
       { icon: Shield, label: "Licenças de Software", path: "/ti/licencas" },
       { icon: ShoppingCart, label: "Compras de TI", path: "/ti/compras" },
       { icon: Network, label: "CMDB", path: "/ti/cmdb" },
+      { icon: Shield, label: "Certificados Digitais", path: "/ti/certificados" },
     ],
   },
 

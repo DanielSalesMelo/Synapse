@@ -16,6 +16,7 @@ import path from "path";
 import fs from "fs";
 import { sdk } from "./_core/sdk";
 import { getRawClient } from "./db";
+import { checkCertificadosVencimento } from "./helpers/checkCertificados";
 
 // ─── Origens permitidas (CORS) ─────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
@@ -310,4 +311,9 @@ app.listen(port, () => {
   console.log(`[Server] ✅ Synapse Backend running on port ${port}`);
   // Inicia migrações em background após o servidor estar ouvindo
   runMigrationsInBackground();
+
+  // Inicia verificação de certificados a cada 24h (86400000 ms)
+  // Executa uma vez na subida do servidor e depois periodicamente
+  checkCertificadosVencimento();
+  setInterval(checkCertificadosVencimento, 24 * 60 * 60 * 1000);
 });
