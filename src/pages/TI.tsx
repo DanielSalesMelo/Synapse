@@ -1361,18 +1361,18 @@ export default function TI() {
                 </div>
                 <div className="flex flex-col gap-2">
                   <Button size="sm" className="w-full" asChild>
-                    <a href="/agent/instalar_agente.bat" download="instalar_agente.bat">
+                    <a href="https://synapse-backend.railway.app/api/agent/download/windows" download="instalar_agente.bat">
                       <Download className="h-4 w-4 mr-2" />Baixar Instalador (Windows .bat)
                     </a>
                   </Button>
                   <div className="flex gap-2">
                     <Button size="sm" variant="outline" className="flex-1" asChild>
-                      <a href="/agent/synapse_agent.py" download="synapse_agent.py">
+                      <a href="https://synapse-backend.railway.app/api/agent/download/agent" download="synapse_agent.py">
                         <FileText className="h-4 w-4 mr-2" />Script Python
                       </a>
                     </Button>
                     <Button size="sm" variant="outline" className="flex-1" asChild>
-                      <a href="/agent/install_linux.sh" download="install_linux.sh">
+                      <a href="https://synapse-backend.railway.app/api/agent/download/linux" download="install_linux.sh">
                         <Download className="h-4 w-4 mr-2" />Linux (.sh)
                       </a>
                     </Button>
