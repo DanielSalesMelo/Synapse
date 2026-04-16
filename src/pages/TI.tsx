@@ -62,11 +62,13 @@ function Lightbox({ src, onClose }: { src: string; onClose: () => void }) {
 
 // ─── Componente de Chat do Chamado ────────────────────────────────────────────
 function TicketChat({ ticketId, empresaId }: { ticketId: number; empresaId: number }) {
+  const { user } = useAuth();
   const [msg, setMsg] = useState("");
   const [lightbox, setLightbox] = useState<string | null>(null);
-  const [pastedFile, setPastedFile] = useState<File | null>(null);
-  const [pastedPreview, setPastedPreview] = useState<string | null>(null);
+  const [preview, setPreview] = useState<{ url: string; nome: string } | null>(null);
+  const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const mensagensQ = trpc.ti.listMensagens.useQuery({ ticketId }, { refetchInterval: 5000 });
@@ -74,8 +76,7 @@ function TicketChat({ ticketId, empresaId }: { ticketId: number; empresaId: numb
     onSuccess: () => {
       mensagensQ.refetch();
       setMsg("");
-      setPastedFile(null);
-      setPastedPreview(null);
+      setPreview(null);
       setTimeout(() => inputRef.current?.focus(), 50);
     },
   });
@@ -84,107 +85,152 @@ function TicketChat({ ticketId, empresaId }: { ticketId: number; empresaId: numb
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [mensagensQ.data]);
 
+  const uploadFile = async (file: File) => {
+    setUploading(true);
+    const token = localStorage.getItem("synapse-auth-token") ?? "";
+    const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : "";
+    const fd = new FormData();
+    fd.append("file", file);
+    try {
+      const res = await fetch(`${baseUrl}/api/upload`, { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: fd });
+      const data = await res.json();
+      if (data.url) setPreview({ url: data.url, nome: file.name });
+      else toast.error("Erro ao enviar arquivo");
+    } catch { toast.error("Erro ao enviar arquivo"); }
+    setUploading(false);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) uploadFile(file);
+    e.target.value = "";
+  };
+
   const handlePaste = useCallback((e: React.ClipboardEvent) => {
     const items = Array.from(e.clipboardData.items);
     const imageItem = items.find((i) => i.type.startsWith("image/"));
     if (imageItem) {
       e.preventDefault();
       const file = imageItem.getAsFile();
-      if (file) {
-        setPastedFile(file);
-        const reader = new FileReader();
-        reader.onload = (ev) => setPastedPreview(ev.target?.result as string);
-        reader.readAsDataURL(file);
-      }
+      if (file) uploadFile(file);
     }
   }, []);
 
   const handleSend = () => {
-    if (!msg.trim() && !pastedPreview) return;
-    if (pastedPreview) {
-      sendMsg.mutate({ ticketId, conteudo: msg || "📎 Imagem", tipo: "imagem", anexoUrl: pastedPreview });
-    } else {
-      sendMsg.mutate({ ticketId, conteudo: msg, tipo: "texto" });
-    }
+    if (!msg.trim() && !preview) return;
+    const isImg = preview && /\.(jpg|jpeg|png|gif|webp|bmp|svg)/i.test(preview.url);
+    sendMsg.mutate({
+      ticketId,
+      conteudo: msg || (preview ? `📎 ${preview.nome}` : ""),
+      tipo: preview ? (isImg ? "imagem" : "anexo") : "texto",
+      anexoUrl: preview?.url,
+      anexoNome: preview?.nome,
+    });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); }
   };
 
   const isImage = (url: string) => /\.(jpg|jpeg|png|gif|webp|bmp|svg)/i.test(url) || url.startsWith("data:image");
 
   return (
-    <div className="flex flex-col h-[400px] border rounded-lg overflow-hidden">
+    <div className="flex flex-col border rounded-lg overflow-hidden" style={{ height: 420 }}>
       {lightbox && <Lightbox src={lightbox} onClose={() => setLightbox(null)} />}
-      <div className="bg-muted/50 px-3 py-2 border-b flex items-center gap-2">
+      {/* Header do chat */}
+      <div className="bg-muted/50 px-3 py-2 border-b flex items-center gap-2 shrink-0">
         <MessageSquare className="h-4 w-4 text-primary" />
-        <span className="text-sm font-medium">Histórico do Chamado</span>
-        <Badge variant="secondary" className="text-xs ml-auto">{mensagensQ.data?.length ?? 0} mensagens</Badge>
+        <span className="text-sm font-medium">Chat do Chamado</span>
+        <span className="text-xs text-muted-foreground ml-1">— converse com o solicitante</span>
+        <Badge variant="secondary" className="text-xs ml-auto">{mensagensQ.data?.length ?? 0}</Badge>
       </div>
+      {/* Mensagens */}
       <ScrollArea className="flex-1 p-3">
         <div className="space-y-3">
-          {(mensagensQ.data ?? []).map((m: any) => (
-            <div key={m.id} className={`flex gap-2 ${m.isInterno ? "opacity-70" : ""}`}>
-              <div className="h-7 w-7 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                <User className="h-3.5 w-3.5 text-primary" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-0.5">
-                  <span className="text-xs font-medium">{m.autorNome ?? "Usuário"}</span>
-                  {m.isInterno && <Badge variant="outline" className="text-xs py-0 h-4">Interno</Badge>}
-                  <span className="text-xs text-muted-foreground ml-auto">
-                    {new Date(m.createdAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
-                  </span>
-                </div>
-                {m.tipo === "imagem" || (m.anexoUrl && isImage(m.anexoUrl)) ? (
-                  <div>
-                    {m.conteudo && m.conteudo !== "📎 Imagem" && (
-                      <p className="text-sm mb-1">{m.conteudo}</p>
-                    )}
-                    <img
-                      src={m.anexoUrl}
-                      alt="Imagem"
-                      className="max-w-[280px] max-h-[200px] rounded-lg cursor-pointer hover:opacity-90 transition-opacity border"
-                      onClick={() => setLightbox(m.anexoUrl)}
-                    />
-                  </div>
+          {(mensagensQ.data ?? []).map((m: any) => {
+            const isMine = m.autorId === user?.id;
+            return (
+              <div key={m.id} className={`flex gap-2 ${isMine ? "flex-row-reverse" : ""} ${m.tipo === "sistema" ? "justify-center" : ""}`}>
+                {m.tipo === "sistema" ? (
+                  <p className="text-xs text-muted-foreground bg-muted/40 px-3 py-1 rounded-full">{m.conteudo}</p>
                 ) : (
-                  <p className="text-sm bg-muted/50 rounded-lg px-3 py-2 inline-block max-w-full break-words">{m.conteudo}</p>
+                  <>
+                    <div className={`h-7 w-7 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold ${
+                      isMine ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                    }`}>
+                      {(m.autorNome ?? "?")[0].toUpperCase()}
+                    </div>
+                    <div className={`flex-1 min-w-0 max-w-[75%] ${isMine ? "items-end" : "items-start"} flex flex-col`}>
+                      <div className={`flex items-center gap-2 mb-0.5 ${isMine ? "flex-row-reverse" : ""}`}>
+                        <span className="text-xs font-medium">{isMine ? "Você" : (m.autorNome ?? "Usuário")}</span>
+                        {m.isInterno && <Badge variant="outline" className="text-xs py-0 h-4">Interno</Badge>}
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(m.createdAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                      </div>
+                      {m.tipo === "imagem" || (m.anexoUrl && isImage(m.anexoUrl)) ? (
+                        <div className={isMine ? "self-end" : ""}>
+                          {m.conteudo && !m.conteudo.startsWith("📎") && <p className="text-sm mb-1">{m.conteudo}</p>}
+                          <img src={m.anexoUrl} alt="Imagem" className="max-w-[240px] max-h-[180px] rounded-lg cursor-pointer hover:opacity-90 transition-opacity border" onClick={() => setLightbox(m.anexoUrl)} />
+                        </div>
+                      ) : m.anexoUrl ? (
+                        <a href={m.anexoUrl} target="_blank" rel="noreferrer" className={`text-sm underline text-primary flex items-center gap-1 ${
+                          isMine ? "self-end" : ""
+                        }`}>
+                          <FileText className="h-3.5 w-3.5" />{m.anexoNome ?? "Arquivo"}
+                        </a>
+                      ) : (
+                        <p className={`text-sm rounded-xl px-3 py-2 break-words ${
+                          isMine ? "bg-primary text-primary-foreground self-end" : "bg-muted/60 text-foreground"
+                        }`}>{m.conteudo}</p>
+                      )}
+                    </div>
+                  </>
                 )}
               </div>
-            </div>
-          ))}
+            );
+          })}
           {(mensagensQ.data ?? []).length === 0 && (
             <p className="text-sm text-muted-foreground text-center py-8">Nenhuma mensagem ainda. Inicie a conversa!</p>
           )}
           <div ref={bottomRef} />
         </div>
       </ScrollArea>
-      {pastedPreview && (
-        <div className="px-3 py-2 border-t bg-muted/30 flex items-center gap-2">
-          <img src={pastedPreview} alt="Preview" className="h-12 w-12 object-cover rounded border" />
-          <div className="flex-1 text-xs text-muted-foreground">Imagem pronta para enviar</div>
-          <button onClick={() => { setPastedFile(null); setPastedPreview(null); }} className="text-muted-foreground hover:text-foreground">
-            <X className="h-4 w-4" />
-          </button>
+      {/* Preview de arquivo */}
+      {preview && (
+        <div className="px-3 py-2 border-t bg-muted/30 flex items-center gap-2 shrink-0">
+          {isImage(preview.url) ? (
+            <img src={preview.url} alt="Preview" className="h-10 w-10 object-cover rounded border" />
+          ) : (
+            <div className="h-10 w-10 rounded border bg-muted flex items-center justify-center"><FileText className="h-4 w-4 text-muted-foreground" /></div>
+          )}
+          <div className="flex-1 text-xs text-muted-foreground truncate">{preview.nome}</div>
+          <button onClick={() => setPreview(null)} className="text-muted-foreground hover:text-foreground"><X className="h-4 w-4" /></button>
         </div>
       )}
-      <div className="p-2 border-t flex gap-2">
+      {/* Input */}
+      <div className="p-2 border-t flex gap-1.5 shrink-0">
+        <input ref={fileRef} type="file" accept="image/*,.pdf,.doc,.docx,.txt,.zip" className="hidden" onChange={handleFileChange} />
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          disabled={uploading}
+          className="p-2 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-foreground disabled:opacity-50"
+          title="Anexar arquivo ou imagem"
+        >
+          {uploading ? <RefreshCw className="h-4 w-4 animate-spin" /> : <ImageIcon className="h-4 w-4" />}
+        </button>
         <Input
           ref={inputRef}
           value={msg}
           onChange={(e) => setMsg(e.target.value)}
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}
-          placeholder={pastedPreview ? "Adicione uma legenda... (Enter para enviar)" : "Digite uma mensagem... (Ctrl+V para colar print)"}
+          placeholder={preview ? "Legenda (opcional)..." : "Digite uma mensagem... (Enter para enviar)"}
           className="flex-1 text-sm"
           autoFocus
         />
-        <Button size="sm" onClick={handleSend} disabled={sendMsg.isPending || (!msg.trim() && !pastedPreview)}>
+        <Button size="sm" onClick={handleSend} disabled={sendMsg.isPending || (!msg.trim() && !preview)}>
           <Send className="h-4 w-4" />
         </Button>
       </div>
@@ -215,6 +261,7 @@ function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: ()
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
+            <Badge variant="outline" className="font-mono text-xs bg-primary/10 text-primary border-primary/30">#{ticket.id}</Badge>
             <Badge variant="outline" className="font-mono text-xs">{ticket.protocolo}</Badge>
             {ticket.numeroOs && <Badge variant="secondary" className="font-mono text-xs">OS #{ticket.numeroOs}</Badge>}
             <Badge className={`text-xs ${PRIORIDADE_COLORS[ticket.prioridade]}`}>
@@ -395,6 +442,30 @@ export default function TI() {
   const [ticketForm, setTicketForm] = useState({
     titulo: "", descricao: "", categoria: "outro" as const, prioridade: "media" as const,
   });
+  const [ticketAnexos, setTicketAnexos] = useState<{ nome: string; url: string; tipo: string; tamanho?: number }[]>([]);
+  const [ticketAnexoPreviews, setTicketAnexoPreviews] = useState<{ nome: string; url: string; isImage: boolean }[]>([]);
+  const ticketFileRef = useRef<HTMLInputElement>(null);
+
+  const handleTicketFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    if (!files.length) return;
+    const token = localStorage.getItem("synapse-auth-token") ?? "";
+    const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : "";
+    for (const file of files) {
+      const fd = new FormData();
+      fd.append("file", file);
+      try {
+        const res = await fetch(`${baseUrl}/api/upload`, { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: fd });
+        const data = await res.json();
+        if (data.url) {
+          const isImg = file.type.startsWith("image/");
+          setTicketAnexos((prev) => [...prev, { nome: file.name, url: data.url, tipo: file.type, tamanho: file.size }]);
+          setTicketAnexoPreviews((prev) => [...prev, { nome: file.name, url: isImg ? data.url : "", isImage: isImg }]);
+        }
+      } catch { toast.error("Erro ao enviar arquivo"); }
+    }
+    e.target.value = "";
+  };
   const [ativoForm, setAtivoForm] = useState({
     nome: "", tipo: "", marca: "", modelo: "", patrimonio: "", serial: "", setor: "", anydesk: "",
   });
@@ -457,7 +528,12 @@ export default function TI() {
             </DialogTrigger>
             <DialogContent className="max-w-lg">
               <DialogHeader><DialogTitle>Abrir Novo Chamado</DialogTitle></DialogHeader>
-              <form onSubmit={(e) => { e.preventDefault(); createTicket.mutate(ticketForm); }} className="space-y-4">
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                createTicket.mutate({ ...ticketForm, anexos: ticketAnexos.length ? ticketAnexos : undefined });
+                setTicketAnexos([]);
+                setTicketAnexoPreviews([]);
+              }} className="space-y-4">
                 <div>
                   <Label>Título *</Label>
                   <Input value={ticketForm.titulo} onChange={(e) => setTicketForm((p) => ({ ...p, titulo: e.target.value }))} placeholder="Descreva o problema brevemente" required />
@@ -490,6 +566,35 @@ export default function TI() {
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
+                {/* Anexos */}
+                <div>
+                  <Label>Anexos (imagens, prints, documentos)</Label>
+                  <input ref={ticketFileRef} type="file" multiple accept="image/*,.pdf,.doc,.docx,.txt" className="hidden" onChange={handleTicketFileChange} />
+                  <button type="button" onClick={() => ticketFileRef.current?.click()}
+                    className="mt-1 w-full border-2 border-dashed border-border rounded-lg py-3 px-4 text-sm text-muted-foreground hover:border-primary/50 hover:text-foreground transition-colors flex items-center justify-center gap-2">
+                    <ImageIcon className="h-4 w-4" />
+                    Clique para anexar imagem ou arquivo
+                  </button>
+                  {ticketAnexoPreviews.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {ticketAnexoPreviews.map((p, i) => (
+                        <div key={i} className="relative group">
+                          {p.isImage ? (
+                            <img src={p.url} alt={p.nome} className="h-16 w-16 object-cover rounded border" />
+                          ) : (
+                            <div className="h-16 w-16 rounded border bg-muted flex items-center justify-center text-xs text-center p-1 text-muted-foreground">{p.nome}</div>
+                          )}
+                          <button type="button" onClick={() => {
+                            setTicketAnexos((prev) => prev.filter((_, j) => j !== i));
+                            setTicketAnexoPreviews((prev) => prev.filter((_, j) => j !== i));
+                          }} className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-white text-xs hidden group-hover:flex items-center justify-center">
+                            <X className="h-2.5 w-2.5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <Button type="submit" className="w-full" disabled={createTicket.isPending}>
                   {createTicket.isPending ? "Abrindo..." : "Abrir Chamado"}
