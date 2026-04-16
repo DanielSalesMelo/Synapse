@@ -29,10 +29,11 @@ const veiculoInput = z.object({
   observacoes: z.string().optional(),
 });
 
-function parseDate(d: string | null | undefined): Date | null {
+function parseDate(d: string | null | undefined): string | null {
   if (!d) return null;
   const parsed = new Date(d);
-  return isNaN(parsed.getTime()) ? null : parsed;
+  if (isNaN(parsed.getTime())) return null;
+  return parsed.toISOString().split("T")[0];
 }
 
 export const veiculosRouter = router({
