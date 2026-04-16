@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-SYNAPSE MONITORING AGENT v1.3.0 - FINAL FIXED VERSION
+SYNAPSE MONITORING AGENT v1.4.0 - TRPC COMPATIBLE VERSION
 """
 
 import os
@@ -30,9 +30,8 @@ try:
 except ImportError:
     HAS_REQUESTS = False
 
-# ─── Configuração FIXA E IMUTÁVEL ─────────────────────────────────────────────
-VERSION = "1.3.0"
-# URL DO BACKEND (RAILWAY) - NUNCA USE VERCEL AQUI
+# ─── Configuração FIXA ────────────────────────────────────────────────────────
+VERSION = "1.4.0"
 SERVER_URL = "https://synapse-backend.railway.app"
 AGENT_DIR = Path(os.environ.get("SYNAPSE_AGENT_DIR", Path.home() / ".synapse-agent"))
 CONFIG_FILE = AGENT_DIR / "config.json"
@@ -48,19 +47,16 @@ logging.basicConfig(
 log = logging.getLogger("synapse-agent")
 
 def load_config() -> Dict:
-    # Força a URL correta sempre
     config = {"server_url": SERVER_URL, "token": "", "collect_interval": 60, "send_interval": 60}
     if CONFIG_FILE.exists():
         try:
             with open(CONFIG_FILE, "r") as f:
-                saved = json.load(f)
-                config.update(saved)
+                config.update(json.load(f))
         except: pass
-    config["server_url"] = SERVER_URL # Sobrescreve qualquer lixo de config antiga
+    config["server_url"] = SERVER_URL
     return config
 
 def save_config(config: Dict):
-    config["server_url"] = SERVER_URL # Garante que salve a URL certa
     with open(CONFIG_FILE, "w") as f:
         json.dump(config, f, indent=2)
 
@@ -86,28 +82,36 @@ def collect_metrics() -> Dict:
         "coletado_em": datetime.now(timezone.utc).isoformat(),
         "anydesk_id": get_anydesk_id(),
         "so": f"{platform.system()} {platform.release()}",
-        "cpu": {"percent": psutil.cpu_percent(interval=0.1) if HAS_PSUTIL else 0},
-        "ram": {"percent": psutil.virtual_memory().percent if HAS_PSUTIL else 0},
-        "disk": {"percent": psutil.disk_usage('/').percent if HAS_PSUTIL else 0},
+        "cpu_uso": psutil.cpu_percent(interval=0.1) if HAS_PSUTIL else 0,
+        "ram_uso_pct": psutil.virtual_memory().percent if HAS_PSUTIL else 0,
+        "disco_uso_pct": psutil.disk_usage('/').percent if HAS_PSUTIL else 0,
     }
     return m
 
 def pair_agent(codigo: str) -> bool:
     if not HAS_REQUESTS: return False
     try:
-        url = f"{SERVER_URL}/api/agent/pair"
+        # Usa o endpoint tRPC que está funcionando no backend
+        url = f"{SERVER_URL}/api/trpc/ti.pairAgent"
         payload = {
-            "pairCode": codigo,
-            "hostname": socket.gethostname(),
-            "so": f"{platform.system()} {platform.release()}",
-            "anydesk_id": get_anydesk_id(),
-            "versao_agente": VERSION,
+            "0": {
+                "json": {
+                    "codigo": codigo,
+                    "hostname": socket.gethostname(),
+                    "so": f"{platform.system()} {platform.release()}",
+                    "anydesk_id": get_anydesk_id(),
+                    "versao_agente": VERSION,
+                    "fingerprint": str(uuid.getnode())
+                }
+            }
         }
-        log.info(f"Pareando com {SERVER_URL} usando código {codigo}...")
+        log.info(f"Pareando via tRPC com {codigo}...")
         resp = requests.post(url, json=payload, timeout=15)
         if resp.status_code == 200:
             data = resp.json()
-            token = data.get("token")
+            # tRPC retorna um array de resultados
+            result = data[0].get("result", {}).get("data", {}).get("json", {})
+            token = result.get("token")
             if token:
                 config = load_config()
                 config["token"] = token
@@ -123,15 +127,32 @@ def send_metrics(config: Dict):
     if not HAS_REQUESTS or not config.get("token"): return
     conn = sqlite3.connect(DB_FILE)
     rows = conn.execute("SELECT id, payload FROM metricas_buffer WHERE enviado = 0 LIMIT 10").fetchall()
-    for row_id, payload in rows:
-        try:
-            url = f"{SERVER_URL}/api/agent/metrics"
-            headers = {"Authorization": f"Bearer {config['token']}"}
-            resp = requests.post(url, json=json.loads(payload), headers=headers, timeout=10)
-            if resp.status_code == 200:
-                conn.execute("UPDATE metricas_buffer SET enviado = 1 WHERE id = ?", (row_id,))
-        except: break
-    conn.commit()
+    if not rows:
+        conn.close()
+        return
+
+    metricas_list = [json.loads(r[1]) for r in rows]
+    ids = [r[0] for r in rows]
+
+    try:
+        # Usa o endpoint tRPC de ingestão de métricas
+        url = f"{SERVER_URL}/api/trpc/ti.ingestMetrics"
+        payload = {
+            "0": {
+                "json": {
+                    "token": config["token"],
+                    "metricas": metricas_list
+                }
+            }
+        }
+        resp = requests.post(url, json=payload, timeout=10)
+        if resp.status_code == 200:
+            placeholders = ",".join("?" * len(ids))
+            conn.execute(f"UPDATE metricas_buffer SET enviado = 1 WHERE id IN ({placeholders})", ids)
+            conn.commit()
+    except Exception as e:
+        log.error(f"Erro ao enviar métricas: {e}")
+    
     conn.close()
 
 def main():
@@ -153,7 +174,6 @@ def main():
         time.sleep(60)
 
 if __name__ == "__main__":
-    # Remove qualquer lógica de prompt interativo aqui
     if "--pair" in sys.argv:
         idx = sys.argv.index("--pair")
         if len(sys.argv) > idx + 1:
