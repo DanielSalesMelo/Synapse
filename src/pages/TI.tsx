@@ -413,7 +413,7 @@ export default function TI() {
 
   const handleTabChange = (newTab: string) => {
     setTab(newTab);
-    setLocation(`/ti/${newTab === "dashboard" ? "" : newTab}`);
+    setLocation(`/ti/${newTab}`);
   };
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("todos");
