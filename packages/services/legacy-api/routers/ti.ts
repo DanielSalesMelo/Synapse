@@ -122,7 +122,7 @@ export const tiRouter = router({
       if (input.anexos) {
         for (const a of input.anexos) {
           await client`
-            INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"anexoUrl","anexoNome","anexoTipo","createdAt")
+            INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"fileUrl","fileName","fileType","createdAt")
             VALUES (${ticket.id},${ctx.user.empresaId!},${ctx.user.id},'','anexo',${a.url},${a.nome},${a.tipo},NOW())
           `.catch(() => {});
         }
@@ -141,23 +141,29 @@ export const tiRouter = router({
       slaHoras: z.number().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
-      const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const client = await getRawClient();
+      if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       const { id, ...data } = input;
-      const upd: any = { updatedAt: new Date() };
-      if (data.status) upd.status = data.status;
-      if (data.prioridade) upd.prioridade = data.prioridade;
-      if (data.tecnicoId) upd.tecnicoId = data.tecnicoId;
-      if (data.resolucao) upd.resolucao = data.resolucao;
-      if (data.status === 'resolvido' || data.status === 'fechado') upd.resolvidoEm = new Date();
-      await db.update(ticketsTi).set(upd).where(and(eq(ticketsTi.id, id), eq(ticketsTi.empresaId, ctx.user.empresaId!)));
-
-      // Log
+      // Monta SET dinamicamente com raw SQL para suportar colunas extras (tecnicoId, slaHoras)
+      const sets: string[] = ['"updatedAt"=NOW()'];
+      const vals: any[] = [];
+      let i = 1;
+      if (data.status) { sets.push(`status=$${i++}`); vals.push(data.status); }
+      if (data.prioridade) { sets.push(`prioridade=$${i++}`); vals.push(data.prioridade); }
+      if (data.tecnicoId) { sets.push(`"tecnicoId"=$${i++}`); vals.push(data.tecnicoId); }
+      if (data.resolucao) { sets.push(`resolucao=$${i++}`); vals.push(data.resolucao); }
+      if (data.slaHoras) { sets.push(`"slaHoras"=$${i++}`); vals.push(data.slaHoras); }
+      if (data.status === 'resolvido' || data.status === 'fechado') sets.push('"resolvidoEm"=NOW()');
+      vals.push(id); vals.push(ctx.user.empresaId!);
+      await client.unsafe(
+        `UPDATE tickets_ti SET ${sets.join(',')} WHERE id=$${i++} AND "empresaId"=$${i}`,
+        vals
+      ).catch(() => {});
+      // Log de status
       if (data.status) {
-        const client = await getRawClient();
-        if (client) await client`
+        await client`
           INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
-          VALUES (${id},${ctx.user.empresaId!},${ctx.user.id},${'Status: ' + data.status + (data.resolucao ? ' — ' + data.resolucao : '')},'sistema',NOW())
+          VALUES (${id},${ctx.user.empresaId!},${ctx.user.id},${'Status alterado para: ' + data.status + (data.resolucao ? ' — ' + data.resolucao : '')},'sistema',NOW())
         `.catch(() => {});
       }
       return { success: true };
@@ -212,7 +218,7 @@ export const tiRouter = router({
       const client = await getRawClient();
       if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       const rows = await client`
-        INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"anexoUrl","anexoNome","anexoTipo","createdAt")
+        INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"fileUrl","fileName","fileType","createdAt")
         VALUES (${input.ticketId},${ctx.user.empresaId!},${ctx.user.id},${input.conteudo},${input.tipo||'mensagem'},${input.anexoUrl||null},${input.anexoNome||null},${input.anexoTipo||null},NOW())
         RETURNING *
       `;

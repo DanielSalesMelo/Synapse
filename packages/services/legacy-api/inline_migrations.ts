@@ -1057,6 +1057,24 @@ const MIGRATION_STATEMENTS: string[] = [
   `CREATE INDEX IF NOT EXISTS idx_pedidos_empresa ON "pedidos"("empresaId")`,
   `CREATE INDEX IF NOT EXISTS idx_estoque_empresa ON "estoque"("empresaId")`,
   `CREATE INDEX IF NOT EXISTS idx_estoque_produto ON "estoque"("produtoId")`,
+  // Tabela principal de chamados TI
+  `CREATE TABLE IF NOT EXISTS "tickets_ti" (
+    "id" serial PRIMARY KEY NOT NULL,
+    "empresaId" integer NOT NULL,
+    "protocolo" varchar(20) NOT NULL,
+    "solicitanteId" integer NOT NULL,
+    "titulo" varchar(255) NOT NULL,
+    "descricao" text NOT NULL,
+    "categoria" varchar(50) NOT NULL DEFAULT 'outro',
+    "prioridade" varchar(20) NOT NULL DEFAULT 'media',
+    "status" varchar(30) NOT NULL DEFAULT 'aberto',
+    "responsavelId" integer,
+    "resolucao" text,
+    "resolvidoEm" timestamp,
+    "createdAt" timestamp NOT NULL DEFAULT NOW(),
+    "updatedAt" timestamp NOT NULL DEFAULT NOW(),
+    "deletedAt" timestamp
+  )`,
   `CREATE INDEX IF NOT EXISTS idx_tickets_ti_empresa ON "tickets_ti"("empresaId")`,
   `CREATE INDEX IF NOT EXISTS idx_tickets_ti_status ON "tickets_ti"("status")`,
   `CREATE INDEX IF NOT EXISTS idx_ativos_ti_empresa ON "ativos_ti"("empresaId")`,
@@ -1515,6 +1533,8 @@ const MIGRATION_STATEMENTS: string[] = [
     "deletedAt" timestamptz
   )`,
   `CREATE INDEX IF NOT EXISTS idx_acessos_ti_empresa ON "acessos_ti"("empresaId")`,
+  // Colunas extras em agent_pairing_codes
+  `ALTER TABLE agent_pairing_codes ADD COLUMN IF NOT EXISTS "hostnameVinculado" varchar(200)`,
 ];
 
 export async function runInlineMigrations(): Promise<void> {
