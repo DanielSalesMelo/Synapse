@@ -84,6 +84,9 @@ if errorlevel 1 (
 :: Executa o pareamento inicial
 echo.
 echo Realizando pareamento com o servidor Synapse...
+:: Passa a URL e o código diretamente para evitar perguntas extras
+set SYNAPSE_SERVER_URL=%SERVER_URL%
+set SYNAPSE_TOKEN=
 python "%INSTALL_DIR%\synapse_agent.py" --config "%INSTALL_DIR%\synapse_agent.conf" --pair-only
 if errorlevel 1 (
     echo [AVISO] Pareamento nao foi concluido. O agente tentara novamente ao iniciar.
