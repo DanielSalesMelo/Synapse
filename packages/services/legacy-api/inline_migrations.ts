@@ -1549,9 +1549,13 @@ const MIGRATION_STATEMENTS: string[] = [
   `ALTER TABLE agent_pairing_codes ADD COLUMN IF NOT EXISTS "hostnameVinculado" varchar(200)`,
 
   // --- TICKETS_TI: Correção de colunas faltantes ---
+  `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "status" varchar(30) NOT NULL DEFAULT 'aberto'`,
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "prioridade" varchar(20) NOT NULL DEFAULT 'media'`,
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "categoria" varchar(50) NOT NULL DEFAULT 'outro'`,
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "tecnicoId" integer`,
+  `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "responsavelId" integer`,
+  `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "resolucao" text`,
+  `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "resolvidoEm" timestamp`,
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "slaHoras" integer DEFAULT 24`,
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "prazoAtendimento" timestamp`,
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "tempoResolucaoMin" integer`,
@@ -1559,6 +1563,7 @@ const MIGRATION_STATEMENTS: string[] = [
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "setor" varchar(100)`,
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "impacto" varchar(50) DEFAULT 'medio'`,
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "numeroOS" varchar(30)`,
+  `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "deletedAt" timestamp`,
 ];
 
 export async function runInlineMigrations(): Promise<void> {
