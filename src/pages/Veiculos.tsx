@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { useState, useMemo } from "react";
-import { Plus, Search, Truck, Link2, Star } from "lucide-react";
+import { Plus, Search, Truck, Link2, Star, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useViewAs } from "@/contexts/ViewAsContext";
 
@@ -107,11 +107,49 @@ function VeiculoForm({ initial, cavalos, onSave, onClose }: {
 
   const isCarreta = form.tipo === "carreta";
 
+  // Máscaras e Validações
+  const validatePlaca = (v: string) => {
+    const clean = v.replace(/[^A-Z0-9]/gi, "").toUpperCase();
+    if (clean.length > 7) return clean.slice(0, 7);
+    return clean;
+  };
+
+  const formatPlacaDisplay = (v: string) => {
+    const clean = v.replace(/[^A-Z0-9]/gi, "").toUpperCase();
+    if (clean.length <= 3) return clean;
+    // Formato antigo: AAA-0000, Mercosul: AAA0A00
+    if (/^[A-Z]{3}[0-9]{1}[A-Z]{1}[0-9]{2}$/.test(clean)) return clean; // Mercosul
+    if (clean.length > 3) return `${clean.slice(0, 3)}-${clean.slice(3)}`;
+    return clean;
+  };
+
+  const isPlacaValid = (v: string) => {
+    const clean = v.replace(/[^A-Z0-9]/gi, "").toUpperCase();
+    return /^[A-Z]{3}[0-9]{4}$/.test(clean) || /^[A-Z]{3}[0-9]{1}[A-Z]{1}[0-9]{2}$/.test(clean);
+  };
+
+  const validateAno = (v: string) => {
+    const clean = v.replace(/\D/g, "");
+    return clean.slice(0, 4);
+  };
+
+  const isAnoValid = (v: string) => {
+    if (!v) return true;
+    const year = parseInt(v);
+    return year >= 1900 && year <= new Date().getFullYear() + 2;
+  };
+
+  const formatNumber = (v: string) => v.replace(/\D/g, "");
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!isPlacaValid(form.placa)) {
+      toast.error("Placa inválida. Use o formato AAA-0000 ou Mercosul.");
+      return;
+    }
     onSave({
       empresaId: EMPRESA_ID,
-      placa: form.placa.toUpperCase(),
+      placa: form.placa.replace("-", "").toUpperCase(),
       tipo: form.tipo,
       cavaloPrincipalId: isCarreta && form.cavaloPrincipalId ? Number(form.cavaloPrincipalId) : null,
       marca: form.marca || undefined,
@@ -129,13 +167,16 @@ function VeiculoForm({ initial, cavalos, onSave, onClose }: {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
-          <Label>Placa *</Label>
+          <Label className="flex justify-between">
+            Placa *
+            {!isPlacaValid(form.placa) && form.placa.length > 0 && <XCircle className="h-4 w-4 text-red-500" />}
+          </Label>
           <Input
-            value={form.placa}
-            onChange={e => setForm(f => ({ ...f, placa: e.target.value }))}
+            value={formatPlacaDisplay(form.placa)}
+            onChange={e => setForm(f => ({ ...f, placa: validatePlaca(e.target.value) }))}
             placeholder="AAA-0000"
             required
-            className="uppercase"
+            className={`uppercase ${!isPlacaValid(form.placa) && form.placa.length > 0 ? "border-red-500 focus-visible:ring-red-500" : ""}`}
           />
         </div>
         <div className="space-y-1.5">
@@ -184,19 +225,35 @@ function VeiculoForm({ initial, cavalos, onSave, onClose }: {
           <Input value={form.modelo} onChange={e => setForm(f => ({ ...f, modelo: e.target.value }))} placeholder="R450, FH..." />
         </div>
         <div className="space-y-1.5">
-          <Label>Ano</Label>
-          <Input type="number" value={form.ano} onChange={e => setForm(f => ({ ...f, ano: e.target.value }))} placeholder="2022" />
+          <Label className="flex justify-between">
+            Ano
+            {!isAnoValid(form.ano) && form.ano.length > 0 && <XCircle className="h-4 w-4 text-red-500" />}
+          </Label>
+          <Input 
+            value={form.ano} 
+            onChange={e => setForm(f => ({ ...f, ano: validateAno(e.target.value) }))} 
+            placeholder="2022" 
+            className={!isAnoValid(form.ano) && form.ano.length > 0 ? "border-red-500 focus-visible:ring-red-500" : ""}
+          />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
-          <Label>Capacidade de Carga</Label>
-          <Input value={form.capacidadeCarga} onChange={e => setForm(f => ({ ...f, capacidadeCarga: e.target.value }))} placeholder="27.000 kg" />
+          <Label>Capacidade de Carga (kg)</Label>
+          <Input 
+            value={form.capacidadeCarga} 
+            onChange={e => setForm(f => ({ ...f, capacidadeCarga: formatNumber(e.target.value) }))} 
+            placeholder="27000" 
+          />
         </div>
         <div className="space-y-1.5">
           <Label>KM Atual</Label>
-          <Input type="number" value={form.kmAtual} onChange={e => setForm(f => ({ ...f, kmAtual: e.target.value }))} placeholder="150000" />
+          <Input 
+            value={form.kmAtual} 
+            onChange={e => setForm(f => ({ ...f, kmAtual: formatNumber(e.target.value) }))} 
+            placeholder="150000" 
+          />
         </div>
       </div>
 
@@ -218,7 +275,9 @@ function VeiculoForm({ initial, cavalos, onSave, onClose }: {
 
       <div className="flex justify-end gap-2 pt-2">
         <Button type="button" variant="outline" onClick={onClose}>Cancelar</Button>
-        <Button type="submit">{initial ? "Salvar" : "Cadastrar"}</Button>
+        <Button type="submit" disabled={!isPlacaValid(form.placa) || (form.ano.length > 0 && !isAnoValid(form.ano))}>
+          {initial ? "Salvar" : "Cadastrar"}
+        </Button>
       </div>
     </form>
   );
@@ -264,83 +323,102 @@ export default function Veiculos() {
   }, [filtered]);
 
   return (
-<div className="space-y-5">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold">Veículos</h1>
-            <p className="text-sm text-muted-foreground">{veiculosList.length} veículos cadastrados</p>
-          </div>
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button><Plus className="h-4 w-4 mr-2" />Novo Veículo</Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-              <DialogHeader><DialogTitle>Cadastrar Veículo</DialogTitle></DialogHeader>
-              <VeiculoForm cavalos={cavalos} onSave={d => createMut.mutate(d)} onClose={() => setOpen(false)} />
-            </DialogContent>
-          </Dialog>
+    <div className="space-y-5">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold">Veículos</h1>
+          <p className="text-sm text-muted-foreground">{veiculosList.length} veículos cadastrados</p>
         </div>
-
-        {/* Filtros */}
-        <div className="flex gap-3 flex-wrap">
-          <div className="relative flex-1 min-w-48">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input className="pl-9" placeholder="Buscar placa ou marca..." value={search} onChange={e => setSearch(e.target.value)} />
-          </div>
-          <Select value={filterTipo} onValueChange={setFilterTipo}>
-            <SelectTrigger className="w-44"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos os tipos</SelectItem>
-              {Object.entries(TIPO_LABELS).map(([k, v]) => (
-                <SelectItem key={k} value={k}>{v}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Lista agrupada por tipo */}
-        {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Card key={i}><CardContent className="p-4 h-24 animate-pulse bg-muted rounded" /></Card>
-            ))}
-          </div>
-        ) : filtered.length === 0 ? (
-          <Card><CardContent className="p-12 text-center text-muted-foreground">
-            <Truck className="h-10 w-10 mx-auto mb-3 opacity-30" />
-            <p>Nenhum veículo encontrado</p>
-          </CardContent></Card>
-        ) : (
-          <div className="space-y-6">
-            {Object.entries(grupos).map(([tipo, items]) => (
-              <div key={tipo}>
-                <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-                  {TIPO_LABELS[tipo] ?? tipo} ({items.length})
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {items.map(v => (
-                    <VeiculoCard key={v.id} v={v} cavalos={cavalos} onEdit={setEditing} />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Modal de edição */}
-        <Dialog open={!!editing} onOpenChange={o => !o && setEditing(null)}>
-          <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-            <DialogHeader><DialogTitle>Editar Veículo — {editing?.placa}</DialogTitle></DialogHeader>
-            {editing && (
-              <VeiculoForm
-                initial={editing}
-                cavalos={cavalos.filter(c => c.id !== editing.id)}
-                onSave={d => updateMut.mutate({ id: editing.id, ...d })}
-                onClose={() => setEditing(null)}
-              />
-            )}
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button className="gap-2">
+              <Plus className="h-4 w-4" /> Cadastrar Veículo
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Cadastrar Veículo</DialogTitle>
+            </DialogHeader>
+            <VeiculoForm 
+              cavalos={cavalos} 
+              onSave={data => createMut.mutate(data)} 
+              onClose={() => setOpen(false)} 
+            />
           </DialogContent>
         </Dialog>
       </div>
-);
+
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Buscar placa ou marca..."
+            className="pl-9"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </div>
+        <Select value={filterTipo} onValueChange={setFilterTipo}>
+          <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectValue placeholder="Tipo" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todos">Todos os tipos</SelectItem>
+            {Object.entries(TIPO_LABELS).map(([k, v]) => (
+              <SelectItem key={k} value={k}>{v}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[1, 2, 3].map(i => (
+            <Card key={i} className="animate-pulse">
+              <CardContent className="p-4 h-32 bg-muted/50" />
+            </Card>
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-12 text-muted-foreground">
+            <Truck className="h-12 w-12 mb-4 opacity-20" />
+            <p>Nenhum veículo encontrado</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-8">
+          {Object.entries(grupos).sort().map(([tipo, list]) => (
+            <div key={tipo} className="space-y-3">
+              <div className="flex items-center gap-2">
+                <h2 className="font-semibold text-lg">{TIPO_LABELS[tipo] ?? tipo}</h2>
+                <Badge variant="secondary" className="rounded-full">{list.length}</Badge>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {list.map(v => (
+                  <VeiculoCard key={v.id} v={v} cavalos={cavalos} onEdit={setEditing} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <Dialog open={!!editing} onOpenChange={v => !v && setEditing(null)}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Editar Veículo</DialogTitle>
+          </DialogHeader>
+          {editing && (
+            <VeiculoForm
+              initial={editing}
+              cavalos={cavalos}
+              onSave={data => updateMut.mutate({ id: editing.id, ...data })}
+              onClose={() => setEditing(null)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
 }
