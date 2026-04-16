@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-SYNAPSE MONITORING AGENT v1.4.0 - TRPC COMPATIBLE VERSION
+SYNAPSE MONITORING AGENT v1.5.0 - NATIVE REST VERSION
 """
 
 import os
@@ -31,7 +31,7 @@ except ImportError:
     HAS_REQUESTS = False
 
 # ─── Configuração FIXA ────────────────────────────────────────────────────────
-VERSION = "1.4.0"
+VERSION = "1.5.0"
 SERVER_URL = "https://synapse-backend.railway.app"
 AGENT_DIR = Path(os.environ.get("SYNAPSE_AGENT_DIR", Path.home() / ".synapse-agent"))
 CONFIG_FILE = AGENT_DIR / "config.json"
@@ -77,41 +77,46 @@ def get_anydesk_id() -> Optional[str]:
     return None
 
 def collect_metrics() -> Dict:
+    # Formato esperado pelo endpoint /api/agent/metrics no index.ts
     m = {
         "hostname": socket.gethostname(),
         "coletado_em": datetime.now(timezone.utc).isoformat(),
-        "anydesk_id": get_anydesk_id(),
-        "so": f"{platform.system()} {platform.release()}",
-        "cpu_uso": psutil.cpu_percent(interval=0.1) if HAS_PSUTIL else 0,
-        "ram_uso_pct": psutil.virtual_memory().percent if HAS_PSUTIL else 0,
-        "disco_uso_pct": psutil.disk_usage('/').percent if HAS_PSUTIL else 0,
+        "cpu": {"percent": psutil.cpu_percent(interval=0.1) if HAS_PSUTIL else 0},
+        "ram": {
+            "percent": psutil.virtual_memory().percent if HAS_PSUTIL else 0,
+            "used_gb": round(psutil.virtual_memory().used / (1024**3), 2) if HAS_PSUTIL else 0,
+            "total_gb": round(psutil.virtual_memory().total / (1024**3), 2) if HAS_PSUTIL else 0
+        },
+        "disk": {
+            "percent": psutil.disk_usage('/').percent if HAS_PSUTIL else 0,
+            "used_gb": round(psutil.disk_usage('/').used / (1024**3), 2) if HAS_PSUTIL else 0,
+            "total_gb": round(psutil.disk_usage('/').total / (1024**3), 2) if HAS_PSUTIL else 0
+        },
+        "network": {
+            "sent_mb": round(psutil.net_io_counters().bytes_sent / (1024**2), 2) if HAS_PSUTIL else 0,
+            "recv_mb": round(psutil.net_io_counters().bytes_recv / (1024**2), 2) if HAS_PSUTIL else 0
+        }
     }
     return m
 
 def pair_agent(codigo: str) -> bool:
     if not HAS_REQUESTS: return False
     try:
-        # Usa o endpoint tRPC que está funcionando no backend
-        url = f"{SERVER_URL}/api/trpc/ti.pairAgent"
+        # Usa o endpoint REST nativo definido no index.ts (Linha 165)
+        url = f"{SERVER_URL}/api/agent/pair"
         payload = {
-            "0": {
-                "json": {
-                    "codigo": codigo,
-                    "hostname": socket.gethostname(),
-                    "so": f"{platform.system()} {platform.release()}",
-                    "anydesk_id": get_anydesk_id(),
-                    "versao_agente": VERSION,
-                    "fingerprint": str(uuid.getnode())
-                }
-            }
+            "pairCode": codigo,
+            "hostname": socket.gethostname(),
+            "so": f"{platform.system()} {platform.release()}",
+            "anydesk_id": get_anydesk_id(),
+            "versao_agente": VERSION,
+            "fingerprint": str(uuid.getnode())
         }
-        log.info(f"Pareando via tRPC com {codigo}...")
+        log.info(f"Pareando com {SERVER_URL}/api/agent/pair usando código {codigo}...")
         resp = requests.post(url, json=payload, timeout=15)
         if resp.status_code == 200:
             data = resp.json()
-            # tRPC retorna um array de resultados
-            result = data[0].get("result", {}).get("data", {}).get("json", {})
-            token = result.get("token")
+            token = data.get("token")
             if token:
                 config = load_config()
                 config["token"] = token
@@ -126,33 +131,19 @@ def pair_agent(codigo: str) -> bool:
 def send_metrics(config: Dict):
     if not HAS_REQUESTS or not config.get("token"): return
     conn = sqlite3.connect(DB_FILE)
-    rows = conn.execute("SELECT id, payload FROM metricas_buffer WHERE enviado = 0 LIMIT 10").fetchall()
-    if not rows:
-        conn.close()
-        return
-
-    metricas_list = [json.loads(r[1]) for r in rows]
-    ids = [r[0] for r in rows]
-
-    try:
-        # Usa o endpoint tRPC de ingestão de métricas
-        url = f"{SERVER_URL}/api/trpc/ti.ingestMetrics"
-        payload = {
-            "0": {
-                "json": {
-                    "token": config["token"],
-                    "metricas": metricas_list
-                }
-            }
-        }
-        resp = requests.post(url, json=payload, timeout=10)
-        if resp.status_code == 200:
-            placeholders = ",".join("?" * len(ids))
-            conn.execute(f"UPDATE metricas_buffer SET enviado = 1 WHERE id IN ({placeholders})", ids)
-            conn.commit()
-    except Exception as e:
-        log.error(f"Erro ao enviar métricas: {e}")
-    
+    rows = conn.execute("SELECT id, payload FROM metricas_buffer WHERE enviado = 0 LIMIT 1").fetchall()
+    for row_id, payload in rows:
+        try:
+            # Usa o endpoint REST nativo definido no index.ts (Linha 217)
+            url = f"{SERVER_URL}/api/agent/metrics"
+            headers = {"Authorization": f"Bearer {config['token']}"}
+            resp = requests.post(url, json=json.loads(payload), headers=headers, timeout=10)
+            if resp.status_code == 200:
+                conn.execute("UPDATE metricas_buffer SET enviado = 1 WHERE id = ?", (row_id,))
+        except Exception as e:
+            log.error(f"Erro ao enviar métrica: {e}")
+            break
+    conn.commit()
     conn.close()
 
 def main():
