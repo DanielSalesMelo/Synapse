@@ -71,6 +71,8 @@ export const tiRouter = router({
       const rows = await client`
         SELECT t.*, 
           u.name as solicitante_nome, u.email as solicitante_email,
+          u.departamento as solicitante_departamento, u.cargo as solicitante_cargo,
+          u.id as solicitante_id,
           tec.name as tecnico_nome
         FROM tickets_ti t
         LEFT JOIN users u ON u.id = t."solicitanteId"

@@ -249,6 +249,18 @@ export default function Chat() {
     }
   }, [messages]);
 
+  // Abrir conversa direta via URL param ?userId=X (vindo do módulo TI)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const userId = params.get("userId");
+    if (userId) {
+      startChatMutation.mutate({ targetUserId: parseInt(userId) });
+      // Limpar o param da URL sem recarregar a página
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Foco automático ao selecionar conversa
   useEffect(() => {
     if (selectedConvId) {

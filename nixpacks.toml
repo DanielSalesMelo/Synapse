@@ -2,7 +2,10 @@
 cmds = ["cd packages/services/legacy-api && npm install"]
 
 [phases.build]
-cmds = ["cd packages/services/legacy-api && npm run build"]
+cmds = [
+  "cd packages/services/legacy-api && npm run build",
+  "cp -r packages/services/legacy-api/agent packages/services/legacy-api/dist/../agent 2>/dev/null || true"
+]
 
 [start]
 cmd = "cd packages/services/legacy-api && node dist/index.js"

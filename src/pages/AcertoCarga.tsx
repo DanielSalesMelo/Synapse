@@ -58,9 +58,8 @@ const STATUS_CONFIG: Record<StatusAcerto, { label: string; color: string; icon: 
 };
 
 const fmt = (v: string | number | null | undefined) => {
-  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
-  const n = Number(v) || 0;
-  return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const num = Number(v) || 0;
+  return num.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 };
 
 const n = (v: string) => Number(v) || 0;

@@ -272,7 +272,9 @@ app.post("/api/agent/metrics", async (req: any, res: any) => {
 });
 
 // Download dos arquivos do agente
-const AGENT_FILES_DIR = path.join(process.cwd(), '..', '..', '..', 'public', 'agent');
+// Em dev: __dirname = packages/services/legacy-api  → ../agent
+// Em prod (Railway, após esbuild): __dirname = packages/services/legacy-api/dist → ../agent
+const AGENT_FILES_DIR = path.join(__dirname, '..', 'agent');
 app.get('/api/agent/download/windows', (_req: any, res: any) => {
   const file = path.join(AGENT_FILES_DIR, 'install_windows.bat');
   if (!fs.existsSync(file)) return res.status(404).json({ error: 'Arquivo não encontrado' });

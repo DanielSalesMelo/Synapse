@@ -24,6 +24,7 @@ import {
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocation } from "wouter";
 
 // ─── Helpers de cor ──────────────────────────────────────────────────────────
 const STATUS_COLORS: Record<string, string> = {
@@ -240,6 +241,7 @@ function TicketChat({ ticketId, empresaId }: { ticketId: number; empresaId: numb
 
 // ─── Componente de Detalhe do Chamado ─────────────────────────────────────────
 function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: () => void; empresaId: number }) {
+  const [, navigate] = useLocation();
   const updateTicket = trpc.ti.updateTicket.useMutation({
     onSuccess: () => toast.success("Chamado atualizado!"),
   });
@@ -259,19 +261,42 @@ function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: ()
     <div className="space-y-4">
       {/* Cabeçalho */}
       <div className="flex items-start justify-between gap-4">
-        <div>
+        <div className="flex-1">
           <div className="flex items-center gap-2 flex-wrap">
             <Badge variant="outline" className="font-mono text-xs bg-primary/10 text-primary border-primary/30">#{ticket.id}</Badge>
             <Badge variant="outline" className="font-mono text-xs">{ticket.protocolo}</Badge>
             {ticket.numeroOs && <Badge variant="secondary" className="font-mono text-xs">OS #{ticket.numeroOs}</Badge>}
-            <Badge className={`text-xs ${PRIORIDADE_COLORS[ticket.prioridade]}`}>
-              {PRIORIDADE_ICONS[ticket.prioridade]} {ticket.prioridade}
-            </Badge>
             <Badge className={`text-xs ${STATUS_COLORS[ticket.status]}`}>{ticket.status.replace("_", " ")}</Badge>
           </div>
           <h3 className="font-semibold mt-1">{ticket.titulo}</h3>
           <p className="text-sm text-muted-foreground mt-1">{ticket.descricao}</p>
         </div>
+      </div>
+
+      {/* Solicitante */}
+      <div className="rounded-lg border bg-muted/30 p-3 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <User className="h-4 w-4 text-primary" />
+          </div>
+          <div>
+            <p className="text-sm font-medium">{ticket.solicitante_nome || "Solicitante desconhecido"}</p>
+            <p className="text-xs text-muted-foreground">
+              {[ticket.solicitante_cargo, ticket.solicitante_departamento].filter(Boolean).join(" · ") || ticket.solicitante_email || ""}
+            </p>
+          </div>
+        </div>
+        {ticket.solicitante_id && (
+          <Button
+            size="sm"
+            variant="outline"
+            className="text-xs gap-1 flex-shrink-0"
+            onClick={() => navigate(`/chat?userId=${ticket.solicitante_id}`)}
+          >
+            <MessageSquare className="h-3 w-3" />
+            Chat Direto
+          </Button>
+        )}
       </div>
 
       {/* Timeline de status */}
@@ -307,8 +332,23 @@ function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: ()
         </div>
       )}
 
-      {/* Campos editáveis */}
+      {/* Campos editáveis — somente equipe TI */}
       <div className="grid grid-cols-2 gap-3">
+        <div>
+          <Label className="text-xs">Prioridade (Equipe TI)</Label>
+          <Select
+            value={ticket.prioridade ?? "media"}
+            onValueChange={(v) => updateTicket.mutate({ id: ticket.id, prioridade: v as any })}
+          >
+            <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="baixa">🟢 Baixa</SelectItem>
+              <SelectItem value="media">🔵 Média</SelectItem>
+              <SelectItem value="alta">🟠 Alta</SelectItem>
+              <SelectItem value="critica">🔴 Crítica</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <div>
           <Label className="text-xs">Técnico Responsável</Label>
           <Select
@@ -542,31 +582,18 @@ export default function TI() {
                   <Label>Descrição detalhada *</Label>
                   <Textarea value={ticketForm.descricao} onChange={(e) => setTicketForm((p) => ({ ...p, descricao: e.target.value }))} placeholder="Descreva com o máximo de detalhes..." rows={4} required />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label>Categoria</Label>
-                    <Select value={ticketForm.categoria} onValueChange={(v) => setTicketForm((p) => ({ ...p, categoria: v as any }))}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        {["hardware","software","rede","acesso","email","impressora","servidor","outro"].map((c) => (
-                          <SelectItem key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label>Prioridade</Label>
-                    <Select value={ticketForm.prioridade} onValueChange={(v) => setTicketForm((p) => ({ ...p, prioridade: v as any }))}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="baixa">🟢 Baixa</SelectItem>
-                        <SelectItem value="media">🔵 Média</SelectItem>
-                        <SelectItem value="alta">🟠 Alta</SelectItem>
-                        <SelectItem value="critica">🔴 Crítica</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <div>
+                  <Label>Categoria</Label>
+                  <Select value={ticketForm.categoria} onValueChange={(v) => setTicketForm((p) => ({ ...p, categoria: v as any }))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {["hardware","software","rede","acesso","email","impressora","servidor","outro"].map((c) => (
+                        <SelectItem key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
+                <p className="text-xs text-muted-foreground">A prioridade será definida pela equipe de TI após análise do chamado.</p>
                 {/* Anexos */}
                 <div>
                   <Label>Anexos (imagens, prints, documentos)</Label>
