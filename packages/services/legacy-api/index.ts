@@ -10,9 +10,7 @@ import { appRouter } from "./routers";
 import { createContext } from "./_core/context";
 import cors from "cors";
 import helmet from "helmet";
-import { getDb } from "./db";
-import { migrate } from "drizzle-orm/postgres-js/migrator";
-import path from "path";
+import { runInlineMigrations } from "./inline_migrations";
 
 // ─── Origens permitidas (CORS) ─────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
@@ -34,16 +32,13 @@ const isOriginAllowed = (origin: string | undefined): boolean => {
   return false;
 };
 
-// Aplica migrações pendentes ao iniciar o servidor
+// Aplica migrações inline ao iniciar o servidor (sem depender de arquivos externos)
 async function runMigrations() {
-  const db = await getDb();
-  if (!db) { console.warn("[Migration] DB indisponível, pulando migrações"); return; }
   try {
-    const migrationsFolder = path.join(__dirname, "drizzle", "migrations");
-    await migrate(db, { migrationsFolder });
-    console.log("[Migration] Migrações aplicadas com sucesso");
+    await runInlineMigrations();
+    console.log("[Migration] Todas as tabelas verificadas/criadas com sucesso");
   } catch (err) {
-    console.error("[Migration] Erro ao aplicar migrações:", err);
+    console.error("[Migration] Erro ao aplicar migrações inline:", err);
   }
 }
 
@@ -87,7 +82,7 @@ app.use(
 
 // 5. Endpoint de saúde para o Railway
 app.get("/health", (req, res) => {
-  res.json({ status: "ok" });
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
 // 6. Iniciar o servidor (após migrações)
@@ -103,5 +98,3 @@ runMigrations()
       console.log(`[Server] Synapse Backend running on port ${port}`);
     });
   });
-
-// Placeholder for migration 0003 - will be added via shell

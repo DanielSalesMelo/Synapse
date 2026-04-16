@@ -125,6 +125,13 @@ export async function getAllUsers() {
   return await db.select().from(users);
 }
 
+export async function getUserByEmail(email: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
 export async function updateUser(id: number, data: Partial<InsertUser>) {
   const db = await getDb();
   if (!db) return;
@@ -135,6 +142,13 @@ export async function deleteUser(id: number) {
   const db = await getDb();
   if (!db) return;
   await db.delete(users).where(eq(users.id, id));
+}
+
+export async function getRawClient() {
+  if (!_client && process.env.DATABASE_URL) {
+    await getDb(); // initialize if not yet done
+  }
+  return _client;
 }
 
 export async function closeDb() {

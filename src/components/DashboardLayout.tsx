@@ -245,6 +245,14 @@ function Sidebar({
   const isGroupActive = (items: MenuItem[]) =>
     items.some((item) => isActive(item.path));
 
+  // Badges de notificação por rota (mock — será substituído por dados reais)
+  const BADGES: Record<string, number> = {
+    "/chat": 3,
+    "/ti": 2,
+    "/tarefas": 5,
+    "/gestao/alertas": 1,
+  };
+
   const initials = user?.name
     ? user.name.split(" ").map((n: string) => n[0]).slice(0, 2).join("").toUpperCase()
     : "U";
@@ -336,7 +344,7 @@ function Sidebar({
   ];
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-sidebar">
       {/* ── Logo ── */}
       <div className="flex items-center gap-3 px-4 h-14 border-b border-border shrink-0">
         <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shrink-0">
@@ -377,25 +385,33 @@ function Sidebar({
         {visibleGroups.map((group) => {
           const expanded = collapsed ? false : isGroupExpanded(group.label, group.items);
           const GroupIcon = group.icon;
+          const groupHasBadge = group.items.some((item) => BADGES[item.path] > 0);
+          const groupTotalBadge = group.items.reduce((acc, item) => acc + (BADGES[item.path] || 0), 0);
 
           return (
             <div key={group.label} className="mb-0.5">
               {!collapsed ? (
+                /* Cabeçalho do grupo — cor distinta do submenu */
                 <button
                   onClick={() => toggleGroup(group.label)}
-                  className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold uppercase tracking-widest transition-colors rounded-md mx-1 ${
+                  className={`w-full flex items-center gap-2 px-3 py-2 text-[11px] font-bold uppercase tracking-wider transition-all rounded-none ${
                     isGroupActive(group.items)
-                      ? "text-primary"
-                      : "text-muted-foreground/70 hover:text-foreground hover:bg-accent/50"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-sidebar-group text-sidebar-group-foreground hover:bg-sidebar-group-hover"
                   }`}
-                  style={{ width: "calc(100% - 8px)" }}
                 >
                   {GroupIcon && <GroupIcon className="h-3.5 w-3.5 shrink-0" />}
                   <span className="flex-1 text-left truncate">{group.label}</span>
+                  {/* Badge total do grupo quando recolhido */}
+                  {!expanded && groupHasBadge && (
+                    <span className="h-4 min-w-4 px-1 text-[10px] rounded-full bg-red-500 text-white font-bold flex items-center justify-center shrink-0">
+                      {groupTotalBadge > 9 ? "9+" : groupTotalBadge}
+                    </span>
+                  )}
                   {expanded ? (
-                    <ChevronUp className="h-3 w-3 shrink-0" />
+                    <ChevronUp className="h-3 w-3 shrink-0 opacity-60" />
                   ) : (
-                    <ChevronDown className="h-3 w-3 shrink-0" />
+                    <ChevronDown className="h-3 w-3 shrink-0 opacity-60" />
                   )}
                 </button>
               ) : (
@@ -405,19 +421,30 @@ function Sidebar({
               {(expanded || collapsed) &&
                 group.items.map((item) => {
                   const active = isActive(item.path);
+                  const badge = BADGES[item.path];
                   return (
                     <button
                       key={item.path}
                       onClick={() => handleNav(item.path)}
-                      title={item.label}
-                      className={`w-full flex items-center gap-3 py-2 text-sm transition-colors ${
+                      title={collapsed ? item.label : undefined}
+                      className={`w-full flex items-center gap-3 py-2 text-sm transition-all ${
                         active
-                          ? "bg-primary/10 text-primary font-medium border-r-2 border-primary"
-                          : "text-muted-foreground hover:bg-accent hover:text-foreground"
-                      } ${collapsed ? "justify-center px-2" : "px-4"}`}
+                          ? "bg-primary/15 text-primary font-semibold border-r-2 border-primary"
+                          : "text-muted-foreground/80 hover:bg-sidebar-accent hover:text-foreground"
+                      } ${collapsed ? "justify-center px-2" : "px-5"}`}
                     >
-                      <item.icon className={`h-4 w-4 shrink-0 ${active ? "text-primary" : ""}`} />
-                      {!collapsed && <span className="truncate text-xs">{item.label}</span>}
+                      <item.icon className={`h-3.5 w-3.5 shrink-0 ${active ? "text-primary" : ""}`} />
+                      {!collapsed && <span className="flex-1 truncate text-xs">{item.label}</span>}
+                      {/* Badge de notificação */}
+                      {badge && badge > 0 && (
+                        <span className={`${
+                          collapsed
+                            ? "absolute top-0 right-0 h-3.5 w-3.5 text-[8px]"
+                            : "h-4 min-w-4 px-1 text-[10px]"
+                        } rounded-full bg-red-500 text-white font-bold flex items-center justify-center shrink-0`}>
+                          {badge > 9 ? "9+" : badge}
+                        </span>
+                      )}
                     </button>
                   );
                 })}
@@ -737,7 +764,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex h-screen bg-background overflow-hidden">
       {/* Desktop sidebar */}
       <aside
-        className={`hidden md:flex flex-col border-r border-border bg-card transition-all duration-200 shrink-0 relative ${
+        className={`hidden md:flex flex-col border-r border-border bg-sidebar transition-all duration-200 shrink-0 relative ${
           collapsed ? "w-14" : "w-64"
         }`}
       >
@@ -770,7 +797,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Mobile sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 flex flex-col border-r border-border bg-card transition-transform duration-200 md:hidden ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 flex flex-col border-r border-border bg-sidebar transition-transform duration-200 md:hidden ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >

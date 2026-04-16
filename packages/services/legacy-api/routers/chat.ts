@@ -179,6 +179,26 @@ export const chatRouter = router({
       return { conversationId: newConv.id };
     }),
 
+  // Criar grupo de conversa
+  createGroupConversation: protectedProcedure.input(z.object({
+    name: z.string().min(1).max(100),
+    memberIds: z.array(z.number()).min(1).max(50),
+  })).mutation(async ({ input, ctx }) => {
+    const db = requireDb(await getDb(), "chat.createGroupConversation");
+    // Criar a conversa como grupo
+    const [newConv] = await db.insert(chatConversations).values({
+      empresaId: ctx.user.empresaId || 1,
+      isGroup: true,
+      name: input.name,
+    }).returning();
+    // Adicionar o criador + membros selecionados
+    const allMemberIds = Array.from(new Set([ctx.user.id, ...input.memberIds]));
+    await db.insert(chatMembers).values(
+      allMemberIds.map((userId) => ({ conversationId: newConv.id, userId }))
+    );
+    return { conversationId: newConv.id };
+  }),
+
   // Listar todos os usuários para iniciar novo chat
   listUsers: protectedProcedure.query(async ({ ctx }) => {
     const db = requireDb(await getDb(), "chat.listUsers");

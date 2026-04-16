@@ -40,6 +40,10 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  /* ── Sidebar group header (cor distinta do submenu) ── */
+  --color-sidebar-group: var(--sidebar-group);
+  --color-sidebar-group-foreground: var(--sidebar-group-foreground);
+  --color-sidebar-group-hover: var(--sidebar-group-hover);
 }
 
 :root {
@@ -70,12 +74,17 @@
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
   --ring: oklch(0.623 0.214 259.815);
+  /* Sidebar base — azul escuro */
   --sidebar: oklch(0.18 0.025 240);
   --sidebar-foreground: oklch(0.92 0.01 240);
   --sidebar-accent: oklch(0.25 0.03 240);
   --sidebar-accent-foreground: oklch(0.92 0.01 240);
   --sidebar-border: oklch(0.28 0.03 240);
   --sidebar-ring: oklch(0.623 0.214 259.815);
+  /* Cabeçalho de grupo — tom mais escuro que o sidebar */
+  --sidebar-group: oklch(0.13 0.03 240);
+  --sidebar-group-foreground: oklch(0.75 0.04 240);
+  --sidebar-group-hover: oklch(0.16 0.03 240);
 }
 
 .dark {
@@ -111,6 +120,10 @@
   --sidebar-accent-foreground:  oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.488 0.243 264.376);
+  /* Cabeçalho de grupo — dark mode */
+  --sidebar-group: oklch(0.14 0.006 285.885);
+  --sidebar-group-foreground: oklch(0.6 0.01 285);
+  --sidebar-group-hover: oklch(0.18 0.006 285.885);
 }
 
 .gray {
@@ -146,6 +159,10 @@
   --sidebar-accent-foreground: oklch(0.95 0 0);
   --sidebar-border: oklch(0.4 0 0);
   --sidebar-ring: oklch(0.45 0.01 240);
+  /* Cabeçalho de grupo — gray mode */
+  --sidebar-group: oklch(0.22 0 0);
+  --sidebar-group-foreground: oklch(0.65 0 0);
+  --sidebar-group-hover: oklch(0.26 0 0);
 }
 
 @layer base {
