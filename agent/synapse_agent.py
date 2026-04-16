@@ -452,28 +452,40 @@ def pair_agent(config: Dict, codigo: str) -> Optional[str]:
     if not HAS_REQUESTS:
         return None
     try:
-        url = f"{config['server_url'].rstrip('/')}/trpc/ti.pairAgent"
+        # Tenta o endpoint de API direta primeiro (mais comum em versões novas)
+        url = f"{config['server_url'].rstrip('/')}/api/agent/pair"
         hostname = socket.gethostname()
         try:
             ip = socket.gethostbyname(hostname)
         except Exception:
             ip = "0.0.0.0"
+        
         payload = {
-            "json": {
-                "codigo": codigo,
-                "hostname": hostname,
-                "ip": ip,
-                "so": f"{platform.system()} {platform.release()}",
-                "mac": get_mac_address(),
-                "fingerprint": get_hardware_fingerprint(),
-                "anydesk_id": get_anydesk_id(),
-                "versao_agente": VERSION,
-            }
+            "pairCode": codigo,
+            "hostname": hostname,
+            "ip": ip,
+            "platform": f"{platform.system()} {platform.release()}",
+            "mac": get_mac_address(),
+            "fingerprint": get_hardware_fingerprint(),
+            "anydeskId": get_anydesk_id(),
+            "agentVersion": VERSION,
         }
+        
+        log.info(f"[Pair] Tentando pareamento em: {url}")
         resp = requests.post(url, json=payload, timeout=15)
+        
+        # Se falhar com 404, tenta o endpoint tRPC (legado)
+        if resp.status_code == 404:
+            log.info("[Pair] Endpoint /api/agent/pair não encontrado, tentando /trpc/ti.pairAgent...")
+            url = f"{config['server_url'].rstrip('/')}/trpc/ti.pairAgent"
+            trpc_payload = {"json": payload}
+            trpc_payload["json"]["codigo"] = codigo # tRPC usa 'codigo' em vez de 'pairCode'
+            resp = requests.post(url, json=trpc_payload, timeout=15)
+
         if resp.status_code == 200:
             data = resp.json()
-            result = data.get("result", {}).get("data", {}).get("json", data.get("result", {}).get("data", {}))
+            # Tenta extrair o token de diferentes formatos de resposta (API direta ou tRPC)
+            result = data.get("result", {}).get("data", {}).get("json", data.get("result", {}).get("data", data))
             token = result.get("token") if isinstance(result, dict) else None
             if token:
                 log.info(f"[Pair] ✅ Pareamento realizado! Token: {token[:16]}...")
@@ -736,10 +748,15 @@ if __name__ == "__main__":
                 sys.exit(1)
 
             if not config.get("server_url") or config["server_url"] == DEFAULT_CONFIG["server_url"]:
-                server_url = input("URL do servidor Synapse (ex: https://api.seudominio.com): ").strip()
-                if not server_url.startswith("http"):
-                    server_url = "https://" + server_url
-                config["server_url"] = server_url
+                # Se já temos a URL no ambiente ou config, não pergunta
+                env_url = os.environ.get("SYNAPSE_SERVER_URL")
+                if env_url:
+                    config["server_url"] = env_url
+                else:
+                    server_url = input("URL do servidor Synapse (ex: https://api.seudominio.com): ").strip()
+                    if not server_url.startswith("http"):
+                        server_url = "https://" + server_url
+                    config["server_url"] = server_url
                 save_config(config)
 
             print(f"\nVinculando PC ao Synapse com código: {codigo}")
