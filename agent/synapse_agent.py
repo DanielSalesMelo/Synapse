@@ -699,32 +699,55 @@ WantedBy=multi-user.target
 
 # ─── Ponto de entrada ─────────────────────────────────────────────────────────
 if __name__ == "__main__":
+    # Suporte a flags do instalador legado
+    if "--config" in sys.argv:
+        idx = sys.argv.index("--config")
+        if len(sys.argv) > idx + 1:
+            conf_file = Path(sys.argv[idx + 1])
+            if conf_file.exists():
+                try:
+                    content = conf_file.read_text()
+                    config = load_config()
+                    for line in content.splitlines():
+                        if "=" in line:
+                            k, v = line.split("=", 1)
+                            if k.strip() == "SERVER_URL": config["server_url"] = v.strip()
+                            if k.strip() == "PAIR_CODE": config["pair_code"] = v.strip()
+                    save_config(config)
+                except Exception as e:
+                    print(f"Erro ao ler config legada: {e}")
+
     if len(sys.argv) > 1:
         cmd = sys.argv[1]
-        if cmd == "--pair":
-            # Vincula este PC ao Synapse com um código de pareamento
-            if len(sys.argv) < 3:
-                print("Uso: python synapse_agent.py --pair SYNC-XXXX-XXXX")
-                print("\nO código de pareamento é gerado no painel TI > Monitoramento > Agentes.")
-                sys.exit(1)
-            codigo = sys.argv[2].strip().upper()
+        if cmd == "--pair" or "--pair-only" in sys.argv:
             config = load_config()
+            codigo = None
+            
+            if cmd == "--pair" and len(sys.argv) > 2:
+                codigo = sys.argv[2].strip().upper()
+            elif config.get("pair_code"):
+                codigo = config["pair_code"].strip().upper()
+            
+            if not codigo:
+                print("Uso: python synapse_agent.py --pair SYNC-XXXX-XXXX")
+                sys.exit(1)
+
             if not config.get("server_url") or config["server_url"] == DEFAULT_CONFIG["server_url"]:
                 server_url = input("URL do servidor Synapse (ex: https://api.seudominio.com): ").strip()
                 if not server_url.startswith("http"):
                     server_url = "https://" + server_url
                 config["server_url"] = server_url
                 save_config(config)
+
             print(f"\nVinculando PC ao Synapse com código: {codigo}")
             print(f"Servidor: {config['server_url']}")
-            print(f"Hostname: {socket.gethostname()}")
-            print(f"Fingerprint: {get_hardware_fingerprint()}")
             token = pair_agent(config, codigo)
             if token:
                 config["token"] = token
                 save_config(config)
                 print(f"\n✅ PC vinculado com sucesso!")
-                print(f"   Token salvo em: {CONFIG_FILE}")
+                if "--pair-only" in sys.argv:
+                    sys.exit(0)
                 print(f"\nIniciando monitoramento...")
                 main()
             else:

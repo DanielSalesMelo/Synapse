@@ -1351,26 +1351,32 @@ export default function TI() {
                   Funciona offline com buffer local — nunca perde dados.
                 </p>
                 <div className="space-y-2">
-                  <p className="text-xs font-medium text-muted-foreground">COMO INSTALAR:</p>
+                  <p className="text-xs font-medium text-muted-foreground">COMO INSTALAR (WINDOWS):</p>
                   <div className="bg-muted rounded-lg p-3 space-y-2 text-xs font-mono">
-                    <p className="text-muted-foreground"># 1. Baixe o agente</p>
-                    <p>pip install psutil requests</p>
-                    <p className="text-muted-foreground"># 2. Gere um código de pareamento abaixo</p>
-                    <p className="text-muted-foreground"># 3. Execute no PC a ser monitorado:</p>
-                    <p>python synapse_agent.py --pair SYNC-XXXX-XXXX</p>
+                    <p className="text-muted-foreground"># 1. Baixe o instalador abaixo</p>
+                    <p className="text-muted-foreground"># 2. Clique com o botão direito e "Executar como Administrador"</p>
+                    <p className="text-muted-foreground"># 3. Use o código de pareamento gerado ao lado</p>
+                    <p className="text-muted-foreground"># 4. URL do Servidor: {window.location.origin}</p>
                   </div>
                 </div>
-                <div className="flex gap-2">
-                  <Button size="sm" className="flex-1" asChild>
-                    <a href="/api/agent/download/windows" download="synapse_agent.py">
-                      <Download className="h-4 w-4 mr-2" />Windows
+                <div className="flex flex-col gap-2">
+                  <Button size="sm" className="w-full" asChild>
+                    <a href="/agent/instalar_agente.bat" download="instalar_agente.bat">
+                      <Download className="h-4 w-4 mr-2" />Baixar Instalador (Windows .bat)
                     </a>
                   </Button>
-                  <Button size="sm" variant="outline" className="flex-1" asChild>
-                    <a href="/api/agent/download/linux" download="synapse_agent.py">
-                      <Download className="h-4 w-4 mr-2" />Linux
-                    </a>
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="outline" className="flex-1" asChild>
+                      <a href="/agent/synapse_agent.py" download="synapse_agent.py">
+                        <FileText className="h-4 w-4 mr-2" />Script Python
+                      </a>
+                    </Button>
+                    <Button size="sm" variant="outline" className="flex-1" asChild>
+                      <a href="/agent/install_linux.sh" download="install_linux.sh">
+                        <Download className="h-4 w-4 mr-2" />Linux (.sh)
+                      </a>
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
