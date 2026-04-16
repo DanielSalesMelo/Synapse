@@ -254,7 +254,34 @@ export const usersRouter = router({
       }
     }),
 
-  // ── Listar empresas disponíveis para vínculo ──────────────────────────────
+  // ── Atualizar próprio perfil ──────────────────────────────────────────────────
+  updateProfile: protectedProcedure
+    .input(z.object({
+      name: z.string().min(2, "Nome deve ter ao menos 2 caracteres").optional(),
+      phone: z.string().optional().nullable(),
+      bio: z.string().max(500).optional().nullable(),
+      avatarUrl: z.string().optional().nullable(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+        const updateData: Record<string, any> = { updatedAt: new Date() };
+        if (input.name !== undefined) updateData.name = input.name;
+        if (input.phone !== undefined) updateData.phone = input.phone;
+        if (input.bio !== undefined) updateData.bio = input.bio;
+        if (input.avatarUrl !== undefined) updateData.avatarUrl = input.avatarUrl;
+        await db.update(users).set(updateData).where(eq(users.id, ctx.user.id));
+        const [updated] = await db.select().from(users).where(eq(users.id, ctx.user.id));
+        const { password: _pw, ...safeUser } = updated as any;
+        return safeUser;
+      } catch (error) {
+        if (error instanceof TRPCError) throw error;
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao atualizar perfil" });
+      }
+    }),
+
+  // ── Listar empresas disponíveis para vínculo ────────────────────────────────────────────
   listEmpresas: adminProcedure.query(async ({ ctx }) => {
     try {
       const db = await getDb();

@@ -195,7 +195,7 @@ const getMenuGroups = (t: any): MenuGroup[] => [
     icon: Settings,
     items: [
       { icon: UserCog, label: "Usuários", path: "/usuarios" },
-      { icon: Settings, label: "Configurações", path: "/empresa" },
+      { icon: Settings, label: "Configurações", path: "/configuracoes" },
       { icon: Plug, label: "Integrações", path: "/integracoes" },
       { icon: HelpCircle, label: "Ajuda", path: "/ajuda" },
     ],
@@ -236,7 +236,7 @@ function Sidebar({
   logout: () => void;
 }) {
   const { theme, setTheme } = useTheme();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navRef = useRef<HTMLElement>(null);
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
   const [search, setSearch] = useState("");
@@ -336,13 +336,7 @@ function Sidebar({
 
   const visibleGroups = filteredGroups.filter((group) => canSeeGroup(group.label));
 
-  const languages = [
-    { code: "pt", label: "PT", flag: "🇧🇷" },
-    { code: "en", label: "EN", flag: "🇺🇸" },
-    { code: "es", label: "ES", flag: "🇪🇸" },
-    { code: "fr", label: "FR", flag: "🇫🇷" },
-    { code: "zh", label: "TW", flag: "🇹🇼" },
-  ];
+
 
   return (
     <div className="flex flex-col h-full bg-sidebar">
@@ -455,48 +449,7 @@ function Sidebar({
       </nav>
 
       {/* ── Footer ── */}
-      <div className="border-t border-border shrink-0 p-3 space-y-2">
-        {!collapsed && (
-          <div className="flex items-center gap-1 rounded-lg bg-muted p-1 mb-1">
-            {languages.map((lang) => (
-              <button
-                key={lang.code}
-                onClick={() => i18n.changeLanguage(lang.code)}
-                title={lang.label}
-                className={`flex-1 flex items-center justify-center rounded-md py-1 text-[10px] transition-colors ${
-                  i18n.language === lang.code
-                    ? "bg-background text-foreground font-bold shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <span>{lang.flag}</span>
-              </button>
-            ))}
-          </div>
-        )}
-
-        {!collapsed && (
-          <div className="flex items-center gap-1 rounded-lg bg-muted p-1">
-            {[
-              { key: "light" as const, icon: Sun, label: "Claro" },
-              { key: "gray" as const, icon: Monitor, label: "Cinza" },
-              { key: "dark" as const, icon: Moon, label: "Escuro" },
-            ].map((item) => (
-              <button
-                key={item.key}
-                onClick={() => setTheme(item.key)}
-                className={`flex-1 flex items-center justify-center gap-1 rounded-md py-1.5 text-xs transition-colors ${
-                  theme === item.key
-                    ? "bg-background text-foreground font-medium shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <item.icon className="h-3 w-3" />
-                <span>{item.label}</span>
-              </button>
-            ))}
-          </div>
-        )}
+      <div className="border-t border-border shrink-0 p-3">
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -520,12 +473,41 @@ function Sidebar({
               )}
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent side="top" align="start" className="w-48">
+          <DropdownMenuContent side="top" align="start" className="w-52">
             <DropdownMenuItem disabled className="text-xs text-muted-foreground">
               {user?.email ?? user?.name}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logout} className="text-red-600">
+            <DropdownMenuItem onClick={() => navigate("/configuracoes")} className="text-xs">
+              <Settings className="h-4 w-4 mr-2" />
+              Configurações
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <div className="px-2 py-1">
+              <p className="text-[10px] text-muted-foreground mb-1">Tema</p>
+              <div className="flex items-center gap-1">
+                {[
+                  { key: "light" as const, icon: Sun, label: "Claro" },
+                  { key: "gray" as const, icon: Monitor, label: "Cinza" },
+                  { key: "dark" as const, icon: Moon, label: "Escuro" },
+                ].map((item) => (
+                  <button
+                    key={item.key}
+                    onClick={() => setTheme(item.key)}
+                    className={`flex-1 flex items-center justify-center gap-0.5 rounded-md py-1 text-[10px] transition-colors ${
+                      theme === item.key
+                        ? "bg-primary text-primary-foreground font-medium"
+                        : "bg-muted text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <item.icon className="h-3 w-3" />
+                    <span>{item.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={logout} className="text-red-600 text-xs">
               <LogOut className="h-4 w-4 mr-2" />
               Sair
             </DropdownMenuItem>

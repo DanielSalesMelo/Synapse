@@ -37,6 +37,7 @@ import { permissoesRouter } from "./routers/permissoes";
 import { recepcionistaRouter } from "./routers/recepcionista";
 import { logisticaRouter } from "./routers/logistica";
 import { notasRouter } from "./routers/notas";
+import { tarefasRouter } from "./routers/tarefas";
 
 export const appRouter = router({
   system: systemRouter,
@@ -78,6 +79,7 @@ export const appRouter = router({
   recepcionista: recepcionistaRouter,
   logistica: logisticaRouter,
   notas: notasRouter,
+  tarefas: tarefasRouter,
 });
 
 export type AppRouter = typeof appRouter;

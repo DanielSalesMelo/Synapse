@@ -65,6 +65,7 @@ import Logistica from "./pages/Logistica";
 import RH from "./pages/RH";
 import Tarefas from "./pages/Tarefas";
 import Notas from "./pages/Notas";
+import Configuracoes from "./pages/Configuracoes";
 
 function DashboardRoutes() {
   return (
@@ -231,6 +232,9 @@ function DashboardRoutes() {
 
         {/* Notas */}
         <Route path="/notas" component={Notas} />
+
+        {/* Configurações do usuário */}
+        <Route path="/configuracoes" component={Configuracoes} />
 
         {/* Qualidade */}
         <Route path="/qualidade/nao-conformidades" component={Auditoria} />

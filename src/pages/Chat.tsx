@@ -308,20 +308,54 @@ export default function Chat() {
     });
   };
 
-  const handleSendMessage = (e?: React.FormEvent) => {
+  const handleSendMessage = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if ((!message.trim() && attachments.length === 0) || !selectedConvId) return;
     const content = message.trim();
-    // Limpar imediatamente para melhor UX (não esperar onSuccess)
+    const currentAttachments = [...attachments];
+    // Limpar imediatamente para melhor UX
     setMessage("");
     setAttachments([]);
-    // Restaurar foco imediatamente
     requestAnimationFrame(() => inputRef.current?.focus());
-    sendMutation.mutate({
-      conversationId: selectedConvId,
-      // Se não há texto mas há anexo, envia string vazia (o backend trata)
-      content: content,
-    });
+
+    const getApiBase = () => {
+      if (typeof window === "undefined") return "";
+      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+        return "http://localhost:3000";
+      return (import.meta.env.VITE_API_URL as string) || "https://synapse-producion.up.railway.app";
+    };
+
+    if (currentAttachments.length > 0) {
+      for (const attachment of currentAttachments) {
+        try {
+          const formData = new FormData();
+          formData.append("file", attachment.file);
+          const resp = await fetch(`${getApiBase()}/api/upload`, {
+            method: "POST",
+            body: formData,
+            credentials: "include",
+          });
+          if (!resp.ok) throw new Error("Falha no upload");
+          const data = await resp.json();
+          sendMutation.mutate({
+            conversationId: selectedConvId,
+            content: content || "",
+            fileUrl: data.url,
+            fileName: attachment.file.name,
+            fileSize: attachment.file.size,
+            mimeType: attachment.file.type,
+          });
+        } catch {
+          toast.error("Erro ao enviar arquivo");
+        }
+      }
+      // Se também há texto, envia mensagem de texto separada
+      if (content) {
+        sendMutation.mutate({ conversationId: selectedConvId, content });
+      }
+    } else {
+      sendMutation.mutate({ conversationId: selectedConvId, content });
+    }
   };
 
   // Enter envia, Shift+Enter quebra linha

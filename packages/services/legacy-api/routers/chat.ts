@@ -49,7 +49,7 @@ export const chatRouter = router({
           const otherMember = otherMembers[0];
           return {
             ...conv,
-            displayName: otherMember ? `${otherMember.name} ${otherMember.lastName || ""}` : "Usuário",
+            displayName: otherMember ? `${otherMember.name} ${otherMember.lastName || ""}`.trim() : "Usuário",
           };
         }
         return { ...conv, displayName: conv.name || "Grupo" };
@@ -59,7 +59,7 @@ export const chatRouter = router({
     return conversationsWithDetails;
   }),
 
-  // Listar mensagens de uma conversa
+  // Listar mensagens de uma conversa (com suporte a arquivos)
   listMessages: publicProcedure
     .input(z.object({ conversationId: z.number() }))
     .query(async ({ input, ctx }) => {
@@ -81,31 +81,67 @@ export const chatRouter = router({
 
       if (isMemberResult.length === 0) throw new TRPCError({ code: "FORBIDDEN", message: "Você não faz parte desta conversa" });
 
-      const messages = await db
-        .select({
-          id: chatMessages.id,
-          content: chatMessages.content,
-          senderId: chatMessages.senderId,
-          createdAt: chatMessages.createdAt,
-          senderName: users.name,
-        })
-        .from(chatMessages)
-        .innerJoin(users, eq(chatMessages.senderId, users.id))
-        .where(eq(chatMessages.conversationId, input.conversationId))
-        .orderBy(desc(chatMessages.createdAt))
-        .limit(50);
+      // Buscar mensagens com campos de arquivo via SQL raw (colunas podem não estar no schema Drizzle)
+      const rows = await db.execute(sql`
+        SELECT
+          m.id,
+          m.content,
+          m."senderId",
+          m."createdAt",
+          m.type,
+          m."fileUrl",
+          m."fileName",
+          m."fileSize",
+          m."mimeType",
+          u.name AS "senderName",
+          u."lastName" AS "senderLastName"
+        FROM chat_messages m
+        INNER JOIN users u ON m."senderId" = u.id
+        WHERE m."conversationId" = ${input.conversationId}
+          AND m."deletedAt" IS NULL
+        ORDER BY m."createdAt" DESC
+        LIMIT 100
+      `);
+
+      const messages = (rows as unknown as any[]).map((row) => ({
+        id: row.id,
+        content: row.content || "",
+        senderId: row.senderId,
+        createdAt: row.createdAt,
+        type: row.type || "text",
+        senderName: `${row.senderName || ""} ${row.senderLastName || ""}`.trim(),
+        // Campos de arquivo
+        attachmentUrl: row.fileUrl || null,
+        attachmentName: row.fileName || null,
+        attachmentSize: row.fileSize ? formatFileSize(Number(row.fileSize)) : null,
+        attachmentType: row.fileUrl
+          ? (row.mimeType?.startsWith("image/") ? "image"
+            : row.mimeType?.startsWith("video/") ? "video"
+            : "file")
+          : null,
+      }));
 
       return messages.reverse();
     }),
 
-  // Enviar mensagem
+  // Enviar mensagem (texto ou arquivo)
   sendMessage: protectedProcedure
     .input(z.object({
       conversationId: z.number(),
-      content: z.string().min(1),
+      content: z.string().optional().default(""),
+      fileUrl: z.string().url().optional(),
+      fileName: z.string().optional(),
+      fileSize: z.number().optional(),
+      mimeType: z.string().optional(),
+      fileType: z.enum(["text", "image", "file", "video"]).optional().default("text"),
     }))
     .mutation(async ({ input, ctx }) => {
       const db = requireDb(await getDb(), "chat.sendMessage");
+
+      // Validar: precisa ter content OU fileUrl
+      if (!input.content?.trim() && !input.fileUrl) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Mensagem precisa ter conteúdo ou arquivo" });
+      }
 
       // Verificar se o usuário é membro da conversa
       const isMember = await db
@@ -123,12 +159,29 @@ export const chatRouter = router({
         throw new TRPCError({ code: "FORBIDDEN", message: "Você não faz parte desta conversa" });
       }
 
-      // Inserir mensagem
-      await db.insert(chatMessages).values({
-        conversationId: input.conversationId,
-        senderId: ctx.user.id,
-        content: input.content,
-      });
+      // Determinar conteúdo e tipo final
+      const finalContent = input.content?.trim() || input.fileName || "Arquivo";
+      const finalType = input.fileUrl
+        ? (input.mimeType?.startsWith("image/") ? "image" : "file")
+        : "text";
+
+      // Inserir mensagem com suporte a arquivos
+      await db.execute(sql`
+        INSERT INTO chat_messages (
+          "conversationId", "senderId", "content", "type",
+          "fileUrl", "fileName", "fileSize", "mimeType"
+        )
+        VALUES (
+          ${input.conversationId},
+          ${ctx.user.id},
+          ${finalContent},
+          ${finalType},
+          ${input.fileUrl ?? null},
+          ${input.fileName ?? null},
+          ${input.fileSize ?? null},
+          ${input.mimeType ?? null}
+        )
+      `);
 
       // Atualizar timestamp da conversa
       await db
@@ -220,3 +273,10 @@ export const chatRouter = router({
       .limit(100);
   }),
 });
+
+// Helper para formatar tamanho de arquivo
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}

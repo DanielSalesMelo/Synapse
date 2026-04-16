@@ -413,9 +413,6 @@ const MIGRATION_STATEMENTS: string[] = [
 	"deletedBy" integer,
 	"deleteReason" text
 )`,
-  `EXCEPTION
-  WHEN duplicate_object THEN null`,
-  `END $$`,
   `CREATE TABLE IF NOT EXISTS "notas_fiscais_viagem" (
   "id"                SERIAL PRIMARY KEY,
   "empresaId"         INTEGER NOT NULL,
@@ -504,114 +501,110 @@ const MIGRATION_STATEMENTS: string[] = [
 )`,
   `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "phone" varchar(20)`,
   `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "empresaId" integer`,
-  `END IF`,
-  `END$$`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "ciclo_cobranca" AS ENUM ('mensal','trimestral','semestral','anual')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "ciclo_cobranca" AS ENUM ('mensal','trimestral','semestral','anual');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "forma_pagamento_saas" AS ENUM ('cartao_credito','boleto','pix','transferencia')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "forma_pagamento_saas" AS ENUM ('cartao_credito','boleto','pix','transferencia');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "ia_agente_setor" AS ENUM ('master','financeiro','frota','motorista','manutencao','juridico','recepcao','wms','rh','ti','comercial','marketing')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "ia_agente_setor" AS ENUM ('master','financeiro','frota','motorista','manutencao','juridico','recepcao','wms','rh','ti','comercial','marketing');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "plano_cod" AS ENUM ('starter','professional','enterprise','custom')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "plano_cod" AS ENUM ('starter','professional','enterprise','custom');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "prioridade_sac" AS ENUM ('baixa','media','alta','urgente')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "prioridade_sac" AS ENUM ('baixa','media','alta','urgente');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "prioridade_ticket_ti" AS ENUM ('baixa','media','alta','critica')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "prioridade_ticket_ti" AS ENUM ('baixa','media','alta','critica');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "status_acerto_carga" AS ENUM ('pendente','em_analise','aprovado','rejeitado','cancelado')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "status_acerto_carga" AS ENUM ('pendente','em_analise','aprovado','rejeitado','cancelado');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "status_carregamento" AS ENUM ('planejado','em_carregamento','carregado','em_transito','entregue','cancelado')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "status_carregamento" AS ENUM ('planejado','em_carregamento','carregado','em_transito','entregue','cancelado');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "status_cobranca" AS ENUM ('pendente','pago','atrasado','cancelado','estornado')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "status_cobranca" AS ENUM ('pendente','pago','atrasado','cancelado','estornado');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "status_conferencia" AS ENUM ('saida_registrada','em_viagem','retorno_registrado','em_conferencia','aguardando_motorista','confirmado_motorista','finalizado')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "status_conferencia" AS ENUM ('saida_registrada','em_viagem','retorno_registrado','em_conferencia','aguardando_motorista','confirmado_motorista','finalizado');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "status_integracao" AS ENUM ('ativa','inativa','erro','configurando')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "status_integracao" AS ENUM ('ativa','inativa','erro','configurando');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "status_item_recebimento" AS ENUM ('pendente','conferido','divergente','recusado')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "status_item_recebimento" AS ENUM ('pendente','conferido','divergente','recusado');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "status_lead" AS ENUM ('novo','contatado','qualificado','proposta','negociacao','ganho','perdido','inativo')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "status_lead" AS ENUM ('novo','contatado','qualificado','proposta','negociacao','ganho','perdido','inativo');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "status_licenca" AS ENUM ('ativa','suspensa','cancelada','trial','expirada')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "status_licenca" AS ENUM ('ativa','suspensa','cancelada','trial','expirada');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "status_licenca_log" AS ENUM ('ativada','suspensa','cancelada','reativada','atualizada','expirada')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "status_licenca_log" AS ENUM ('ativada','suspensa','cancelada','reativada','atualizada','expirada');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "status_pedido" AS ENUM ('rascunho','enviado','aprovado','em_separacao','expedido','entregue','cancelado')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "status_pedido" AS ENUM ('rascunho','enviado','aprovado','em_separacao','expedido','entregue','cancelado');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "status_proposta" AS ENUM ('rascunho','enviada','em_analise','aprovada','rejeitada','expirada')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "status_proposta" AS ENUM ('rascunho','enviada','em_analise','aprovada','rejeitada','expirada');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "status_recebimento" AS ENUM ('agendado','em_andamento','concluido','divergente','cancelado')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "status_recebimento" AS ENUM ('agendado','em_andamento','concluido','divergente','cancelado');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "status_sac" AS ENUM ('aberto','em_andamento','aguardando_cliente','resolvido','fechado','reaberto')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "status_sac" AS ENUM ('aberto','em_andamento','aguardando_cliente','resolvido','fechado','reaberto');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "status_ticket_ti" AS ENUM ('aberto','em_andamento','aguardando','resolvido','fechado')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "status_ticket_ti" AS ENUM ('aberto','em_andamento','aguardando','resolvido','fechado');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "status_visitante" AS ENUM ('aguardando','em_visita','finalizado','cancelado')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "status_visitante" AS ENUM ('aguardando','em_visita','finalizado','cancelado');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "tipo_empresa" AS ENUM ('matriz','filial','grupo','franquia','parceiro')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "tipo_empresa" AS ENUM ('matriz','filial','grupo','franquia','parceiro');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "tipo_evento_auditoria" AS ENUM ('login','logout','create','update','delete','restore','export','import','permission_change','config_change','access_denied','password_change','role_change')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "tipo_evento_auditoria" AS ENUM ('login','logout','create','update','delete','restore','export','import','permission_change','config_change','access_denied','password_change','role_change');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "tipo_movimentacao_estoque" AS ENUM ('entrada','saida','transferencia','ajuste','inventario','devolucao','perda')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "tipo_movimentacao_estoque" AS ENUM ('entrada','saida','transferencia','ajuste','inventario','devolucao','perda');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "tipo_ponto" AS ENUM ('entrada','saida','inicio_intervalo','fim_intervalo')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "tipo_ponto" AS ENUM ('entrada','saida','inicio_intervalo','fim_intervalo');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `DO $$ BEGIN
-  CREATE TYPE "tipo_recebimento" AS ENUM ('compra','devolucao','transferencia','bonificacao')`,
-  `EXCEPTION WHEN duplicate_object THEN NULL`,
-  `END $$`,
+  CREATE TYPE "tipo_recebimento" AS ENUM ('compra','devolucao','transferencia','bonificacao');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
   `CREATE TABLE IF NOT EXISTS "grupo_empresas" (
   "id" SERIAL PRIMARY KEY,
   "grupoId" INTEGER NOT NULL,
@@ -1387,6 +1380,77 @@ const MIGRATION_STATEMENTS: string[] = [
       count(*) as amostras
     FROM monitor_metricas
     GROUP BY "agenteId", "empresaId", date_trunc('hour', "coletadoEm")`,
+  // Fix veiculos table - make optional columns nullable in case old DB had them as NOT NULL
+  `ALTER TABLE "veiculos" ALTER COLUMN "cavaloPrincipalId" DROP NOT NULL`,
+  `ALTER TABLE "veiculos" ALTER COLUMN "motoristaId" DROP NOT NULL`,
+  `ALTER TABLE "veiculos" ALTER COLUMN "ajudanteId" DROP NOT NULL`,
+  `ALTER TABLE "veiculos" ALTER COLUMN "renavam" DROP NOT NULL`,
+  `ALTER TABLE "veiculos" ALTER COLUMN "chassi" DROP NOT NULL`,
+  `ALTER TABLE "veiculos" ALTER COLUMN "marca" DROP NOT NULL`,
+  `ALTER TABLE "veiculos" ALTER COLUMN "modelo" DROP NOT NULL`,
+  `ALTER TABLE "veiculos" ALTER COLUMN "ano" DROP NOT NULL`,
+  `ALTER TABLE "veiculos" ALTER COLUMN "cor" DROP NOT NULL`,
+  `ALTER TABLE "veiculos" ALTER COLUMN "capacidadeCarga" DROP NOT NULL`,
+  `ALTER TABLE "veiculos" ALTER COLUMN "kmAtual" DROP NOT NULL`,
+  `ALTER TABLE "veiculos" ALTER COLUMN "mediaConsumo" DROP NOT NULL`,
+  `ALTER TABLE "veiculos" ALTER COLUMN "vencimentoCrlv" DROP NOT NULL`,
+  `ALTER TABLE "veiculos" ALTER COLUMN "vencimentoSeguro" DROP NOT NULL`,
+  `ALTER TABLE "veiculos" ADD COLUMN IF NOT EXISTS "classificacao" integer DEFAULT 0`,
+  `ALTER TABLE "veiculos" ADD COLUMN IF NOT EXISTS "deleteReason" text`,
+  `ALTER TABLE "veiculos" ADD COLUMN IF NOT EXISTS "deletedBy" integer`,
+  // --- TAREFAS / PROJETOS ---
+  `CREATE TABLE IF NOT EXISTS "projetos" (
+    "id" serial PRIMARY KEY,
+    "empresaId" integer NOT NULL,
+    "nome" varchar(200) NOT NULL,
+    "descricao" text,
+    "cor" varchar(20) DEFAULT '#6366f1',
+    "ativo" boolean DEFAULT true,
+    "createdAt" timestamp DEFAULT now(),
+    "updatedAt" timestamp DEFAULT now()
+  )`,
+
+  `CREATE TABLE IF NOT EXISTS "tarefas" (
+    "id" serial PRIMARY KEY,
+    "empresaId" integer NOT NULL,
+    "projetoId" integer,
+    "titulo" varchar(500) NOT NULL,
+    "descricao" text,
+    "status" varchar(30) DEFAULT 'backlog',
+    "prioridade" varchar(20) DEFAULT 'media',
+    "responsavelId" integer,
+    "responsavelNome" varchar(200),
+    "prazo" timestamp,
+    "estimativaHoras" numeric(8,2),
+    "progresso" integer DEFAULT 0,
+    "sprint" varchar(100),
+    "tags" text DEFAULT '[]',
+    "criadoPorId" integer,
+    "createdAt" timestamp DEFAULT now(),
+    "updatedAt" timestamp DEFAULT now()
+  )`,
+
+  `CREATE TABLE IF NOT EXISTS "tarefa_comentarios" (
+    "id" serial PRIMARY KEY,
+    "tarefaId" integer NOT NULL,
+    "userId" integer NOT NULL,
+    "userName" varchar(200),
+    "conteudo" text NOT NULL,
+    "createdAt" timestamp DEFAULT now()
+  )`,
+  // --- CHAT: colunas de arquivo ---
+  `ALTER TABLE "chat_messages" ADD COLUMN IF NOT EXISTS "fileUrl" text`,
+  `ALTER TABLE "chat_messages" ADD COLUMN IF NOT EXISTS "fileName" varchar(255)`,
+  `ALTER TABLE "chat_messages" ADD COLUMN IF NOT EXISTS "fileSize" integer`,
+  `ALTER TABLE "chat_messages" ADD COLUMN IF NOT EXISTS "mimeType" varchar(100)`,
+
+  // --- USERS: campos de perfil ---
+  `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "avatarUrl" text`,
+  `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "bio" text`,
+  `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "cargo" varchar(100)`,
+  `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "departamento" varchar(100)`,
+  `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "idioma" varchar(10) DEFAULT 'pt'`,
+  `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "tema" varchar(20) DEFAULT 'dark'`,
 ];
 
 export async function runInlineMigrations(): Promise<void> {

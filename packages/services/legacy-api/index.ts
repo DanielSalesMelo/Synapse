@@ -11,6 +11,10 @@ import { createContext } from "./_core/context";
 import cors from "cors";
 import helmet from "helmet";
 import { runInlineMigrations } from "./inline_migrations";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { sdk } from "./_core/sdk";
 
 // ─── Origens permitidas (CORS) ─────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
@@ -82,7 +86,80 @@ app.use(
 );
 
 // 3. Middleware fundamental para ler o JSON do login
-app.use(express.json({ limit: "2mb" }));
+app.use(express.json({ limit: "10mb" }));
+
+// ─── Upload de arquivos (Chat, TI, etc.) ───────────────────────────────────
+const UPLOADS_DIR = path.join(process.cwd(), "uploads");
+if (!fs.existsSync(UPLOADS_DIR)) {
+  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+}
+
+const multerStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, UPLOADS_DIR),
+  filename: (_req, file, cb) => {
+    const unique = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const ext = path.extname(file.originalname);
+    cb(null, `${unique}${ext}`);
+  },
+});
+
+const upload = multer({
+  storage: multerStorage,
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+  fileFilter: (_req, file, cb) => {
+    const allowed = /jpeg|jpg|png|gif|webp|mp4|mov|avi|pdf|doc|docx|xls|xlsx|txt|zip/i;
+    const ext = path.extname(file.originalname).toLowerCase().replace(".", "");
+    if (allowed.test(ext)) {
+      cb(null, true);
+    } else {
+      cb(new Error(`Tipo de arquivo n\u00e3o permitido: ${ext}`));
+    }
+  },
+});
+
+// Endpoint de upload de arquivo
+app.post("/api/upload", upload.single("file"), async (req: any, res: any) => {
+  try {
+    // Verificar autenticação
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    if (!token) {
+      return res.status(401).json({ error: "N\u00e3o autenticado" });
+    }
+    try {
+      await sdk.verifySession(token);
+    } catch {
+      return res.status(401).json({ error: "Token inv\u00e1lido" });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: "Nenhum arquivo enviado" });
+    }
+
+    const file = req.file;
+    const baseUrl = process.env.RAILWAY_PUBLIC_DOMAIN
+      ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
+      : `http://localhost:${port}`;
+
+    const fileUrl = `${baseUrl}/uploads/${file.filename}`;
+    const fileType = file.mimetype.startsWith("image/") ? "image"
+      : file.mimetype.startsWith("video/") ? "video"
+      : "file";
+
+    return res.json({
+      url: fileUrl,
+      fileName: file.originalname,
+      fileSize: file.size,
+      mimeType: file.mimetype,
+      type: fileType,
+    });
+  } catch (err: any) {
+    console.error("[Upload] Erro:", err?.message);
+    return res.status(500).json({ error: err?.message || "Erro ao fazer upload" });
+  }
+});
+
+// Servir arquivos estáticos de uploads
+app.use("/uploads", express.static(UPLOADS_DIR));
 
 // 4. Middleware do tRPC
 app.use(

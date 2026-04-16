@@ -1,27 +1,48 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useMemo, useCallback } from "react";
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  closestCorners,
+  type DragStartEvent,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
+  Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  Plus, Search, Filter, Calendar, Clock, Flag, Users, BarChart3,
-  CheckCircle2, Circle, AlertCircle, ChevronRight, MoreHorizontal,
-  MessageSquare, Paperclip, Tag, Zap, Target, TrendingUp, ListTodo,
-  Kanban, LayoutGrid, List, Timer, Star, ArrowUp, ArrowRight, ArrowDown,
-  User, X, Edit, Trash2, Eye,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Plus, Search, Calendar, MessageSquare,
+  MoreHorizontal, Trash2, Edit, CheckCircle2, Circle, Loader2,
+  GripVertical, AlertCircle, ArrowUp, ArrowRight, ArrowDown,
+  Kanban, List, User,
 } from "lucide-react";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
+import { format, isValid, parseISO } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
-// ─── TYPES ───────────────────────────────────────────────────────────────────
 type Priority = "critica" | "alta" | "media" | "baixa";
 type Status = "backlog" | "a_fazer" | "em_andamento" | "revisao" | "concluido";
+type ViewMode = "kanban" | "list";
 
 interface Tarefa {
   id: number;
@@ -29,577 +50,378 @@ interface Tarefa {
   descricao?: string;
   status: Status;
   prioridade: Priority;
-  responsavel: string;
+  responsavelNome?: string;
+  responsavelNomeReal?: string;
   prazo?: string;
   tags: string[];
-  comentarios: number;
-  anexos: number;
-  progresso: number;
-  projeto?: string;
+  totalComentarios?: number;
+  progresso?: number;
+  projetoNome?: string;
+  projetoCor?: string;
   sprint?: string;
-  estimativa?: number; // horas
-  criado: string;
+  estimativaHoras?: number;
 }
 
-// ─── MOCK DATA ────────────────────────────────────────────────────────────────
-const TAREFAS_MOCK: Tarefa[] = [
-  { id: 1, titulo: "Implementar módulo de pagamentos InfinitePay", descricao: "Integrar API de pagamentos com split automático por empresa", status: "em_andamento", prioridade: "critica", responsavel: "Daniel", prazo: "2026-04-20", tags: ["backend", "integração"], comentarios: 5, anexos: 2, progresso: 65, projeto: "Synapse v7", sprint: "Sprint 3", estimativa: 16, criado: "2026-04-10" },
-  { id: 2, titulo: "Redesign do módulo de RH", descricao: "Atualizar interface com People Analytics e novos gráficos", status: "a_fazer", prioridade: "alta", responsavel: "Carlos", prazo: "2026-04-25", tags: ["frontend", "ux"], comentarios: 2, anexos: 1, progresso: 0, projeto: "Synapse v7", sprint: "Sprint 3", estimativa: 8, criado: "2026-04-12" },
-  { id: 3, titulo: "Corrigir bug de duplicação no menu", descricao: "Menu lateral aparecendo duas vezes em algumas rotas", status: "concluido", prioridade: "alta", responsavel: "Daniel", prazo: "2026-04-16", tags: ["bug", "frontend"], comentarios: 3, anexos: 0, progresso: 100, projeto: "Synapse v7", sprint: "Sprint 2", estimativa: 2, criado: "2026-04-15" },
-  { id: 4, titulo: "Criar migration para tabelas CRM/TI/WMS", descricao: "52 tabelas faltando nas migrations do banco de dados", status: "concluido", prioridade: "critica", responsavel: "Daniel", prazo: "2026-04-16", tags: ["backend", "banco"], comentarios: 1, anexos: 0, progresso: 100, projeto: "Synapse v7", sprint: "Sprint 2", estimativa: 4, criado: "2026-04-15" },
-  { id: 5, titulo: "Módulo de Marketing com automações", descricao: "Campanhas multi-canal, e-mail marketing e segmentação de leads", status: "backlog", prioridade: "media", responsavel: "Ana", prazo: "2026-05-01", tags: ["frontend", "marketing"], comentarios: 0, anexos: 0, progresso: 0, projeto: "Synapse v7", sprint: "Sprint 4", estimativa: 24, criado: "2026-04-14" },
-  { id: 6, titulo: "Integração com Winthor — novas rotinas", descricao: "Adicionar rotinas de faturamento e expedição do Winthor", status: "revisao", prioridade: "alta", responsavel: "Lucas", prazo: "2026-04-22", tags: ["integração", "winthor"], comentarios: 4, anexos: 3, progresso: 85, projeto: "Synapse v7", sprint: "Sprint 3", estimativa: 12, criado: "2026-04-11" },
-  { id: 7, titulo: "Sistema de notificações em tempo real", descricao: "WebSocket para notificações push de chamados e mensagens", status: "a_fazer", prioridade: "media", responsavel: "Pedro", prazo: "2026-04-28", tags: ["backend", "websocket"], comentarios: 1, anexos: 0, progresso: 10, projeto: "Synapse v7", sprint: "Sprint 3", estimativa: 10, criado: "2026-04-13" },
-  { id: 8, titulo: "Documentação técnica da API", descricao: "Swagger/OpenAPI para todos os endpoints do backend", status: "backlog", prioridade: "baixa", responsavel: "Ana", prazo: "2026-05-10", tags: ["docs"], comentarios: 0, anexos: 0, progresso: 0, projeto: "Synapse v7", sprint: "Sprint 4", estimativa: 6, criado: "2026-04-14" },
+const COLUMNS: { id: Status; label: string; color: string; icon: React.ReactNode }[] = [
+  { id: "backlog",      label: "Backlog",      color: "text-slate-400",  icon: <Circle className="h-3.5 w-3.5" /> },
+  { id: "a_fazer",      label: "A Fazer",      color: "text-blue-400",   icon: <Circle className="h-3.5 w-3.5" /> },
+  { id: "em_andamento", label: "Em Andamento", color: "text-yellow-400", icon: <Loader2 className="h-3.5 w-3.5 animate-spin" /> },
+  { id: "revisao",      label: "Revisao",      color: "text-purple-400", icon: <AlertCircle className="h-3.5 w-3.5" /> },
+  { id: "concluido",    label: "Concluido",    color: "text-green-400",  icon: <CheckCircle2 className="h-3.5 w-3.5" /> },
 ];
 
-const COLUNAS: { id: Status; label: string; cor: string; icon: React.ReactNode }[] = [
-  { id: "backlog", label: "Backlog", cor: "border-gray-400", icon: <Circle className="h-4 w-4 text-gray-400" /> },
-  { id: "a_fazer", label: "A Fazer", cor: "border-blue-400", icon: <ListTodo className="h-4 w-4 text-blue-400" /> },
-  { id: "em_andamento", label: "Em Andamento", cor: "border-yellow-400", icon: <Timer className="h-4 w-4 text-yellow-400" /> },
-  { id: "revisao", label: "Revisão", cor: "border-purple-400", icon: <Eye className="h-4 w-4 text-purple-400" /> },
-  { id: "concluido", label: "Concluído", cor: "border-green-400", icon: <CheckCircle2 className="h-4 w-4 text-green-400" /> },
-];
-
-const PRIORIDADE_CONFIG: Record<Priority, { label: string; cor: string; icon: React.ReactNode }> = {
-  critica: { label: "Crítica", cor: "bg-red-100 text-red-700 border-red-200", icon: <AlertCircle className="h-3 w-3" /> },
-  alta: { label: "Alta", cor: "bg-orange-100 text-orange-700 border-orange-200", icon: <ArrowUp className="h-3 w-3" /> },
-  media: { label: "Média", cor: "bg-yellow-100 text-yellow-700 border-yellow-200", icon: <ArrowRight className="h-3 w-3" /> },
-  baixa: { label: "Baixa", cor: "bg-blue-100 text-blue-700 border-blue-200", icon: <ArrowDown className="h-3 w-3" /> },
+const PRIORITY_CONFIG: Record<Priority, { label: string; color: string; icon: React.ReactNode }> = {
+  critica: { label: "Critica", color: "text-red-500 bg-red-500/10 border-red-500/20",         icon: <ArrowUp className="h-3 w-3" /> },
+  alta:    { label: "Alta",    color: "text-orange-500 bg-orange-500/10 border-orange-500/20", icon: <ArrowUp className="h-3 w-3" /> },
+  media:   { label: "Media",   color: "text-yellow-500 bg-yellow-500/10 border-yellow-500/20", icon: <ArrowRight className="h-3 w-3" /> },
+  baixa:   { label: "Baixa",   color: "text-slate-400 bg-slate-500/10 border-slate-500/20",    icon: <ArrowDown className="h-3 w-3" /> },
 };
 
-// ─── CARD DE TAREFA ───────────────────────────────────────────────────────────
-function TarefaCard({ tarefa, onClick }: { tarefa: Tarefa; onClick: () => void }) {
-  const prio = PRIORIDADE_CONFIG[tarefa.prioridade];
-  const isAtrasada = tarefa.prazo && new Date(tarefa.prazo) < new Date() && tarefa.status !== "concluido";
-
+function TaskCard({ tarefa, onEdit, onDelete, dragHandleProps }: {
+  tarefa: Tarefa; onEdit: (t: Tarefa) => void; onDelete: (id: number) => void; dragHandleProps?: any;
+}) {
+  const prio = PRIORITY_CONFIG[tarefa.prioridade] ?? PRIORITY_CONFIG.media;
+  const prazoDate = tarefa.prazo ? parseISO(tarefa.prazo) : null;
+  const isOverdue = prazoDate && isValid(prazoDate) && prazoDate < new Date();
+  const tags: string[] = Array.isArray(tarefa.tags) ? tarefa.tags : [];
   return (
-    <div
-      onClick={onClick}
-      className="bg-card border border-border rounded-xl p-3 cursor-pointer hover:border-primary/40 hover:shadow-md transition-all group"
-    >
-      {/* Header */}
-      <div className="flex items-start justify-between gap-2 mb-2">
-        <span className={`inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded border ${prio.cor}`}>
-          {prio.icon}{prio.label}
-        </span>
-        <button className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-accent">
-          <MoreHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
-        </button>
+    <div className="group bg-card border border-border rounded-lg p-3 shadow-sm hover:shadow-md hover:border-primary/30 transition-all cursor-default">
+      <div className="flex items-start gap-2 mb-2">
+        {dragHandleProps && (
+          <button {...dragHandleProps} className="mt-0.5 text-muted-foreground/40 hover:text-muted-foreground cursor-grab active:cursor-grabbing shrink-0">
+            <GripVertical className="h-4 w-4" />
+          </button>
+        )}
+        <p className="text-sm font-medium text-foreground flex-1 leading-snug line-clamp-2">{tarefa.titulo}</p>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-foreground transition-opacity shrink-0">
+              <MoreHorizontal className="h-4 w-4" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-36">
+            <DropdownMenuItem onClick={() => onEdit(tarefa)}><Edit className="h-3.5 w-3.5 mr-2" /> Editar</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onDelete(tarefa.id)} className="text-red-500"><Trash2 className="h-3.5 w-3.5 mr-2" /> Excluir</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
-
-      {/* Título */}
-      <p className="text-sm font-medium text-foreground leading-tight mb-2">{tarefa.titulo}</p>
-
-      {/* Tags */}
-      {tarefa.tags.length > 0 && (
+      {tarefa.projetoNome && (
+        <div className="flex items-center gap-1 mb-2">
+          <span className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: tarefa.projetoCor || "#6366f1" }} />
+          <span className="text-[10px] text-muted-foreground truncate">{tarefa.projetoNome}</span>
+        </div>
+      )}
+      {tags.length > 0 && (
         <div className="flex flex-wrap gap-1 mb-2">
-          {tarefa.tags.map((tag) => (
-            <span key={tag} className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{tag}</span>
-          ))}
+          {tags.slice(0, 3).map((tag) => <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">{tag}</span>)}
+          {tags.length > 3 && <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">+{tags.length - 3}</span>}
         </div>
       )}
-
-      {/* Progresso */}
-      {tarefa.progresso > 0 && tarefa.status !== "concluido" && (
-        <div className="mb-2">
-          <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
-            <span>Progresso</span>
-            <span>{tarefa.progresso}%</span>
-          </div>
-          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-            <div
-              className="h-full bg-primary rounded-full transition-all"
-              style={{ width: `${tarefa.progresso}%` }}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Footer */}
-      <div className="flex items-center justify-between mt-2">
-        <div className="flex items-center gap-2">
-          <Avatar className="h-5 w-5">
-            <AvatarFallback className="text-[9px] bg-primary/20 text-primary">
-              {tarefa.responsavel.slice(0, 2).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          {tarefa.prazo && (
-            <span className={`text-[10px] flex items-center gap-0.5 ${isAtrasada ? "text-red-500 font-medium" : "text-muted-foreground"}`}>
-              <Calendar className="h-3 w-3" />
-              {new Date(tarefa.prazo).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })}
+      <div className="flex items-center justify-between mt-2 gap-2">
+        <Badge variant="outline" className={`text-[10px] px-1.5 py-0 h-4 gap-0.5 ${prio.color}`}>{prio.icon}{prio.label}</Badge>
+        <div className="flex items-center gap-2 text-muted-foreground">
+          {(tarefa.totalComentarios ?? 0) > 0 && <span className="flex items-center gap-0.5 text-[10px]"><MessageSquare className="h-3 w-3" />{tarefa.totalComentarios}</span>}
+          {prazoDate && isValid(prazoDate) && (
+            <span className={`flex items-center gap-0.5 text-[10px] ${isOverdue ? "text-red-400" : ""}`}>
+              <Calendar className="h-3 w-3" />{format(prazoDate, "dd/MM", { locale: ptBR })}
             </span>
           )}
-        </div>
-        <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-          {tarefa.comentarios > 0 && (
-            <span className="flex items-center gap-0.5"><MessageSquare className="h-3 w-3" />{tarefa.comentarios}</span>
-          )}
-          {tarefa.anexos > 0 && (
-            <span className="flex items-center gap-0.5"><Paperclip className="h-3 w-3" />{tarefa.anexos}</span>
-          )}
-          {tarefa.estimativa && (
-            <span className="flex items-center gap-0.5"><Clock className="h-3 w-3" />{tarefa.estimativa}h</span>
+          {(tarefa.responsavelNomeReal || tarefa.responsavelNome) && (
+            <span className="flex items-center gap-0.5 text-[10px]"><User className="h-3 w-3" />{(tarefa.responsavelNomeReal || tarefa.responsavelNome || "").split(" ")[0]}</span>
           )}
         </div>
       </div>
+      {(tarefa.progresso ?? 0) > 0 && (
+        <div className="mt-2"><div className="h-1 bg-muted rounded-full overflow-hidden"><div className="h-full bg-primary rounded-full transition-all" style={{ width: `${tarefa.progresso}%` }} /></div></div>
+      )}
     </div>
   );
 }
 
-// ─── MODAL DE TAREFA ──────────────────────────────────────────────────────────
-function TarefaModal({ tarefa, onClose }: { tarefa: Tarefa; onClose: () => void }) {
-  const [novoComentario, setNovoComentario] = useState("");
-  const prio = PRIORIDADE_CONFIG[tarefa.prioridade];
+function SortableCard({ tarefa, onEdit, onDelete }: { tarefa: Tarefa; onEdit: (t: Tarefa) => void; onDelete: (id: number) => void }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: tarefa.id });
+  const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1 };
+  return <div ref={setNodeRef} style={style} {...attributes}><TaskCard tarefa={tarefa} onEdit={onEdit} onDelete={onDelete} dragHandleProps={listeners} /></div>;
+}
 
+function KanbanColumn({ column, tarefas, onEdit, onDelete, onAddNew }: {
+  column: typeof COLUMNS[number]; tarefas: Tarefa[]; onEdit: (t: Tarefa) => void; onDelete: (id: number) => void; onAddNew: (status: Status) => void;
+}) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-      <div className="bg-card border border-border rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
-        {/* Header */}
-        <div className="flex items-start justify-between p-6 border-b border-border">
-          <div className="flex-1 pr-4">
-            <div className="flex items-center gap-2 mb-2">
-              <span className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded border ${prio.cor}`}>
-                {prio.icon}{prio.label}
-              </span>
-              {tarefa.sprint && (
-                <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded">{tarefa.sprint}</span>
-              )}
-            </div>
-            <h2 className="text-lg font-bold text-foreground">{tarefa.titulo}</h2>
-          </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-accent transition-colors">
-            <X className="h-5 w-5" />
-          </button>
+    <div className="flex flex-col min-w-[260px] max-w-[300px] flex-1 bg-muted/30 rounded-xl border border-border">
+      <div className="flex items-center justify-between px-3 py-2.5 border-b border-border">
+        <div className={`flex items-center gap-1.5 ${column.color}`}>
+          {column.icon}
+          <span className="text-xs font-semibold text-foreground">{column.label}</span>
+          <span className="ml-1 text-[10px] bg-muted rounded-full px-1.5 py-0.5 text-muted-foreground font-medium">{tarefas.length}</span>
         </div>
-
-        <div className="p-6 space-y-6">
-          {/* Descrição */}
-          {tarefa.descricao && (
-            <div>
-              <h3 className="text-sm font-semibold mb-2">Descrição</h3>
-              <p className="text-sm text-muted-foreground">{tarefa.descricao}</p>
-            </div>
-          )}
-
-          {/* Detalhes em grid */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <p className="text-xs text-muted-foreground">Responsável</p>
-              <div className="flex items-center gap-2">
-                <Avatar className="h-6 w-6">
-                  <AvatarFallback className="text-xs bg-primary/20 text-primary">
-                    {tarefa.responsavel.slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="text-sm font-medium">{tarefa.responsavel}</span>
-              </div>
-            </div>
-            <div className="space-y-1">
-              <p className="text-xs text-muted-foreground">Prazo</p>
-              <p className="text-sm font-medium flex items-center gap-1">
-                <Calendar className="h-4 w-4 text-muted-foreground" />
-                {tarefa.prazo ? new Date(tarefa.prazo).toLocaleDateString("pt-BR") : "Sem prazo"}
-              </p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-xs text-muted-foreground">Estimativa</p>
-              <p className="text-sm font-medium flex items-center gap-1">
-                <Clock className="h-4 w-4 text-muted-foreground" />
-                {tarefa.estimativa ? `${tarefa.estimativa}h` : "Não definida"}
-              </p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-xs text-muted-foreground">Projeto</p>
-              <p className="text-sm font-medium">{tarefa.projeto ?? "—"}</p>
-            </div>
-          </div>
-
-          {/* Progresso */}
-          <div>
-            <div className="flex justify-between text-sm mb-2">
-              <span className="font-medium">Progresso</span>
-              <span className="text-muted-foreground">{tarefa.progresso}%</span>
-            </div>
-            <div className="h-2 bg-muted rounded-full overflow-hidden">
-              <div className="h-full bg-primary rounded-full" style={{ width: `${tarefa.progresso}%` }} />
-            </div>
-          </div>
-
-          {/* Tags */}
-          {tarefa.tags.length > 0 && (
-            <div>
-              <h3 className="text-sm font-semibold mb-2">Tags</h3>
-              <div className="flex flex-wrap gap-2">
-                {tarefa.tags.map((tag) => (
-                  <span key={tag} className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full border border-primary/20">{tag}</span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Comentários */}
-          <div>
-            <h3 className="text-sm font-semibold mb-3">Comentários ({tarefa.comentarios})</h3>
-            <div className="space-y-3 mb-3">
-              {tarefa.comentarios > 0 && (
-                <div className="flex gap-3">
-                  <Avatar className="h-7 w-7 shrink-0">
-                    <AvatarFallback className="text-xs bg-blue-100 text-blue-700">DA</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 bg-muted/50 rounded-xl p-3">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-medium">Daniel</span>
-                      <span className="text-[10px] text-muted-foreground">há 2h</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">Iniciando a implementação. Vou usar a API v2 do InfinitePay com suporte a split.</p>
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="flex gap-2">
-              <Avatar className="h-7 w-7 shrink-0">
-                <AvatarFallback className="text-xs bg-primary/20 text-primary">EU</AvatarFallback>
-              </Avatar>
-              <div className="flex-1 flex gap-2">
-                <Input
-                  placeholder="Adicionar comentário..."
-                  value={novoComentario}
-                  onChange={(e) => setNovoComentario(e.target.value)}
-                  className="text-sm"
-                />
-                <Button size="sm" disabled={!novoComentario.trim()}>Enviar</Button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <button onClick={() => onAddNew(column.id)} className="text-muted-foreground hover:text-foreground transition-colors"><Plus className="h-3.5 w-3.5" /></button>
+      </div>
+      <div className="flex-1 p-2 space-y-2 min-h-[120px] overflow-y-auto max-h-[calc(100vh-280px)]">
+        <SortableContext items={tarefas.map((t) => t.id)} strategy={verticalListSortingStrategy}>
+          {tarefas.map((tarefa) => <SortableCard key={tarefa.id} tarefa={tarefa} onEdit={onEdit} onDelete={onDelete} />)}
+        </SortableContext>
+        {tarefas.length === 0 && <div className="flex flex-col items-center justify-center py-8 text-muted-foreground/40"><Circle className="h-8 w-8 mb-2" /><p className="text-xs">Nenhuma tarefa</p></div>}
       </div>
     </div>
   );
 }
 
-// ─── NOVA TAREFA FORM ─────────────────────────────────────────────────────────
-function NovaTarefaForm({ onClose }: { onClose: () => void }) {
-  const [form, setForm] = useState({ titulo: "", descricao: "", prioridade: "media", responsavel: "", prazo: "", tags: "", estimativa: "", projeto: "Synapse v7", sprint: "Sprint 3" });
-
+function TaskFormDialog({ open, onClose, initialStatus, editTarefa, onSuccess }: {
+  open: boolean; onClose: () => void; initialStatus?: Status; editTarefa?: Tarefa | null; onSuccess: () => void;
+}) {
+  const [titulo, setTitulo] = useState(editTarefa?.titulo || "");
+  const [descricao, setDescricao] = useState(editTarefa?.descricao || "");
+  const [status, setStatus] = useState<Status>(editTarefa?.status || initialStatus || "backlog");
+  const [prioridade, setPrioridade] = useState<Priority>(editTarefa?.prioridade || "media");
+  const [prazo, setPrazo] = useState(editTarefa?.prazo ? editTarefa.prazo.slice(0, 10) : "");
+  const [tagsInput, setTagsInput] = useState((editTarefa?.tags || []).join(", "));
+  const [sprint, setSprint] = useState(editTarefa?.sprint || "");
+  const utils = trpc.useUtils();
+  const createMutation = trpc.tarefas.create.useMutation({
+    onSuccess: () => { toast.success("Tarefa criada!"); utils.tarefas.list.invalidate(); onSuccess(); onClose(); },
+    onError: (e) => toast.error(e.message),
+  });
+  const updateMutation = trpc.tarefas.update.useMutation({
+    onSuccess: () => { toast.success("Tarefa atualizada!"); utils.tarefas.list.invalidate(); onSuccess(); onClose(); },
+    onError: (e) => toast.error(e.message),
+  });
+  const handleSubmit = () => {
+    if (!titulo.trim()) { toast.error("Informe o titulo"); return; }
+    const tags = tagsInput.split(",").map((t) => t.trim()).filter(Boolean);
+    if (editTarefa) {
+      updateMutation.mutate({ id: editTarefa.id, titulo, descricao, status, prioridade, prazo: prazo || null, tags, sprint: sprint || undefined });
+    } else {
+      createMutation.mutate({ titulo, descricao, status, prioridade, prazo: prazo || undefined, tags, sprint: sprint || undefined });
+    }
+  };
+  const isPending = createMutation.isPending || updateMutation.isPending;
   return (
-    <div className="space-y-4">
-      <div>
-        <label className="text-sm font-medium mb-1 block">Título *</label>
-        <Input placeholder="Descreva a tarefa..." value={form.titulo} onChange={(e) => setForm({ ...form, titulo: e.target.value })} />
-      </div>
-      <div>
-        <label className="text-sm font-medium mb-1 block">Descrição</label>
-        <Textarea placeholder="Detalhes da tarefa..." value={form.descricao} onChange={(e) => setForm({ ...form, descricao: e.target.value })} rows={3} />
-      </div>
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="text-sm font-medium mb-1 block">Prioridade</label>
-          <Select value={form.prioridade} onValueChange={(v) => setForm({ ...form, prioridade: v })}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="critica">🔴 Crítica</SelectItem>
-              <SelectItem value="alta">🟠 Alta</SelectItem>
-              <SelectItem value="media">🟡 Média</SelectItem>
-              <SelectItem value="baixa">🔵 Baixa</SelectItem>
-            </SelectContent>
-          </Select>
+    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader><DialogTitle>{editTarefa ? "Editar Tarefa" : "Nova Tarefa"}</DialogTitle></DialogHeader>
+        <div className="space-y-4 mt-2">
+          <div>
+            <label className="text-xs font-medium text-muted-foreground mb-1 block">Titulo *</label>
+            <Input placeholder="Titulo da tarefa..." value={titulo} onChange={(e) => setTitulo(e.target.value)} autoFocus />
+          </div>
+          <div>
+            <label className="text-xs font-medium text-muted-foreground mb-1 block">Descricao</label>
+            <Textarea placeholder="Descreva a tarefa..." value={descricao} onChange={(e) => setDescricao(e.target.value)} rows={3} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">Status</label>
+              <Select value={status} onValueChange={(v) => setStatus(v as Status)}>
+                <SelectTrigger className="h-9 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>{COLUMNS.map((c) => <SelectItem key={c.id} value={c.id} className="text-xs">{c.label}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">Prioridade</label>
+              <Select value={prioridade} onValueChange={(v) => setPrioridade(v as Priority)}>
+                <SelectTrigger className="h-9 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>{Object.entries(PRIORITY_CONFIG).map(([k, v]) => <SelectItem key={k} value={k} className="text-xs">{v.label}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">Prazo</label>
+              <Input type="date" value={prazo} onChange={(e) => setPrazo(e.target.value)} className="h-9 text-xs" />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">Sprint</label>
+              <Input placeholder="Sprint 3..." value={sprint} onChange={(e) => setSprint(e.target.value)} className="h-9 text-xs" />
+            </div>
+          </div>
+          <div>
+            <label className="text-xs font-medium text-muted-foreground mb-1 block">Tags (separadas por virgula)</label>
+            <Input placeholder="backend, bug, frontend..." value={tagsInput} onChange={(e) => setTagsInput(e.target.value)} className="h-9 text-xs" />
+          </div>
+          <div className="flex justify-end gap-2 pt-2">
+            <Button variant="outline" size="sm" onClick={onClose}>Cancelar</Button>
+            <Button size="sm" onClick={handleSubmit} disabled={isPending}>
+              {isPending && <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />}
+              {editTarefa ? "Salvar" : "Criar Tarefa"}
+            </Button>
+          </div>
         </div>
-        <div>
-          <label className="text-sm font-medium mb-1 block">Responsável</label>
-          <Input placeholder="Nome do responsável" value={form.responsavel} onChange={(e) => setForm({ ...form, responsavel: e.target.value })} />
-        </div>
-        <div>
-          <label className="text-sm font-medium mb-1 block">Prazo</label>
-          <Input type="date" value={form.prazo} onChange={(e) => setForm({ ...form, prazo: e.target.value })} />
-        </div>
-        <div>
-          <label className="text-sm font-medium mb-1 block">Estimativa (horas)</label>
-          <Input type="number" placeholder="Ex: 8" value={form.estimativa} onChange={(e) => setForm({ ...form, estimativa: e.target.value })} />
-        </div>
-        <div>
-          <label className="text-sm font-medium mb-1 block">Projeto</label>
-          <Input value={form.projeto} onChange={(e) => setForm({ ...form, projeto: e.target.value })} />
-        </div>
-        <div>
-          <label className="text-sm font-medium mb-1 block">Sprint</label>
-          <Input value={form.sprint} onChange={(e) => setForm({ ...form, sprint: e.target.value })} />
-        </div>
-      </div>
-      <div>
-        <label className="text-sm font-medium mb-1 block">Tags (separadas por vírgula)</label>
-        <Input placeholder="frontend, bug, integração..." value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} />
-      </div>
-      <div className="flex gap-2 pt-2">
-        <Button className="flex-1" disabled={!form.titulo.trim()}>
-          <Plus className="h-4 w-4 mr-2" />Criar Tarefa
-        </Button>
-        <Button variant="outline" onClick={onClose}>Cancelar</Button>
-      </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function ListView({ tarefas, onEdit, onDelete }: { tarefas: Tarefa[]; onEdit: (t: Tarefa) => void; onDelete: (id: number) => void }) {
+  return (
+    <div className="space-y-1">
+      {tarefas.map((tarefa) => {
+        const prio = PRIORITY_CONFIG[tarefa.prioridade] ?? PRIORITY_CONFIG.media;
+        const prazoDate = tarefa.prazo ? parseISO(tarefa.prazo) : null;
+        const isOverdue = prazoDate && isValid(prazoDate) && prazoDate < new Date();
+        const col = COLUMNS.find((c) => c.id === tarefa.status);
+        return (
+          <div key={tarefa.id} className="group flex items-center gap-3 bg-card border border-border rounded-lg px-4 py-3 hover:border-primary/30 transition-all">
+            <div className={`shrink-0 ${col?.color}`}>{col?.icon}</div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-foreground truncate">{tarefa.titulo}</p>
+              {tarefa.projetoNome && <p className="text-[11px] text-muted-foreground truncate">{tarefa.projetoNome}</p>}
+            </div>
+            <Badge variant="outline" className={`text-[10px] px-1.5 py-0 h-4 gap-0.5 shrink-0 ${prio.color}`}>{prio.icon}{prio.label}</Badge>
+            {prazoDate && isValid(prazoDate) && (
+              <span className={`text-[11px] shrink-0 ${isOverdue ? "text-red-400" : "text-muted-foreground"}`}>{format(prazoDate, "dd/MM/yy", { locale: ptBR })}</span>
+            )}
+            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button onClick={() => onEdit(tarefa)} className="text-muted-foreground hover:text-foreground p-1"><Edit className="h-3.5 w-3.5" /></button>
+              <button onClick={() => onDelete(tarefa.id)} className="text-muted-foreground hover:text-red-400 p-1"><Trash2 className="h-3.5 w-3.5" /></button>
+            </div>
+          </div>
+        );
+      })}
+      {tarefas.length === 0 && <div className="text-center py-16 text-muted-foreground"><Kanban className="h-12 w-12 mx-auto mb-3 opacity-30" /><p className="text-sm">Nenhuma tarefa encontrada</p></div>}
     </div>
   );
 }
 
-// ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 export default function Tarefas() {
-  const [view, setView] = useState<"kanban" | "lista" | "sprint">("kanban");
+  const [viewMode, setViewMode] = useState<ViewMode>("kanban");
   const [search, setSearch] = useState("");
-  const [filtroStatus, setFiltroStatus] = useState<Status | "todos">("todos");
-  const [filtroPrioridade, setFiltroPrioridade] = useState<Priority | "todos">("todos");
-  const [tarefaSelecionada, setTarefaSelecionada] = useState<Tarefa | null>(null);
-  const [novaTarefaOpen, setNovaTarefaOpen] = useState(false);
+  const [filterPriority, setFilterPriority] = useState<Priority | "all">("all");
+  const [filterStatus, setFilterStatus] = useState<Status | "all">("all");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editTarefa, setEditTarefa] = useState<Tarefa | null>(null);
+  const [newTaskStatus, setNewTaskStatus] = useState<Status>("backlog");
+  const [activeId, setActiveId] = useState<number | null>(null);
 
-  const tarefasFiltradas = TAREFAS_MOCK.filter((t) => {
-    const matchSearch = !search || t.titulo.toLowerCase().includes(search.toLowerCase()) || t.tags.some((tag) => tag.includes(search.toLowerCase()));
-    const matchStatus = filtroStatus === "todos" || t.status === filtroStatus;
-    const matchPrio = filtroPrioridade === "todos" || t.prioridade === filtroPrioridade;
-    return matchSearch && matchStatus && matchPrio;
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
+  const utils = trpc.useUtils();
+  const { data: tarefasRaw = [], isLoading } = trpc.tarefas.list.useQuery({});
+  const deleteMutation = trpc.tarefas.delete.useMutation({
+    onSuccess: () => { toast.success("Tarefa excluida"); utils.tarefas.list.invalidate(); },
+    onError: (e) => toast.error(e.message),
+  });
+  const moveStatusMutation = trpc.tarefas.moveStatus.useMutation({
+    onSuccess: () => utils.tarefas.list.invalidate(),
+    onError: (e) => toast.error("Erro ao mover: " + e.message),
   });
 
-  // KPIs
-  const total = TAREFAS_MOCK.length;
-  const concluidas = TAREFAS_MOCK.filter((t) => t.status === "concluido").length;
-  const emAndamento = TAREFAS_MOCK.filter((t) => t.status === "em_andamento").length;
-  const atrasadas = TAREFAS_MOCK.filter((t) => t.prazo && new Date(t.prazo) < new Date() && t.status !== "concluido").length;
-  const horasTotal = TAREFAS_MOCK.reduce((acc, t) => acc + (t.estimativa ?? 0), 0);
+  const tarefas: Tarefa[] = useMemo(() => (tarefasRaw as any[]).map((t) => ({ ...t, tags: Array.isArray(t.tags) ? t.tags : [] })), [tarefasRaw]);
+  const filtered = useMemo(() => tarefas.filter((t) => {
+    if (search && !t.titulo.toLowerCase().includes(search.toLowerCase())) return false;
+    if (filterPriority !== "all" && t.prioridade !== filterPriority) return false;
+    if (filterStatus !== "all" && t.status !== filterStatus) return false;
+    return true;
+  }), [tarefas, search, filterPriority, filterStatus]);
+  const byStatus = useMemo(() => {
+    const map: Record<Status, Tarefa[]> = { backlog: [], a_fazer: [], em_andamento: [], revisao: [], concluido: [] };
+    for (const t of filtered) { if (map[t.status]) map[t.status].push(t); }
+    return map;
+  }, [filtered]);
+  const activeTarefa = useMemo(() => tarefas.find((t) => t.id === activeId), [tarefas, activeId]);
+
+  const handleDragStart = useCallback((event: DragStartEvent) => setActiveId(Number(event.active.id)), []);
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    setActiveId(null);
+    if (!over) return;
+    const taskId = Number(active.id);
+    const overId = String(over.id);
+    let targetStatus: Status | null = null;
+    if (COLUMNS.some((c) => c.id === overId)) {
+      targetStatus = overId as Status;
+    } else {
+      const overTask = tarefas.find((t) => t.id === Number(overId));
+      if (overTask) targetStatus = overTask.status;
+    }
+    if (!targetStatus) return;
+    const currentTask = tarefas.find((t) => t.id === taskId);
+    if (!currentTask || currentTask.status === targetStatus) return;
+    moveStatusMutation.mutate({ id: taskId, status: targetStatus });
+  }, [tarefas, moveStatusMutation]);
+
+  const handleEdit = useCallback((t: Tarefa) => { setEditTarefa(t); setDialogOpen(true); }, []);
+  const handleDelete = useCallback((id: number) => { if (confirm("Excluir esta tarefa?")) deleteMutation.mutate({ id }); }, [deleteMutation]);
+  const handleAddNew = useCallback((status: Status) => { setEditTarefa(null); setNewTaskStatus(status); setDialogOpen(true); }, []);
+
+  const stats = useMemo(() => ({
+    total: tarefas.length,
+    concluidas: tarefas.filter((t) => t.status === "concluido").length,
+    emAndamento: tarefas.filter((t) => t.status === "em_andamento").length,
+    criticas: tarefas.filter((t) => t.prioridade === "critica" && t.status !== "concluido").length,
+  }), [tarefas]);
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col h-full gap-4 p-4 md:p-6">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Target className="h-6 w-6 text-primary" />
-            Gestão de Tarefas
-          </h1>
-          <p className="text-muted-foreground text-sm">Gerencie projetos, sprints e tarefas da equipe</p>
+          <h1 className="text-xl font-bold text-foreground">Tarefas</h1>
+          <p className="text-sm text-muted-foreground">Gerencie e acompanhe o progresso das tarefas</p>
         </div>
-        <Dialog open={novaTarefaOpen} onOpenChange={setNovaTarefaOpen}>
-          <DialogTrigger asChild>
-            <Button className="gap-2">
-              <Plus className="h-4 w-4" />
-              Nova Tarefa
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-lg">
-            <DialogHeader>
-              <DialogTitle>Nova Tarefa</DialogTitle>
-            </DialogHeader>
-            <NovaTarefaForm onClose={() => setNovaTarefaOpen(false)} />
-          </DialogContent>
-        </Dialog>
+        <Button size="sm" onClick={() => { setEditTarefa(null); setNewTaskStatus("backlog"); setDialogOpen(true); }}>
+          <Plus className="h-4 w-4 mr-1.5" /> Nova Tarefa
+        </Button>
       </div>
 
-      {/* KPIs */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Total", value: total, icon: <ListTodo className="h-4 w-4" />, color: "text-foreground" },
-          { label: "Concluídas", value: concluidas, icon: <CheckCircle2 className="h-4 w-4" />, color: "text-green-600" },
-          { label: "Em Andamento", value: emAndamento, icon: <Timer className="h-4 w-4" />, color: "text-yellow-600" },
-          { label: "Atrasadas", value: atrasadas, icon: <AlertCircle className="h-4 w-4" />, color: "text-red-600" },
-          { label: "Horas Estimadas", value: `${horasTotal}h`, icon: <Clock className="h-4 w-4" />, color: "text-blue-600" },
-        ].map((kpi) => (
-          <Card key={kpi.label} className="hover:shadow-md transition-shadow">
-            <CardContent className="p-4">
-              <div className={`flex items-center gap-2 mb-1 ${kpi.color}`}>
-                {kpi.icon}
-                <span className="text-xs font-medium text-muted-foreground">{kpi.label}</span>
-              </div>
-              <p className={`text-2xl font-bold ${kpi.color}`}>{kpi.value}</p>
+          { label: "Total",        value: stats.total,       color: "text-foreground" },
+          { label: "Em Andamento", value: stats.emAndamento, color: "text-yellow-400" },
+          { label: "Concluidas",   value: stats.concluidas,  color: "text-green-400" },
+          { label: "Criticas",     value: stats.criticas,    color: "text-red-400" },
+        ].map((s) => (
+          <Card key={s.label} className="border-border">
+            <CardContent className="p-3">
+              <p className="text-xs text-muted-foreground">{s.label}</p>
+              <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      {/* Barra de ferramentas */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Buscar tarefas..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+      <div className="flex items-center gap-2 flex-wrap">
+        <div className="relative flex-1 min-w-[200px] max-w-xs">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <Input placeholder="Buscar tarefas..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-8 h-8 text-xs" />
         </div>
-        <Select value={filtroPrioridade} onValueChange={(v) => setFiltroPrioridade(v as any)}>
-          <SelectTrigger className="w-36"><SelectValue placeholder="Prioridade" /></SelectTrigger>
+        <Select value={filterPriority} onValueChange={(v) => setFilterPriority(v as any)}>
+          <SelectTrigger className="h-8 w-32 text-xs"><SelectValue placeholder="Prioridade" /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="todos">Todas</SelectItem>
-            <SelectItem value="critica">🔴 Crítica</SelectItem>
-            <SelectItem value="alta">🟠 Alta</SelectItem>
-            <SelectItem value="media">🟡 Média</SelectItem>
-            <SelectItem value="baixa">🔵 Baixa</SelectItem>
+            <SelectItem value="all" className="text-xs">Todas</SelectItem>
+            {Object.entries(PRIORITY_CONFIG).map(([k, v]) => <SelectItem key={k} value={k} className="text-xs">{v.label}</SelectItem>)}
           </SelectContent>
         </Select>
-        {/* View toggle */}
-        <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
-          {[
-            { id: "kanban", icon: <Kanban className="h-4 w-4" />, label: "Kanban" },
-            { id: "lista", icon: <List className="h-4 w-4" />, label: "Lista" },
-            { id: "sprint", icon: <Zap className="h-4 w-4" />, label: "Sprint" },
-          ].map((v) => (
-            <button
-              key={v.id}
-              onClick={() => setView(v.id as any)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                view === v.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {v.icon}{v.label}
-            </button>
-          ))}
+        {viewMode === "list" && (
+          <Select value={filterStatus} onValueChange={(v) => setFilterStatus(v as any)}>
+            <SelectTrigger className="h-8 w-36 text-xs"><SelectValue placeholder="Status" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all" className="text-xs">Todos</SelectItem>
+              {COLUMNS.map((c) => <SelectItem key={c.id} value={c.id} className="text-xs">{c.label}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        )}
+        <div className="flex items-center gap-1 ml-auto">
+          <button onClick={() => setViewMode("kanban")} className={`p-1.5 rounded-md transition-colors ${viewMode === "kanban" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`} title="Kanban"><Kanban className="h-4 w-4" /></button>
+          <button onClick={() => setViewMode("list")} className={`p-1.5 rounded-md transition-colors ${viewMode === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`} title="Lista"><List className="h-4 w-4" /></button>
         </div>
       </div>
 
-      {/* KANBAN VIEW */}
-      {view === "kanban" && (
-        <div className="flex gap-4 overflow-x-auto pb-4">
-          {COLUNAS.map((col) => {
-            const colTarefas = tarefasFiltradas.filter((t) => t.status === col.id);
-            return (
-              <div key={col.id} className="flex-shrink-0 w-72">
-                <div className={`flex items-center gap-2 mb-3 pb-2 border-b-2 ${col.cor}`}>
-                  {col.icon}
-                  <span className="text-sm font-semibold">{col.label}</span>
-                  <span className="ml-auto bg-muted text-muted-foreground text-xs font-medium px-2 py-0.5 rounded-full">
-                    {colTarefas.length}
-                  </span>
-                </div>
-                <div className="space-y-3">
-                  {colTarefas.map((t) => (
-                    <TarefaCard key={t.id} tarefa={t} onClick={() => setTarefaSelecionada(t)} />
-                  ))}
-                  <button
-                    onClick={() => setNovaTarefaOpen(true)}
-                    className="w-full flex items-center gap-2 p-2 rounded-xl border border-dashed border-border text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all text-sm"
-                  >
-                    <Plus className="h-4 w-4" />
-                    Adicionar tarefa
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+      {isLoading ? (
+        <div className="flex items-center justify-center flex-1 text-muted-foreground"><Loader2 className="h-6 w-6 animate-spin mr-2" /> Carregando tarefas...</div>
+      ) : viewMode === "kanban" ? (
+        <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+          <div className="flex gap-3 overflow-x-auto pb-4 flex-1">
+            {COLUMNS.map((col) => <KanbanColumn key={col.id} column={col} tarefas={byStatus[col.id] || []} onEdit={handleEdit} onDelete={handleDelete} onAddNew={handleAddNew} />)}
+          </div>
+          <DragOverlay>
+            {activeTarefa && <div className="rotate-2 opacity-90 shadow-2xl"><TaskCard tarefa={activeTarefa} onEdit={() => {}} onDelete={() => {}} /></div>}
+          </DragOverlay>
+        </DndContext>
+      ) : (
+        <div className="flex-1 overflow-y-auto"><ListView tarefas={filtered} onEdit={handleEdit} onDelete={handleDelete} /></div>
       )}
 
-      {/* LISTA VIEW */}
-      {view === "lista" && (
-        <Card>
-          <CardContent className="p-0">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left text-xs font-medium text-muted-foreground px-4 py-3">Tarefa</th>
-                  <th className="text-left text-xs font-medium text-muted-foreground px-4 py-3">Status</th>
-                  <th className="text-left text-xs font-medium text-muted-foreground px-4 py-3">Prioridade</th>
-                  <th className="text-left text-xs font-medium text-muted-foreground px-4 py-3">Responsável</th>
-                  <th className="text-left text-xs font-medium text-muted-foreground px-4 py-3">Prazo</th>
-                  <th className="text-left text-xs font-medium text-muted-foreground px-4 py-3">Progresso</th>
-                </tr>
-              </thead>
-              <tbody>
-                {tarefasFiltradas.map((t) => {
-                  const col = COLUNAS.find((c) => c.id === t.status)!;
-                  const prio = PRIORIDADE_CONFIG[t.prioridade];
-                  const isAtrasada = t.prazo && new Date(t.prazo) < new Date() && t.status !== "concluido";
-                  return (
-                    <tr
-                      key={t.id}
-                      onClick={() => setTarefaSelecionada(t)}
-                      className="border-b border-border/50 hover:bg-muted/30 cursor-pointer transition-colors"
-                    >
-                      <td className="px-4 py-3">
-                        <div>
-                          <p className="text-sm font-medium">{t.titulo}</p>
-                          <div className="flex gap-1 mt-1">
-                            {t.tags.map((tag) => (
-                              <span key={tag} className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{tag}</span>
-                            ))}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="flex items-center gap-1 text-xs">{col.icon}{col.label}</span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded border ${prio.cor}`}>
-                          {prio.icon}{prio.label}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <Avatar className="h-6 w-6">
-                            <AvatarFallback className="text-[10px] bg-primary/20 text-primary">
-                              {t.responsavel.slice(0, 2).toUpperCase()}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className="text-sm">{t.responsavel}</span>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={`text-xs ${isAtrasada ? "text-red-500 font-medium" : "text-muted-foreground"}`}>
-                          {t.prazo ? new Date(t.prazo).toLocaleDateString("pt-BR") : "—"}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <div className="h-1.5 w-20 bg-muted rounded-full overflow-hidden">
-                            <div className="h-full bg-primary rounded-full" style={{ width: `${t.progresso}%` }} />
-                          </div>
-                          <span className="text-xs text-muted-foreground">{t.progresso}%</span>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* SPRINT VIEW */}
-      {view === "sprint" && (
-        <div className="space-y-6">
-          {["Sprint 2", "Sprint 3", "Sprint 4"].map((sprint) => {
-            const sprintTarefas = tarefasFiltradas.filter((t) => t.sprint === sprint);
-            if (sprintTarefas.length === 0) return null;
-            const concl = sprintTarefas.filter((t) => t.status === "concluido").length;
-            const progresso = Math.round((concl / sprintTarefas.length) * 100);
-            return (
-              <Card key={sprint}>
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Zap className="h-5 w-5 text-primary" />
-                      <div>
-                        <CardTitle className="text-base">{sprint}</CardTitle>
-                        <p className="text-xs text-muted-foreground">{sprintTarefas.length} tarefas · {concl} concluídas</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-2">
-                        <div className="h-2 w-32 bg-muted rounded-full overflow-hidden">
-                          <div className="h-full bg-primary rounded-full" style={{ width: `${progresso}%` }} />
-                        </div>
-                        <span className="text-sm font-medium">{progresso}%</span>
-                      </div>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {sprintTarefas.map((t) => (
-                      <TarefaCard key={t.id} tarefa={t} onClick={() => setTarefaSelecionada(t)} />
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Modal de detalhe */}
-      {tarefaSelecionada && (
-        <TarefaModal tarefa={tarefaSelecionada} onClose={() => setTarefaSelecionada(null)} />
+      {dialogOpen && (
+        <TaskFormDialog open={dialogOpen} onClose={() => { setDialogOpen(false); setEditTarefa(null); }} initialStatus={newTaskStatus} editTarefa={editTarefa} onSuccess={() => {}} />
       )}
     </div>
   );
