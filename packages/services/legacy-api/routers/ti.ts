@@ -690,7 +690,7 @@ export const tiRouter = router({
         empresaId: ctx.user.empresaId!,
         nome: input.nome,
         tipo: input.tipo,
-        vencimento: new Date(input.vencimento),
+        vencimento: new Date(`${input.vencimento}T12:00:00`),
         senha: input.senha,
         observacoes: input.observacoes,
       }).returning();
