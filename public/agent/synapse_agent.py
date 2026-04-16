@@ -713,6 +713,9 @@ if __name__ == "__main__":
                             k, v = line.split("=", 1)
                             if k.strip() == "SERVER_URL": config["server_url"] = v.strip()
                             if k.strip() == "PAIR_CODE": config["pair_code"] = v.strip()
+                    # Garante que a URL tenha o protocolo correto
+                    if config.get("server_url") and not config["server_url"].startswith("http"):
+                        config["server_url"] = "https://" + config["server_url"]
                     save_config(config)
                 except Exception as e:
                     print(f"Erro ao ler config legada: {e}")
