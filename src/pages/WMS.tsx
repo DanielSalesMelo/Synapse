@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
@@ -18,8 +19,15 @@ import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function WMS() {
-  
+  const [location] = useLocation();
   const [tab, setTab] = useState("estoque");
+
+  useEffect(() => {
+    if (location === "/wms/produtos") setTab("produtos");
+    else if (location === "/wms/movimentacoes") setTab("movimentacoes");
+    else if (location === "/wms/armazens") setTab("estoque"); // Por enquanto armazens foca em estoque
+    else setTab("estoque");
+  }, [location]);
   const [search, setSearch] = useState("");
   const [openNovoProduto, setOpenNovoProduto] = useState(false);
   const [openMovimentacao, setOpenMovimentacao] = useState(false);
@@ -253,29 +261,17 @@ export default function WMS() {
           ))}
         </div>
 
-        {/* Tabs */}
-        <Tabs value={tab} onValueChange={setTab}>
-          <TabsList className="grid grid-cols-3 w-full sm:w-auto">
-            <TabsTrigger value="estoque" className="gap-2">
-              <BarChart3 className="h-4 w-4" /> Estoque
-            </TabsTrigger>
-            <TabsTrigger value="produtos" className="gap-2">
-              <Package className="h-4 w-4" /> Produtos
-            </TabsTrigger>
-            <TabsTrigger value="movimentacoes" className="gap-2">
-              <ArrowLeftRight className="h-4 w-4" /> Movimentações
-            </TabsTrigger>
-          </TabsList>
-
-          <div className="mt-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input className="pl-9" placeholder="Buscar produto..."
-                value={search} onChange={e => setSearch(e.target.value)} />
-            </div>
+        <div className="mt-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input className="pl-9" placeholder="Buscar produto..."
+              value={search} onChange={e => setSearch(e.target.value)} />
           </div>
+        </div>
 
-          <TabsContent value="estoque" className="mt-4 space-y-3">
+        <div className="mt-4">
+          {tab === "estoque" && (
+            <div className="space-y-3">
             {(estoque as any[]).length === 0 ? (
               <div className="text-center py-16 text-muted-foreground">
                 <Warehouse className="h-12 w-12 mx-auto mb-3 opacity-30" />
@@ -321,9 +317,11 @@ export default function WMS() {
                 </div>
               ))
             )}
-          </TabsContent>
+            </div>
+          )}
 
-          <TabsContent value="produtos" className="mt-4 space-y-3">
+          {tab === "produtos" && (
+            <div className="space-y-3">
             {(produtos as any[]).length === 0 ? (
               <div className="text-center py-16 text-muted-foreground">
                 <Package className="h-12 w-12 mx-auto mb-3 opacity-30" />
@@ -356,9 +354,11 @@ export default function WMS() {
                 </div>
               ))
             )}
-          </TabsContent>
+            </div>
+          )}
 
-          <TabsContent value="movimentacoes" className="mt-4 space-y-3">
+          {tab === "movimentacoes" && (
+            <div className="space-y-3">
             {(movimentacoes as any[]).length === 0 ? (
               <div className="text-center py-16 text-muted-foreground">
                 <ArrowLeftRight className="h-12 w-12 mx-auto mb-3 opacity-30" />
@@ -399,8 +399,9 @@ export default function WMS() {
                 </div>
               ))
             )}
-          </TabsContent>
-        </Tabs>
+            </div>
+          )}
+        </div>
       </div>
     </DashboardLayout>
   );
