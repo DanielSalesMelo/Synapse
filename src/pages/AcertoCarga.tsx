@@ -452,6 +452,7 @@ function AcertoCard({ acerto, onEdit }: { acerto: any; onEdit: (a: any) => void 
 
 // ─── Página principal ─────────────────────────────────────────────────────────
 export default function AcertoCarga() {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const [statusFiltro, setStatusFiltro] = useState<string>("todos");
   const [busca, setBusca] = useState("");
   const [modalAberto, setModalAberto] = useState(false);
