@@ -11,8 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState, useMemo } from "react";
 import { Plus, Search, Truck, Link2, Star } from "lucide-react";
 import { toast } from "sonner";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
-const EMPRESA_ID = 1;
 
 const TIPO_LABELS: Record<string, string> = {
   van: "Van",
@@ -224,6 +224,7 @@ function VeiculoForm({ initial, cavalos, onSave, onClose }: {
 }
 
 export default function Veiculos() {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [filterTipo, setFilterTipo] = useState("todos");

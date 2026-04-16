@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { useViewAs } from "@/contexts/ViewAsContext";
 import {
   DollarSign,
   Truck,
@@ -46,7 +47,6 @@ import {
   Search,
 } from "lucide-react";
 
-const EMPRESA_ID = 1;
 
 type StatusAcerto = "aberto" | "em_analise" | "fechado" | "pago";
 
@@ -58,6 +58,7 @@ const STATUS_CONFIG: Record<StatusAcerto, { label: string; color: string; icon: 
 };
 
 const fmt = (v: string | number | null | undefined) => {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const n = Number(v) || 0;
   return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 };

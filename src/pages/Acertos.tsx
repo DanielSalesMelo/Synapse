@@ -10,14 +10,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { Calculator, Plus, Search, DollarSign, TrendingUp, TrendingDown, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
-const EMPRESA_ID = 1;
 
 function fmt(v: number) {
   return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
 export default function Acertos() {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const { t } = useTranslation();
   const [modalOpen, setModalOpen] = useState(false);
   const [busca, setBusca] = useState("");

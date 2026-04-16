@@ -8,8 +8,8 @@ import {
   Users, Fuel, AlertTriangle, Calendar, Download, Filter,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
-const EMPRESA_ID = 1;
 
 function KpiCard({
   titulo, valor, subtitulo, icon: Icon, cor = "blue", tendencia,

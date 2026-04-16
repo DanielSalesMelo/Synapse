@@ -12,8 +12,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useState, useMemo } from "react";
 import { Plus, Wrench, Filter, X } from "lucide-react";
 import { toast } from "sonner";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
-const EMPRESA_ID = 1;
 
 const TIPO_LABELS: Record<string, string> = {
   preventiva: "Preventiva",
@@ -142,6 +142,7 @@ function ManutencaoForm({ veiculos, onSave, onClose }: {
 }
 
 export default function Manutencoes() {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);

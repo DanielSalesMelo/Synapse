@@ -14,6 +14,7 @@ import {
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   pendente:  { label: "Pendente",  color: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" },

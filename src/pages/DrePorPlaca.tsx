@@ -6,13 +6,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { BarChart3, TrendingUp, TrendingDown, DollarSign, Truck, Calculator } from "lucide-react";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
-const EMPRESA_ID = 1;
 
 const fmt = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const fmtN = (v: number, dec = 2) => v.toLocaleString("pt-BR", { minimumFractionDigits: dec, maximumFractionDigits: dec });
 
 export default function DrePorPlaca() {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const [veiculoId, setVeiculoId] = useState<string>("todos");
   const [dataInicio, setDataInicio] = useState<string>(new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0]);
   const [dataFim, setDataFim] = useState<string>(new Date().toISOString().split('T')[0]);

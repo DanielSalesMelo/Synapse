@@ -13,8 +13,8 @@ import { useTranslation } from "react-i18next";
 import { Plus, TrendingDown, TrendingUp, Wallet, CheckCircle2, AlertCircle, DollarSign, BarChart3, RefreshCw, Banknote, PieChart, FileSpreadsheet, Receipt } from "lucide-react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
-const EMPRESA_ID = 1;
 
 function formatCurrency(v: any) {
   if (!v && v !== 0) return "—";
@@ -261,6 +261,7 @@ const CONCIL_COLORS: Record<string, string> = {
 };
 
 export default function Financeiro() {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const { t } = useTranslation();
   const [location] = useLocation();
   const activeTab = location.includes("receber") ? "receber" : location.includes("adiantamentos") ? "adiantamentos" : location.includes("fluxo") ? "fluxo" : location.includes("conciliacao") ? "conciliacao" : location.includes("dre") ? "dre" : "pagar";

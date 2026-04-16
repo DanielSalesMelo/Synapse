@@ -11,8 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Fuel, Plus, TrendingUp, TrendingDown, Droplets, AlertTriangle, DollarSign, BarChart3, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
-const EMPRESA_ID = 1;
 const CAPACIDADE_DIESEL = 10000;
 const CAPACIDADE_ARLA = 2000;
 
@@ -156,6 +156,7 @@ function CustoMedioCard({ titulo, dados }: {
 }
 
 export default function EstoqueCombustivel() {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const { t } = useTranslation();
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState({

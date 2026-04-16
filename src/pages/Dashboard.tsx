@@ -6,8 +6,8 @@ import {
   AlertTriangle, Wallet, MapPin, ClipboardCheck, ArrowUpRight,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
-const EMPRESA_ID = 1;
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
@@ -69,6 +69,7 @@ function AlertCard({ title, count, value, color }: { title: string; count: numbe
 }
 
 export default function Dashboard() {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const { t } = useTranslation();
   const { data: resumo, isLoading } = trpc.dashboard.resumo.useQuery({ empresaId: EMPRESA_ID });
   const { data: finDash } = trpc.financeiro.dashboard.useQuery({ empresaId: EMPRESA_ID });

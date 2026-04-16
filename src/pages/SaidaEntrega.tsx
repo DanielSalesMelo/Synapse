@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Clock, Truck, User, CheckCircle2, Play, Square, Info } from "lucide-react";
 import { PlacesAutocomplete } from "@/components/PlacesAutocomplete";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
 export default function SaidaEntrega() {
   const { t } = useTranslation();

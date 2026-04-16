@@ -548,6 +548,53 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     );
   }
 
+  // Usuário logado mas sem empresa vinculada — exibe tela de pendência
+  const isMasterRole = user?.role === "master_admin" || user?.role === "ti_master";
+  if (user && !(user as any).empresaId && !isMasterRole) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="flex flex-col items-center gap-6 p-8 max-w-md w-full text-center">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+              <Brain className="h-5 w-5 text-white" />
+            </div>
+            <span className="text-2xl font-bold tracking-tight">Synapse</span>
+          </div>
+          <div className="h-16 w-16 rounded-full bg-yellow-100 flex items-center justify-center">
+            <AlertTriangle className="h-8 w-8 text-yellow-600" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-foreground">Conta sem empresa vinculada</h2>
+            <p className="text-muted-foreground mt-2 text-sm">
+              Sua conta ainda não está vinculada a nenhuma empresa no sistema.
+              Entre em contato com o administrador para que ele vincule sua conta a uma empresa.
+            </p>
+          </div>
+          <div className="w-full rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-left">
+            <p className="text-xs font-semibold text-yellow-800 mb-1">O que fazer?</p>
+            <ul className="text-xs text-yellow-700 space-y-1">
+              <li>• Informe ao administrador do sistema o seu e-mail de cadastro</li>
+              <li>• Peça para ele acessar <strong>Sistema → Usuários</strong> e vincular sua conta a uma empresa</li>
+              <li>• Após a vinculação, faça logout e login novamente</li>
+            </ul>
+          </div>
+          <p className="text-xs text-muted-foreground">Usuário: <strong>{user?.name}</strong> — {user?.email}</p>
+          <Button
+            variant="outline"
+            onClick={() => {
+              localStorage.removeItem("app-user-info");
+              localStorage.removeItem("synapse-auth-token");
+              setLocation("/login");
+            }}
+            className="w-full"
+          >
+            Sair
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return <AppShell>{children}</AppShell>;
 }
 

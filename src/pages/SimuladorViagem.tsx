@@ -15,8 +15,8 @@ import {
   History
 } from "lucide-react";
 import { toast } from "sonner";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
-const EMPRESA_ID = 1;
 
 function fmt(v: number) {
   return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -45,6 +45,7 @@ interface RotaInfo {
 const ROUTE_COLORS = ["#2563eb", "#16a34a", "#ea580c"];
 
 export default function SimuladorViagem() {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const { t } = useTranslation();
   // Map refs
   const mapRef = useRef<google.maps.Map | null>(null);

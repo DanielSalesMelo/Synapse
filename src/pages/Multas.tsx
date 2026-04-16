@@ -10,8 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, Plus, Search, FileText, DollarSign, Star } from "lucide-react";
 import { toast } from "sonner";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
-const EMPRESA_ID = 1;
 
 const statusColors: Record<string, string> = {
   pendente: "bg-yellow-100 text-yellow-800 border-yellow-300",
@@ -28,6 +28,7 @@ const statusLabels: Record<string, string> = {
 };
 
 export default function Multas() {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const { t } = useTranslation();
   const [modalOpen, setModalOpen] = useState(false);
   const [busca, setBusca] = useState("");

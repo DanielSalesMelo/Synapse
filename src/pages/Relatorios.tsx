@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3, Search, Truck, Fuel, Wrench, MapPin } from "lucide-react";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
 type Tab = "viagens" | "abastecimentos" | "manutencoes";
 

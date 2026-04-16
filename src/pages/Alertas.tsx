@@ -5,8 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Bell, AlertTriangle, Clock, Wrench, FileText, DollarSign, CheckCircle } from "lucide-react";
 import { useMemo } from "react";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
-const EMPRESA_ID = 1;
 
 function getDiasRestantes(vencimento: string | null): number | null {
   if (!vencimento) return null;
@@ -18,6 +18,7 @@ function getDiasRestantes(vencimento: string | null): number | null {
 }
 
 export default function Alertas() {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const { t } = useTranslation();
   const { data: veiculos = [] } = trpc.veiculos.list.useQuery({ empresaId: EMPRESA_ID });
   const { data: manutencoes = [] } = trpc.frota.manutencoes.list.useQuery({ empresaId: EMPRESA_ID });

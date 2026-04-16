@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { RotateCcw, Truck, MapPin, CheckCircle2, AlertTriangle, Fuel, Wrench, Zap, Volume2, FileText } from "lucide-react";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
 const CHECKLIST_ITENS = [
   { key: "combustivelReserva", label: "Combustível/ARLA na reserva", icon: Fuel },

@@ -22,8 +22,8 @@ import {
   AlertCircle, Banknote, ClipboardList, Printer,
 } from "lucide-react";
 import { gerarRomaneio } from "@/lib/gerarRomaneio";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
-const EMPRESA_ID = 1;
 
 type StatusCarg = "montando" | "pronto" | "em_rota" | "retornado" | "encerrado";
 type StatusNf = "pendente" | "entregue" | "devolvida" | "parcial" | "extraviada";
@@ -56,6 +56,7 @@ function FormCarregamento({
   carg?: any;
   onClose: () => void;
 }) {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const utils = trpc.useUtils();
   const [form, setForm] = useState({
     data: carg?.data ?? new Date().toISOString().slice(0, 10),

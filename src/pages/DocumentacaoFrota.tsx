@@ -12,8 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { FileText, Plus, Search, AlertTriangle, CheckCircle, Clock, ExternalLink, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
-const EMPRESA_ID = 1;
 
 const TIPO_DOC_LABELS: Record<string, string> = {
   cnh: "CNH (Motorista)",
@@ -45,6 +45,7 @@ function StatusBadge({ vencimento }: { vencimento: string | null }) {
 }
 
 export default function DocumentacaoFrota() {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const { t } = useTranslation();
   const [modalOpen, setModalOpen] = useState(false);
   const [busca, setBusca] = useState("");

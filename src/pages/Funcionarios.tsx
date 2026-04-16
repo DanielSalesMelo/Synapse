@@ -12,8 +12,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useMemo } from "react";
 import { Plus, Search, Users, Phone, CreditCard, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
-const EMPRESA_ID = 1;
 
 const FUNCAO_LABELS: Record<string, string> = {
   motorista: "Motorista",
@@ -347,6 +347,7 @@ function FuncionarioForm({ initial, onSave, onClose }: {
 }
 
 export default function Funcionarios() {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [filterFuncao, setFilterFuncao] = useState("todos");

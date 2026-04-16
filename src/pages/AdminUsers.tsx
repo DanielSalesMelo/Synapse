@@ -74,6 +74,7 @@ export default function AdminUsers() {
 
   // Queries e Mutations
   const { data: allUsers, isLoading, refetch } = trpc.users.listAll.useQuery();
+  const { data: empresasList = [] } = trpc.users.listEmpresas.useQuery();
   const updateMutation = trpc.users.update.useMutation();
   const deleteMutation = trpc.users.delete.useMutation();
   const approveMutation = trpc.users.approve.useMutation();
@@ -116,7 +117,7 @@ export default function AdminUsers() {
       phone: user.phone,
       role: user.role,
       password: "",
-      empresaId: (user as any).empresaId || 1,
+      empresaId: (user as any).empresaId || (empresasList[0]?.id ?? 0),
       setor: (user as any).setor || "",
       cargo: (user as any).cargo || "",
     });
@@ -149,7 +150,7 @@ export default function AdminUsers() {
       phone: "",
       role: "user",
       password: "",
-      empresaId: 1,
+      empresaId: empresasList[0]?.id ?? 0,
       setor: "",
       cargo: "",
     });
@@ -521,14 +522,21 @@ export default function AdminUsers() {
               </select>
             </div>
             <div>
-              <Label htmlFor="edit-empresaId">ID da Empresa</Label>
-              <Input
+              <Label htmlFor="edit-empresaId">Empresa *</Label>
+              <select
                 id="edit-empresaId"
-                type="number"
                 value={formData.empresaId}
                 onChange={(e) => setFormData({ ...formData, empresaId: Number(e.target.value) })}
-                placeholder="ID da empresa (ex: 1)"
-              />
+                className="w-full px-3 py-2 border border-input rounded-md bg-background text-sm"
+              >
+                <option value={0} disabled>Selecione uma empresa...</option>
+                {empresasList.map((e: any) => (
+                  <option key={e.id} value={e.id}>{e.nome}</option>
+                ))}
+              </select>
+              {empresasList.length === 0 && (
+                <p className="text-xs text-yellow-600 mt-1">Nenhuma empresa cadastrada. Cadastre uma empresa primeiro.</p>
+              )}
             </div>
             <div>
               <Label htmlFor="edit-setor">Setor</Label>
@@ -626,14 +634,21 @@ export default function AdminUsers() {
               </select>
             </div>
             <div>
-              <Label htmlFor="create-empresaId">ID da Empresa</Label>
-              <Input
+              <Label htmlFor="create-empresaId">Empresa *</Label>
+              <select
                 id="create-empresaId"
-                type="number"
                 value={formData.empresaId}
                 onChange={(e) => setFormData({ ...formData, empresaId: Number(e.target.value) })}
-                placeholder="ID da empresa (ex: 1)"
-              />
+                className="w-full px-3 py-2 border border-input rounded-md bg-background text-sm"
+              >
+                <option value={0} disabled>Selecione uma empresa...</option>
+                {empresasList.map((e: any) => (
+                  <option key={e.id} value={e.id}>{e.nome}</option>
+                ))}
+              </select>
+              {empresasList.length === 0 && (
+                <p className="text-xs text-yellow-600 mt-1">Nenhuma empresa cadastrada. Cadastre uma empresa primeiro.</p>
+              )}
             </div>
             <div>
               <Label htmlFor="create-setor">Setor</Label>

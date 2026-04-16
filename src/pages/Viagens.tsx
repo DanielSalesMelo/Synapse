@@ -12,12 +12,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { PlacesAutocomplete } from "@/components/PlacesAutocomplete";
+import { useViewAs } from "@/contexts/ViewAsContext";
 import {
   Truck, Plus, Calculator, TrendingUp, TrendingDown, AlertTriangle,
   CheckCircle, Clock, MapPin, User, Package, DollarSign, Fuel
 } from "lucide-react";
 
-const EMPRESA_ID = 1;
 
 const STATUS_CONFIG = {
   planejada: { label: "Planejada", color: "bg-blue-500/15 text-blue-400 border-blue-500/30" },
@@ -462,6 +462,7 @@ function FormViagem({ onSuccess }: { onSuccess: () => void }) {
 }
 
 export default function Viagens() {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const [statusFiltro, setStatusFiltro] = useState<string>("todos");
   const [openNova, setOpenNova] = useState(false);
 

@@ -11,8 +11,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useState, useMemo, useEffect } from "react";
 import { Plus, Fuel, Droplets, Filter, X } from "lucide-react";
 import { toast } from "sonner";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
-const EMPRESA_ID = 1;
 
 const COMBUSTIVEL_LABELS: Record<string, string> = {
   diesel: "Diesel",
@@ -230,6 +230,7 @@ function AbastecimentoForm({ veiculos, motoristas, veiculosEmViagem, onSave, onC
 }
 
 export default function Abastecimentos() {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [filtros, setFiltros] = useState({

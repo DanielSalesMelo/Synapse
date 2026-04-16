@@ -34,8 +34,8 @@ import {
   Filter,
 } from "lucide-react";
 import { NotasFiscaisViagem } from "@/components/NotasFiscaisViagem";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
-const EMPRESA_ID = 1;
 
 type StatusNf = "pendente" | "entregue" | "devolvida" | "parcial" | "extraviada";
 
@@ -51,6 +51,7 @@ const fmt = (v: string | null | undefined) =>
   v ? Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) : "—";
 
 export default function NotasFiscais() {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const [busca, setBusca] = useState("");
   const [statusFiltro, setStatusFiltro] = useState<string>("todos");
   const [viagemSelecionada, setViagemSelecionada] = useState<number | null>(null);

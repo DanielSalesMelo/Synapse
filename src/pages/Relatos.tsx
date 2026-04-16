@@ -10,8 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { MessageSquare, Plus, Search, AlertTriangle, Info, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
-const EMPRESA_ID = 1;
 
 const urgenciaConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   baixa:   { label: "Baixa",   color: "bg-blue-100 text-blue-700 border-blue-300",   icon: <Info className="w-3 h-3" /> },
@@ -33,6 +33,7 @@ const tiposRelato = [
 ];
 
 export default function Relatos() {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const { t } = useTranslation();
   const [modalOpen, setModalOpen] = useState(false);
   const [busca, setBusca] = useState("");

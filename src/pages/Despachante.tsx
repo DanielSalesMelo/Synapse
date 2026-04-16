@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { PlacesAutocomplete } from "@/components/PlacesAutocomplete";
+import { useViewAs } from "@/contexts/ViewAsContext";
 import {
   Send, Truck, User, MapPin, Clock, CheckCircle2,
   AlertCircle, Play, Square, RefreshCw, Plus, Eye
