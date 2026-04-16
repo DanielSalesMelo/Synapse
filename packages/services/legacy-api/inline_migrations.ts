@@ -1564,6 +1564,22 @@ const MIGRATION_STATEMENTS: string[] = [
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "impacto" varchar(50) DEFAULT 'medio'`,
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "numeroOS" varchar(30)`,
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "deletedAt" timestamp`,
+
+  // ── Certificados Digitais TI ─────────────────────────────────────────────────
+  `CREATE TABLE IF NOT EXISTS "certificados_ti" (
+    "id" serial PRIMARY KEY,
+    "empresaId" integer NOT NULL,
+    "nome" varchar(255) NOT NULL,
+    "tipo" varchar(50) NOT NULL,
+    "vencimento" timestamp NOT NULL,
+    "senha" text,
+    "observacoes" text,
+    "alertaEnviado" boolean DEFAULT false,
+    "createdAt" timestamp DEFAULT now() NOT NULL,
+    "updatedAt" timestamp DEFAULT now() NOT NULL,
+    "deletedAt" timestamp
+  )`,
+  `CREATE INDEX IF NOT EXISTS "certificados_ti_empresa_id_idx" ON "certificados_ti" ("empresaId")`,
 ];
 
 export async function runInlineMigrations(): Promise<void> {
