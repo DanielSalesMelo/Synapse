@@ -384,18 +384,18 @@ function Sidebar({
           const groupTotalBadge = group.items.reduce((acc, item) => acc + (BADGES[item.path] || 0), 0);
 
           return (
-            <div key={group.label} className="mb-0.5">
+            <div key={group.label} className="mb-1">
               {!collapsed ? (
-                /* Cabeçalho do grupo — cor distinta do submenu */
+                /* Cabeçalho do grupo — linha separadora + label discreto */
                 <button
                   onClick={() => toggleGroup(group.label)}
-                  className={`w-full flex items-center gap-2 px-3 py-2 text-[11px] font-bold uppercase tracking-wider transition-all rounded-none ${
+                  className={`w-full flex items-center gap-2 px-3 pt-3 pb-1 text-[10px] font-semibold uppercase tracking-widest transition-colors ${
                     isGroupActive(group.items)
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-sidebar-group text-sidebar-group-foreground hover:bg-sidebar-group-hover"
+                      ? "text-primary"
+                      : "text-sidebar-foreground/40 hover:text-sidebar-foreground/70"
                   }`}
                 >
-                  {GroupIcon && <GroupIcon className="h-3.5 w-3.5 shrink-0" />}
+                  {GroupIcon && <GroupIcon className="h-3 w-3 shrink-0" />}
                   <span className="flex-1 text-left truncate">{group.label}</span>
                   {/* Badge total do grupo quando recolhido */}
                   {!expanded && groupHasBadge && (
@@ -404,13 +404,13 @@ function Sidebar({
                     </span>
                   )}
                   {expanded ? (
-                    <ChevronUp className="h-3 w-3 shrink-0 opacity-60" />
+                    <ChevronUp className="h-3 w-3 shrink-0 opacity-40" />
                   ) : (
-                    <ChevronDown className="h-3 w-3 shrink-0 opacity-60" />
+                    <ChevronDown className="h-3 w-3 shrink-0 opacity-40" />
                   )}
                 </button>
               ) : (
-                <div className="h-1" />
+                <div className="h-px bg-sidebar-border/20 mx-3 mt-2" />
               )}
 
               {(expanded || collapsed) &&
@@ -422,14 +422,20 @@ function Sidebar({
                       key={item.path}
                       onClick={() => handleNav(item.path)}
                       title={collapsed ? item.label : undefined}
-                      className={`w-full flex items-center gap-3 py-2 text-sm transition-all ${
+                      className={`relative w-full flex items-center gap-2.5 py-1.5 text-xs transition-all ${
                         active
-                          ? "bg-primary/15 text-primary font-semibold border-r-2 border-primary"
-                          : "text-muted-foreground/80 hover:bg-sidebar-accent hover:text-foreground"
-                      } ${collapsed ? "justify-center px-2" : "px-5"}`}
+                          ? "bg-sidebar-accent text-sidebar-foreground font-medium"
+                          : "text-sidebar-foreground/55 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                      } ${collapsed ? "justify-center px-0 mx-0 rounded-none" : "pl-7 pr-3 rounded-md mx-1.5"}`}
+                      style={collapsed ? {} : { width: "calc(100% - 12px)" }}
                     >
-                      <item.icon className={`h-3.5 w-3.5 shrink-0 ${active ? "text-primary" : ""}`} />
-                      {!collapsed && <span className="flex-1 truncate text-xs">{item.label}</span>}
+                      {active && !collapsed && (
+                        <span className="absolute left-1.5 top-1/2 -translate-y-1/2 w-0.5 h-4 rounded-full bg-primary" />
+                      )}
+                      <item.icon className={`h-3.5 w-3.5 shrink-0 ${
+                        active ? "text-primary" : ""
+                      }`} />
+                      {!collapsed && <span className="flex-1 truncate">{item.label}</span>}
                       {/* Badge de notificação */}
                       {badge && badge > 0 && (
                         <span className={`${

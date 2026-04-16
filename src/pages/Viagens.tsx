@@ -34,6 +34,7 @@ const CLASSIFICACAO_CONFIG = {
 };
 
 function CalculadoraViagem() {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const { t } = useTranslation();
   const [veiculoId, setVeiculoId] = useState<number | null>(null);
   const [distanciaKm, setDistanciaKm] = useState("");
@@ -243,6 +244,7 @@ function CalculadoraViagem() {
 }
 
 function FormViagem({ onSuccess }: { onSuccess: () => void }) {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const [veiculoId, setVeiculoId] = useState("");
   const [cavaloPrincipalId, setCavaloPrincipalId] = useState("");
   const [motoristaId, setMotoristaId] = useState("");

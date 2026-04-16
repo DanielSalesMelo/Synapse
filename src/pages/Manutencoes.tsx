@@ -45,6 +45,7 @@ function ManutencaoForm({ veiculos, onSave, onClose }: {
   onSave: (d: any) => void;
   onClose: () => void;
 }) {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const [form, setForm] = useState({
     veiculoId: "",
     data: new Date().toISOString().split("T")[0],

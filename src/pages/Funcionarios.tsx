@@ -113,6 +113,7 @@ function FuncionarioForm({ initial, onSave, onClose }: {
   onSave: (data: any) => void;
   onClose: () => void;
 }) {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const [form, setForm] = useState({
     nome: initial?.nome ?? "",
     cpf: initial?.cpf ?? "",

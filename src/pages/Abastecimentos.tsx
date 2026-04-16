@@ -44,6 +44,7 @@ function AbastecimentoForm({ veiculos, motoristas, veiculosEmViagem, onSave, onC
   onSave: (d: any) => void;
   onClose: () => void;
 }) {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const [form, setForm] = useState({
     veiculoId: "",
     motoristaId: "",

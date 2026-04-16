@@ -90,6 +90,7 @@ function VeiculoForm({ initial, cavalos, onSave, onClose }: {
   onSave: (data: any) => void;
   onClose: () => void;
 }) {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const [form, setForm] = useState({
     placa: initial?.placa ?? "",
     tipo: initial?.tipo ?? "toco",

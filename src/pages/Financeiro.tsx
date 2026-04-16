@@ -43,6 +43,7 @@ function ContaPagarForm({ veiculos, funcionarios, onSave, onClose }: {
   onSave: (d: any) => void;
   onClose: () => void;
 }) {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const [form, setForm] = useState({
     descricao: "",
     categoria: "outro",
@@ -139,6 +140,7 @@ function ContaPagarForm({ veiculos, funcionarios, onSave, onClose }: {
 }
 
 function ContaReceberForm({ onSave, onClose }: { onSave: (d: any) => void; onClose: () => void }) {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const [form, setForm] = useState({
     descricao: "",
     categoria: "frete",

@@ -330,12 +330,16 @@ export default function Chat() {
         try {
           const formData = new FormData();
           formData.append("file", attachment.file);
+          const authToken = localStorage.getItem("synapse-auth-token");
           const resp = await fetch(`${getApiBase()}/api/upload`, {
             method: "POST",
             body: formData,
-            credentials: "include",
+            headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
           });
-          if (!resp.ok) throw new Error("Falha no upload");
+          if (!resp.ok) {
+            const errData = await resp.json().catch(() => ({}));
+            throw new Error(errData.error || `Upload falhou (${resp.status})`);
+          }
           const data = await resp.json();
           sendMutation.mutate({
             conversationId: selectedConvId,
@@ -345,8 +349,8 @@ export default function Chat() {
             fileSize: attachment.file.size,
             mimeType: attachment.file.type,
           });
-        } catch {
-          toast.error("Erro ao enviar arquivo");
+        } catch (err: any) {
+          toast.error(err?.message || "Erro ao enviar arquivo");
         }
       }
       // Se também há texto, envia mensagem de texto separada
