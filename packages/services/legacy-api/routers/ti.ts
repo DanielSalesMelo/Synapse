@@ -638,7 +638,7 @@ export const tiRouter = router({
       const parte1 = Math.random().toString(36).slice(2,6).toUpperCase();
       const parte2 = Math.random().toString(36).slice(2,6).toUpperCase();
       const codigo = `SYNC-${parte1}-${parte2}`;
-      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // 24h
       const rows = await client`
         INSERT INTO agent_pairing_codes ("empresaId",codigo,descricao,"ativoId","criadoPor","expiresAt","createdAt")
         VALUES (${ctx.user.empresaId!},${codigo},${input.descricao||null},${input.ativoId||null},${ctx.user.id},${expiresAt},NOW())
