@@ -32,14 +32,27 @@ const isOriginAllowed = (origin: string | undefined): boolean => {
   return false;
 };
 
-// Aplica migrações inline ao iniciar o servidor (sem depender de arquivos externos)
-async function runMigrations() {
-  try {
-    await runInlineMigrations();
-    console.log("[Migration] Todas as tabelas verificadas/criadas com sucesso");
-  } catch (err) {
-    console.error("[Migration] Erro ao aplicar migrações inline:", err);
-  }
+// Migrações em background com timeout de segurança
+// O servidor sobe IMEDIATAMENTE; as migrações rodam em paralelo.
+function runMigrationsInBackground() {
+  const MIGRATION_TIMEOUT_MS = 60_000; // 60 segundos
+
+  const migrationPromise = runInlineMigrations()
+    .then(() => {
+      console.log("[Migration] ✅ Todas as tabelas verificadas/criadas com sucesso");
+    })
+    .catch((err) => {
+      console.error("[Migration] ❌ Erro:", err?.message ?? err);
+    });
+
+  const timeoutPromise = new Promise<void>((resolve) => {
+    setTimeout(() => {
+      console.warn("[Migration] ⚠️  Timeout de 60s atingido — continuando sem aguardar migrações");
+      resolve();
+    }, MIGRATION_TIMEOUT_MS);
+  });
+
+  Promise.race([migrationPromise, timeoutPromise]).catch(() => {});
 }
 
 const app = express();
@@ -85,16 +98,9 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// 6. Iniciar o servidor (após migrações)
-runMigrations()
-  .then(() => {
-    app.listen(port, () => {
-      console.log(`[Server] Synapse Backend running on port ${port}`);
-    });
-  })
-  .catch((err) => {
-    console.error("[Server] Falha nas migrações, iniciando mesmo assim:", err);
-    app.listen(port, () => {
-      console.log(`[Server] Synapse Backend running on port ${port}`);
-    });
-  });
+// 6. Servidor sobe IMEDIATAMENTE — migrações rodam em background
+app.listen(port, () => {
+  console.log(`[Server] ✅ Synapse Backend running on port ${port}`);
+  // Inicia migrações em background após o servidor estar ouvindo
+  runMigrationsInBackground();
+});

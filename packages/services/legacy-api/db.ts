@@ -35,7 +35,13 @@ export async function getDb() {
     try {
       const dbUrl = sanitizeDatabaseUrl(process.env.DATABASE_URL);
       console.log('[Database] Connecting to:', dbUrl.replace(/:[^:@]+@/, ':***@'));
-      _client = postgres(dbUrl);
+      _client = postgres(dbUrl, {
+        connect_timeout: 15,   // 15s máximo para conectar
+        idle_timeout: 30,      // fecha conexões ociosas após 30s
+        max_lifetime: 1800,    // recicla conexões a cada 30min
+        max: 10,               // máximo de 10 conexões simultâneas
+        onnotice: () => {},    // silencia avisos do postgres
+      });
       _db = drizzle(_client);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);

@@ -31,9 +31,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// node_modules/.pnpm/depd@2.0.0/node_modules/depd/index.js
+// node_modules/depd/index.js
 var require_depd = __commonJS({
-  "node_modules/.pnpm/depd@2.0.0/node_modules/depd/index.js"(exports2, module2) {
+  "node_modules/depd/index.js"(exports2, module2) {
     var relative = require("path").relative;
     module2.exports = depd;
     var basePath = process.cwd();
@@ -337,9 +337,9 @@ var require_depd = __commonJS({
   }
 });
 
-// node_modules/.pnpm/bytes@3.1.2/node_modules/bytes/index.js
+// node_modules/bytes/index.js
 var require_bytes = __commonJS({
-  "node_modules/.pnpm/bytes@3.1.2/node_modules/bytes/index.js"(exports2, module2) {
+  "node_modules/bytes/index.js"(exports2, module2) {
     "use strict";
     module2.exports = bytes;
     module2.exports.format = format;
@@ -426,9 +426,9 @@ var require_bytes = __commonJS({
   }
 });
 
-// node_modules/.pnpm/content-type@1.0.5/node_modules/content-type/index.js
+// node_modules/content-type/index.js
 var require_content_type = __commonJS({
-  "node_modules/.pnpm/content-type@1.0.5/node_modules/content-type/index.js"(exports2) {
+  "node_modules/content-type/index.js"(exports2) {
     "use strict";
     var PARAM_REGEXP = /; *([!#$%&'*+.^_`|~0-9A-Za-z-]+) *= *("(?:[\u000b\u0020\u0021\u0023-\u005b\u005d-\u007e\u0080-\u00ff]|\\[\u000b\u0020-\u00ff])*"|[!#$%&'*+.^_`|~0-9A-Za-z-]+) */g;
     var TEXT_REGEXP = /^[\u000b\u0020-\u007e\u0080-\u00ff]+$/;
@@ -530,9 +530,9 @@ var require_content_type = __commonJS({
   }
 });
 
-// node_modules/.pnpm/setprototypeof@1.2.0/node_modules/setprototypeof/index.js
+// node_modules/setprototypeof/index.js
 var require_setprototypeof = __commonJS({
-  "node_modules/.pnpm/setprototypeof@1.2.0/node_modules/setprototypeof/index.js"(exports2, module2) {
+  "node_modules/setprototypeof/index.js"(exports2, module2) {
     "use strict";
     module2.exports = Object.setPrototypeOf || ({ __proto__: [] } instanceof Array ? setProtoOf : mixinProperties);
     function setProtoOf(obj, proto) {
@@ -550,9 +550,9 @@ var require_setprototypeof = __commonJS({
   }
 });
 
-// node_modules/.pnpm/statuses@2.0.2/node_modules/statuses/codes.json
+// node_modules/statuses/codes.json
 var require_codes = __commonJS({
-  "node_modules/.pnpm/statuses@2.0.2/node_modules/statuses/codes.json"(exports2, module2) {
+  "node_modules/statuses/codes.json"(exports2, module2) {
     module2.exports = {
       "100": "Continue",
       "101": "Switching Protocols",
@@ -621,9 +621,9 @@ var require_codes = __commonJS({
   }
 });
 
-// node_modules/.pnpm/statuses@2.0.2/node_modules/statuses/index.js
+// node_modules/statuses/index.js
 var require_statuses = __commonJS({
-  "node_modules/.pnpm/statuses@2.0.2/node_modules/statuses/index.js"(exports2, module2) {
+  "node_modules/statuses/index.js"(exports2, module2) {
     "use strict";
     var codes = require_codes();
     module2.exports = status;
@@ -692,9 +692,9 @@ var require_statuses = __commonJS({
   }
 });
 
-// node_modules/.pnpm/inherits@2.0.4/node_modules/inherits/inherits_browser.js
+// node_modules/inherits/inherits_browser.js
 var require_inherits_browser = __commonJS({
-  "node_modules/.pnpm/inherits@2.0.4/node_modules/inherits/inherits_browser.js"(exports2, module2) {
+  "node_modules/inherits/inherits_browser.js"(exports2, module2) {
     if (typeof Object.create === "function") {
       module2.exports = function inherits2(ctor, superCtor) {
         if (superCtor) {
@@ -724,9 +724,9 @@ var require_inherits_browser = __commonJS({
   }
 });
 
-// node_modules/.pnpm/inherits@2.0.4/node_modules/inherits/inherits.js
+// node_modules/inherits/inherits.js
 var require_inherits = __commonJS({
-  "node_modules/.pnpm/inherits@2.0.4/node_modules/inherits/inherits.js"(exports2, module2) {
+  "node_modules/inherits/inherits.js"(exports2, module2) {
     try {
       util3 = require("util");
       if (typeof util3.inherits !== "function") throw "";
@@ -738,9 +738,9 @@ var require_inherits = __commonJS({
   }
 });
 
-// node_modules/.pnpm/toidentifier@1.0.1/node_modules/toidentifier/index.js
+// node_modules/toidentifier/index.js
 var require_toidentifier = __commonJS({
-  "node_modules/.pnpm/toidentifier@1.0.1/node_modules/toidentifier/index.js"(exports2, module2) {
+  "node_modules/toidentifier/index.js"(exports2, module2) {
     "use strict";
     module2.exports = toIdentifier;
     function toIdentifier(str2) {
@@ -751,9 +751,9 @@ var require_toidentifier = __commonJS({
   }
 });
 
-// node_modules/.pnpm/http-errors@2.0.1/node_modules/http-errors/index.js
+// node_modules/http-errors/index.js
 var require_http_errors = __commonJS({
-  "node_modules/.pnpm/http-errors@2.0.1/node_modules/http-errors/index.js"(exports2, module2) {
+  "node_modules/http-errors/index.js"(exports2, module2) {
     "use strict";
     var deprecate = require_depd()("http-errors");
     var setPrototypeOf = require_setprototypeof();
@@ -915,9 +915,9 @@ var require_http_errors = __commonJS({
   }
 });
 
-// node_modules/.pnpm/ms@2.0.0/node_modules/ms/index.js
+// node_modules/body-parser/node_modules/ms/index.js
 var require_ms = __commonJS({
-  "node_modules/.pnpm/ms@2.0.0/node_modules/ms/index.js"(exports2, module2) {
+  "node_modules/body-parser/node_modules/ms/index.js"(exports2, module2) {
     var s = 1e3;
     var m = s * 60;
     var h = m * 60;
@@ -1017,9 +1017,9 @@ var require_ms = __commonJS({
   }
 });
 
-// node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/debug.js
+// node_modules/body-parser/node_modules/debug/src/debug.js
 var require_debug = __commonJS({
-  "node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/debug.js"(exports2, module2) {
+  "node_modules/body-parser/node_modules/debug/src/debug.js"(exports2, module2) {
     exports2 = module2.exports = createDebug.debug = createDebug["default"] = createDebug;
     exports2.coerce = coerce;
     exports2.disable = disable;
@@ -1122,9 +1122,9 @@ var require_debug = __commonJS({
   }
 });
 
-// node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/browser.js
+// node_modules/body-parser/node_modules/debug/src/browser.js
 var require_browser = __commonJS({
-  "node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/browser.js"(exports2, module2) {
+  "node_modules/body-parser/node_modules/debug/src/browser.js"(exports2, module2) {
     exports2 = module2.exports = require_debug();
     exports2.log = log;
     exports2.formatArgs = formatArgs;
@@ -1208,9 +1208,9 @@ var require_browser = __commonJS({
   }
 });
 
-// node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/node.js
+// node_modules/body-parser/node_modules/debug/src/node.js
 var require_node = __commonJS({
-  "node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/node.js"(exports2, module2) {
+  "node_modules/body-parser/node_modules/debug/src/node.js"(exports2, module2) {
     var tty = require("tty");
     var util3 = require("util");
     exports2 = module2.exports = require_debug();
@@ -1328,9 +1328,9 @@ var require_node = __commonJS({
   }
 });
 
-// node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/index.js
+// node_modules/body-parser/node_modules/debug/src/index.js
 var require_src = __commonJS({
-  "node_modules/.pnpm/debug@2.6.9/node_modules/debug/src/index.js"(exports2, module2) {
+  "node_modules/body-parser/node_modules/debug/src/index.js"(exports2, module2) {
     if (typeof process !== "undefined" && process.type === "renderer") {
       module2.exports = require_browser();
     } else {
@@ -1339,9 +1339,9 @@ var require_src = __commonJS({
   }
 });
 
-// node_modules/.pnpm/destroy@1.2.0/node_modules/destroy/index.js
+// node_modules/destroy/index.js
 var require_destroy = __commonJS({
-  "node_modules/.pnpm/destroy@1.2.0/node_modules/destroy/index.js"(exports2, module2) {
+  "node_modules/destroy/index.js"(exports2, module2) {
     "use strict";
     var EventEmitter2 = require("events").EventEmitter;
     var ReadStream = require("fs").ReadStream;
@@ -1426,9 +1426,9 @@ var require_destroy = __commonJS({
   }
 });
 
-// node_modules/.pnpm/safer-buffer@2.1.2/node_modules/safer-buffer/safer.js
+// node_modules/safer-buffer/safer.js
 var require_safer = __commonJS({
-  "node_modules/.pnpm/safer-buffer@2.1.2/node_modules/safer-buffer/safer.js"(exports2, module2) {
+  "node_modules/safer-buffer/safer.js"(exports2, module2) {
     "use strict";
     var buffer2 = require("buffer");
     var Buffer2 = buffer2.Buffer;
@@ -1494,9 +1494,9 @@ var require_safer = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/bom-handling.js
+// node_modules/iconv-lite/lib/bom-handling.js
 var require_bom_handling = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/bom-handling.js"(exports2) {
+  "node_modules/iconv-lite/lib/bom-handling.js"(exports2) {
     "use strict";
     var BOMChar = "\uFEFF";
     exports2.PrependBOM = PrependBOMWrapper;
@@ -1538,9 +1538,9 @@ var require_bom_handling = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/internal.js
+// node_modules/iconv-lite/encodings/internal.js
 var require_internal = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/internal.js"(exports2, module2) {
+  "node_modules/iconv-lite/encodings/internal.js"(exports2, module2) {
     "use strict";
     var Buffer2 = require_safer().Buffer;
     module2.exports = {
@@ -1682,9 +1682,9 @@ var require_internal = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/utf16.js
+// node_modules/iconv-lite/encodings/utf16.js
 var require_utf16 = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/utf16.js"(exports2) {
+  "node_modules/iconv-lite/encodings/utf16.js"(exports2) {
     "use strict";
     var Buffer2 = require_safer().Buffer;
     exports2.utf16be = Utf16BECodec;
@@ -1798,9 +1798,9 @@ var require_utf16 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/utf7.js
+// node_modules/iconv-lite/encodings/utf7.js
 var require_utf7 = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/utf7.js"(exports2) {
+  "node_modules/iconv-lite/encodings/utf7.js"(exports2) {
     "use strict";
     var Buffer2 = require_safer().Buffer;
     exports2.utf7 = Utf7Codec;
@@ -1999,9 +1999,9 @@ var require_utf7 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/sbcs-codec.js
+// node_modules/iconv-lite/encodings/sbcs-codec.js
 var require_sbcs_codec = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/sbcs-codec.js"(exports2) {
+  "node_modules/iconv-lite/encodings/sbcs-codec.js"(exports2) {
     "use strict";
     var Buffer2 = require_safer().Buffer;
     exports2._sbcs = SBCSCodec;
@@ -2055,9 +2055,9 @@ var require_sbcs_codec = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/sbcs-data.js
+// node_modules/iconv-lite/encodings/sbcs-data.js
 var require_sbcs_data = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/sbcs-data.js"(exports2, module2) {
+  "node_modules/iconv-lite/encodings/sbcs-data.js"(exports2, module2) {
     "use strict";
     module2.exports = {
       // Not supported by iconv, not sure why.
@@ -2204,9 +2204,9 @@ var require_sbcs_data = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/sbcs-data-generated.js
+// node_modules/iconv-lite/encodings/sbcs-data-generated.js
 var require_sbcs_data_generated = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/sbcs-data-generated.js"(exports2, module2) {
+  "node_modules/iconv-lite/encodings/sbcs-data-generated.js"(exports2, module2) {
     "use strict";
     module2.exports = {
       "437": "cp437",
@@ -2659,9 +2659,9 @@ var require_sbcs_data_generated = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/dbcs-codec.js
+// node_modules/iconv-lite/encodings/dbcs-codec.js
 var require_dbcs_codec = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/dbcs-codec.js"(exports2) {
+  "node_modules/iconv-lite/encodings/dbcs-codec.js"(exports2) {
     "use strict";
     var Buffer2 = require_safer().Buffer;
     exports2._dbcs = DBCSCodec;
@@ -3040,9 +3040,9 @@ var require_dbcs_codec = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/shiftjis.json
+// node_modules/iconv-lite/encodings/tables/shiftjis.json
 var require_shiftjis = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/shiftjis.json"(exports2, module2) {
+  "node_modules/iconv-lite/encodings/tables/shiftjis.json"(exports2, module2) {
     module2.exports = [
       ["0", "\0", 128],
       ["a1", "\uFF61", 62],
@@ -3171,9 +3171,9 @@ var require_shiftjis = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/eucjp.json
+// node_modules/iconv-lite/encodings/tables/eucjp.json
 var require_eucjp = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/eucjp.json"(exports2, module2) {
+  "node_modules/iconv-lite/encodings/tables/eucjp.json"(exports2, module2) {
     module2.exports = [
       ["0", "\0", 127],
       ["8ea1", "\uFF61", 62],
@@ -3359,9 +3359,9 @@ var require_eucjp = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/cp936.json
+// node_modules/iconv-lite/encodings/tables/cp936.json
 var require_cp936 = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/cp936.json"(exports2, module2) {
+  "node_modules/iconv-lite/encodings/tables/cp936.json"(exports2, module2) {
     module2.exports = [
       ["0", "\0", 127, "\u20AC"],
       ["8140", "\u4E02\u4E04\u4E05\u4E06\u4E0F\u4E12\u4E17\u4E1F\u4E20\u4E21\u4E23\u4E26\u4E29\u4E2E\u4E2F\u4E31\u4E33\u4E35\u4E37\u4E3C\u4E40\u4E41\u4E42\u4E44\u4E46\u4E4A\u4E51\u4E55\u4E57\u4E5A\u4E5B\u4E62\u4E63\u4E64\u4E65\u4E67\u4E68\u4E6A", 5, "\u4E72\u4E74", 9, "\u4E7F", 6, "\u4E87\u4E8A"],
@@ -3629,9 +3629,9 @@ var require_cp936 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/gbk-added.json
+// node_modules/iconv-lite/encodings/tables/gbk-added.json
 var require_gbk_added = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/gbk-added.json"(exports2, module2) {
+  "node_modules/iconv-lite/encodings/tables/gbk-added.json"(exports2, module2) {
     module2.exports = [
       ["a140", "\uE4C6", 62],
       ["a180", "\uE505", 32],
@@ -3690,16 +3690,16 @@ var require_gbk_added = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/gb18030-ranges.json
+// node_modules/iconv-lite/encodings/tables/gb18030-ranges.json
 var require_gb18030_ranges = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/gb18030-ranges.json"(exports2, module2) {
+  "node_modules/iconv-lite/encodings/tables/gb18030-ranges.json"(exports2, module2) {
     module2.exports = { uChars: [128, 165, 169, 178, 184, 216, 226, 235, 238, 244, 248, 251, 253, 258, 276, 284, 300, 325, 329, 334, 364, 463, 465, 467, 469, 471, 473, 475, 477, 506, 594, 610, 712, 716, 730, 930, 938, 962, 970, 1026, 1104, 1106, 8209, 8215, 8218, 8222, 8231, 8241, 8244, 8246, 8252, 8365, 8452, 8454, 8458, 8471, 8482, 8556, 8570, 8596, 8602, 8713, 8720, 8722, 8726, 8731, 8737, 8740, 8742, 8748, 8751, 8760, 8766, 8777, 8781, 8787, 8802, 8808, 8816, 8854, 8858, 8870, 8896, 8979, 9322, 9372, 9548, 9588, 9616, 9622, 9634, 9652, 9662, 9672, 9676, 9680, 9702, 9735, 9738, 9793, 9795, 11906, 11909, 11913, 11917, 11928, 11944, 11947, 11951, 11956, 11960, 11964, 11979, 12284, 12292, 12312, 12319, 12330, 12351, 12436, 12447, 12535, 12543, 12586, 12842, 12850, 12964, 13200, 13215, 13218, 13253, 13263, 13267, 13270, 13384, 13428, 13727, 13839, 13851, 14617, 14703, 14801, 14816, 14964, 15183, 15471, 15585, 16471, 16736, 17208, 17325, 17330, 17374, 17623, 17997, 18018, 18212, 18218, 18301, 18318, 18760, 18811, 18814, 18820, 18823, 18844, 18848, 18872, 19576, 19620, 19738, 19887, 40870, 59244, 59336, 59367, 59413, 59417, 59423, 59431, 59437, 59443, 59452, 59460, 59478, 59493, 63789, 63866, 63894, 63976, 63986, 64016, 64018, 64021, 64025, 64034, 64037, 64042, 65074, 65093, 65107, 65112, 65127, 65132, 65375, 65510, 65536], gbChars: [0, 36, 38, 45, 50, 81, 89, 95, 96, 100, 103, 104, 105, 109, 126, 133, 148, 172, 175, 179, 208, 306, 307, 308, 309, 310, 311, 312, 313, 341, 428, 443, 544, 545, 558, 741, 742, 749, 750, 805, 819, 820, 7922, 7924, 7925, 7927, 7934, 7943, 7944, 7945, 7950, 8062, 8148, 8149, 8152, 8164, 8174, 8236, 8240, 8262, 8264, 8374, 8380, 8381, 8384, 8388, 8390, 8392, 8393, 8394, 8396, 8401, 8406, 8416, 8419, 8424, 8437, 8439, 8445, 8482, 8485, 8496, 8521, 8603, 8936, 8946, 9046, 9050, 9063, 9066, 9076, 9092, 9100, 9108, 9111, 9113, 9131, 9162, 9164, 9218, 9219, 11329, 11331, 11334, 11336, 11346, 11361, 11363, 11366, 11370, 11372, 11375, 11389, 11682, 11686, 11687, 11692, 11694, 11714, 11716, 11723, 11725, 11730, 11736, 11982, 11989, 12102, 12336, 12348, 12350, 12384, 12393, 12395, 12397, 12510, 12553, 12851, 12962, 12973, 13738, 13823, 13919, 13933, 14080, 14298, 14585, 14698, 15583, 15847, 16318, 16434, 16438, 16481, 16729, 17102, 17122, 17315, 17320, 17402, 17418, 17859, 17909, 17911, 17915, 17916, 17936, 17939, 17961, 18664, 18703, 18814, 18962, 19043, 33469, 33470, 33471, 33484, 33485, 33490, 33497, 33501, 33505, 33513, 33520, 33536, 33550, 37845, 37921, 37948, 38029, 38038, 38064, 38065, 38066, 38069, 38075, 38076, 38078, 39108, 39109, 39113, 39114, 39115, 39116, 39265, 39394, 189e3] };
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/cp949.json
+// node_modules/iconv-lite/encodings/tables/cp949.json
 var require_cp949 = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/cp949.json"(exports2, module2) {
+  "node_modules/iconv-lite/encodings/tables/cp949.json"(exports2, module2) {
     module2.exports = [
       ["0", "\0", 127],
       ["8141", "\uAC02\uAC03\uAC05\uAC06\uAC0B", 4, "\uAC18\uAC1E\uAC1F\uAC21\uAC22\uAC23\uAC25", 6, "\uAC2E\uAC32\uAC33\uAC34"],
@@ -3976,9 +3976,9 @@ var require_cp949 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/cp950.json
+// node_modules/iconv-lite/encodings/tables/cp950.json
 var require_cp950 = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/cp950.json"(exports2, module2) {
+  "node_modules/iconv-lite/encodings/tables/cp950.json"(exports2, module2) {
     module2.exports = [
       ["0", "\0", 127],
       ["a140", "\u3000\uFF0C\u3001\u3002\uFF0E\u2027\uFF1B\uFF1A\uFF1F\uFF01\uFE30\u2026\u2025\uFE50\uFE51\uFE52\xB7\uFE54\uFE55\uFE56\uFE57\uFF5C\u2013\uFE31\u2014\uFE33\u2574\uFE34\uFE4F\uFF08\uFF09\uFE35\uFE36\uFF5B\uFF5D\uFE37\uFE38\u3014\u3015\uFE39\uFE3A\u3010\u3011\uFE3B\uFE3C\u300A\u300B\uFE3D\uFE3E\u3008\u3009\uFE3F\uFE40\u300C\u300D\uFE41\uFE42\u300E\u300F\uFE43\uFE44\uFE59\uFE5A"],
@@ -4159,9 +4159,9 @@ var require_cp950 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/big5-added.json
+// node_modules/iconv-lite/encodings/tables/big5-added.json
 var require_big5_added = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/tables/big5-added.json"(exports2, module2) {
+  "node_modules/iconv-lite/encodings/tables/big5-added.json"(exports2, module2) {
     module2.exports = [
       ["8740", "\u43F0\u4C32\u4603\u45A6\u4578\u{27267}\u4D77\u45B3\u{27CB1}\u4CE2\u{27CC5}\u3B95\u4736\u4744\u4C47\u4C40\u{242BF}\u{23617}\u{27352}\u{26E8B}\u{270D2}\u4C57\u{2A351}\u474F\u45DA\u4C85\u{27C6C}\u4D07\u4AA4\u46A1\u{26B23}\u7225\u{25A54}\u{21A63}\u{23E06}\u{23F61}\u664D\u56FB"],
       ["8767", "\u7D95\u591D\u{28BB9}\u3DF4\u9734\u{27BEF}\u5BDB\u{21D5E}\u5AA4\u3625\u{29EB0}\u5AD1\u5BB7\u5CFC\u676E\u8593\u{29945}\u7461\u749D\u3875\u{21D53}\u{2369E}\u{26021}\u3EEC"],
@@ -4287,9 +4287,9 @@ var require_big5_added = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/dbcs-data.js
+// node_modules/iconv-lite/encodings/dbcs-data.js
 var require_dbcs_data = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/dbcs-data.js"(exports2, module2) {
+  "node_modules/iconv-lite/encodings/dbcs-data.js"(exports2, module2) {
     "use strict";
     module2.exports = {
       // == Japanese/ShiftJIS ====================================================
@@ -4462,9 +4462,9 @@ var require_dbcs_data = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/index.js
+// node_modules/iconv-lite/encodings/index.js
 var require_encodings = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/encodings/index.js"(exports2, module2) {
+  "node_modules/iconv-lite/encodings/index.js"(exports2, module2) {
     "use strict";
     var modules = [
       require_internal(),
@@ -4488,9 +4488,9 @@ var require_encodings = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/streams.js
+// node_modules/iconv-lite/lib/streams.js
 var require_streams = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/streams.js"(exports2, module2) {
+  "node_modules/iconv-lite/lib/streams.js"(exports2, module2) {
     "use strict";
     var Buffer2 = require("buffer").Buffer;
     var Transform = require("stream").Transform;
@@ -4589,9 +4589,9 @@ var require_streams = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/extend-node.js
+// node_modules/iconv-lite/lib/extend-node.js
 var require_extend_node = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/extend-node.js"(exports2, module2) {
+  "node_modules/iconv-lite/lib/extend-node.js"(exports2, module2) {
     "use strict";
     var Buffer2 = require("buffer").Buffer;
     module2.exports = function(iconv) {
@@ -4751,9 +4751,9 @@ var require_extend_node = __commonJS({
   }
 });
 
-// node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/index.js
+// node_modules/iconv-lite/lib/index.js
 var require_lib = __commonJS({
-  "node_modules/.pnpm/iconv-lite@0.4.24/node_modules/iconv-lite/lib/index.js"(exports2, module2) {
+  "node_modules/iconv-lite/lib/index.js"(exports2, module2) {
     "use strict";
     var Buffer2 = require_safer().Buffer;
     var bomHandling = require_bom_handling();
@@ -4854,9 +4854,9 @@ var require_lib = __commonJS({
   }
 });
 
-// node_modules/.pnpm/unpipe@1.0.0/node_modules/unpipe/index.js
+// node_modules/unpipe/index.js
 var require_unpipe = __commonJS({
-  "node_modules/.pnpm/unpipe@1.0.0/node_modules/unpipe/index.js"(exports2, module2) {
+  "node_modules/unpipe/index.js"(exports2, module2) {
     "use strict";
     module2.exports = unpipe;
     function hasPipeDataListeners(stream4) {
@@ -4892,9 +4892,9 @@ var require_unpipe = __commonJS({
   }
 });
 
-// node_modules/.pnpm/raw-body@2.5.3/node_modules/raw-body/index.js
+// node_modules/raw-body/index.js
 var require_raw_body = __commonJS({
-  "node_modules/.pnpm/raw-body@2.5.3/node_modules/raw-body/index.js"(exports2, module2) {
+  "node_modules/raw-body/index.js"(exports2, module2) {
     "use strict";
     var asyncHooks = tryRequireAsyncHooks();
     var bytes = require_bytes();
@@ -5081,9 +5081,9 @@ var require_raw_body = __commonJS({
   }
 });
 
-// node_modules/.pnpm/ee-first@1.1.1/node_modules/ee-first/index.js
+// node_modules/ee-first/index.js
 var require_ee_first = __commonJS({
-  "node_modules/.pnpm/ee-first@1.1.1/node_modules/ee-first/index.js"(exports2, module2) {
+  "node_modules/ee-first/index.js"(exports2, module2) {
     "use strict";
     module2.exports = first;
     function first(stuff, done) {
@@ -5137,9 +5137,9 @@ var require_ee_first = __commonJS({
   }
 });
 
-// node_modules/.pnpm/on-finished@2.4.1/node_modules/on-finished/index.js
+// node_modules/on-finished/index.js
 var require_on_finished = __commonJS({
-  "node_modules/.pnpm/on-finished@2.4.1/node_modules/on-finished/index.js"(exports2, module2) {
+  "node_modules/on-finished/index.js"(exports2, module2) {
     "use strict";
     module2.exports = onFinished;
     module2.exports.isFinished = isFinished;
@@ -5241,9 +5241,9 @@ var require_on_finished = __commonJS({
   }
 });
 
-// node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/read.js
+// node_modules/body-parser/lib/read.js
 var require_read = __commonJS({
-  "node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/read.js"(exports2, module2) {
+  "node_modules/body-parser/lib/read.js"(exports2, module2) {
     "use strict";
     var createError = require_http_errors();
     var destroy = require_destroy();
@@ -5368,9 +5368,9 @@ var require_read = __commonJS({
   }
 });
 
-// node_modules/.pnpm/media-typer@0.3.0/node_modules/media-typer/index.js
+// node_modules/media-typer/index.js
 var require_media_typer = __commonJS({
-  "node_modules/.pnpm/media-typer@0.3.0/node_modules/media-typer/index.js"(exports2) {
+  "node_modules/media-typer/index.js"(exports2) {
     var paramRegExp = /; *([!#$%&'\*\+\-\.0-9A-Z\^_`a-z\|~]+) *= *("(?:[ !\u0023-\u005b\u005d-\u007e\u0080-\u00ff]|\\[\u0020-\u007e])*"|[!#$%&'\*\+\-\.0-9A-Z\^_`a-z\|~]+) */g;
     var textRegExp = /^[\u0020-\u007e\u0080-\u00ff]+$/;
     var tokenRegExp = /^[!#$%&'\*\+\-\.0-9A-Z\^_`a-z\|~]+$/;
@@ -5492,9 +5492,9 @@ var require_media_typer = __commonJS({
   }
 });
 
-// node_modules/.pnpm/mime-db@1.52.0/node_modules/mime-db/db.json
+// node_modules/mime-db/db.json
 var require_db = __commonJS({
-  "node_modules/.pnpm/mime-db@1.52.0/node_modules/mime-db/db.json"(exports2, module2) {
+  "node_modules/mime-db/db.json"(exports2, module2) {
     module2.exports = {
       "application/1d-interleaved-parityfec": {
         source: "iana"
@@ -14017,16 +14017,16 @@ var require_db = __commonJS({
   }
 });
 
-// node_modules/.pnpm/mime-db@1.52.0/node_modules/mime-db/index.js
+// node_modules/mime-db/index.js
 var require_mime_db = __commonJS({
-  "node_modules/.pnpm/mime-db@1.52.0/node_modules/mime-db/index.js"(exports2, module2) {
+  "node_modules/mime-db/index.js"(exports2, module2) {
     module2.exports = require_db();
   }
 });
 
-// node_modules/.pnpm/mime-types@2.1.35/node_modules/mime-types/index.js
+// node_modules/mime-types/index.js
 var require_mime_types = __commonJS({
-  "node_modules/.pnpm/mime-types@2.1.35/node_modules/mime-types/index.js"(exports2) {
+  "node_modules/mime-types/index.js"(exports2) {
     "use strict";
     var db = require_mime_db();
     var extname = require("path").extname;
@@ -14114,9 +14114,9 @@ var require_mime_types = __commonJS({
   }
 });
 
-// node_modules/.pnpm/type-is@1.6.18/node_modules/type-is/index.js
+// node_modules/type-is/index.js
 var require_type_is = __commonJS({
-  "node_modules/.pnpm/type-is@1.6.18/node_modules/type-is/index.js"(exports2, module2) {
+  "node_modules/type-is/index.js"(exports2, module2) {
     "use strict";
     var typer = require_media_typer();
     var mime = require_mime_types();
@@ -14219,9 +14219,9 @@ var require_type_is = __commonJS({
   }
 });
 
-// node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/json.js
+// node_modules/body-parser/lib/types/json.js
 var require_json = __commonJS({
-  "node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/json.js"(exports2, module2) {
+  "node_modules/body-parser/lib/types/json.js"(exports2, module2) {
     "use strict";
     var bytes = require_bytes();
     var contentType = require_content_type();
@@ -14353,9 +14353,9 @@ var require_json = __commonJS({
   }
 });
 
-// node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/raw.js
+// node_modules/body-parser/lib/types/raw.js
 var require_raw = __commonJS({
-  "node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/raw.js"(exports2, module2) {
+  "node_modules/body-parser/lib/types/raw.js"(exports2, module2) {
     "use strict";
     var bytes = require_bytes();
     var debug = require_src()("body-parser:raw");
@@ -14409,9 +14409,9 @@ var require_raw = __commonJS({
   }
 });
 
-// node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/text.js
+// node_modules/body-parser/lib/types/text.js
 var require_text = __commonJS({
-  "node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/text.js"(exports2, module2) {
+  "node_modules/body-parser/lib/types/text.js"(exports2, module2) {
     "use strict";
     var bytes = require_bytes();
     var contentType = require_content_type();
@@ -14475,24 +14475,24 @@ var require_text = __commonJS({
   }
 });
 
-// node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/type.js
+// node_modules/es-errors/type.js
 var require_type = __commonJS({
-  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/type.js"(exports2, module2) {
+  "node_modules/es-errors/type.js"(exports2, module2) {
     "use strict";
     module2.exports = TypeError;
   }
 });
 
-// node_modules/.pnpm/object-inspect@1.13.4/node_modules/object-inspect/util.inspect.js
+// node_modules/object-inspect/util.inspect.js
 var require_util_inspect = __commonJS({
-  "node_modules/.pnpm/object-inspect@1.13.4/node_modules/object-inspect/util.inspect.js"(exports2, module2) {
+  "node_modules/object-inspect/util.inspect.js"(exports2, module2) {
     module2.exports = require("util").inspect;
   }
 });
 
-// node_modules/.pnpm/object-inspect@1.13.4/node_modules/object-inspect/index.js
+// node_modules/object-inspect/index.js
 var require_object_inspect = __commonJS({
-  "node_modules/.pnpm/object-inspect@1.13.4/node_modules/object-inspect/index.js"(exports2, module2) {
+  "node_modules/object-inspect/index.js"(exports2, module2) {
     var hasMap = typeof Map === "function" && Map.prototype;
     var mapSizeDescriptor = Object.getOwnPropertyDescriptor && hasMap ? Object.getOwnPropertyDescriptor(Map.prototype, "size") : null;
     var mapSize = hasMap && mapSizeDescriptor && typeof mapSizeDescriptor.get === "function" ? mapSizeDescriptor.get : null;
@@ -15021,9 +15021,9 @@ var require_object_inspect = __commonJS({
   }
 });
 
-// node_modules/.pnpm/side-channel-list@1.0.0/node_modules/side-channel-list/index.js
+// node_modules/side-channel-list/index.js
 var require_side_channel_list = __commonJS({
-  "node_modules/.pnpm/side-channel-list@1.0.0/node_modules/side-channel-list/index.js"(exports2, module2) {
+  "node_modules/side-channel-list/index.js"(exports2, module2) {
     "use strict";
     var inspect = require_object_inspect();
     var $TypeError = require_type();
@@ -15115,113 +15115,113 @@ var require_side_channel_list = __commonJS({
   }
 });
 
-// node_modules/.pnpm/es-object-atoms@1.1.1/node_modules/es-object-atoms/index.js
+// node_modules/es-object-atoms/index.js
 var require_es_object_atoms = __commonJS({
-  "node_modules/.pnpm/es-object-atoms@1.1.1/node_modules/es-object-atoms/index.js"(exports2, module2) {
+  "node_modules/es-object-atoms/index.js"(exports2, module2) {
     "use strict";
     module2.exports = Object;
   }
 });
 
-// node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/index.js
+// node_modules/es-errors/index.js
 var require_es_errors = __commonJS({
-  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/index.js"(exports2, module2) {
+  "node_modules/es-errors/index.js"(exports2, module2) {
     "use strict";
     module2.exports = Error;
   }
 });
 
-// node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/eval.js
+// node_modules/es-errors/eval.js
 var require_eval = __commonJS({
-  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/eval.js"(exports2, module2) {
+  "node_modules/es-errors/eval.js"(exports2, module2) {
     "use strict";
     module2.exports = EvalError;
   }
 });
 
-// node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/range.js
+// node_modules/es-errors/range.js
 var require_range = __commonJS({
-  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/range.js"(exports2, module2) {
+  "node_modules/es-errors/range.js"(exports2, module2) {
     "use strict";
     module2.exports = RangeError;
   }
 });
 
-// node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/ref.js
+// node_modules/es-errors/ref.js
 var require_ref = __commonJS({
-  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/ref.js"(exports2, module2) {
+  "node_modules/es-errors/ref.js"(exports2, module2) {
     "use strict";
     module2.exports = ReferenceError;
   }
 });
 
-// node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/syntax.js
+// node_modules/es-errors/syntax.js
 var require_syntax = __commonJS({
-  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/syntax.js"(exports2, module2) {
+  "node_modules/es-errors/syntax.js"(exports2, module2) {
     "use strict";
     module2.exports = SyntaxError;
   }
 });
 
-// node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/uri.js
+// node_modules/es-errors/uri.js
 var require_uri = __commonJS({
-  "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/uri.js"(exports2, module2) {
+  "node_modules/es-errors/uri.js"(exports2, module2) {
     "use strict";
     module2.exports = URIError;
   }
 });
 
-// node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/abs.js
+// node_modules/math-intrinsics/abs.js
 var require_abs = __commonJS({
-  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/abs.js"(exports2, module2) {
+  "node_modules/math-intrinsics/abs.js"(exports2, module2) {
     "use strict";
     module2.exports = Math.abs;
   }
 });
 
-// node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/floor.js
+// node_modules/math-intrinsics/floor.js
 var require_floor = __commonJS({
-  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/floor.js"(exports2, module2) {
+  "node_modules/math-intrinsics/floor.js"(exports2, module2) {
     "use strict";
     module2.exports = Math.floor;
   }
 });
 
-// node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/max.js
+// node_modules/math-intrinsics/max.js
 var require_max = __commonJS({
-  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/max.js"(exports2, module2) {
+  "node_modules/math-intrinsics/max.js"(exports2, module2) {
     "use strict";
     module2.exports = Math.max;
   }
 });
 
-// node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/min.js
+// node_modules/math-intrinsics/min.js
 var require_min = __commonJS({
-  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/min.js"(exports2, module2) {
+  "node_modules/math-intrinsics/min.js"(exports2, module2) {
     "use strict";
     module2.exports = Math.min;
   }
 });
 
-// node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/pow.js
+// node_modules/math-intrinsics/pow.js
 var require_pow = __commonJS({
-  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/pow.js"(exports2, module2) {
+  "node_modules/math-intrinsics/pow.js"(exports2, module2) {
     "use strict";
     module2.exports = Math.pow;
   }
 });
 
-// node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/round.js
+// node_modules/math-intrinsics/round.js
 var require_round = __commonJS({
-  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/round.js"(exports2, module2) {
+  "node_modules/math-intrinsics/round.js"(exports2, module2) {
     "use strict";
     module2.exports = Math.round;
   }
 });
 
-// node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/isNaN.js
+// node_modules/math-intrinsics/isNaN.js
 var require_isNaN = __commonJS({
-  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/isNaN.js"(exports2, module2) {
+  "node_modules/math-intrinsics/isNaN.js"(exports2, module2) {
     "use strict";
     module2.exports = Number.isNaN || function isNaN2(a) {
       return a !== a;
@@ -15229,9 +15229,9 @@ var require_isNaN = __commonJS({
   }
 });
 
-// node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/sign.js
+// node_modules/math-intrinsics/sign.js
 var require_sign = __commonJS({
-  "node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/sign.js"(exports2, module2) {
+  "node_modules/math-intrinsics/sign.js"(exports2, module2) {
     "use strict";
     var $isNaN = require_isNaN();
     module2.exports = function sign(number4) {
@@ -15243,17 +15243,17 @@ var require_sign = __commonJS({
   }
 });
 
-// node_modules/.pnpm/gopd@1.2.0/node_modules/gopd/gOPD.js
+// node_modules/gopd/gOPD.js
 var require_gOPD = __commonJS({
-  "node_modules/.pnpm/gopd@1.2.0/node_modules/gopd/gOPD.js"(exports2, module2) {
+  "node_modules/gopd/gOPD.js"(exports2, module2) {
     "use strict";
     module2.exports = Object.getOwnPropertyDescriptor;
   }
 });
 
-// node_modules/.pnpm/gopd@1.2.0/node_modules/gopd/index.js
+// node_modules/gopd/index.js
 var require_gopd = __commonJS({
-  "node_modules/.pnpm/gopd@1.2.0/node_modules/gopd/index.js"(exports2, module2) {
+  "node_modules/gopd/index.js"(exports2, module2) {
     "use strict";
     var $gOPD = require_gOPD();
     if ($gOPD) {
@@ -15267,9 +15267,9 @@ var require_gopd = __commonJS({
   }
 });
 
-// node_modules/.pnpm/es-define-property@1.0.1/node_modules/es-define-property/index.js
+// node_modules/es-define-property/index.js
 var require_es_define_property = __commonJS({
-  "node_modules/.pnpm/es-define-property@1.0.1/node_modules/es-define-property/index.js"(exports2, module2) {
+  "node_modules/es-define-property/index.js"(exports2, module2) {
     "use strict";
     var $defineProperty = Object.defineProperty || false;
     if ($defineProperty) {
@@ -15283,9 +15283,9 @@ var require_es_define_property = __commonJS({
   }
 });
 
-// node_modules/.pnpm/has-symbols@1.1.0/node_modules/has-symbols/shams.js
+// node_modules/has-symbols/shams.js
 var require_shams = __commonJS({
-  "node_modules/.pnpm/has-symbols@1.1.0/node_modules/has-symbols/shams.js"(exports2, module2) {
+  "node_modules/has-symbols/shams.js"(exports2, module2) {
     "use strict";
     module2.exports = function hasSymbols() {
       if (typeof Symbol !== "function" || typeof Object.getOwnPropertySymbols !== "function") {
@@ -15338,9 +15338,9 @@ var require_shams = __commonJS({
   }
 });
 
-// node_modules/.pnpm/has-symbols@1.1.0/node_modules/has-symbols/index.js
+// node_modules/has-symbols/index.js
 var require_has_symbols = __commonJS({
-  "node_modules/.pnpm/has-symbols@1.1.0/node_modules/has-symbols/index.js"(exports2, module2) {
+  "node_modules/has-symbols/index.js"(exports2, module2) {
     "use strict";
     var origSymbol = typeof Symbol !== "undefined" && Symbol;
     var hasSymbolSham = require_shams();
@@ -15362,26 +15362,26 @@ var require_has_symbols = __commonJS({
   }
 });
 
-// node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/Reflect.getPrototypeOf.js
+// node_modules/get-proto/Reflect.getPrototypeOf.js
 var require_Reflect_getPrototypeOf = __commonJS({
-  "node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/Reflect.getPrototypeOf.js"(exports2, module2) {
+  "node_modules/get-proto/Reflect.getPrototypeOf.js"(exports2, module2) {
     "use strict";
     module2.exports = typeof Reflect !== "undefined" && Reflect.getPrototypeOf || null;
   }
 });
 
-// node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/Object.getPrototypeOf.js
+// node_modules/get-proto/Object.getPrototypeOf.js
 var require_Object_getPrototypeOf = __commonJS({
-  "node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/Object.getPrototypeOf.js"(exports2, module2) {
+  "node_modules/get-proto/Object.getPrototypeOf.js"(exports2, module2) {
     "use strict";
     var $Object = require_es_object_atoms();
     module2.exports = $Object.getPrototypeOf || null;
   }
 });
 
-// node_modules/.pnpm/function-bind@1.1.2/node_modules/function-bind/implementation.js
+// node_modules/function-bind/implementation.js
 var require_implementation = __commonJS({
-  "node_modules/.pnpm/function-bind@1.1.2/node_modules/function-bind/implementation.js"(exports2, module2) {
+  "node_modules/function-bind/implementation.js"(exports2, module2) {
     "use strict";
     var ERROR_MESSAGE = "Function.prototype.bind called on incompatible ";
     var toStr = Object.prototype.toString;
@@ -15455,42 +15455,42 @@ var require_implementation = __commonJS({
   }
 });
 
-// node_modules/.pnpm/function-bind@1.1.2/node_modules/function-bind/index.js
+// node_modules/function-bind/index.js
 var require_function_bind = __commonJS({
-  "node_modules/.pnpm/function-bind@1.1.2/node_modules/function-bind/index.js"(exports2, module2) {
+  "node_modules/function-bind/index.js"(exports2, module2) {
     "use strict";
     var implementation = require_implementation();
     module2.exports = Function.prototype.bind || implementation;
   }
 });
 
-// node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/functionCall.js
+// node_modules/call-bind-apply-helpers/functionCall.js
 var require_functionCall = __commonJS({
-  "node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/functionCall.js"(exports2, module2) {
+  "node_modules/call-bind-apply-helpers/functionCall.js"(exports2, module2) {
     "use strict";
     module2.exports = Function.prototype.call;
   }
 });
 
-// node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/functionApply.js
+// node_modules/call-bind-apply-helpers/functionApply.js
 var require_functionApply = __commonJS({
-  "node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/functionApply.js"(exports2, module2) {
+  "node_modules/call-bind-apply-helpers/functionApply.js"(exports2, module2) {
     "use strict";
     module2.exports = Function.prototype.apply;
   }
 });
 
-// node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/reflectApply.js
+// node_modules/call-bind-apply-helpers/reflectApply.js
 var require_reflectApply = __commonJS({
-  "node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/reflectApply.js"(exports2, module2) {
+  "node_modules/call-bind-apply-helpers/reflectApply.js"(exports2, module2) {
     "use strict";
     module2.exports = typeof Reflect !== "undefined" && Reflect && Reflect.apply;
   }
 });
 
-// node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/actualApply.js
+// node_modules/call-bind-apply-helpers/actualApply.js
 var require_actualApply = __commonJS({
-  "node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/actualApply.js"(exports2, module2) {
+  "node_modules/call-bind-apply-helpers/actualApply.js"(exports2, module2) {
     "use strict";
     var bind2 = require_function_bind();
     var $apply = require_functionApply();
@@ -15500,9 +15500,9 @@ var require_actualApply = __commonJS({
   }
 });
 
-// node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/index.js
+// node_modules/call-bind-apply-helpers/index.js
 var require_call_bind_apply_helpers = __commonJS({
-  "node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/index.js"(exports2, module2) {
+  "node_modules/call-bind-apply-helpers/index.js"(exports2, module2) {
     "use strict";
     var bind2 = require_function_bind();
     var $TypeError = require_type();
@@ -15517,9 +15517,9 @@ var require_call_bind_apply_helpers = __commonJS({
   }
 });
 
-// node_modules/.pnpm/dunder-proto@1.0.1/node_modules/dunder-proto/get.js
+// node_modules/dunder-proto/get.js
 var require_get = __commonJS({
-  "node_modules/.pnpm/dunder-proto@1.0.1/node_modules/dunder-proto/get.js"(exports2, module2) {
+  "node_modules/dunder-proto/get.js"(exports2, module2) {
     "use strict";
     var callBind = require_call_bind_apply_helpers();
     var gOPD = require_gopd();
@@ -15548,9 +15548,9 @@ var require_get = __commonJS({
   }
 });
 
-// node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/index.js
+// node_modules/get-proto/index.js
 var require_get_proto = __commonJS({
-  "node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/index.js"(exports2, module2) {
+  "node_modules/get-proto/index.js"(exports2, module2) {
     "use strict";
     var reflectGetProto = require_Reflect_getPrototypeOf();
     var originalGetProto = require_Object_getPrototypeOf();
@@ -15568,9 +15568,9 @@ var require_get_proto = __commonJS({
   }
 });
 
-// node_modules/.pnpm/hasown@2.0.2/node_modules/hasown/index.js
+// node_modules/hasown/index.js
 var require_hasown = __commonJS({
-  "node_modules/.pnpm/hasown@2.0.2/node_modules/hasown/index.js"(exports2, module2) {
+  "node_modules/hasown/index.js"(exports2, module2) {
     "use strict";
     var call = Function.prototype.call;
     var $hasOwn = Object.prototype.hasOwnProperty;
@@ -15579,9 +15579,9 @@ var require_hasown = __commonJS({
   }
 });
 
-// node_modules/.pnpm/get-intrinsic@1.3.0/node_modules/get-intrinsic/index.js
+// node_modules/get-intrinsic/index.js
 var require_get_intrinsic = __commonJS({
-  "node_modules/.pnpm/get-intrinsic@1.3.0/node_modules/get-intrinsic/index.js"(exports2, module2) {
+  "node_modules/get-intrinsic/index.js"(exports2, module2) {
     "use strict";
     var undefined2;
     var $Object = require_es_object_atoms();
@@ -15910,9 +15910,9 @@ var require_get_intrinsic = __commonJS({
   }
 });
 
-// node_modules/.pnpm/call-bound@1.0.4/node_modules/call-bound/index.js
+// node_modules/call-bound/index.js
 var require_call_bound = __commonJS({
-  "node_modules/.pnpm/call-bound@1.0.4/node_modules/call-bound/index.js"(exports2, module2) {
+  "node_modules/call-bound/index.js"(exports2, module2) {
     "use strict";
     var GetIntrinsic = require_get_intrinsic();
     var callBindBasic = require_call_bind_apply_helpers();
@@ -15933,9 +15933,9 @@ var require_call_bound = __commonJS({
   }
 });
 
-// node_modules/.pnpm/side-channel-map@1.0.1/node_modules/side-channel-map/index.js
+// node_modules/side-channel-map/index.js
 var require_side_channel_map = __commonJS({
-  "node_modules/.pnpm/side-channel-map@1.0.1/node_modules/side-channel-map/index.js"(exports2, module2) {
+  "node_modules/side-channel-map/index.js"(exports2, module2) {
     "use strict";
     var GetIntrinsic = require_get_intrinsic();
     var callBound = require_call_bound();
@@ -15989,9 +15989,9 @@ var require_side_channel_map = __commonJS({
   }
 });
 
-// node_modules/.pnpm/side-channel-weakmap@1.0.2/node_modules/side-channel-weakmap/index.js
+// node_modules/side-channel-weakmap/index.js
 var require_side_channel_weakmap = __commonJS({
-  "node_modules/.pnpm/side-channel-weakmap@1.0.2/node_modules/side-channel-weakmap/index.js"(exports2, module2) {
+  "node_modules/side-channel-weakmap/index.js"(exports2, module2) {
     "use strict";
     var GetIntrinsic = require_get_intrinsic();
     var callBound = require_call_bound();
@@ -16062,9 +16062,9 @@ var require_side_channel_weakmap = __commonJS({
   }
 });
 
-// node_modules/.pnpm/side-channel@1.1.0/node_modules/side-channel/index.js
+// node_modules/side-channel/index.js
 var require_side_channel = __commonJS({
-  "node_modules/.pnpm/side-channel@1.1.0/node_modules/side-channel/index.js"(exports2, module2) {
+  "node_modules/side-channel/index.js"(exports2, module2) {
     "use strict";
     var $TypeError = require_type();
     var inspect = require_object_inspect();
@@ -16101,9 +16101,9 @@ var require_side_channel = __commonJS({
   }
 });
 
-// node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/formats.js
+// node_modules/qs/lib/formats.js
 var require_formats = __commonJS({
-  "node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/formats.js"(exports2, module2) {
+  "node_modules/qs/lib/formats.js"(exports2, module2) {
     "use strict";
     var replace = String.prototype.replace;
     var percentTwenties = /%20/g;
@@ -16127,9 +16127,9 @@ var require_formats = __commonJS({
   }
 });
 
-// node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/utils.js
+// node_modules/qs/lib/utils.js
 var require_utils = __commonJS({
-  "node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/utils.js"(exports2, module2) {
+  "node_modules/qs/lib/utils.js"(exports2, module2) {
     "use strict";
     var formats = require_formats();
     var getSideChannel = require_side_channel();
@@ -16389,9 +16389,9 @@ var require_utils = __commonJS({
   }
 });
 
-// node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/stringify.js
+// node_modules/qs/lib/stringify.js
 var require_stringify = __commonJS({
-  "node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/stringify.js"(exports2, module2) {
+  "node_modules/qs/lib/stringify.js"(exports2, module2) {
     "use strict";
     var getSideChannel = require_side_channel();
     var utils = require_utils();
@@ -16672,9 +16672,9 @@ var require_stringify = __commonJS({
   }
 });
 
-// node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/parse.js
+// node_modules/qs/lib/parse.js
 var require_parse = __commonJS({
-  "node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/parse.js"(exports2, module2) {
+  "node_modules/qs/lib/parse.js"(exports2, module2) {
     "use strict";
     var utils = require_utils();
     var has2 = Object.prototype.hasOwnProperty;
@@ -16969,9 +16969,9 @@ var require_parse = __commonJS({
   }
 });
 
-// node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/index.js
+// node_modules/qs/lib/index.js
 var require_lib2 = __commonJS({
-  "node_modules/.pnpm/qs@6.14.2/node_modules/qs/lib/index.js"(exports2, module2) {
+  "node_modules/qs/lib/index.js"(exports2, module2) {
     "use strict";
     var stringify4 = require_stringify();
     var parse5 = require_parse();
@@ -16984,9 +16984,9 @@ var require_lib2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/urlencoded.js
+// node_modules/body-parser/lib/types/urlencoded.js
 var require_urlencoded = __commonJS({
-  "node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/urlencoded.js"(exports2, module2) {
+  "node_modules/body-parser/lib/types/urlencoded.js"(exports2, module2) {
     "use strict";
     var bytes = require_bytes();
     var contentType = require_content_type();
@@ -17157,9 +17157,9 @@ var require_urlencoded = __commonJS({
   }
 });
 
-// node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/index.js
+// node_modules/body-parser/index.js
 var require_body_parser = __commonJS({
-  "node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/index.js"(exports2, module2) {
+  "node_modules/body-parser/index.js"(exports2, module2) {
     "use strict";
     var deprecate = require_depd()("body-parser");
     var parsers2 = /* @__PURE__ */ Object.create(null);
@@ -17234,9 +17234,9 @@ var require_body_parser = __commonJS({
   }
 });
 
-// node_modules/.pnpm/merge-descriptors@1.0.3/node_modules/merge-descriptors/index.js
+// node_modules/merge-descriptors/index.js
 var require_merge_descriptors = __commonJS({
-  "node_modules/.pnpm/merge-descriptors@1.0.3/node_modules/merge-descriptors/index.js"(exports2, module2) {
+  "node_modules/merge-descriptors/index.js"(exports2, module2) {
     "use strict";
     module2.exports = merge3;
     var hasOwnProperty2 = Object.prototype.hasOwnProperty;
@@ -17262,9 +17262,433 @@ var require_merge_descriptors = __commonJS({
   }
 });
 
-// node_modules/.pnpm/encodeurl@2.0.0/node_modules/encodeurl/index.js
+// node_modules/finalhandler/node_modules/ms/index.js
+var require_ms2 = __commonJS({
+  "node_modules/finalhandler/node_modules/ms/index.js"(exports2, module2) {
+    var s = 1e3;
+    var m = s * 60;
+    var h = m * 60;
+    var d = h * 24;
+    var y = d * 365.25;
+    module2.exports = function(val, options) {
+      options = options || {};
+      var type = typeof val;
+      if (type === "string" && val.length > 0) {
+        return parse5(val);
+      } else if (type === "number" && isNaN(val) === false) {
+        return options.long ? fmtLong(val) : fmtShort(val);
+      }
+      throw new Error(
+        "val is not a non-empty string or a valid number. val=" + JSON.stringify(val)
+      );
+    };
+    function parse5(str2) {
+      str2 = String(str2);
+      if (str2.length > 100) {
+        return;
+      }
+      var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(
+        str2
+      );
+      if (!match) {
+        return;
+      }
+      var n = parseFloat(match[1]);
+      var type = (match[2] || "ms").toLowerCase();
+      switch (type) {
+        case "years":
+        case "year":
+        case "yrs":
+        case "yr":
+        case "y":
+          return n * y;
+        case "days":
+        case "day":
+        case "d":
+          return n * d;
+        case "hours":
+        case "hour":
+        case "hrs":
+        case "hr":
+        case "h":
+          return n * h;
+        case "minutes":
+        case "minute":
+        case "mins":
+        case "min":
+        case "m":
+          return n * m;
+        case "seconds":
+        case "second":
+        case "secs":
+        case "sec":
+        case "s":
+          return n * s;
+        case "milliseconds":
+        case "millisecond":
+        case "msecs":
+        case "msec":
+        case "ms":
+          return n;
+        default:
+          return void 0;
+      }
+    }
+    function fmtShort(ms) {
+      if (ms >= d) {
+        return Math.round(ms / d) + "d";
+      }
+      if (ms >= h) {
+        return Math.round(ms / h) + "h";
+      }
+      if (ms >= m) {
+        return Math.round(ms / m) + "m";
+      }
+      if (ms >= s) {
+        return Math.round(ms / s) + "s";
+      }
+      return ms + "ms";
+    }
+    function fmtLong(ms) {
+      return plural(ms, d, "day") || plural(ms, h, "hour") || plural(ms, m, "minute") || plural(ms, s, "second") || ms + " ms";
+    }
+    function plural(ms, n, name2) {
+      if (ms < n) {
+        return;
+      }
+      if (ms < n * 1.5) {
+        return Math.floor(ms / n) + " " + name2;
+      }
+      return Math.ceil(ms / n) + " " + name2 + "s";
+    }
+  }
+});
+
+// node_modules/finalhandler/node_modules/debug/src/debug.js
+var require_debug2 = __commonJS({
+  "node_modules/finalhandler/node_modules/debug/src/debug.js"(exports2, module2) {
+    exports2 = module2.exports = createDebug.debug = createDebug["default"] = createDebug;
+    exports2.coerce = coerce;
+    exports2.disable = disable;
+    exports2.enable = enable;
+    exports2.enabled = enabled;
+    exports2.humanize = require_ms2();
+    exports2.names = [];
+    exports2.skips = [];
+    exports2.formatters = {};
+    var prevTime;
+    function selectColor(namespace) {
+      var hash2 = 0, i;
+      for (i in namespace) {
+        hash2 = (hash2 << 5) - hash2 + namespace.charCodeAt(i);
+        hash2 |= 0;
+      }
+      return exports2.colors[Math.abs(hash2) % exports2.colors.length];
+    }
+    function createDebug(namespace) {
+      function debug() {
+        if (!debug.enabled) return;
+        var self2 = debug;
+        var curr = +/* @__PURE__ */ new Date();
+        var ms = curr - (prevTime || curr);
+        self2.diff = ms;
+        self2.prev = prevTime;
+        self2.curr = curr;
+        prevTime = curr;
+        var args = new Array(arguments.length);
+        for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i];
+        }
+        args[0] = exports2.coerce(args[0]);
+        if ("string" !== typeof args[0]) {
+          args.unshift("%O");
+        }
+        var index = 0;
+        args[0] = args[0].replace(/%([a-zA-Z%])/g, function(match, format) {
+          if (match === "%%") return match;
+          index++;
+          var formatter = exports2.formatters[format];
+          if ("function" === typeof formatter) {
+            var val = args[index];
+            match = formatter.call(self2, val);
+            args.splice(index, 1);
+            index--;
+          }
+          return match;
+        });
+        exports2.formatArgs.call(self2, args);
+        var logFn = debug.log || exports2.log || console.log.bind(console);
+        logFn.apply(self2, args);
+      }
+      debug.namespace = namespace;
+      debug.enabled = exports2.enabled(namespace);
+      debug.useColors = exports2.useColors();
+      debug.color = selectColor(namespace);
+      if ("function" === typeof exports2.init) {
+        exports2.init(debug);
+      }
+      return debug;
+    }
+    function enable(namespaces) {
+      exports2.save(namespaces);
+      exports2.names = [];
+      exports2.skips = [];
+      var split = (typeof namespaces === "string" ? namespaces : "").split(/[\s,]+/);
+      var len = split.length;
+      for (var i = 0; i < len; i++) {
+        if (!split[i]) continue;
+        namespaces = split[i].replace(/\*/g, ".*?");
+        if (namespaces[0] === "-") {
+          exports2.skips.push(new RegExp("^" + namespaces.substr(1) + "$"));
+        } else {
+          exports2.names.push(new RegExp("^" + namespaces + "$"));
+        }
+      }
+    }
+    function disable() {
+      exports2.enable("");
+    }
+    function enabled(name2) {
+      var i, len;
+      for (i = 0, len = exports2.skips.length; i < len; i++) {
+        if (exports2.skips[i].test(name2)) {
+          return false;
+        }
+      }
+      for (i = 0, len = exports2.names.length; i < len; i++) {
+        if (exports2.names[i].test(name2)) {
+          return true;
+        }
+      }
+      return false;
+    }
+    function coerce(val) {
+      if (val instanceof Error) return val.stack || val.message;
+      return val;
+    }
+  }
+});
+
+// node_modules/finalhandler/node_modules/debug/src/browser.js
+var require_browser2 = __commonJS({
+  "node_modules/finalhandler/node_modules/debug/src/browser.js"(exports2, module2) {
+    exports2 = module2.exports = require_debug2();
+    exports2.log = log;
+    exports2.formatArgs = formatArgs;
+    exports2.save = save;
+    exports2.load = load;
+    exports2.useColors = useColors;
+    exports2.storage = "undefined" != typeof chrome && "undefined" != typeof chrome.storage ? chrome.storage.local : localstorage();
+    exports2.colors = [
+      "lightseagreen",
+      "forestgreen",
+      "goldenrod",
+      "dodgerblue",
+      "darkorchid",
+      "crimson"
+    ];
+    function useColors() {
+      if (typeof window !== "undefined" && window.process && window.process.type === "renderer") {
+        return true;
+      }
+      return typeof document !== "undefined" && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance || // is firebug? http://stackoverflow.com/a/398120/376773
+      typeof window !== "undefined" && window.console && (window.console.firebug || window.console.exception && window.console.table) || // is firefox >= v31?
+      // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+      typeof navigator !== "undefined" && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31 || // double check webkit in userAgent just in case we are in a worker
+      typeof navigator !== "undefined" && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/);
+    }
+    exports2.formatters.j = function(v) {
+      try {
+        return JSON.stringify(v);
+      } catch (err) {
+        return "[UnexpectedJSONParseError]: " + err.message;
+      }
+    };
+    function formatArgs(args) {
+      var useColors2 = this.useColors;
+      args[0] = (useColors2 ? "%c" : "") + this.namespace + (useColors2 ? " %c" : " ") + args[0] + (useColors2 ? "%c " : " ") + "+" + exports2.humanize(this.diff);
+      if (!useColors2) return;
+      var c = "color: " + this.color;
+      args.splice(1, 0, c, "color: inherit");
+      var index = 0;
+      var lastC = 0;
+      args[0].replace(/%[a-zA-Z%]/g, function(match) {
+        if ("%%" === match) return;
+        index++;
+        if ("%c" === match) {
+          lastC = index;
+        }
+      });
+      args.splice(lastC, 0, c);
+    }
+    function log() {
+      return "object" === typeof console && console.log && Function.prototype.apply.call(console.log, console, arguments);
+    }
+    function save(namespaces) {
+      try {
+        if (null == namespaces) {
+          exports2.storage.removeItem("debug");
+        } else {
+          exports2.storage.debug = namespaces;
+        }
+      } catch (e) {
+      }
+    }
+    function load() {
+      var r;
+      try {
+        r = exports2.storage.debug;
+      } catch (e) {
+      }
+      if (!r && typeof process !== "undefined" && "env" in process) {
+        r = process.env.DEBUG;
+      }
+      return r;
+    }
+    exports2.enable(load());
+    function localstorage() {
+      try {
+        return window.localStorage;
+      } catch (e) {
+      }
+    }
+  }
+});
+
+// node_modules/finalhandler/node_modules/debug/src/node.js
+var require_node2 = __commonJS({
+  "node_modules/finalhandler/node_modules/debug/src/node.js"(exports2, module2) {
+    var tty = require("tty");
+    var util3 = require("util");
+    exports2 = module2.exports = require_debug2();
+    exports2.init = init;
+    exports2.log = log;
+    exports2.formatArgs = formatArgs;
+    exports2.save = save;
+    exports2.load = load;
+    exports2.useColors = useColors;
+    exports2.colors = [6, 2, 3, 4, 5, 1];
+    exports2.inspectOpts = Object.keys(process.env).filter(function(key) {
+      return /^debug_/i.test(key);
+    }).reduce(function(obj, key) {
+      var prop = key.substring(6).toLowerCase().replace(/_([a-z])/g, function(_, k) {
+        return k.toUpperCase();
+      });
+      var val = process.env[key];
+      if (/^(yes|on|true|enabled)$/i.test(val)) val = true;
+      else if (/^(no|off|false|disabled)$/i.test(val)) val = false;
+      else if (val === "null") val = null;
+      else val = Number(val);
+      obj[prop] = val;
+      return obj;
+    }, {});
+    var fd = parseInt(process.env.DEBUG_FD, 10) || 2;
+    if (1 !== fd && 2 !== fd) {
+      util3.deprecate(function() {
+      }, "except for stderr(2) and stdout(1), any other usage of DEBUG_FD is deprecated. Override debug.log if you want to use a different log function (https://git.io/debug_fd)")();
+    }
+    var stream4 = 1 === fd ? process.stdout : 2 === fd ? process.stderr : createWritableStdioStream(fd);
+    function useColors() {
+      return "colors" in exports2.inspectOpts ? Boolean(exports2.inspectOpts.colors) : tty.isatty(fd);
+    }
+    exports2.formatters.o = function(v) {
+      this.inspectOpts.colors = this.useColors;
+      return util3.inspect(v, this.inspectOpts).split("\n").map(function(str2) {
+        return str2.trim();
+      }).join(" ");
+    };
+    exports2.formatters.O = function(v) {
+      this.inspectOpts.colors = this.useColors;
+      return util3.inspect(v, this.inspectOpts);
+    };
+    function formatArgs(args) {
+      var name2 = this.namespace;
+      var useColors2 = this.useColors;
+      if (useColors2) {
+        var c = this.color;
+        var prefix = "  \x1B[3" + c + ";1m" + name2 + " \x1B[0m";
+        args[0] = prefix + args[0].split("\n").join("\n" + prefix);
+        args.push("\x1B[3" + c + "m+" + exports2.humanize(this.diff) + "\x1B[0m");
+      } else {
+        args[0] = (/* @__PURE__ */ new Date()).toUTCString() + " " + name2 + " " + args[0];
+      }
+    }
+    function log() {
+      return stream4.write(util3.format.apply(util3, arguments) + "\n");
+    }
+    function save(namespaces) {
+      if (null == namespaces) {
+        delete process.env.DEBUG;
+      } else {
+        process.env.DEBUG = namespaces;
+      }
+    }
+    function load() {
+      return process.env.DEBUG;
+    }
+    function createWritableStdioStream(fd2) {
+      var stream5;
+      var tty_wrap = process.binding("tty_wrap");
+      switch (tty_wrap.guessHandleType(fd2)) {
+        case "TTY":
+          stream5 = new tty.WriteStream(fd2);
+          stream5._type = "tty";
+          if (stream5._handle && stream5._handle.unref) {
+            stream5._handle.unref();
+          }
+          break;
+        case "FILE":
+          var fs2 = require("fs");
+          stream5 = new fs2.SyncWriteStream(fd2, { autoClose: false });
+          stream5._type = "fs";
+          break;
+        case "PIPE":
+        case "TCP":
+          var net2 = require("net");
+          stream5 = new net2.Socket({
+            fd: fd2,
+            readable: false,
+            writable: true
+          });
+          stream5.readable = false;
+          stream5.read = null;
+          stream5._type = "pipe";
+          if (stream5._handle && stream5._handle.unref) {
+            stream5._handle.unref();
+          }
+          break;
+        default:
+          throw new Error("Implement me. Unknown stream file type!");
+      }
+      stream5.fd = fd2;
+      stream5._isStdio = true;
+      return stream5;
+    }
+    function init(debug) {
+      debug.inspectOpts = {};
+      var keys = Object.keys(exports2.inspectOpts);
+      for (var i = 0; i < keys.length; i++) {
+        debug.inspectOpts[keys[i]] = exports2.inspectOpts[keys[i]];
+      }
+    }
+    exports2.enable(load());
+  }
+});
+
+// node_modules/finalhandler/node_modules/debug/src/index.js
+var require_src2 = __commonJS({
+  "node_modules/finalhandler/node_modules/debug/src/index.js"(exports2, module2) {
+    if (typeof process !== "undefined" && process.type === "renderer") {
+      module2.exports = require_browser2();
+    } else {
+      module2.exports = require_node2();
+    }
+  }
+});
+
+// node_modules/encodeurl/index.js
 var require_encodeurl = __commonJS({
-  "node_modules/.pnpm/encodeurl@2.0.0/node_modules/encodeurl/index.js"(exports2, module2) {
+  "node_modules/encodeurl/index.js"(exports2, module2) {
     "use strict";
     module2.exports = encodeUrl;
     var ENCODE_CHARS_REGEXP = /(?:[^\x21\x23-\x3B\x3D\x3F-\x5F\x61-\x7A\x7C\x7E]|%(?:[^0-9A-Fa-f]|[0-9A-Fa-f][^0-9A-Fa-f]|$))+/g;
@@ -17276,9 +17700,9 @@ var require_encodeurl = __commonJS({
   }
 });
 
-// node_modules/.pnpm/escape-html@1.0.3/node_modules/escape-html/index.js
+// node_modules/escape-html/index.js
 var require_escape_html = __commonJS({
-  "node_modules/.pnpm/escape-html@1.0.3/node_modules/escape-html/index.js"(exports2, module2) {
+  "node_modules/escape-html/index.js"(exports2, module2) {
     "use strict";
     var matchHtmlRegExp = /["'&<>]/;
     module2.exports = escapeHtml;
@@ -17323,9 +17747,9 @@ var require_escape_html = __commonJS({
   }
 });
 
-// node_modules/.pnpm/parseurl@1.3.3/node_modules/parseurl/index.js
+// node_modules/parseurl/index.js
 var require_parseurl = __commonJS({
-  "node_modules/.pnpm/parseurl@1.3.3/node_modules/parseurl/index.js"(exports2, module2) {
+  "node_modules/parseurl/index.js"(exports2, module2) {
     "use strict";
     var url3 = require("url");
     var parse5 = url3.parse;
@@ -17407,15 +17831,15 @@ var require_parseurl = __commonJS({
   }
 });
 
-// node_modules/.pnpm/finalhandler@1.3.2/node_modules/finalhandler/index.js
+// node_modules/finalhandler/index.js
 var require_finalhandler = __commonJS({
-  "node_modules/.pnpm/finalhandler@1.3.2/node_modules/finalhandler/index.js"(exports2, module2) {
+  "node_modules/finalhandler/index.js"(exports2, module2) {
     "use strict";
-    var debug = require_src()("finalhandler");
+    var debug = require_src2()("finalhandler");
     var encodeUrl = require_encodeurl();
     var escapeHtml = require_escape_html();
     var onFinished = require_on_finished();
-    var parseUrl3 = require_parseurl();
+    var parseUrl2 = require_parseurl();
     var statuses = require_statuses();
     var unpipe = require_unpipe();
     var DOUBLE_SPACE_REGEXP = /\x20{2}/g;
@@ -17500,7 +17924,7 @@ var require_finalhandler = __commonJS({
     }
     function getResourceName(req) {
       try {
-        return parseUrl3.original(req).pathname;
+        return parseUrl2.original(req).pathname;
       } catch (e) {
         return "resource";
       }
@@ -17557,9 +17981,433 @@ var require_finalhandler = __commonJS({
   }
 });
 
-// node_modules/.pnpm/array-flatten@1.1.1/node_modules/array-flatten/array-flatten.js
+// node_modules/express/node_modules/ms/index.js
+var require_ms3 = __commonJS({
+  "node_modules/express/node_modules/ms/index.js"(exports2, module2) {
+    var s = 1e3;
+    var m = s * 60;
+    var h = m * 60;
+    var d = h * 24;
+    var y = d * 365.25;
+    module2.exports = function(val, options) {
+      options = options || {};
+      var type = typeof val;
+      if (type === "string" && val.length > 0) {
+        return parse5(val);
+      } else if (type === "number" && isNaN(val) === false) {
+        return options.long ? fmtLong(val) : fmtShort(val);
+      }
+      throw new Error(
+        "val is not a non-empty string or a valid number. val=" + JSON.stringify(val)
+      );
+    };
+    function parse5(str2) {
+      str2 = String(str2);
+      if (str2.length > 100) {
+        return;
+      }
+      var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(
+        str2
+      );
+      if (!match) {
+        return;
+      }
+      var n = parseFloat(match[1]);
+      var type = (match[2] || "ms").toLowerCase();
+      switch (type) {
+        case "years":
+        case "year":
+        case "yrs":
+        case "yr":
+        case "y":
+          return n * y;
+        case "days":
+        case "day":
+        case "d":
+          return n * d;
+        case "hours":
+        case "hour":
+        case "hrs":
+        case "hr":
+        case "h":
+          return n * h;
+        case "minutes":
+        case "minute":
+        case "mins":
+        case "min":
+        case "m":
+          return n * m;
+        case "seconds":
+        case "second":
+        case "secs":
+        case "sec":
+        case "s":
+          return n * s;
+        case "milliseconds":
+        case "millisecond":
+        case "msecs":
+        case "msec":
+        case "ms":
+          return n;
+        default:
+          return void 0;
+      }
+    }
+    function fmtShort(ms) {
+      if (ms >= d) {
+        return Math.round(ms / d) + "d";
+      }
+      if (ms >= h) {
+        return Math.round(ms / h) + "h";
+      }
+      if (ms >= m) {
+        return Math.round(ms / m) + "m";
+      }
+      if (ms >= s) {
+        return Math.round(ms / s) + "s";
+      }
+      return ms + "ms";
+    }
+    function fmtLong(ms) {
+      return plural(ms, d, "day") || plural(ms, h, "hour") || plural(ms, m, "minute") || plural(ms, s, "second") || ms + " ms";
+    }
+    function plural(ms, n, name2) {
+      if (ms < n) {
+        return;
+      }
+      if (ms < n * 1.5) {
+        return Math.floor(ms / n) + " " + name2;
+      }
+      return Math.ceil(ms / n) + " " + name2 + "s";
+    }
+  }
+});
+
+// node_modules/express/node_modules/debug/src/debug.js
+var require_debug3 = __commonJS({
+  "node_modules/express/node_modules/debug/src/debug.js"(exports2, module2) {
+    exports2 = module2.exports = createDebug.debug = createDebug["default"] = createDebug;
+    exports2.coerce = coerce;
+    exports2.disable = disable;
+    exports2.enable = enable;
+    exports2.enabled = enabled;
+    exports2.humanize = require_ms3();
+    exports2.names = [];
+    exports2.skips = [];
+    exports2.formatters = {};
+    var prevTime;
+    function selectColor(namespace) {
+      var hash2 = 0, i;
+      for (i in namespace) {
+        hash2 = (hash2 << 5) - hash2 + namespace.charCodeAt(i);
+        hash2 |= 0;
+      }
+      return exports2.colors[Math.abs(hash2) % exports2.colors.length];
+    }
+    function createDebug(namespace) {
+      function debug() {
+        if (!debug.enabled) return;
+        var self2 = debug;
+        var curr = +/* @__PURE__ */ new Date();
+        var ms = curr - (prevTime || curr);
+        self2.diff = ms;
+        self2.prev = prevTime;
+        self2.curr = curr;
+        prevTime = curr;
+        var args = new Array(arguments.length);
+        for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i];
+        }
+        args[0] = exports2.coerce(args[0]);
+        if ("string" !== typeof args[0]) {
+          args.unshift("%O");
+        }
+        var index = 0;
+        args[0] = args[0].replace(/%([a-zA-Z%])/g, function(match, format) {
+          if (match === "%%") return match;
+          index++;
+          var formatter = exports2.formatters[format];
+          if ("function" === typeof formatter) {
+            var val = args[index];
+            match = formatter.call(self2, val);
+            args.splice(index, 1);
+            index--;
+          }
+          return match;
+        });
+        exports2.formatArgs.call(self2, args);
+        var logFn = debug.log || exports2.log || console.log.bind(console);
+        logFn.apply(self2, args);
+      }
+      debug.namespace = namespace;
+      debug.enabled = exports2.enabled(namespace);
+      debug.useColors = exports2.useColors();
+      debug.color = selectColor(namespace);
+      if ("function" === typeof exports2.init) {
+        exports2.init(debug);
+      }
+      return debug;
+    }
+    function enable(namespaces) {
+      exports2.save(namespaces);
+      exports2.names = [];
+      exports2.skips = [];
+      var split = (typeof namespaces === "string" ? namespaces : "").split(/[\s,]+/);
+      var len = split.length;
+      for (var i = 0; i < len; i++) {
+        if (!split[i]) continue;
+        namespaces = split[i].replace(/\*/g, ".*?");
+        if (namespaces[0] === "-") {
+          exports2.skips.push(new RegExp("^" + namespaces.substr(1) + "$"));
+        } else {
+          exports2.names.push(new RegExp("^" + namespaces + "$"));
+        }
+      }
+    }
+    function disable() {
+      exports2.enable("");
+    }
+    function enabled(name2) {
+      var i, len;
+      for (i = 0, len = exports2.skips.length; i < len; i++) {
+        if (exports2.skips[i].test(name2)) {
+          return false;
+        }
+      }
+      for (i = 0, len = exports2.names.length; i < len; i++) {
+        if (exports2.names[i].test(name2)) {
+          return true;
+        }
+      }
+      return false;
+    }
+    function coerce(val) {
+      if (val instanceof Error) return val.stack || val.message;
+      return val;
+    }
+  }
+});
+
+// node_modules/express/node_modules/debug/src/browser.js
+var require_browser3 = __commonJS({
+  "node_modules/express/node_modules/debug/src/browser.js"(exports2, module2) {
+    exports2 = module2.exports = require_debug3();
+    exports2.log = log;
+    exports2.formatArgs = formatArgs;
+    exports2.save = save;
+    exports2.load = load;
+    exports2.useColors = useColors;
+    exports2.storage = "undefined" != typeof chrome && "undefined" != typeof chrome.storage ? chrome.storage.local : localstorage();
+    exports2.colors = [
+      "lightseagreen",
+      "forestgreen",
+      "goldenrod",
+      "dodgerblue",
+      "darkorchid",
+      "crimson"
+    ];
+    function useColors() {
+      if (typeof window !== "undefined" && window.process && window.process.type === "renderer") {
+        return true;
+      }
+      return typeof document !== "undefined" && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance || // is firebug? http://stackoverflow.com/a/398120/376773
+      typeof window !== "undefined" && window.console && (window.console.firebug || window.console.exception && window.console.table) || // is firefox >= v31?
+      // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+      typeof navigator !== "undefined" && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31 || // double check webkit in userAgent just in case we are in a worker
+      typeof navigator !== "undefined" && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/);
+    }
+    exports2.formatters.j = function(v) {
+      try {
+        return JSON.stringify(v);
+      } catch (err) {
+        return "[UnexpectedJSONParseError]: " + err.message;
+      }
+    };
+    function formatArgs(args) {
+      var useColors2 = this.useColors;
+      args[0] = (useColors2 ? "%c" : "") + this.namespace + (useColors2 ? " %c" : " ") + args[0] + (useColors2 ? "%c " : " ") + "+" + exports2.humanize(this.diff);
+      if (!useColors2) return;
+      var c = "color: " + this.color;
+      args.splice(1, 0, c, "color: inherit");
+      var index = 0;
+      var lastC = 0;
+      args[0].replace(/%[a-zA-Z%]/g, function(match) {
+        if ("%%" === match) return;
+        index++;
+        if ("%c" === match) {
+          lastC = index;
+        }
+      });
+      args.splice(lastC, 0, c);
+    }
+    function log() {
+      return "object" === typeof console && console.log && Function.prototype.apply.call(console.log, console, arguments);
+    }
+    function save(namespaces) {
+      try {
+        if (null == namespaces) {
+          exports2.storage.removeItem("debug");
+        } else {
+          exports2.storage.debug = namespaces;
+        }
+      } catch (e) {
+      }
+    }
+    function load() {
+      var r;
+      try {
+        r = exports2.storage.debug;
+      } catch (e) {
+      }
+      if (!r && typeof process !== "undefined" && "env" in process) {
+        r = process.env.DEBUG;
+      }
+      return r;
+    }
+    exports2.enable(load());
+    function localstorage() {
+      try {
+        return window.localStorage;
+      } catch (e) {
+      }
+    }
+  }
+});
+
+// node_modules/express/node_modules/debug/src/node.js
+var require_node3 = __commonJS({
+  "node_modules/express/node_modules/debug/src/node.js"(exports2, module2) {
+    var tty = require("tty");
+    var util3 = require("util");
+    exports2 = module2.exports = require_debug3();
+    exports2.init = init;
+    exports2.log = log;
+    exports2.formatArgs = formatArgs;
+    exports2.save = save;
+    exports2.load = load;
+    exports2.useColors = useColors;
+    exports2.colors = [6, 2, 3, 4, 5, 1];
+    exports2.inspectOpts = Object.keys(process.env).filter(function(key) {
+      return /^debug_/i.test(key);
+    }).reduce(function(obj, key) {
+      var prop = key.substring(6).toLowerCase().replace(/_([a-z])/g, function(_, k) {
+        return k.toUpperCase();
+      });
+      var val = process.env[key];
+      if (/^(yes|on|true|enabled)$/i.test(val)) val = true;
+      else if (/^(no|off|false|disabled)$/i.test(val)) val = false;
+      else if (val === "null") val = null;
+      else val = Number(val);
+      obj[prop] = val;
+      return obj;
+    }, {});
+    var fd = parseInt(process.env.DEBUG_FD, 10) || 2;
+    if (1 !== fd && 2 !== fd) {
+      util3.deprecate(function() {
+      }, "except for stderr(2) and stdout(1), any other usage of DEBUG_FD is deprecated. Override debug.log if you want to use a different log function (https://git.io/debug_fd)")();
+    }
+    var stream4 = 1 === fd ? process.stdout : 2 === fd ? process.stderr : createWritableStdioStream(fd);
+    function useColors() {
+      return "colors" in exports2.inspectOpts ? Boolean(exports2.inspectOpts.colors) : tty.isatty(fd);
+    }
+    exports2.formatters.o = function(v) {
+      this.inspectOpts.colors = this.useColors;
+      return util3.inspect(v, this.inspectOpts).split("\n").map(function(str2) {
+        return str2.trim();
+      }).join(" ");
+    };
+    exports2.formatters.O = function(v) {
+      this.inspectOpts.colors = this.useColors;
+      return util3.inspect(v, this.inspectOpts);
+    };
+    function formatArgs(args) {
+      var name2 = this.namespace;
+      var useColors2 = this.useColors;
+      if (useColors2) {
+        var c = this.color;
+        var prefix = "  \x1B[3" + c + ";1m" + name2 + " \x1B[0m";
+        args[0] = prefix + args[0].split("\n").join("\n" + prefix);
+        args.push("\x1B[3" + c + "m+" + exports2.humanize(this.diff) + "\x1B[0m");
+      } else {
+        args[0] = (/* @__PURE__ */ new Date()).toUTCString() + " " + name2 + " " + args[0];
+      }
+    }
+    function log() {
+      return stream4.write(util3.format.apply(util3, arguments) + "\n");
+    }
+    function save(namespaces) {
+      if (null == namespaces) {
+        delete process.env.DEBUG;
+      } else {
+        process.env.DEBUG = namespaces;
+      }
+    }
+    function load() {
+      return process.env.DEBUG;
+    }
+    function createWritableStdioStream(fd2) {
+      var stream5;
+      var tty_wrap = process.binding("tty_wrap");
+      switch (tty_wrap.guessHandleType(fd2)) {
+        case "TTY":
+          stream5 = new tty.WriteStream(fd2);
+          stream5._type = "tty";
+          if (stream5._handle && stream5._handle.unref) {
+            stream5._handle.unref();
+          }
+          break;
+        case "FILE":
+          var fs2 = require("fs");
+          stream5 = new fs2.SyncWriteStream(fd2, { autoClose: false });
+          stream5._type = "fs";
+          break;
+        case "PIPE":
+        case "TCP":
+          var net2 = require("net");
+          stream5 = new net2.Socket({
+            fd: fd2,
+            readable: false,
+            writable: true
+          });
+          stream5.readable = false;
+          stream5.read = null;
+          stream5._type = "pipe";
+          if (stream5._handle && stream5._handle.unref) {
+            stream5._handle.unref();
+          }
+          break;
+        default:
+          throw new Error("Implement me. Unknown stream file type!");
+      }
+      stream5.fd = fd2;
+      stream5._isStdio = true;
+      return stream5;
+    }
+    function init(debug) {
+      debug.inspectOpts = {};
+      var keys = Object.keys(exports2.inspectOpts);
+      for (var i = 0; i < keys.length; i++) {
+        debug.inspectOpts[keys[i]] = exports2.inspectOpts[keys[i]];
+      }
+    }
+    exports2.enable(load());
+  }
+});
+
+// node_modules/express/node_modules/debug/src/index.js
+var require_src3 = __commonJS({
+  "node_modules/express/node_modules/debug/src/index.js"(exports2, module2) {
+    if (typeof process !== "undefined" && process.type === "renderer") {
+      module2.exports = require_browser3();
+    } else {
+      module2.exports = require_node3();
+    }
+  }
+});
+
+// node_modules/array-flatten/array-flatten.js
 var require_array_flatten = __commonJS({
-  "node_modules/.pnpm/array-flatten@1.1.1/node_modules/array-flatten/array-flatten.js"(exports2, module2) {
+  "node_modules/array-flatten/array-flatten.js"(exports2, module2) {
     "use strict";
     module2.exports = arrayFlatten;
     function flattenWithDepth(array2, result, depth) {
@@ -17593,9 +18441,9 @@ var require_array_flatten = __commonJS({
   }
 });
 
-// node_modules/.pnpm/path-to-regexp@0.1.13/node_modules/path-to-regexp/index.js
+// node_modules/path-to-regexp/index.js
 var require_path_to_regexp = __commonJS({
-  "node_modules/.pnpm/path-to-regexp@0.1.13/node_modules/path-to-regexp/index.js"(exports2, module2) {
+  "node_modules/path-to-regexp/index.js"(exports2, module2) {
     module2.exports = pathToRegexp;
     var MATCHING_GROUP_REGEXP = /\\.|\((?:\?<(.*?)>)?(?!\?)/g;
     function pathToRegexp(path3, keys, options) {
@@ -17702,12 +18550,12 @@ var require_path_to_regexp = __commonJS({
   }
 });
 
-// node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js
+// node_modules/express/lib/router/layer.js
 var require_layer = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js"(exports2, module2) {
+  "node_modules/express/lib/router/layer.js"(exports2, module2) {
     "use strict";
     var pathRegexp = require_path_to_regexp();
-    var debug = require_src()("express:router:layer");
+    var debug = require_src3()("express:router:layer");
     var hasOwnProperty2 = Object.prototype.hasOwnProperty;
     module2.exports = Layer;
     function Layer(path3, options, fn) {
@@ -17797,9 +18645,9 @@ var require_layer = __commonJS({
   }
 });
 
-// node_modules/.pnpm/methods@1.1.2/node_modules/methods/index.js
+// node_modules/methods/index.js
 var require_methods = __commonJS({
-  "node_modules/.pnpm/methods@1.1.2/node_modules/methods/index.js"(exports2, module2) {
+  "node_modules/methods/index.js"(exports2, module2) {
     "use strict";
     var http3 = require("http");
     module2.exports = getCurrentNodeMethods() || getBasicNodeMethods();
@@ -17841,11 +18689,11 @@ var require_methods = __commonJS({
   }
 });
 
-// node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js
+// node_modules/express/lib/router/route.js
 var require_route = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js"(exports2, module2) {
+  "node_modules/express/lib/router/route.js"(exports2, module2) {
     "use strict";
-    var debug = require_src()("express:router:route");
+    var debug = require_src3()("express:router:route");
     var flatten = require_array_flatten();
     var Layer = require_layer();
     var methods = require_methods();
@@ -17953,9 +18801,9 @@ var require_route = __commonJS({
   }
 });
 
-// node_modules/.pnpm/utils-merge@1.0.1/node_modules/utils-merge/index.js
+// node_modules/utils-merge/index.js
 var require_utils_merge = __commonJS({
-  "node_modules/.pnpm/utils-merge@1.0.1/node_modules/utils-merge/index.js"(exports2, module2) {
+  "node_modules/utils-merge/index.js"(exports2, module2) {
     exports2 = module2.exports = function(a, b2) {
       if (a && b2) {
         for (var key in b2) {
@@ -17967,18 +18815,18 @@ var require_utils_merge = __commonJS({
   }
 });
 
-// node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js
+// node_modules/express/lib/router/index.js
 var require_router = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js"(exports2, module2) {
+  "node_modules/express/lib/router/index.js"(exports2, module2) {
     "use strict";
     var Route = require_route();
     var Layer = require_layer();
     var methods = require_methods();
     var mixin = require_utils_merge();
-    var debug = require_src()("express:router");
+    var debug = require_src3()("express:router");
     var deprecate = require_depd()("express");
     var flatten = require_array_flatten();
-    var parseUrl3 = require_parseurl();
+    var parseUrl2 = require_parseurl();
     var setPrototypeOf = require_setprototypeof();
     var objectRegExp = /^\[object (\S+)\]$/;
     var slice = Array.prototype.slice;
@@ -18262,7 +19110,7 @@ var require_router = __commonJS({
     }
     function getPathname(req) {
       try {
-        return parseUrl3(req).pathname;
+        return parseUrl2(req).pathname;
       } catch (err) {
         return void 0;
       }
@@ -18350,9 +19198,9 @@ var require_router = __commonJS({
   }
 });
 
-// node_modules/.pnpm/express@4.22.1/node_modules/express/lib/middleware/init.js
+// node_modules/express/lib/middleware/init.js
 var require_init = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/middleware/init.js"(exports2) {
+  "node_modules/express/lib/middleware/init.js"(exports2) {
     "use strict";
     var setPrototypeOf = require_setprototypeof();
     exports2.init = function(app2) {
@@ -18370,12 +19218,12 @@ var require_init = __commonJS({
   }
 });
 
-// node_modules/.pnpm/express@4.22.1/node_modules/express/lib/middleware/query.js
+// node_modules/express/lib/middleware/query.js
 var require_query = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/middleware/query.js"(exports2, module2) {
+  "node_modules/express/lib/middleware/query.js"(exports2, module2) {
     "use strict";
     var merge3 = require_utils_merge();
-    var parseUrl3 = require_parseurl();
+    var parseUrl2 = require_parseurl();
     var qs = require_lib2();
     module2.exports = function query(options) {
       var opts = merge3({}, options);
@@ -18389,7 +19237,7 @@ var require_query = __commonJS({
       }
       return function query2(req, res, next) {
         if (!req.query) {
-          var val = parseUrl3(req).query;
+          var val = parseUrl2(req).query;
           req.query = queryparse(val, opts);
         }
         next();
@@ -18398,11 +19246,11 @@ var require_query = __commonJS({
   }
 });
 
-// node_modules/.pnpm/express@4.22.1/node_modules/express/lib/view.js
+// node_modules/express/lib/view.js
 var require_view = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/view.js"(exports2, module2) {
+  "node_modules/express/lib/view.js"(exports2, module2) {
     "use strict";
-    var debug = require_src()("express:view");
+    var debug = require_src3()("express:view");
     var path3 = require("path");
     var fs2 = require("fs");
     var dirname = path3.dirname;
@@ -18478,9 +19326,9 @@ var require_view = __commonJS({
   }
 });
 
-// node_modules/.pnpm/safe-buffer@5.2.1/node_modules/safe-buffer/index.js
+// node_modules/safe-buffer/index.js
 var require_safe_buffer = __commonJS({
-  "node_modules/.pnpm/safe-buffer@5.2.1/node_modules/safe-buffer/index.js"(exports2, module2) {
+  "node_modules/safe-buffer/index.js"(exports2, module2) {
     var buffer2 = require("buffer");
     var Buffer2 = buffer2.Buffer;
     function copyProps(src, dst) {
@@ -18536,9 +19384,9 @@ var require_safe_buffer = __commonJS({
   }
 });
 
-// node_modules/.pnpm/content-disposition@0.5.4/node_modules/content-disposition/index.js
+// node_modules/content-disposition/index.js
 var require_content_disposition = __commonJS({
-  "node_modules/.pnpm/content-disposition@0.5.4/node_modules/content-disposition/index.js"(exports2, module2) {
+  "node_modules/content-disposition/index.js"(exports2, module2) {
     "use strict";
     module2.exports = contentDisposition;
     module2.exports.parse = parse5;
@@ -18699,9 +19547,433 @@ var require_content_disposition = __commonJS({
   }
 });
 
-// node_modules/.pnpm/etag@1.8.1/node_modules/etag/index.js
+// node_modules/send/node_modules/debug/node_modules/ms/index.js
+var require_ms4 = __commonJS({
+  "node_modules/send/node_modules/debug/node_modules/ms/index.js"(exports2, module2) {
+    var s = 1e3;
+    var m = s * 60;
+    var h = m * 60;
+    var d = h * 24;
+    var y = d * 365.25;
+    module2.exports = function(val, options) {
+      options = options || {};
+      var type = typeof val;
+      if (type === "string" && val.length > 0) {
+        return parse5(val);
+      } else if (type === "number" && isNaN(val) === false) {
+        return options.long ? fmtLong(val) : fmtShort(val);
+      }
+      throw new Error(
+        "val is not a non-empty string or a valid number. val=" + JSON.stringify(val)
+      );
+    };
+    function parse5(str2) {
+      str2 = String(str2);
+      if (str2.length > 100) {
+        return;
+      }
+      var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(
+        str2
+      );
+      if (!match) {
+        return;
+      }
+      var n = parseFloat(match[1]);
+      var type = (match[2] || "ms").toLowerCase();
+      switch (type) {
+        case "years":
+        case "year":
+        case "yrs":
+        case "yr":
+        case "y":
+          return n * y;
+        case "days":
+        case "day":
+        case "d":
+          return n * d;
+        case "hours":
+        case "hour":
+        case "hrs":
+        case "hr":
+        case "h":
+          return n * h;
+        case "minutes":
+        case "minute":
+        case "mins":
+        case "min":
+        case "m":
+          return n * m;
+        case "seconds":
+        case "second":
+        case "secs":
+        case "sec":
+        case "s":
+          return n * s;
+        case "milliseconds":
+        case "millisecond":
+        case "msecs":
+        case "msec":
+        case "ms":
+          return n;
+        default:
+          return void 0;
+      }
+    }
+    function fmtShort(ms) {
+      if (ms >= d) {
+        return Math.round(ms / d) + "d";
+      }
+      if (ms >= h) {
+        return Math.round(ms / h) + "h";
+      }
+      if (ms >= m) {
+        return Math.round(ms / m) + "m";
+      }
+      if (ms >= s) {
+        return Math.round(ms / s) + "s";
+      }
+      return ms + "ms";
+    }
+    function fmtLong(ms) {
+      return plural(ms, d, "day") || plural(ms, h, "hour") || plural(ms, m, "minute") || plural(ms, s, "second") || ms + " ms";
+    }
+    function plural(ms, n, name2) {
+      if (ms < n) {
+        return;
+      }
+      if (ms < n * 1.5) {
+        return Math.floor(ms / n) + " " + name2;
+      }
+      return Math.ceil(ms / n) + " " + name2 + "s";
+    }
+  }
+});
+
+// node_modules/send/node_modules/debug/src/debug.js
+var require_debug4 = __commonJS({
+  "node_modules/send/node_modules/debug/src/debug.js"(exports2, module2) {
+    exports2 = module2.exports = createDebug.debug = createDebug["default"] = createDebug;
+    exports2.coerce = coerce;
+    exports2.disable = disable;
+    exports2.enable = enable;
+    exports2.enabled = enabled;
+    exports2.humanize = require_ms4();
+    exports2.names = [];
+    exports2.skips = [];
+    exports2.formatters = {};
+    var prevTime;
+    function selectColor(namespace) {
+      var hash2 = 0, i;
+      for (i in namespace) {
+        hash2 = (hash2 << 5) - hash2 + namespace.charCodeAt(i);
+        hash2 |= 0;
+      }
+      return exports2.colors[Math.abs(hash2) % exports2.colors.length];
+    }
+    function createDebug(namespace) {
+      function debug() {
+        if (!debug.enabled) return;
+        var self2 = debug;
+        var curr = +/* @__PURE__ */ new Date();
+        var ms = curr - (prevTime || curr);
+        self2.diff = ms;
+        self2.prev = prevTime;
+        self2.curr = curr;
+        prevTime = curr;
+        var args = new Array(arguments.length);
+        for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i];
+        }
+        args[0] = exports2.coerce(args[0]);
+        if ("string" !== typeof args[0]) {
+          args.unshift("%O");
+        }
+        var index = 0;
+        args[0] = args[0].replace(/%([a-zA-Z%])/g, function(match, format) {
+          if (match === "%%") return match;
+          index++;
+          var formatter = exports2.formatters[format];
+          if ("function" === typeof formatter) {
+            var val = args[index];
+            match = formatter.call(self2, val);
+            args.splice(index, 1);
+            index--;
+          }
+          return match;
+        });
+        exports2.formatArgs.call(self2, args);
+        var logFn = debug.log || exports2.log || console.log.bind(console);
+        logFn.apply(self2, args);
+      }
+      debug.namespace = namespace;
+      debug.enabled = exports2.enabled(namespace);
+      debug.useColors = exports2.useColors();
+      debug.color = selectColor(namespace);
+      if ("function" === typeof exports2.init) {
+        exports2.init(debug);
+      }
+      return debug;
+    }
+    function enable(namespaces) {
+      exports2.save(namespaces);
+      exports2.names = [];
+      exports2.skips = [];
+      var split = (typeof namespaces === "string" ? namespaces : "").split(/[\s,]+/);
+      var len = split.length;
+      for (var i = 0; i < len; i++) {
+        if (!split[i]) continue;
+        namespaces = split[i].replace(/\*/g, ".*?");
+        if (namespaces[0] === "-") {
+          exports2.skips.push(new RegExp("^" + namespaces.substr(1) + "$"));
+        } else {
+          exports2.names.push(new RegExp("^" + namespaces + "$"));
+        }
+      }
+    }
+    function disable() {
+      exports2.enable("");
+    }
+    function enabled(name2) {
+      var i, len;
+      for (i = 0, len = exports2.skips.length; i < len; i++) {
+        if (exports2.skips[i].test(name2)) {
+          return false;
+        }
+      }
+      for (i = 0, len = exports2.names.length; i < len; i++) {
+        if (exports2.names[i].test(name2)) {
+          return true;
+        }
+      }
+      return false;
+    }
+    function coerce(val) {
+      if (val instanceof Error) return val.stack || val.message;
+      return val;
+    }
+  }
+});
+
+// node_modules/send/node_modules/debug/src/browser.js
+var require_browser4 = __commonJS({
+  "node_modules/send/node_modules/debug/src/browser.js"(exports2, module2) {
+    exports2 = module2.exports = require_debug4();
+    exports2.log = log;
+    exports2.formatArgs = formatArgs;
+    exports2.save = save;
+    exports2.load = load;
+    exports2.useColors = useColors;
+    exports2.storage = "undefined" != typeof chrome && "undefined" != typeof chrome.storage ? chrome.storage.local : localstorage();
+    exports2.colors = [
+      "lightseagreen",
+      "forestgreen",
+      "goldenrod",
+      "dodgerblue",
+      "darkorchid",
+      "crimson"
+    ];
+    function useColors() {
+      if (typeof window !== "undefined" && window.process && window.process.type === "renderer") {
+        return true;
+      }
+      return typeof document !== "undefined" && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance || // is firebug? http://stackoverflow.com/a/398120/376773
+      typeof window !== "undefined" && window.console && (window.console.firebug || window.console.exception && window.console.table) || // is firefox >= v31?
+      // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+      typeof navigator !== "undefined" && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31 || // double check webkit in userAgent just in case we are in a worker
+      typeof navigator !== "undefined" && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/);
+    }
+    exports2.formatters.j = function(v) {
+      try {
+        return JSON.stringify(v);
+      } catch (err) {
+        return "[UnexpectedJSONParseError]: " + err.message;
+      }
+    };
+    function formatArgs(args) {
+      var useColors2 = this.useColors;
+      args[0] = (useColors2 ? "%c" : "") + this.namespace + (useColors2 ? " %c" : " ") + args[0] + (useColors2 ? "%c " : " ") + "+" + exports2.humanize(this.diff);
+      if (!useColors2) return;
+      var c = "color: " + this.color;
+      args.splice(1, 0, c, "color: inherit");
+      var index = 0;
+      var lastC = 0;
+      args[0].replace(/%[a-zA-Z%]/g, function(match) {
+        if ("%%" === match) return;
+        index++;
+        if ("%c" === match) {
+          lastC = index;
+        }
+      });
+      args.splice(lastC, 0, c);
+    }
+    function log() {
+      return "object" === typeof console && console.log && Function.prototype.apply.call(console.log, console, arguments);
+    }
+    function save(namespaces) {
+      try {
+        if (null == namespaces) {
+          exports2.storage.removeItem("debug");
+        } else {
+          exports2.storage.debug = namespaces;
+        }
+      } catch (e) {
+      }
+    }
+    function load() {
+      var r;
+      try {
+        r = exports2.storage.debug;
+      } catch (e) {
+      }
+      if (!r && typeof process !== "undefined" && "env" in process) {
+        r = process.env.DEBUG;
+      }
+      return r;
+    }
+    exports2.enable(load());
+    function localstorage() {
+      try {
+        return window.localStorage;
+      } catch (e) {
+      }
+    }
+  }
+});
+
+// node_modules/send/node_modules/debug/src/node.js
+var require_node4 = __commonJS({
+  "node_modules/send/node_modules/debug/src/node.js"(exports2, module2) {
+    var tty = require("tty");
+    var util3 = require("util");
+    exports2 = module2.exports = require_debug4();
+    exports2.init = init;
+    exports2.log = log;
+    exports2.formatArgs = formatArgs;
+    exports2.save = save;
+    exports2.load = load;
+    exports2.useColors = useColors;
+    exports2.colors = [6, 2, 3, 4, 5, 1];
+    exports2.inspectOpts = Object.keys(process.env).filter(function(key) {
+      return /^debug_/i.test(key);
+    }).reduce(function(obj, key) {
+      var prop = key.substring(6).toLowerCase().replace(/_([a-z])/g, function(_, k) {
+        return k.toUpperCase();
+      });
+      var val = process.env[key];
+      if (/^(yes|on|true|enabled)$/i.test(val)) val = true;
+      else if (/^(no|off|false|disabled)$/i.test(val)) val = false;
+      else if (val === "null") val = null;
+      else val = Number(val);
+      obj[prop] = val;
+      return obj;
+    }, {});
+    var fd = parseInt(process.env.DEBUG_FD, 10) || 2;
+    if (1 !== fd && 2 !== fd) {
+      util3.deprecate(function() {
+      }, "except for stderr(2) and stdout(1), any other usage of DEBUG_FD is deprecated. Override debug.log if you want to use a different log function (https://git.io/debug_fd)")();
+    }
+    var stream4 = 1 === fd ? process.stdout : 2 === fd ? process.stderr : createWritableStdioStream(fd);
+    function useColors() {
+      return "colors" in exports2.inspectOpts ? Boolean(exports2.inspectOpts.colors) : tty.isatty(fd);
+    }
+    exports2.formatters.o = function(v) {
+      this.inspectOpts.colors = this.useColors;
+      return util3.inspect(v, this.inspectOpts).split("\n").map(function(str2) {
+        return str2.trim();
+      }).join(" ");
+    };
+    exports2.formatters.O = function(v) {
+      this.inspectOpts.colors = this.useColors;
+      return util3.inspect(v, this.inspectOpts);
+    };
+    function formatArgs(args) {
+      var name2 = this.namespace;
+      var useColors2 = this.useColors;
+      if (useColors2) {
+        var c = this.color;
+        var prefix = "  \x1B[3" + c + ";1m" + name2 + " \x1B[0m";
+        args[0] = prefix + args[0].split("\n").join("\n" + prefix);
+        args.push("\x1B[3" + c + "m+" + exports2.humanize(this.diff) + "\x1B[0m");
+      } else {
+        args[0] = (/* @__PURE__ */ new Date()).toUTCString() + " " + name2 + " " + args[0];
+      }
+    }
+    function log() {
+      return stream4.write(util3.format.apply(util3, arguments) + "\n");
+    }
+    function save(namespaces) {
+      if (null == namespaces) {
+        delete process.env.DEBUG;
+      } else {
+        process.env.DEBUG = namespaces;
+      }
+    }
+    function load() {
+      return process.env.DEBUG;
+    }
+    function createWritableStdioStream(fd2) {
+      var stream5;
+      var tty_wrap = process.binding("tty_wrap");
+      switch (tty_wrap.guessHandleType(fd2)) {
+        case "TTY":
+          stream5 = new tty.WriteStream(fd2);
+          stream5._type = "tty";
+          if (stream5._handle && stream5._handle.unref) {
+            stream5._handle.unref();
+          }
+          break;
+        case "FILE":
+          var fs2 = require("fs");
+          stream5 = new fs2.SyncWriteStream(fd2, { autoClose: false });
+          stream5._type = "fs";
+          break;
+        case "PIPE":
+        case "TCP":
+          var net2 = require("net");
+          stream5 = new net2.Socket({
+            fd: fd2,
+            readable: false,
+            writable: true
+          });
+          stream5.readable = false;
+          stream5.read = null;
+          stream5._type = "pipe";
+          if (stream5._handle && stream5._handle.unref) {
+            stream5._handle.unref();
+          }
+          break;
+        default:
+          throw new Error("Implement me. Unknown stream file type!");
+      }
+      stream5.fd = fd2;
+      stream5._isStdio = true;
+      return stream5;
+    }
+    function init(debug) {
+      debug.inspectOpts = {};
+      var keys = Object.keys(exports2.inspectOpts);
+      for (var i = 0; i < keys.length; i++) {
+        debug.inspectOpts[keys[i]] = exports2.inspectOpts[keys[i]];
+      }
+    }
+    exports2.enable(load());
+  }
+});
+
+// node_modules/send/node_modules/debug/src/index.js
+var require_src4 = __commonJS({
+  "node_modules/send/node_modules/debug/src/index.js"(exports2, module2) {
+    if (typeof process !== "undefined" && process.type === "renderer") {
+      module2.exports = require_browser4();
+    } else {
+      module2.exports = require_node4();
+    }
+  }
+});
+
+// node_modules/etag/index.js
 var require_etag = __commonJS({
-  "node_modules/.pnpm/etag@1.8.1/node_modules/etag/index.js"(exports2, module2) {
+  "node_modules/etag/index.js"(exports2, module2) {
     "use strict";
     module2.exports = etag;
     var crypto4 = require("crypto");
@@ -18741,9 +20013,9 @@ var require_etag = __commonJS({
   }
 });
 
-// node_modules/.pnpm/fresh@0.5.2/node_modules/fresh/index.js
+// node_modules/fresh/index.js
 var require_fresh = __commonJS({
-  "node_modules/.pnpm/fresh@0.5.2/node_modules/fresh/index.js"(exports2, module2) {
+  "node_modules/fresh/index.js"(exports2, module2) {
     "use strict";
     var CACHE_CONTROL_NO_CACHE_REGEXP = /(?:^|,)\s*?no-cache\s*?(?:,|$)/;
     module2.exports = fresh;
@@ -18814,16 +20086,16 @@ var require_fresh = __commonJS({
   }
 });
 
-// node_modules/.pnpm/mime@1.6.0/node_modules/mime/types.json
+// node_modules/mime/types.json
 var require_types = __commonJS({
-  "node_modules/.pnpm/mime@1.6.0/node_modules/mime/types.json"(exports2, module2) {
+  "node_modules/mime/types.json"(exports2, module2) {
     module2.exports = { "application/andrew-inset": ["ez"], "application/applixware": ["aw"], "application/atom+xml": ["atom"], "application/atomcat+xml": ["atomcat"], "application/atomsvc+xml": ["atomsvc"], "application/bdoc": ["bdoc"], "application/ccxml+xml": ["ccxml"], "application/cdmi-capability": ["cdmia"], "application/cdmi-container": ["cdmic"], "application/cdmi-domain": ["cdmid"], "application/cdmi-object": ["cdmio"], "application/cdmi-queue": ["cdmiq"], "application/cu-seeme": ["cu"], "application/dash+xml": ["mpd"], "application/davmount+xml": ["davmount"], "application/docbook+xml": ["dbk"], "application/dssc+der": ["dssc"], "application/dssc+xml": ["xdssc"], "application/ecmascript": ["ecma"], "application/emma+xml": ["emma"], "application/epub+zip": ["epub"], "application/exi": ["exi"], "application/font-tdpfr": ["pfr"], "application/font-woff": [], "application/font-woff2": [], "application/geo+json": ["geojson"], "application/gml+xml": ["gml"], "application/gpx+xml": ["gpx"], "application/gxf": ["gxf"], "application/gzip": ["gz"], "application/hyperstudio": ["stk"], "application/inkml+xml": ["ink", "inkml"], "application/ipfix": ["ipfix"], "application/java-archive": ["jar", "war", "ear"], "application/java-serialized-object": ["ser"], "application/java-vm": ["class"], "application/javascript": ["js", "mjs"], "application/json": ["json", "map"], "application/json5": ["json5"], "application/jsonml+json": ["jsonml"], "application/ld+json": ["jsonld"], "application/lost+xml": ["lostxml"], "application/mac-binhex40": ["hqx"], "application/mac-compactpro": ["cpt"], "application/mads+xml": ["mads"], "application/manifest+json": ["webmanifest"], "application/marc": ["mrc"], "application/marcxml+xml": ["mrcx"], "application/mathematica": ["ma", "nb", "mb"], "application/mathml+xml": ["mathml"], "application/mbox": ["mbox"], "application/mediaservercontrol+xml": ["mscml"], "application/metalink+xml": ["metalink"], "application/metalink4+xml": ["meta4"], "application/mets+xml": ["mets"], "application/mods+xml": ["mods"], "application/mp21": ["m21", "mp21"], "application/mp4": ["mp4s", "m4p"], "application/msword": ["doc", "dot"], "application/mxf": ["mxf"], "application/octet-stream": ["bin", "dms", "lrf", "mar", "so", "dist", "distz", "pkg", "bpk", "dump", "elc", "deploy", "exe", "dll", "deb", "dmg", "iso", "img", "msi", "msp", "msm", "buffer"], "application/oda": ["oda"], "application/oebps-package+xml": ["opf"], "application/ogg": ["ogx"], "application/omdoc+xml": ["omdoc"], "application/onenote": ["onetoc", "onetoc2", "onetmp", "onepkg"], "application/oxps": ["oxps"], "application/patch-ops-error+xml": ["xer"], "application/pdf": ["pdf"], "application/pgp-encrypted": ["pgp"], "application/pgp-signature": ["asc", "sig"], "application/pics-rules": ["prf"], "application/pkcs10": ["p10"], "application/pkcs7-mime": ["p7m", "p7c"], "application/pkcs7-signature": ["p7s"], "application/pkcs8": ["p8"], "application/pkix-attr-cert": ["ac"], "application/pkix-cert": ["cer"], "application/pkix-crl": ["crl"], "application/pkix-pkipath": ["pkipath"], "application/pkixcmp": ["pki"], "application/pls+xml": ["pls"], "application/postscript": ["ai", "eps", "ps"], "application/prs.cww": ["cww"], "application/pskc+xml": ["pskcxml"], "application/raml+yaml": ["raml"], "application/rdf+xml": ["rdf"], "application/reginfo+xml": ["rif"], "application/relax-ng-compact-syntax": ["rnc"], "application/resource-lists+xml": ["rl"], "application/resource-lists-diff+xml": ["rld"], "application/rls-services+xml": ["rs"], "application/rpki-ghostbusters": ["gbr"], "application/rpki-manifest": ["mft"], "application/rpki-roa": ["roa"], "application/rsd+xml": ["rsd"], "application/rss+xml": ["rss"], "application/rtf": ["rtf"], "application/sbml+xml": ["sbml"], "application/scvp-cv-request": ["scq"], "application/scvp-cv-response": ["scs"], "application/scvp-vp-request": ["spq"], "application/scvp-vp-response": ["spp"], "application/sdp": ["sdp"], "application/set-payment-initiation": ["setpay"], "application/set-registration-initiation": ["setreg"], "application/shf+xml": ["shf"], "application/smil+xml": ["smi", "smil"], "application/sparql-query": ["rq"], "application/sparql-results+xml": ["srx"], "application/srgs": ["gram"], "application/srgs+xml": ["grxml"], "application/sru+xml": ["sru"], "application/ssdl+xml": ["ssdl"], "application/ssml+xml": ["ssml"], "application/tei+xml": ["tei", "teicorpus"], "application/thraud+xml": ["tfi"], "application/timestamped-data": ["tsd"], "application/vnd.3gpp.pic-bw-large": ["plb"], "application/vnd.3gpp.pic-bw-small": ["psb"], "application/vnd.3gpp.pic-bw-var": ["pvb"], "application/vnd.3gpp2.tcap": ["tcap"], "application/vnd.3m.post-it-notes": ["pwn"], "application/vnd.accpac.simply.aso": ["aso"], "application/vnd.accpac.simply.imp": ["imp"], "application/vnd.acucobol": ["acu"], "application/vnd.acucorp": ["atc", "acutc"], "application/vnd.adobe.air-application-installer-package+zip": ["air"], "application/vnd.adobe.formscentral.fcdt": ["fcdt"], "application/vnd.adobe.fxp": ["fxp", "fxpl"], "application/vnd.adobe.xdp+xml": ["xdp"], "application/vnd.adobe.xfdf": ["xfdf"], "application/vnd.ahead.space": ["ahead"], "application/vnd.airzip.filesecure.azf": ["azf"], "application/vnd.airzip.filesecure.azs": ["azs"], "application/vnd.amazon.ebook": ["azw"], "application/vnd.americandynamics.acc": ["acc"], "application/vnd.amiga.ami": ["ami"], "application/vnd.android.package-archive": ["apk"], "application/vnd.anser-web-certificate-issue-initiation": ["cii"], "application/vnd.anser-web-funds-transfer-initiation": ["fti"], "application/vnd.antix.game-component": ["atx"], "application/vnd.apple.installer+xml": ["mpkg"], "application/vnd.apple.mpegurl": ["m3u8"], "application/vnd.apple.pkpass": ["pkpass"], "application/vnd.aristanetworks.swi": ["swi"], "application/vnd.astraea-software.iota": ["iota"], "application/vnd.audiograph": ["aep"], "application/vnd.blueice.multipass": ["mpm"], "application/vnd.bmi": ["bmi"], "application/vnd.businessobjects": ["rep"], "application/vnd.chemdraw+xml": ["cdxml"], "application/vnd.chipnuts.karaoke-mmd": ["mmd"], "application/vnd.cinderella": ["cdy"], "application/vnd.claymore": ["cla"], "application/vnd.cloanto.rp9": ["rp9"], "application/vnd.clonk.c4group": ["c4g", "c4d", "c4f", "c4p", "c4u"], "application/vnd.cluetrust.cartomobile-config": ["c11amc"], "application/vnd.cluetrust.cartomobile-config-pkg": ["c11amz"], "application/vnd.commonspace": ["csp"], "application/vnd.contact.cmsg": ["cdbcmsg"], "application/vnd.cosmocaller": ["cmc"], "application/vnd.crick.clicker": ["clkx"], "application/vnd.crick.clicker.keyboard": ["clkk"], "application/vnd.crick.clicker.palette": ["clkp"], "application/vnd.crick.clicker.template": ["clkt"], "application/vnd.crick.clicker.wordbank": ["clkw"], "application/vnd.criticaltools.wbs+xml": ["wbs"], "application/vnd.ctc-posml": ["pml"], "application/vnd.cups-ppd": ["ppd"], "application/vnd.curl.car": ["car"], "application/vnd.curl.pcurl": ["pcurl"], "application/vnd.dart": ["dart"], "application/vnd.data-vision.rdz": ["rdz"], "application/vnd.dece.data": ["uvf", "uvvf", "uvd", "uvvd"], "application/vnd.dece.ttml+xml": ["uvt", "uvvt"], "application/vnd.dece.unspecified": ["uvx", "uvvx"], "application/vnd.dece.zip": ["uvz", "uvvz"], "application/vnd.denovo.fcselayout-link": ["fe_launch"], "application/vnd.dna": ["dna"], "application/vnd.dolby.mlp": ["mlp"], "application/vnd.dpgraph": ["dpg"], "application/vnd.dreamfactory": ["dfac"], "application/vnd.ds-keypoint": ["kpxx"], "application/vnd.dvb.ait": ["ait"], "application/vnd.dvb.service": ["svc"], "application/vnd.dynageo": ["geo"], "application/vnd.ecowin.chart": ["mag"], "application/vnd.enliven": ["nml"], "application/vnd.epson.esf": ["esf"], "application/vnd.epson.msf": ["msf"], "application/vnd.epson.quickanime": ["qam"], "application/vnd.epson.salt": ["slt"], "application/vnd.epson.ssf": ["ssf"], "application/vnd.eszigno3+xml": ["es3", "et3"], "application/vnd.ezpix-album": ["ez2"], "application/vnd.ezpix-package": ["ez3"], "application/vnd.fdf": ["fdf"], "application/vnd.fdsn.mseed": ["mseed"], "application/vnd.fdsn.seed": ["seed", "dataless"], "application/vnd.flographit": ["gph"], "application/vnd.fluxtime.clip": ["ftc"], "application/vnd.framemaker": ["fm", "frame", "maker", "book"], "application/vnd.frogans.fnc": ["fnc"], "application/vnd.frogans.ltf": ["ltf"], "application/vnd.fsc.weblaunch": ["fsc"], "application/vnd.fujitsu.oasys": ["oas"], "application/vnd.fujitsu.oasys2": ["oa2"], "application/vnd.fujitsu.oasys3": ["oa3"], "application/vnd.fujitsu.oasysgp": ["fg5"], "application/vnd.fujitsu.oasysprs": ["bh2"], "application/vnd.fujixerox.ddd": ["ddd"], "application/vnd.fujixerox.docuworks": ["xdw"], "application/vnd.fujixerox.docuworks.binder": ["xbd"], "application/vnd.fuzzysheet": ["fzs"], "application/vnd.genomatix.tuxedo": ["txd"], "application/vnd.geogebra.file": ["ggb"], "application/vnd.geogebra.tool": ["ggt"], "application/vnd.geometry-explorer": ["gex", "gre"], "application/vnd.geonext": ["gxt"], "application/vnd.geoplan": ["g2w"], "application/vnd.geospace": ["g3w"], "application/vnd.gmx": ["gmx"], "application/vnd.google-apps.document": ["gdoc"], "application/vnd.google-apps.presentation": ["gslides"], "application/vnd.google-apps.spreadsheet": ["gsheet"], "application/vnd.google-earth.kml+xml": ["kml"], "application/vnd.google-earth.kmz": ["kmz"], "application/vnd.grafeq": ["gqf", "gqs"], "application/vnd.groove-account": ["gac"], "application/vnd.groove-help": ["ghf"], "application/vnd.groove-identity-message": ["gim"], "application/vnd.groove-injector": ["grv"], "application/vnd.groove-tool-message": ["gtm"], "application/vnd.groove-tool-template": ["tpl"], "application/vnd.groove-vcard": ["vcg"], "application/vnd.hal+xml": ["hal"], "application/vnd.handheld-entertainment+xml": ["zmm"], "application/vnd.hbci": ["hbci"], "application/vnd.hhe.lesson-player": ["les"], "application/vnd.hp-hpgl": ["hpgl"], "application/vnd.hp-hpid": ["hpid"], "application/vnd.hp-hps": ["hps"], "application/vnd.hp-jlyt": ["jlt"], "application/vnd.hp-pcl": ["pcl"], "application/vnd.hp-pclxl": ["pclxl"], "application/vnd.hydrostatix.sof-data": ["sfd-hdstx"], "application/vnd.ibm.minipay": ["mpy"], "application/vnd.ibm.modcap": ["afp", "listafp", "list3820"], "application/vnd.ibm.rights-management": ["irm"], "application/vnd.ibm.secure-container": ["sc"], "application/vnd.iccprofile": ["icc", "icm"], "application/vnd.igloader": ["igl"], "application/vnd.immervision-ivp": ["ivp"], "application/vnd.immervision-ivu": ["ivu"], "application/vnd.insors.igm": ["igm"], "application/vnd.intercon.formnet": ["xpw", "xpx"], "application/vnd.intergeo": ["i2g"], "application/vnd.intu.qbo": ["qbo"], "application/vnd.intu.qfx": ["qfx"], "application/vnd.ipunplugged.rcprofile": ["rcprofile"], "application/vnd.irepository.package+xml": ["irp"], "application/vnd.is-xpr": ["xpr"], "application/vnd.isac.fcs": ["fcs"], "application/vnd.jam": ["jam"], "application/vnd.jcp.javame.midlet-rms": ["rms"], "application/vnd.jisp": ["jisp"], "application/vnd.joost.joda-archive": ["joda"], "application/vnd.kahootz": ["ktz", "ktr"], "application/vnd.kde.karbon": ["karbon"], "application/vnd.kde.kchart": ["chrt"], "application/vnd.kde.kformula": ["kfo"], "application/vnd.kde.kivio": ["flw"], "application/vnd.kde.kontour": ["kon"], "application/vnd.kde.kpresenter": ["kpr", "kpt"], "application/vnd.kde.kspread": ["ksp"], "application/vnd.kde.kword": ["kwd", "kwt"], "application/vnd.kenameaapp": ["htke"], "application/vnd.kidspiration": ["kia"], "application/vnd.kinar": ["kne", "knp"], "application/vnd.koan": ["skp", "skd", "skt", "skm"], "application/vnd.kodak-descriptor": ["sse"], "application/vnd.las.las+xml": ["lasxml"], "application/vnd.llamagraphics.life-balance.desktop": ["lbd"], "application/vnd.llamagraphics.life-balance.exchange+xml": ["lbe"], "application/vnd.lotus-1-2-3": ["123"], "application/vnd.lotus-approach": ["apr"], "application/vnd.lotus-freelance": ["pre"], "application/vnd.lotus-notes": ["nsf"], "application/vnd.lotus-organizer": ["org"], "application/vnd.lotus-screencam": ["scm"], "application/vnd.lotus-wordpro": ["lwp"], "application/vnd.macports.portpkg": ["portpkg"], "application/vnd.mcd": ["mcd"], "application/vnd.medcalcdata": ["mc1"], "application/vnd.mediastation.cdkey": ["cdkey"], "application/vnd.mfer": ["mwf"], "application/vnd.mfmp": ["mfm"], "application/vnd.micrografx.flo": ["flo"], "application/vnd.micrografx.igx": ["igx"], "application/vnd.mif": ["mif"], "application/vnd.mobius.daf": ["daf"], "application/vnd.mobius.dis": ["dis"], "application/vnd.mobius.mbk": ["mbk"], "application/vnd.mobius.mqy": ["mqy"], "application/vnd.mobius.msl": ["msl"], "application/vnd.mobius.plc": ["plc"], "application/vnd.mobius.txf": ["txf"], "application/vnd.mophun.application": ["mpn"], "application/vnd.mophun.certificate": ["mpc"], "application/vnd.mozilla.xul+xml": ["xul"], "application/vnd.ms-artgalry": ["cil"], "application/vnd.ms-cab-compressed": ["cab"], "application/vnd.ms-excel": ["xls", "xlm", "xla", "xlc", "xlt", "xlw"], "application/vnd.ms-excel.addin.macroenabled.12": ["xlam"], "application/vnd.ms-excel.sheet.binary.macroenabled.12": ["xlsb"], "application/vnd.ms-excel.sheet.macroenabled.12": ["xlsm"], "application/vnd.ms-excel.template.macroenabled.12": ["xltm"], "application/vnd.ms-fontobject": ["eot"], "application/vnd.ms-htmlhelp": ["chm"], "application/vnd.ms-ims": ["ims"], "application/vnd.ms-lrm": ["lrm"], "application/vnd.ms-officetheme": ["thmx"], "application/vnd.ms-outlook": ["msg"], "application/vnd.ms-pki.seccat": ["cat"], "application/vnd.ms-pki.stl": ["stl"], "application/vnd.ms-powerpoint": ["ppt", "pps", "pot"], "application/vnd.ms-powerpoint.addin.macroenabled.12": ["ppam"], "application/vnd.ms-powerpoint.presentation.macroenabled.12": ["pptm"], "application/vnd.ms-powerpoint.slide.macroenabled.12": ["sldm"], "application/vnd.ms-powerpoint.slideshow.macroenabled.12": ["ppsm"], "application/vnd.ms-powerpoint.template.macroenabled.12": ["potm"], "application/vnd.ms-project": ["mpp", "mpt"], "application/vnd.ms-word.document.macroenabled.12": ["docm"], "application/vnd.ms-word.template.macroenabled.12": ["dotm"], "application/vnd.ms-works": ["wps", "wks", "wcm", "wdb"], "application/vnd.ms-wpl": ["wpl"], "application/vnd.ms-xpsdocument": ["xps"], "application/vnd.mseq": ["mseq"], "application/vnd.musician": ["mus"], "application/vnd.muvee.style": ["msty"], "application/vnd.mynfc": ["taglet"], "application/vnd.neurolanguage.nlu": ["nlu"], "application/vnd.nitf": ["ntf", "nitf"], "application/vnd.noblenet-directory": ["nnd"], "application/vnd.noblenet-sealer": ["nns"], "application/vnd.noblenet-web": ["nnw"], "application/vnd.nokia.n-gage.data": ["ngdat"], "application/vnd.nokia.n-gage.symbian.install": ["n-gage"], "application/vnd.nokia.radio-preset": ["rpst"], "application/vnd.nokia.radio-presets": ["rpss"], "application/vnd.novadigm.edm": ["edm"], "application/vnd.novadigm.edx": ["edx"], "application/vnd.novadigm.ext": ["ext"], "application/vnd.oasis.opendocument.chart": ["odc"], "application/vnd.oasis.opendocument.chart-template": ["otc"], "application/vnd.oasis.opendocument.database": ["odb"], "application/vnd.oasis.opendocument.formula": ["odf"], "application/vnd.oasis.opendocument.formula-template": ["odft"], "application/vnd.oasis.opendocument.graphics": ["odg"], "application/vnd.oasis.opendocument.graphics-template": ["otg"], "application/vnd.oasis.opendocument.image": ["odi"], "application/vnd.oasis.opendocument.image-template": ["oti"], "application/vnd.oasis.opendocument.presentation": ["odp"], "application/vnd.oasis.opendocument.presentation-template": ["otp"], "application/vnd.oasis.opendocument.spreadsheet": ["ods"], "application/vnd.oasis.opendocument.spreadsheet-template": ["ots"], "application/vnd.oasis.opendocument.text": ["odt"], "application/vnd.oasis.opendocument.text-master": ["odm"], "application/vnd.oasis.opendocument.text-template": ["ott"], "application/vnd.oasis.opendocument.text-web": ["oth"], "application/vnd.olpc-sugar": ["xo"], "application/vnd.oma.dd2+xml": ["dd2"], "application/vnd.openofficeorg.extension": ["oxt"], "application/vnd.openxmlformats-officedocument.presentationml.presentation": ["pptx"], "application/vnd.openxmlformats-officedocument.presentationml.slide": ["sldx"], "application/vnd.openxmlformats-officedocument.presentationml.slideshow": ["ppsx"], "application/vnd.openxmlformats-officedocument.presentationml.template": ["potx"], "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": ["xlsx"], "application/vnd.openxmlformats-officedocument.spreadsheetml.template": ["xltx"], "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ["docx"], "application/vnd.openxmlformats-officedocument.wordprocessingml.template": ["dotx"], "application/vnd.osgeo.mapguide.package": ["mgp"], "application/vnd.osgi.dp": ["dp"], "application/vnd.osgi.subsystem": ["esa"], "application/vnd.palm": ["pdb", "pqa", "oprc"], "application/vnd.pawaafile": ["paw"], "application/vnd.pg.format": ["str"], "application/vnd.pg.osasli": ["ei6"], "application/vnd.picsel": ["efif"], "application/vnd.pmi.widget": ["wg"], "application/vnd.pocketlearn": ["plf"], "application/vnd.powerbuilder6": ["pbd"], "application/vnd.previewsystems.box": ["box"], "application/vnd.proteus.magazine": ["mgz"], "application/vnd.publishare-delta-tree": ["qps"], "application/vnd.pvi.ptid1": ["ptid"], "application/vnd.quark.quarkxpress": ["qxd", "qxt", "qwd", "qwt", "qxl", "qxb"], "application/vnd.realvnc.bed": ["bed"], "application/vnd.recordare.musicxml": ["mxl"], "application/vnd.recordare.musicxml+xml": ["musicxml"], "application/vnd.rig.cryptonote": ["cryptonote"], "application/vnd.rim.cod": ["cod"], "application/vnd.rn-realmedia": ["rm"], "application/vnd.rn-realmedia-vbr": ["rmvb"], "application/vnd.route66.link66+xml": ["link66"], "application/vnd.sailingtracker.track": ["st"], "application/vnd.seemail": ["see"], "application/vnd.sema": ["sema"], "application/vnd.semd": ["semd"], "application/vnd.semf": ["semf"], "application/vnd.shana.informed.formdata": ["ifm"], "application/vnd.shana.informed.formtemplate": ["itp"], "application/vnd.shana.informed.interchange": ["iif"], "application/vnd.shana.informed.package": ["ipk"], "application/vnd.simtech-mindmapper": ["twd", "twds"], "application/vnd.smaf": ["mmf"], "application/vnd.smart.teacher": ["teacher"], "application/vnd.solent.sdkm+xml": ["sdkm", "sdkd"], "application/vnd.spotfire.dxp": ["dxp"], "application/vnd.spotfire.sfs": ["sfs"], "application/vnd.stardivision.calc": ["sdc"], "application/vnd.stardivision.draw": ["sda"], "application/vnd.stardivision.impress": ["sdd"], "application/vnd.stardivision.math": ["smf"], "application/vnd.stardivision.writer": ["sdw", "vor"], "application/vnd.stardivision.writer-global": ["sgl"], "application/vnd.stepmania.package": ["smzip"], "application/vnd.stepmania.stepchart": ["sm"], "application/vnd.sun.wadl+xml": ["wadl"], "application/vnd.sun.xml.calc": ["sxc"], "application/vnd.sun.xml.calc.template": ["stc"], "application/vnd.sun.xml.draw": ["sxd"], "application/vnd.sun.xml.draw.template": ["std"], "application/vnd.sun.xml.impress": ["sxi"], "application/vnd.sun.xml.impress.template": ["sti"], "application/vnd.sun.xml.math": ["sxm"], "application/vnd.sun.xml.writer": ["sxw"], "application/vnd.sun.xml.writer.global": ["sxg"], "application/vnd.sun.xml.writer.template": ["stw"], "application/vnd.sus-calendar": ["sus", "susp"], "application/vnd.svd": ["svd"], "application/vnd.symbian.install": ["sis", "sisx"], "application/vnd.syncml+xml": ["xsm"], "application/vnd.syncml.dm+wbxml": ["bdm"], "application/vnd.syncml.dm+xml": ["xdm"], "application/vnd.tao.intent-module-archive": ["tao"], "application/vnd.tcpdump.pcap": ["pcap", "cap", "dmp"], "application/vnd.tmobile-livetv": ["tmo"], "application/vnd.trid.tpt": ["tpt"], "application/vnd.triscape.mxs": ["mxs"], "application/vnd.trueapp": ["tra"], "application/vnd.ufdl": ["ufd", "ufdl"], "application/vnd.uiq.theme": ["utz"], "application/vnd.umajin": ["umj"], "application/vnd.unity": ["unityweb"], "application/vnd.uoml+xml": ["uoml"], "application/vnd.vcx": ["vcx"], "application/vnd.visio": ["vsd", "vst", "vss", "vsw"], "application/vnd.visionary": ["vis"], "application/vnd.vsf": ["vsf"], "application/vnd.wap.wbxml": ["wbxml"], "application/vnd.wap.wmlc": ["wmlc"], "application/vnd.wap.wmlscriptc": ["wmlsc"], "application/vnd.webturbo": ["wtb"], "application/vnd.wolfram.player": ["nbp"], "application/vnd.wordperfect": ["wpd"], "application/vnd.wqd": ["wqd"], "application/vnd.wt.stf": ["stf"], "application/vnd.xara": ["xar"], "application/vnd.xfdl": ["xfdl"], "application/vnd.yamaha.hv-dic": ["hvd"], "application/vnd.yamaha.hv-script": ["hvs"], "application/vnd.yamaha.hv-voice": ["hvp"], "application/vnd.yamaha.openscoreformat": ["osf"], "application/vnd.yamaha.openscoreformat.osfpvg+xml": ["osfpvg"], "application/vnd.yamaha.smaf-audio": ["saf"], "application/vnd.yamaha.smaf-phrase": ["spf"], "application/vnd.yellowriver-custom-menu": ["cmp"], "application/vnd.zul": ["zir", "zirz"], "application/vnd.zzazz.deck+xml": ["zaz"], "application/voicexml+xml": ["vxml"], "application/wasm": ["wasm"], "application/widget": ["wgt"], "application/winhlp": ["hlp"], "application/wsdl+xml": ["wsdl"], "application/wspolicy+xml": ["wspolicy"], "application/x-7z-compressed": ["7z"], "application/x-abiword": ["abw"], "application/x-ace-compressed": ["ace"], "application/x-apple-diskimage": [], "application/x-arj": ["arj"], "application/x-authorware-bin": ["aab", "x32", "u32", "vox"], "application/x-authorware-map": ["aam"], "application/x-authorware-seg": ["aas"], "application/x-bcpio": ["bcpio"], "application/x-bdoc": [], "application/x-bittorrent": ["torrent"], "application/x-blorb": ["blb", "blorb"], "application/x-bzip": ["bz"], "application/x-bzip2": ["bz2", "boz"], "application/x-cbr": ["cbr", "cba", "cbt", "cbz", "cb7"], "application/x-cdlink": ["vcd"], "application/x-cfs-compressed": ["cfs"], "application/x-chat": ["chat"], "application/x-chess-pgn": ["pgn"], "application/x-chrome-extension": ["crx"], "application/x-cocoa": ["cco"], "application/x-conference": ["nsc"], "application/x-cpio": ["cpio"], "application/x-csh": ["csh"], "application/x-debian-package": ["udeb"], "application/x-dgc-compressed": ["dgc"], "application/x-director": ["dir", "dcr", "dxr", "cst", "cct", "cxt", "w3d", "fgd", "swa"], "application/x-doom": ["wad"], "application/x-dtbncx+xml": ["ncx"], "application/x-dtbook+xml": ["dtb"], "application/x-dtbresource+xml": ["res"], "application/x-dvi": ["dvi"], "application/x-envoy": ["evy"], "application/x-eva": ["eva"], "application/x-font-bdf": ["bdf"], "application/x-font-ghostscript": ["gsf"], "application/x-font-linux-psf": ["psf"], "application/x-font-pcf": ["pcf"], "application/x-font-snf": ["snf"], "application/x-font-type1": ["pfa", "pfb", "pfm", "afm"], "application/x-freearc": ["arc"], "application/x-futuresplash": ["spl"], "application/x-gca-compressed": ["gca"], "application/x-glulx": ["ulx"], "application/x-gnumeric": ["gnumeric"], "application/x-gramps-xml": ["gramps"], "application/x-gtar": ["gtar"], "application/x-hdf": ["hdf"], "application/x-httpd-php": ["php"], "application/x-install-instructions": ["install"], "application/x-iso9660-image": [], "application/x-java-archive-diff": ["jardiff"], "application/x-java-jnlp-file": ["jnlp"], "application/x-latex": ["latex"], "application/x-lua-bytecode": ["luac"], "application/x-lzh-compressed": ["lzh", "lha"], "application/x-makeself": ["run"], "application/x-mie": ["mie"], "application/x-mobipocket-ebook": ["prc", "mobi"], "application/x-ms-application": ["application"], "application/x-ms-shortcut": ["lnk"], "application/x-ms-wmd": ["wmd"], "application/x-ms-wmz": ["wmz"], "application/x-ms-xbap": ["xbap"], "application/x-msaccess": ["mdb"], "application/x-msbinder": ["obd"], "application/x-mscardfile": ["crd"], "application/x-msclip": ["clp"], "application/x-msdos-program": [], "application/x-msdownload": ["com", "bat"], "application/x-msmediaview": ["mvb", "m13", "m14"], "application/x-msmetafile": ["wmf", "emf", "emz"], "application/x-msmoney": ["mny"], "application/x-mspublisher": ["pub"], "application/x-msschedule": ["scd"], "application/x-msterminal": ["trm"], "application/x-mswrite": ["wri"], "application/x-netcdf": ["nc", "cdf"], "application/x-ns-proxy-autoconfig": ["pac"], "application/x-nzb": ["nzb"], "application/x-perl": ["pl", "pm"], "application/x-pilot": [], "application/x-pkcs12": ["p12", "pfx"], "application/x-pkcs7-certificates": ["p7b", "spc"], "application/x-pkcs7-certreqresp": ["p7r"], "application/x-rar-compressed": ["rar"], "application/x-redhat-package-manager": ["rpm"], "application/x-research-info-systems": ["ris"], "application/x-sea": ["sea"], "application/x-sh": ["sh"], "application/x-shar": ["shar"], "application/x-shockwave-flash": ["swf"], "application/x-silverlight-app": ["xap"], "application/x-sql": ["sql"], "application/x-stuffit": ["sit"], "application/x-stuffitx": ["sitx"], "application/x-subrip": ["srt"], "application/x-sv4cpio": ["sv4cpio"], "application/x-sv4crc": ["sv4crc"], "application/x-t3vm-image": ["t3"], "application/x-tads": ["gam"], "application/x-tar": ["tar"], "application/x-tcl": ["tcl", "tk"], "application/x-tex": ["tex"], "application/x-tex-tfm": ["tfm"], "application/x-texinfo": ["texinfo", "texi"], "application/x-tgif": ["obj"], "application/x-ustar": ["ustar"], "application/x-virtualbox-hdd": ["hdd"], "application/x-virtualbox-ova": ["ova"], "application/x-virtualbox-ovf": ["ovf"], "application/x-virtualbox-vbox": ["vbox"], "application/x-virtualbox-vbox-extpack": ["vbox-extpack"], "application/x-virtualbox-vdi": ["vdi"], "application/x-virtualbox-vhd": ["vhd"], "application/x-virtualbox-vmdk": ["vmdk"], "application/x-wais-source": ["src"], "application/x-web-app-manifest+json": ["webapp"], "application/x-x509-ca-cert": ["der", "crt", "pem"], "application/x-xfig": ["fig"], "application/x-xliff+xml": ["xlf"], "application/x-xpinstall": ["xpi"], "application/x-xz": ["xz"], "application/x-zmachine": ["z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8"], "application/xaml+xml": ["xaml"], "application/xcap-diff+xml": ["xdf"], "application/xenc+xml": ["xenc"], "application/xhtml+xml": ["xhtml", "xht"], "application/xml": ["xml", "xsl", "xsd", "rng"], "application/xml-dtd": ["dtd"], "application/xop+xml": ["xop"], "application/xproc+xml": ["xpl"], "application/xslt+xml": ["xslt"], "application/xspf+xml": ["xspf"], "application/xv+xml": ["mxml", "xhvml", "xvml", "xvm"], "application/yang": ["yang"], "application/yin+xml": ["yin"], "application/zip": ["zip"], "audio/3gpp": [], "audio/adpcm": ["adp"], "audio/basic": ["au", "snd"], "audio/midi": ["mid", "midi", "kar", "rmi"], "audio/mp3": [], "audio/mp4": ["m4a", "mp4a"], "audio/mpeg": ["mpga", "mp2", "mp2a", "mp3", "m2a", "m3a"], "audio/ogg": ["oga", "ogg", "spx"], "audio/s3m": ["s3m"], "audio/silk": ["sil"], "audio/vnd.dece.audio": ["uva", "uvva"], "audio/vnd.digital-winds": ["eol"], "audio/vnd.dra": ["dra"], "audio/vnd.dts": ["dts"], "audio/vnd.dts.hd": ["dtshd"], "audio/vnd.lucent.voice": ["lvp"], "audio/vnd.ms-playready.media.pya": ["pya"], "audio/vnd.nuera.ecelp4800": ["ecelp4800"], "audio/vnd.nuera.ecelp7470": ["ecelp7470"], "audio/vnd.nuera.ecelp9600": ["ecelp9600"], "audio/vnd.rip": ["rip"], "audio/wav": ["wav"], "audio/wave": [], "audio/webm": ["weba"], "audio/x-aac": ["aac"], "audio/x-aiff": ["aif", "aiff", "aifc"], "audio/x-caf": ["caf"], "audio/x-flac": ["flac"], "audio/x-m4a": [], "audio/x-matroska": ["mka"], "audio/x-mpegurl": ["m3u"], "audio/x-ms-wax": ["wax"], "audio/x-ms-wma": ["wma"], "audio/x-pn-realaudio": ["ram", "ra"], "audio/x-pn-realaudio-plugin": ["rmp"], "audio/x-realaudio": [], "audio/x-wav": [], "audio/xm": ["xm"], "chemical/x-cdx": ["cdx"], "chemical/x-cif": ["cif"], "chemical/x-cmdf": ["cmdf"], "chemical/x-cml": ["cml"], "chemical/x-csml": ["csml"], "chemical/x-xyz": ["xyz"], "font/collection": ["ttc"], "font/otf": ["otf"], "font/ttf": ["ttf"], "font/woff": ["woff"], "font/woff2": ["woff2"], "image/apng": ["apng"], "image/bmp": ["bmp"], "image/cgm": ["cgm"], "image/g3fax": ["g3"], "image/gif": ["gif"], "image/ief": ["ief"], "image/jp2": ["jp2", "jpg2"], "image/jpeg": ["jpeg", "jpg", "jpe"], "image/jpm": ["jpm"], "image/jpx": ["jpx", "jpf"], "image/ktx": ["ktx"], "image/png": ["png"], "image/prs.btif": ["btif"], "image/sgi": ["sgi"], "image/svg+xml": ["svg", "svgz"], "image/tiff": ["tiff", "tif"], "image/vnd.adobe.photoshop": ["psd"], "image/vnd.dece.graphic": ["uvi", "uvvi", "uvg", "uvvg"], "image/vnd.djvu": ["djvu", "djv"], "image/vnd.dvb.subtitle": [], "image/vnd.dwg": ["dwg"], "image/vnd.dxf": ["dxf"], "image/vnd.fastbidsheet": ["fbs"], "image/vnd.fpx": ["fpx"], "image/vnd.fst": ["fst"], "image/vnd.fujixerox.edmics-mmr": ["mmr"], "image/vnd.fujixerox.edmics-rlc": ["rlc"], "image/vnd.ms-modi": ["mdi"], "image/vnd.ms-photo": ["wdp"], "image/vnd.net-fpx": ["npx"], "image/vnd.wap.wbmp": ["wbmp"], "image/vnd.xiff": ["xif"], "image/webp": ["webp"], "image/x-3ds": ["3ds"], "image/x-cmu-raster": ["ras"], "image/x-cmx": ["cmx"], "image/x-freehand": ["fh", "fhc", "fh4", "fh5", "fh7"], "image/x-icon": ["ico"], "image/x-jng": ["jng"], "image/x-mrsid-image": ["sid"], "image/x-ms-bmp": [], "image/x-pcx": ["pcx"], "image/x-pict": ["pic", "pct"], "image/x-portable-anymap": ["pnm"], "image/x-portable-bitmap": ["pbm"], "image/x-portable-graymap": ["pgm"], "image/x-portable-pixmap": ["ppm"], "image/x-rgb": ["rgb"], "image/x-tga": ["tga"], "image/x-xbitmap": ["xbm"], "image/x-xpixmap": ["xpm"], "image/x-xwindowdump": ["xwd"], "message/rfc822": ["eml", "mime"], "model/gltf+json": ["gltf"], "model/gltf-binary": ["glb"], "model/iges": ["igs", "iges"], "model/mesh": ["msh", "mesh", "silo"], "model/vnd.collada+xml": ["dae"], "model/vnd.dwf": ["dwf"], "model/vnd.gdl": ["gdl"], "model/vnd.gtw": ["gtw"], "model/vnd.mts": ["mts"], "model/vnd.vtu": ["vtu"], "model/vrml": ["wrl", "vrml"], "model/x3d+binary": ["x3db", "x3dbz"], "model/x3d+vrml": ["x3dv", "x3dvz"], "model/x3d+xml": ["x3d", "x3dz"], "text/cache-manifest": ["appcache", "manifest"], "text/calendar": ["ics", "ifb"], "text/coffeescript": ["coffee", "litcoffee"], "text/css": ["css"], "text/csv": ["csv"], "text/hjson": ["hjson"], "text/html": ["html", "htm", "shtml"], "text/jade": ["jade"], "text/jsx": ["jsx"], "text/less": ["less"], "text/markdown": ["markdown", "md"], "text/mathml": ["mml"], "text/n3": ["n3"], "text/plain": ["txt", "text", "conf", "def", "list", "log", "in", "ini"], "text/prs.lines.tag": ["dsc"], "text/richtext": ["rtx"], "text/rtf": [], "text/sgml": ["sgml", "sgm"], "text/slim": ["slim", "slm"], "text/stylus": ["stylus", "styl"], "text/tab-separated-values": ["tsv"], "text/troff": ["t", "tr", "roff", "man", "me", "ms"], "text/turtle": ["ttl"], "text/uri-list": ["uri", "uris", "urls"], "text/vcard": ["vcard"], "text/vnd.curl": ["curl"], "text/vnd.curl.dcurl": ["dcurl"], "text/vnd.curl.mcurl": ["mcurl"], "text/vnd.curl.scurl": ["scurl"], "text/vnd.dvb.subtitle": ["sub"], "text/vnd.fly": ["fly"], "text/vnd.fmi.flexstor": ["flx"], "text/vnd.graphviz": ["gv"], "text/vnd.in3d.3dml": ["3dml"], "text/vnd.in3d.spot": ["spot"], "text/vnd.sun.j2me.app-descriptor": ["jad"], "text/vnd.wap.wml": ["wml"], "text/vnd.wap.wmlscript": ["wmls"], "text/vtt": ["vtt"], "text/x-asm": ["s", "asm"], "text/x-c": ["c", "cc", "cxx", "cpp", "h", "hh", "dic"], "text/x-component": ["htc"], "text/x-fortran": ["f", "for", "f77", "f90"], "text/x-handlebars-template": ["hbs"], "text/x-java-source": ["java"], "text/x-lua": ["lua"], "text/x-markdown": ["mkd"], "text/x-nfo": ["nfo"], "text/x-opml": ["opml"], "text/x-org": [], "text/x-pascal": ["p", "pas"], "text/x-processing": ["pde"], "text/x-sass": ["sass"], "text/x-scss": ["scss"], "text/x-setext": ["etx"], "text/x-sfv": ["sfv"], "text/x-suse-ymp": ["ymp"], "text/x-uuencode": ["uu"], "text/x-vcalendar": ["vcs"], "text/x-vcard": ["vcf"], "text/xml": [], "text/yaml": ["yaml", "yml"], "video/3gpp": ["3gp", "3gpp"], "video/3gpp2": ["3g2"], "video/h261": ["h261"], "video/h263": ["h263"], "video/h264": ["h264"], "video/jpeg": ["jpgv"], "video/jpm": ["jpgm"], "video/mj2": ["mj2", "mjp2"], "video/mp2t": ["ts"], "video/mp4": ["mp4", "mp4v", "mpg4"], "video/mpeg": ["mpeg", "mpg", "mpe", "m1v", "m2v"], "video/ogg": ["ogv"], "video/quicktime": ["qt", "mov"], "video/vnd.dece.hd": ["uvh", "uvvh"], "video/vnd.dece.mobile": ["uvm", "uvvm"], "video/vnd.dece.pd": ["uvp", "uvvp"], "video/vnd.dece.sd": ["uvs", "uvvs"], "video/vnd.dece.video": ["uvv", "uvvv"], "video/vnd.dvb.file": ["dvb"], "video/vnd.fvt": ["fvt"], "video/vnd.mpegurl": ["mxu", "m4u"], "video/vnd.ms-playready.media.pyv": ["pyv"], "video/vnd.uvvu.mp4": ["uvu", "uvvu"], "video/vnd.vivo": ["viv"], "video/webm": ["webm"], "video/x-f4v": ["f4v"], "video/x-fli": ["fli"], "video/x-flv": ["flv"], "video/x-m4v": ["m4v"], "video/x-matroska": ["mkv", "mk3d", "mks"], "video/x-mng": ["mng"], "video/x-ms-asf": ["asf", "asx"], "video/x-ms-vob": ["vob"], "video/x-ms-wm": ["wm"], "video/x-ms-wmv": ["wmv"], "video/x-ms-wmx": ["wmx"], "video/x-ms-wvx": ["wvx"], "video/x-msvideo": ["avi"], "video/x-sgi-movie": ["movie"], "video/x-smv": ["smv"], "x-conference/x-cooltalk": ["ice"] };
   }
 });
 
-// node_modules/.pnpm/mime@1.6.0/node_modules/mime/mime.js
+// node_modules/mime/mime.js
 var require_mime = __commonJS({
-  "node_modules/.pnpm/mime@1.6.0/node_modules/mime/mime.js"(exports2, module2) {
+  "node_modules/mime/mime.js"(exports2, module2) {
     var path3 = require("path");
     var fs2 = require("fs");
     function Mime() {
@@ -18875,9 +20147,9 @@ var require_mime = __commonJS({
   }
 });
 
-// node_modules/.pnpm/ms@2.1.3/node_modules/ms/index.js
-var require_ms2 = __commonJS({
-  "node_modules/.pnpm/ms@2.1.3/node_modules/ms/index.js"(exports2, module2) {
+// node_modules/ms/index.js
+var require_ms5 = __commonJS({
+  "node_modules/ms/index.js"(exports2, module2) {
     var s = 1e3;
     var m = s * 60;
     var h = m * 60;
@@ -18991,9 +20263,9 @@ var require_ms2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/range-parser@1.2.1/node_modules/range-parser/index.js
+// node_modules/range-parser/index.js
 var require_range_parser = __commonJS({
-  "node_modules/.pnpm/range-parser@1.2.1/node_modules/range-parser/index.js"(exports2, module2) {
+  "node_modules/range-parser/index.js"(exports2, module2) {
     "use strict";
     module2.exports = rangeParser;
     function rangeParser(size2, str2, options) {
@@ -19072,12 +20344,12 @@ var require_range_parser = __commonJS({
   }
 });
 
-// node_modules/.pnpm/send@0.19.2/node_modules/send/index.js
+// node_modules/send/index.js
 var require_send = __commonJS({
-  "node_modules/.pnpm/send@0.19.2/node_modules/send/index.js"(exports2, module2) {
+  "node_modules/send/index.js"(exports2, module2) {
     "use strict";
     var createError = require_http_errors();
-    var debug = require_src()("send");
+    var debug = require_src4()("send");
     var deprecate = require_depd()("send");
     var destroy = require_destroy();
     var encodeUrl = require_encodeurl();
@@ -19086,7 +20358,7 @@ var require_send = __commonJS({
     var fresh = require_fresh();
     var fs2 = require("fs");
     var mime = require_mime();
-    var ms = require_ms2();
+    var ms = require_ms5();
     var onFinished = require_on_finished();
     var parseRange = require_range_parser();
     var path3 = require("path");
@@ -19617,9 +20889,9 @@ var require_send = __commonJS({
   }
 });
 
-// node_modules/.pnpm/forwarded@0.2.0/node_modules/forwarded/index.js
+// node_modules/forwarded/index.js
 var require_forwarded = __commonJS({
-  "node_modules/.pnpm/forwarded@0.2.0/node_modules/forwarded/index.js"(exports2, module2) {
+  "node_modules/forwarded/index.js"(exports2, module2) {
     "use strict";
     module2.exports = forwarded;
     function forwarded(req) {
@@ -19664,9 +20936,9 @@ var require_forwarded = __commonJS({
   }
 });
 
-// node_modules/.pnpm/ipaddr.js@1.9.1/node_modules/ipaddr.js/lib/ipaddr.js
+// node_modules/ipaddr.js/lib/ipaddr.js
 var require_ipaddr = __commonJS({
-  "node_modules/.pnpm/ipaddr.js@1.9.1/node_modules/ipaddr.js/lib/ipaddr.js"(exports2, module2) {
+  "node_modules/ipaddr.js/lib/ipaddr.js"(exports2, module2) {
     (function() {
       var expandIPv6, ipaddr, ipv4Part, ipv4Regexes, ipv6Part, ipv6Regexes, matchCIDR, root, zoneIndex;
       ipaddr = {};
@@ -20286,9 +21558,9 @@ var require_ipaddr = __commonJS({
   }
 });
 
-// node_modules/.pnpm/proxy-addr@2.0.7/node_modules/proxy-addr/index.js
+// node_modules/proxy-addr/index.js
 var require_proxy_addr = __commonJS({
-  "node_modules/.pnpm/proxy-addr@2.0.7/node_modules/proxy-addr/index.js"(exports2, module2) {
+  "node_modules/proxy-addr/index.js"(exports2, module2) {
     "use strict";
     module2.exports = proxyaddr;
     module2.exports.all = alladdrs;
@@ -20445,9 +21717,9 @@ var require_proxy_addr = __commonJS({
   }
 });
 
-// node_modules/.pnpm/express@4.22.1/node_modules/express/lib/utils.js
+// node_modules/express/lib/utils.js
 var require_utils2 = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/utils.js"(exports2) {
+  "node_modules/express/lib/utils.js"(exports2) {
     "use strict";
     var Buffer2 = require_safe_buffer().Buffer;
     var contentDisposition = require_content_disposition();
@@ -20582,16 +21854,16 @@ var require_utils2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/express@4.22.1/node_modules/express/lib/application.js
+// node_modules/express/lib/application.js
 var require_application = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/application.js"(exports2, module2) {
+  "node_modules/express/lib/application.js"(exports2, module2) {
     "use strict";
     var finalhandler = require_finalhandler();
     var Router = require_router();
     var methods = require_methods();
     var middleware = require_init();
     var query = require_query();
-    var debug = require_src()("express:application");
+    var debug = require_src3()("express:application");
     var View2 = require_view();
     var http3 = require("http");
     var compileETag = require_utils2().compileETag;
@@ -20858,9 +22130,9 @@ var require_application = __commonJS({
   }
 });
 
-// node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/charset.js
+// node_modules/negotiator/lib/charset.js
 var require_charset = __commonJS({
-  "node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/charset.js"(exports2, module2) {
+  "node_modules/negotiator/lib/charset.js"(exports2, module2) {
     "use strict";
     module2.exports = preferredCharsets;
     module2.exports.preferredCharsets = preferredCharsets;
@@ -20945,9 +22217,9 @@ var require_charset = __commonJS({
   }
 });
 
-// node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/encoding.js
+// node_modules/negotiator/lib/encoding.js
 var require_encoding = __commonJS({
-  "node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/encoding.js"(exports2, module2) {
+  "node_modules/negotiator/lib/encoding.js"(exports2, module2) {
     "use strict";
     module2.exports = preferredEncodings;
     module2.exports.preferredEncodings = preferredEncodings;
@@ -21043,9 +22315,9 @@ var require_encoding = __commonJS({
   }
 });
 
-// node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/language.js
+// node_modules/negotiator/lib/language.js
 var require_language = __commonJS({
-  "node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/language.js"(exports2, module2) {
+  "node_modules/negotiator/lib/language.js"(exports2, module2) {
     "use strict";
     module2.exports = preferredLanguages;
     module2.exports.preferredLanguages = preferredLanguages;
@@ -21138,9 +22410,9 @@ var require_language = __commonJS({
   }
 });
 
-// node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/mediaType.js
+// node_modules/negotiator/lib/mediaType.js
 var require_mediaType = __commonJS({
-  "node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/lib/mediaType.js"(exports2, module2) {
+  "node_modules/negotiator/lib/mediaType.js"(exports2, module2) {
     "use strict";
     module2.exports = preferredMediaTypes;
     module2.exports.preferredMediaTypes = preferredMediaTypes;
@@ -21300,9 +22572,9 @@ var require_mediaType = __commonJS({
   }
 });
 
-// node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/index.js
+// node_modules/negotiator/index.js
 var require_negotiator = __commonJS({
-  "node_modules/.pnpm/negotiator@0.6.3/node_modules/negotiator/index.js"(exports2, module2) {
+  "node_modules/negotiator/index.js"(exports2, module2) {
     "use strict";
     var preferredCharsets = require_charset();
     var preferredEncodings = require_encoding();
@@ -21355,9 +22627,9 @@ var require_negotiator = __commonJS({
   }
 });
 
-// node_modules/.pnpm/accepts@1.3.8/node_modules/accepts/index.js
+// node_modules/accepts/index.js
 var require_accepts = __commonJS({
-  "node_modules/.pnpm/accepts@1.3.8/node_modules/accepts/index.js"(exports2, module2) {
+  "node_modules/accepts/index.js"(exports2, module2) {
     "use strict";
     var Negotiator = require_negotiator();
     var mime = require_mime_types();
@@ -21436,9 +22708,9 @@ var require_accepts = __commonJS({
   }
 });
 
-// node_modules/.pnpm/express@4.22.1/node_modules/express/lib/request.js
+// node_modules/express/lib/request.js
 var require_request = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/request.js"(exports2, module2) {
+  "node_modules/express/lib/request.js"(exports2, module2) {
     "use strict";
     var accepts = require_accepts();
     var deprecate = require_depd()("express");
@@ -21600,18 +22872,18 @@ var require_request = __commonJS({
   }
 });
 
-// node_modules/.pnpm/cookie-signature@1.0.7/node_modules/cookie-signature/index.js
+// node_modules/cookie-signature/index.js
 var require_cookie_signature = __commonJS({
-  "node_modules/.pnpm/cookie-signature@1.0.7/node_modules/cookie-signature/index.js"(exports2) {
+  "node_modules/cookie-signature/index.js"(exports2) {
     var crypto4 = require("crypto");
     exports2.sign = function(val, secret) {
-      if ("string" !== typeof val) throw new TypeError("Cookie value must be provided as a string.");
-      if (null == secret) throw new TypeError("Secret key must be provided.");
+      if ("string" != typeof val) throw new TypeError("Cookie value must be provided as a string.");
+      if ("string" != typeof secret) throw new TypeError("Secret string must be provided.");
       return val + "." + crypto4.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
     };
     exports2.unsign = function(val, secret) {
-      if ("string" !== typeof val) throw new TypeError("Signed cookie string must be provided.");
-      if (null == secret) throw new TypeError("Secret key must be provided.");
+      if ("string" != typeof val) throw new TypeError("Signed cookie string must be provided.");
+      if ("string" != typeof secret) throw new TypeError("Secret string must be provided.");
       var str2 = val.slice(0, val.lastIndexOf(".")), mac3 = exports2.sign(str2, secret);
       return sha1(mac3) == sha1(val) ? str2 : false;
     };
@@ -21621,9 +22893,9 @@ var require_cookie_signature = __commonJS({
   }
 });
 
-// node_modules/.pnpm/cookie@0.7.2/node_modules/cookie/index.js
+// node_modules/cookie/index.js
 var require_cookie = __commonJS({
-  "node_modules/.pnpm/cookie@0.7.2/node_modules/cookie/index.js"(exports2) {
+  "node_modules/cookie/index.js"(exports2) {
     "use strict";
     exports2.parse = parse5;
     exports2.serialize = serialize2;
@@ -21787,9 +23059,9 @@ var require_cookie = __commonJS({
   }
 });
 
-// node_modules/.pnpm/vary@1.1.2/node_modules/vary/index.js
+// node_modules/vary/index.js
 var require_vary = __commonJS({
-  "node_modules/.pnpm/vary@1.1.2/node_modules/vary/index.js"(exports2, module2) {
+  "node_modules/vary/index.js"(exports2, module2) {
     "use strict";
     module2.exports = vary;
     module2.exports.append = append2;
@@ -21860,9 +23132,9 @@ var require_vary = __commonJS({
   }
 });
 
-// node_modules/.pnpm/express@4.22.1/node_modules/express/lib/response.js
+// node_modules/express/lib/response.js
 var require_response = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/response.js"(exports2, module2) {
+  "node_modules/express/lib/response.js"(exports2, module2) {
     "use strict";
     var Buffer2 = require_safe_buffer().Buffer;
     var contentDisposition = require_content_disposition();
@@ -22402,13 +23674,13 @@ var require_response = __commonJS({
   }
 });
 
-// node_modules/.pnpm/serve-static@1.16.3/node_modules/serve-static/index.js
+// node_modules/serve-static/index.js
 var require_serve_static = __commonJS({
-  "node_modules/.pnpm/serve-static@1.16.3/node_modules/serve-static/index.js"(exports2, module2) {
+  "node_modules/serve-static/index.js"(exports2, module2) {
     "use strict";
     var encodeUrl = require_encodeurl();
     var escapeHtml = require_escape_html();
-    var parseUrl3 = require_parseurl();
+    var parseUrl2 = require_parseurl();
     var resolve = require("path").resolve;
     var send = require_send();
     var url3 = require("url");
@@ -22443,8 +23715,8 @@ var require_serve_static = __commonJS({
           return;
         }
         var forwardError = !fallthrough;
-        var originalUrl = parseUrl3.original(req);
-        var path3 = parseUrl3(req).pathname;
+        var originalUrl = parseUrl2.original(req);
+        var path3 = parseUrl2(req).pathname;
         if (path3 === "/" && originalUrl.pathname.substr(-1) !== "/") {
           path3 = "";
         }
@@ -22490,7 +23762,7 @@ var require_serve_static = __commonJS({
           this.error(404);
           return;
         }
-        var originalUrl = parseUrl3.original(this.req);
+        var originalUrl = parseUrl2.original(this.req);
         originalUrl.path = null;
         originalUrl.pathname = collapseLeadingSlashes(originalUrl.pathname + "/");
         var loc = encodeUrl(url3.format(originalUrl));
@@ -22507,9 +23779,9 @@ var require_serve_static = __commonJS({
   }
 });
 
-// node_modules/.pnpm/express@4.22.1/node_modules/express/lib/express.js
+// node_modules/express/lib/express.js
 var require_express = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/lib/express.js"(exports2, module2) {
+  "node_modules/express/lib/express.js"(exports2, module2) {
     "use strict";
     var bodyParser = require_body_parser();
     var EventEmitter2 = require("events").EventEmitter;
@@ -22576,17 +23848,17 @@ var require_express = __commonJS({
   }
 });
 
-// node_modules/.pnpm/express@4.22.1/node_modules/express/index.js
+// node_modules/express/index.js
 var require_express2 = __commonJS({
-  "node_modules/.pnpm/express@4.22.1/node_modules/express/index.js"(exports2, module2) {
+  "node_modules/express/index.js"(exports2, module2) {
     "use strict";
     module2.exports = require_express();
   }
 });
 
-// node_modules/.pnpm/dotenv@16.6.1/node_modules/dotenv/package.json
+// node_modules/dotenv/package.json
 var require_package = __commonJS({
-  "node_modules/.pnpm/dotenv@16.6.1/node_modules/dotenv/package.json"(exports2, module2) {
+  "node_modules/dotenv/package.json"(exports2, module2) {
     module2.exports = {
       name: "dotenv",
       version: "16.6.1",
@@ -22652,9 +23924,9 @@ var require_package = __commonJS({
   }
 });
 
-// node_modules/.pnpm/dotenv@16.6.1/node_modules/dotenv/lib/main.js
+// node_modules/dotenv/lib/main.js
 var require_main = __commonJS({
-  "node_modules/.pnpm/dotenv@16.6.1/node_modules/dotenv/lib/main.js"(exports2, module2) {
+  "node_modules/dotenv/lib/main.js"(exports2, module2) {
     var fs2 = require("fs");
     var path3 = require("path");
     var os2 = require("os");
@@ -22942,7 +24214,7 @@ var require_main = __commonJS({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/entity.js
+// node_modules/drizzle-orm/entity.js
 function is(value, type) {
   if (!value || typeof value !== "object") {
     return false;
@@ -22968,16 +24240,16 @@ function is(value, type) {
 }
 var entityKind, hasOwnEntityKind;
 var init_entity = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/entity.js"() {
+  "node_modules/drizzle-orm/entity.js"() {
     entityKind = /* @__PURE__ */ Symbol.for("drizzle:entityKind");
     hasOwnEntityKind = /* @__PURE__ */ Symbol.for("drizzle:hasOwnEntityKind");
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/column.js
+// node_modules/drizzle-orm/column.js
 var Column;
 var init_column = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/column.js"() {
+  "node_modules/drizzle-orm/column.js"() {
     init_entity();
     Column = class {
       constructor(table, config2) {
@@ -23031,10 +24303,10 @@ var init_column = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/column-builder.js
+// node_modules/drizzle-orm/column-builder.js
 var ColumnBuilder;
 var init_column_builder = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/column-builder.js"() {
+  "node_modules/drizzle-orm/column-builder.js"() {
     init_entity();
     ColumnBuilder = class {
       static [entityKind] = "ColumnBuilder";
@@ -23140,18 +24412,18 @@ var init_column_builder = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/table.utils.js
+// node_modules/drizzle-orm/table.utils.js
 var TableName;
 var init_table_utils = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/table.utils.js"() {
+  "node_modules/drizzle-orm/table.utils.js"() {
     TableName = /* @__PURE__ */ Symbol.for("drizzle:Name");
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/foreign-keys.js
+// node_modules/drizzle-orm/pg-core/foreign-keys.js
 var ForeignKeyBuilder, ForeignKey;
 var init_foreign_keys = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/foreign-keys.js"() {
+  "node_modules/drizzle-orm/pg-core/foreign-keys.js"() {
     init_entity();
     init_table_utils();
     ForeignKeyBuilder = class {
@@ -23212,22 +24484,22 @@ var init_foreign_keys = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/tracing-utils.js
+// node_modules/drizzle-orm/tracing-utils.js
 function iife(fn, ...args) {
   return fn(...args);
 }
 var init_tracing_utils = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/tracing-utils.js"() {
+  "node_modules/drizzle-orm/tracing-utils.js"() {
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/unique-constraint.js
+// node_modules/drizzle-orm/pg-core/unique-constraint.js
 function uniqueKeyName(table, columns) {
   return `${table[TableName]}_${columns.join("_")}_unique`;
 }
 var UniqueConstraintBuilder, UniqueOnConstraintBuilder, UniqueConstraint;
 var init_unique_constraint = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/unique-constraint.js"() {
+  "node_modules/drizzle-orm/pg-core/unique-constraint.js"() {
     init_entity();
     init_table_utils();
     UniqueConstraintBuilder = class {
@@ -23278,7 +24550,7 @@ var init_unique_constraint = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/utils/array.js
+// node_modules/drizzle-orm/pg-core/utils/array.js
 function parsePgArrayValue(arrayString, startFrom, inQuotes) {
   for (let i = startFrom; i < arrayString.length; i++) {
     const char2 = arrayString[i];
@@ -23354,14 +24626,14 @@ function makePgArray(array2) {
   }).join(",")}}`;
 }
 var init_array = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/utils/array.js"() {
+  "node_modules/drizzle-orm/pg-core/utils/array.js"() {
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/common.js
+// node_modules/drizzle-orm/pg-core/columns/common.js
 var PgColumnBuilder, PgColumn, ExtraConfigColumn, IndexedColumn, PgArrayBuilder, PgArray;
 var init_common = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/common.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/common.js"() {
     init_column_builder();
     init_column();
     init_entity();
@@ -23554,7 +24826,7 @@ var init_common = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/enum.js
+// node_modules/drizzle-orm/pg-core/columns/enum.js
 function isPgEnum(obj) {
   return !!obj && typeof obj === "function" && isPgEnumSym in obj && obj[isPgEnumSym] === true;
 }
@@ -23587,7 +24859,7 @@ function pgEnumObjectWithSchema(enumName, values2, schema) {
 }
 var PgEnumObjectColumnBuilder, PgEnumObjectColumn, isPgEnumSym, PgEnumColumnBuilder, PgEnumColumn;
 var init_enum = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/enum.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/enum.js"() {
     init_entity();
     init_common();
     PgEnumObjectColumnBuilder = class extends PgColumnBuilder {
@@ -23646,17 +24918,17 @@ var init_enum = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/subquery.js
+// node_modules/drizzle-orm/subquery.js
 var Subquery, WithSubquery;
 var init_subquery = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/subquery.js"() {
+  "node_modules/drizzle-orm/subquery.js"() {
     init_entity();
     Subquery = class {
       static [entityKind] = "Subquery";
-      constructor(sql4, fields, alias, isWith = false, usedTables = []) {
+      constructor(sql5, fields, alias, isWith = false, usedTables = []) {
         this._ = {
           brand: "Subquery",
-          sql: sql4,
+          sql: sql5,
           selectedFields: fields,
           alias,
           isWith,
@@ -23673,18 +24945,18 @@ var init_subquery = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/version.js
+// node_modules/drizzle-orm/version.js
 var version2;
 var init_version = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/version.js"() {
+  "node_modules/drizzle-orm/version.js"() {
     version2 = "0.45.2";
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/tracing.js
+// node_modules/drizzle-orm/tracing.js
 var otel, rawTracer, tracer;
 var init_tracing = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/tracing.js"() {
+  "node_modules/drizzle-orm/tracing.js"() {
     init_tracing_utils();
     init_version();
     tracer = {
@@ -23721,15 +24993,15 @@ var init_tracing = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/view-common.js
+// node_modules/drizzle-orm/view-common.js
 var ViewBaseConfig;
 var init_view_common = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/view-common.js"() {
+  "node_modules/drizzle-orm/view-common.js"() {
     ViewBaseConfig = /* @__PURE__ */ Symbol.for("drizzle:ViewBaseConfig");
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/table.js
+// node_modules/drizzle-orm/table.js
 function isTable(table) {
   return typeof table === "object" && table !== null && IsDrizzleTable in table;
 }
@@ -23741,7 +25013,7 @@ function getTableUniqueName(table) {
 }
 var Schema, Columns, ExtraConfigColumns, OriginalName, BaseName, IsAlias, ExtraConfigBuilder, IsDrizzleTable, Table;
 var init_table = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/table.js"() {
+  "node_modules/drizzle-orm/table.js"() {
     init_entity();
     init_table_utils();
     Schema = /* @__PURE__ */ Symbol.for("drizzle:Schema");
@@ -23801,7 +25073,7 @@ var init_table = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/sql/sql.js
+// node_modules/drizzle-orm/sql/sql.js
 function isSQLWrapper(value) {
   return value !== null && value !== void 0 && typeof value.getSQL === "function";
 }
@@ -23866,7 +25138,7 @@ function getViewName(view) {
 }
 var FakePrimitiveParam, StringChunk, SQL, Name, noopDecoder, noopEncoder, noopMapper, Param, Placeholder, IsDrizzleView, View;
 var init_sql = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/sql/sql.js"() {
+  "node_modules/drizzle-orm/sql/sql.js"() {
     init_entity();
     init_enum();
     init_subquery();
@@ -24222,7 +25494,7 @@ var init_sql = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/alias.js
+// node_modules/drizzle-orm/alias.js
 function aliasedTable(table, tableAlias) {
   return new Proxy(table, new TableAliasProxyHandler(tableAlias, false));
 }
@@ -24254,7 +25526,7 @@ function mapColumnsInSQLToAlias(query, alias) {
 }
 var ColumnAliasProxyHandler, TableAliasProxyHandler, RelationTableAliasProxyHandler;
 var init_alias = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/alias.js"() {
+  "node_modules/drizzle-orm/alias.js"() {
     init_column();
     init_entity();
     init_sql();
@@ -24331,10 +25603,10 @@ var init_alias = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/errors.js
+// node_modules/drizzle-orm/errors.js
 var DrizzleError, DrizzleQueryError, TransactionRollbackError;
 var init_errors = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/errors.js"() {
+  "node_modules/drizzle-orm/errors.js"() {
     init_entity();
     DrizzleError = class extends Error {
       static [entityKind] = "DrizzleError";
@@ -24364,10 +25636,10 @@ params: ${params}`);
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/logger.js
+// node_modules/drizzle-orm/logger.js
 var ConsoleLogWriter, DefaultLogger, NoopLogger;
 var init_logger = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/logger.js"() {
+  "node_modules/drizzle-orm/logger.js"() {
     init_entity();
     ConsoleLogWriter = class {
       static [entityKind] = "ConsoleLogWriter";
@@ -24401,16 +25673,16 @@ var init_logger = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/operations.js
+// node_modules/drizzle-orm/operations.js
 var init_operations = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/operations.js"() {
+  "node_modules/drizzle-orm/operations.js"() {
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/query-promise.js
+// node_modules/drizzle-orm/query-promise.js
 var QueryPromise;
 var init_query_promise = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/query-promise.js"() {
+  "node_modules/drizzle-orm/query-promise.js"() {
     init_entity();
     QueryPromise = class {
       static [entityKind] = "QueryPromise";
@@ -24437,7 +25709,7 @@ var init_query_promise = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/utils.js
+// node_modules/drizzle-orm/utils.js
 function mapResultRow(columns, row, joinsNotNullableMap) {
   const nullifyMap = {};
   const result = columns.reduce(
@@ -24591,7 +25863,7 @@ function isConfig(data) {
 }
 var textDecoder;
 var init_utils = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/utils.js"() {
+  "node_modules/drizzle-orm/utils.js"() {
     init_column();
     init_entity();
     init_sql();
@@ -24602,10 +25874,10 @@ var init_utils = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/int.common.js
+// node_modules/drizzle-orm/pg-core/columns/int.common.js
 var PgIntColumnBaseBuilder;
 var init_int_common = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/int.common.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/int.common.js"() {
     init_entity();
     init_common();
     PgIntColumnBaseBuilder = class extends PgColumnBuilder {
@@ -24648,7 +25920,7 @@ var init_int_common = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/bigint.js
+// node_modules/drizzle-orm/pg-core/columns/bigint.js
 function bigint4(a, b2) {
   const { name: name2, config: config2 } = getColumnNameAndConfig(a, b2);
   if (config2.mode === "number") {
@@ -24658,7 +25930,7 @@ function bigint4(a, b2) {
 }
 var PgBigInt53Builder, PgBigInt53, PgBigInt64Builder, PgBigInt64;
 var init_bigint = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/bigint.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/bigint.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -24711,7 +25983,7 @@ var init_bigint = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/bigserial.js
+// node_modules/drizzle-orm/pg-core/columns/bigserial.js
 function bigserial(a, b2) {
   const { name: name2, config: config2 } = getColumnNameAndConfig(a, b2);
   if (config2.mode === "number") {
@@ -24721,7 +25993,7 @@ function bigserial(a, b2) {
 }
 var PgBigSerial53Builder, PgBigSerial53, PgBigSerial64Builder, PgBigSerial64;
 var init_bigserial = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/bigserial.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/bigserial.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -24779,13 +26051,13 @@ var init_bigserial = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/boolean.js
+// node_modules/drizzle-orm/pg-core/columns/boolean.js
 function boolean4(name2) {
   return new PgBooleanBuilder(name2 ?? "");
 }
 var PgBooleanBuilder, PgBoolean;
 var init_boolean = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/boolean.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/boolean.js"() {
     init_entity();
     init_common();
     PgBooleanBuilder = class extends PgColumnBuilder {
@@ -24807,14 +26079,14 @@ var init_boolean = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/char.js
+// node_modules/drizzle-orm/pg-core/columns/char.js
 function char(a, b2 = {}) {
   const { name: name2, config: config2 } = getColumnNameAndConfig(a, b2);
   return new PgCharBuilder(name2, config2);
 }
 var PgCharBuilder, PgChar;
 var init_char = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/char.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/char.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -24844,13 +26116,13 @@ var init_char = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/cidr.js
+// node_modules/drizzle-orm/pg-core/columns/cidr.js
 function cidr(name2) {
   return new PgCidrBuilder(name2 ?? "");
 }
 var PgCidrBuilder, PgCidr;
 var init_cidr = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/cidr.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/cidr.js"() {
     init_entity();
     init_common();
     PgCidrBuilder = class extends PgColumnBuilder {
@@ -24872,7 +26144,7 @@ var init_cidr = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/custom.js
+// node_modules/drizzle-orm/pg-core/columns/custom.js
 function customType(customTypeParams) {
   return (a, b2) => {
     const { name: name2, config: config2 } = getColumnNameAndConfig(a, b2);
@@ -24881,7 +26153,7 @@ function customType(customTypeParams) {
 }
 var PgCustomColumnBuilder, PgCustomColumn;
 var init_custom = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/custom.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/custom.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -24924,10 +26196,10 @@ var init_custom = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/date.common.js
+// node_modules/drizzle-orm/pg-core/columns/date.common.js
 var PgDateColumnBaseBuilder;
 var init_date_common = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/date.common.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/date.common.js"() {
     init_entity();
     init_sql();
     init_common();
@@ -24940,7 +26212,7 @@ var init_date_common = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/date.js
+// node_modules/drizzle-orm/pg-core/columns/date.js
 function date5(a, b2) {
   const { name: name2, config: config2 } = getColumnNameAndConfig(a, b2);
   if (config2?.mode === "date") {
@@ -24950,7 +26222,7 @@ function date5(a, b2) {
 }
 var PgDateBuilder, PgDate, PgDateStringBuilder, PgDateString;
 var init_date = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/date.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/date.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -25004,13 +26276,13 @@ var init_date = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/double-precision.js
+// node_modules/drizzle-orm/pg-core/columns/double-precision.js
 function doublePrecision(name2) {
   return new PgDoublePrecisionBuilder(name2 ?? "");
 }
 var PgDoublePrecisionBuilder, PgDoublePrecision;
 var init_double_precision = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/double-precision.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/double-precision.js"() {
     init_entity();
     init_common();
     PgDoublePrecisionBuilder = class extends PgColumnBuilder {
@@ -25041,13 +26313,13 @@ var init_double_precision = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/inet.js
+// node_modules/drizzle-orm/pg-core/columns/inet.js
 function inet(name2) {
   return new PgInetBuilder(name2 ?? "");
 }
 var PgInetBuilder, PgInet;
 var init_inet = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/inet.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/inet.js"() {
     init_entity();
     init_common();
     PgInetBuilder = class extends PgColumnBuilder {
@@ -25069,13 +26341,13 @@ var init_inet = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/integer.js
+// node_modules/drizzle-orm/pg-core/columns/integer.js
 function integer2(name2) {
   return new PgIntegerBuilder(name2 ?? "");
 }
 var PgIntegerBuilder, PgInteger;
 var init_integer = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/integer.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/integer.js"() {
     init_entity();
     init_common();
     init_int_common();
@@ -25104,14 +26376,14 @@ var init_integer = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/interval.js
+// node_modules/drizzle-orm/pg-core/columns/interval.js
 function interval(a, b2 = {}) {
   const { name: name2, config: config2 } = getColumnNameAndConfig(a, b2);
   return new PgIntervalBuilder(name2, config2);
 }
 var PgIntervalBuilder, PgInterval;
 var init_interval = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/interval.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/interval.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -25139,13 +26411,13 @@ var init_interval = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/json.js
+// node_modules/drizzle-orm/pg-core/columns/json.js
 function json2(name2) {
   return new PgJsonBuilder(name2 ?? "");
 }
 var PgJsonBuilder, PgJson;
 var init_json = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/json.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/json.js"() {
     init_entity();
     init_common();
     PgJsonBuilder = class extends PgColumnBuilder {
@@ -25183,13 +26455,13 @@ var init_json = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/jsonb.js
+// node_modules/drizzle-orm/pg-core/columns/jsonb.js
 function jsonb(name2) {
   return new PgJsonbBuilder(name2 ?? "");
 }
 var PgJsonbBuilder, PgJsonb;
 var init_jsonb = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/jsonb.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/jsonb.js"() {
     init_entity();
     init_common();
     PgJsonbBuilder = class extends PgColumnBuilder {
@@ -25227,7 +26499,7 @@ var init_jsonb = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/line.js
+// node_modules/drizzle-orm/pg-core/columns/line.js
 function line(a, b2) {
   const { name: name2, config: config2 } = getColumnNameAndConfig(a, b2);
   if (!config2?.mode || config2.mode === "tuple") {
@@ -25237,7 +26509,7 @@ function line(a, b2) {
 }
 var PgLineBuilder, PgLineTuple, PgLineABCBuilder, PgLineABC;
 var init_line = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/line.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/line.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -25296,13 +26568,13 @@ var init_line = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/macaddr.js
+// node_modules/drizzle-orm/pg-core/columns/macaddr.js
 function macaddr(name2) {
   return new PgMacaddrBuilder(name2 ?? "");
 }
 var PgMacaddrBuilder, PgMacaddr;
 var init_macaddr = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/macaddr.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/macaddr.js"() {
     init_entity();
     init_common();
     PgMacaddrBuilder = class extends PgColumnBuilder {
@@ -25324,13 +26596,13 @@ var init_macaddr = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/macaddr8.js
+// node_modules/drizzle-orm/pg-core/columns/macaddr8.js
 function macaddr8(name2) {
   return new PgMacaddr8Builder(name2 ?? "");
 }
 var PgMacaddr8Builder, PgMacaddr8;
 var init_macaddr8 = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/macaddr8.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/macaddr8.js"() {
     init_entity();
     init_common();
     PgMacaddr8Builder = class extends PgColumnBuilder {
@@ -25352,7 +26624,7 @@ var init_macaddr8 = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/numeric.js
+// node_modules/drizzle-orm/pg-core/columns/numeric.js
 function numeric(a, b2) {
   const { name: name2, config: config2 } = getColumnNameAndConfig(a, b2);
   const mode = config2?.mode;
@@ -25360,7 +26632,7 @@ function numeric(a, b2) {
 }
 var PgNumericBuilder, PgNumeric, PgNumericNumberBuilder, PgNumericNumber, PgNumericBigIntBuilder, PgNumericBigInt, decimal;
 var init_numeric = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/numeric.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/numeric.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -25478,7 +26750,7 @@ var init_numeric = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/point.js
+// node_modules/drizzle-orm/pg-core/columns/point.js
 function point(a, b2) {
   const { name: name2, config: config2 } = getColumnNameAndConfig(a, b2);
   if (!config2?.mode || config2.mode === "tuple") {
@@ -25488,7 +26760,7 @@ function point(a, b2) {
 }
 var PgPointTupleBuilder, PgPointTuple, PgPointObjectBuilder, PgPointObject;
 var init_point = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/point.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/point.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -25553,7 +26825,7 @@ var init_point = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/postgis_extension/utils.js
+// node_modules/drizzle-orm/pg-core/columns/postgis_extension/utils.js
 function hexToBytes(hex3) {
   const bytes = [];
   for (let c = 0; c < hex3.length; c += 2) {
@@ -25592,11 +26864,11 @@ function parseEWKB(hex3) {
   throw new Error("Unsupported geometry type");
 }
 var init_utils2 = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/postgis_extension/utils.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/postgis_extension/utils.js"() {
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/postgis_extension/geometry.js
+// node_modules/drizzle-orm/pg-core/columns/postgis_extension/geometry.js
 function geometry(a, b2) {
   const { name: name2, config: config2 } = getColumnNameAndConfig(a, b2);
   if (!config2?.mode || config2.mode === "tuple") {
@@ -25606,7 +26878,7 @@ function geometry(a, b2) {
 }
 var PgGeometryBuilder, PgGeometry, PgGeometryObjectBuilder, PgGeometryObject;
 var init_geometry = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/postgis_extension/geometry.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/postgis_extension/geometry.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -25665,13 +26937,13 @@ var init_geometry = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/real.js
+// node_modules/drizzle-orm/pg-core/columns/real.js
 function real(name2) {
   return new PgRealBuilder(name2 ?? "");
 }
 var PgRealBuilder, PgReal;
 var init_real = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/real.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/real.js"() {
     init_entity();
     init_common();
     PgRealBuilder = class extends PgColumnBuilder {
@@ -25703,13 +26975,13 @@ var init_real = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/serial.js
+// node_modules/drizzle-orm/pg-core/columns/serial.js
 function serial(name2) {
   return new PgSerialBuilder(name2 ?? "");
 }
 var PgSerialBuilder, PgSerial;
 var init_serial = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/serial.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/serial.js"() {
     init_entity();
     init_common();
     PgSerialBuilder = class extends PgColumnBuilder {
@@ -25733,13 +27005,13 @@ var init_serial = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/smallint.js
+// node_modules/drizzle-orm/pg-core/columns/smallint.js
 function smallint(name2) {
   return new PgSmallIntBuilder(name2 ?? "");
 }
 var PgSmallIntBuilder, PgSmallInt;
 var init_smallint = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/smallint.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/smallint.js"() {
     init_entity();
     init_common();
     init_int_common();
@@ -25768,13 +27040,13 @@ var init_smallint = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/smallserial.js
+// node_modules/drizzle-orm/pg-core/columns/smallserial.js
 function smallserial(name2) {
   return new PgSmallSerialBuilder(name2 ?? "");
 }
 var PgSmallSerialBuilder, PgSmallSerial;
 var init_smallserial = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/smallserial.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/smallserial.js"() {
     init_entity();
     init_common();
     PgSmallSerialBuilder = class extends PgColumnBuilder {
@@ -25801,14 +27073,14 @@ var init_smallserial = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/text.js
+// node_modules/drizzle-orm/pg-core/columns/text.js
 function text(a, b2 = {}) {
   const { name: name2, config: config2 } = getColumnNameAndConfig(a, b2);
   return new PgTextBuilder(name2, config2);
 }
 var PgTextBuilder, PgText;
 var init_text = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/text.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/text.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -25833,14 +27105,14 @@ var init_text = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/time.js
+// node_modules/drizzle-orm/pg-core/columns/time.js
 function time3(a, b2 = {}) {
   const { name: name2, config: config2 } = getColumnNameAndConfig(a, b2);
   return new PgTimeBuilder(name2, config2.withTimezone ?? false, config2.precision);
 }
 var PgTimeBuilder, PgTime;
 var init_time = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/time.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/time.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -25876,7 +27148,7 @@ var init_time = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/timestamp.js
+// node_modules/drizzle-orm/pg-core/columns/timestamp.js
 function timestamp(a, b2 = {}) {
   const { name: name2, config: config2 } = getColumnNameAndConfig(a, b2);
   if (config2?.mode === "string") {
@@ -25886,7 +27158,7 @@ function timestamp(a, b2 = {}) {
 }
 var PgTimestampBuilder, PgTimestamp, PgTimestampStringBuilder, PgTimestampString;
 var init_timestamp = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/timestamp.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/timestamp.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -25966,13 +27238,13 @@ var init_timestamp = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/uuid.js
+// node_modules/drizzle-orm/pg-core/columns/uuid.js
 function uuid3(name2) {
   return new PgUUIDBuilder(name2 ?? "");
 }
 var PgUUIDBuilder, PgUUID;
 var init_uuid = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/uuid.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/uuid.js"() {
     init_entity();
     init_sql();
     init_common();
@@ -26001,14 +27273,14 @@ var init_uuid = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/varchar.js
+// node_modules/drizzle-orm/pg-core/columns/varchar.js
 function varchar(a, b2 = {}) {
   const { name: name2, config: config2 } = getColumnNameAndConfig(a, b2);
   return new PgVarcharBuilder(name2, config2);
 }
 var PgVarcharBuilder, PgVarchar;
 var init_varchar = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/varchar.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/varchar.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -26038,14 +27310,14 @@ var init_varchar = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/vector_extension/bit.js
+// node_modules/drizzle-orm/pg-core/columns/vector_extension/bit.js
 function bit(a, b2) {
   const { name: name2, config: config2 } = getColumnNameAndConfig(a, b2);
   return new PgBinaryVectorBuilder(name2, config2);
 }
 var PgBinaryVectorBuilder, PgBinaryVector;
 var init_bit = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/vector_extension/bit.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/vector_extension/bit.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -26073,14 +27345,14 @@ var init_bit = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/vector_extension/halfvec.js
+// node_modules/drizzle-orm/pg-core/columns/vector_extension/halfvec.js
 function halfvec(a, b2) {
   const { name: name2, config: config2 } = getColumnNameAndConfig(a, b2);
   return new PgHalfVectorBuilder(name2, config2);
 }
 var PgHalfVectorBuilder, PgHalfVector;
 var init_halfvec = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/vector_extension/halfvec.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/vector_extension/halfvec.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -26114,14 +27386,14 @@ var init_halfvec = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/vector_extension/sparsevec.js
+// node_modules/drizzle-orm/pg-core/columns/vector_extension/sparsevec.js
 function sparsevec(a, b2) {
   const { name: name2, config: config2 } = getColumnNameAndConfig(a, b2);
   return new PgSparseVectorBuilder(name2, config2);
 }
 var PgSparseVectorBuilder, PgSparseVector;
 var init_sparsevec = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/vector_extension/sparsevec.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/vector_extension/sparsevec.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -26149,14 +27421,14 @@ var init_sparsevec = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/vector_extension/vector.js
+// node_modules/drizzle-orm/pg-core/columns/vector_extension/vector.js
 function vector(a, b2) {
   const { name: name2, config: config2 } = getColumnNameAndConfig(a, b2);
   return new PgVectorBuilder(name2, config2);
 }
 var PgVectorBuilder, PgVector;
 var init_vector = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/vector_extension/vector.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/vector_extension/vector.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -26190,7 +27462,7 @@ var init_vector = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/all.js
+// node_modules/drizzle-orm/pg-core/columns/all.js
 function getPgColumnBuilders() {
   return {
     bigint: bigint4,
@@ -26228,7 +27500,7 @@ function getPgColumnBuilders() {
   };
 }
 var init_all = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/all.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/all.js"() {
     init_bigint();
     init_bigserial();
     init_boolean();
@@ -26264,7 +27536,7 @@ var init_all = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/table.js
+// node_modules/drizzle-orm/pg-core/table.js
 function pgTableWithSchema(name2, columns, extraConfig, schema, baseName = name2) {
   const rawTable = new PgTable(name2, schema, baseName);
   const parsedColumns = typeof columns === "function" ? columns(getPgColumnBuilders()) : columns;
@@ -26300,7 +27572,7 @@ function pgTableWithSchema(name2, columns, extraConfig, schema, baseName = name2
 }
 var InlineForeignKeys, EnableRLS, PgTable, pgTable;
 var init_table2 = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/table.js"() {
+  "node_modules/drizzle-orm/pg-core/table.js"() {
     init_entity();
     init_table();
     init_all();
@@ -26328,10 +27600,10 @@ var init_table2 = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/primary-keys.js
+// node_modules/drizzle-orm/pg-core/primary-keys.js
 var PrimaryKeyBuilder, PrimaryKey;
 var init_primary_keys = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/primary-keys.js"() {
+  "node_modules/drizzle-orm/pg-core/primary-keys.js"() {
     init_entity();
     init_table2();
     PrimaryKeyBuilder = class {
@@ -26365,7 +27637,7 @@ var init_primary_keys = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/sql/expressions/conditions.js
+// node_modules/drizzle-orm/sql/expressions/conditions.js
 function bindIfParam(value, column) {
   if (isDriverValueEncoder(column) && !isSQLWrapper(value) && !is(value, Param) && !is(value, Placeholder) && !is(value, Column) && !is(value, Table) && !is(value, View)) {
     return new Param(value, column);
@@ -26493,7 +27765,7 @@ function arrayOverlaps(column, values2) {
 }
 var eq, ne, gt, gte, lt, lte;
 var init_conditions = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/sql/expressions/conditions.js"() {
+  "node_modules/drizzle-orm/sql/expressions/conditions.js"() {
     init_column();
     init_entity();
     init_table();
@@ -26519,7 +27791,7 @@ var init_conditions = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/sql/expressions/select.js
+// node_modules/drizzle-orm/sql/expressions/select.js
 function asc(column) {
   return sql`${column} asc`;
 }
@@ -26527,20 +27799,20 @@ function desc(column) {
   return sql`${column} desc`;
 }
 var init_select = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/sql/expressions/select.js"() {
+  "node_modules/drizzle-orm/sql/expressions/select.js"() {
     init_sql();
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/sql/expressions/index.js
+// node_modules/drizzle-orm/sql/expressions/index.js
 var init_expressions = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/sql/expressions/index.js"() {
+  "node_modules/drizzle-orm/sql/expressions/index.js"() {
     init_conditions();
     init_select();
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/relations.js
+// node_modules/drizzle-orm/relations.js
 function getOperators() {
   return {
     and,
@@ -26761,7 +28033,7 @@ function mapRelationalRow(tablesConfig, tableConfig, row, buildQueryResultSelect
 }
 var Relation, Relations, One, Many;
 var init_relations = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/relations.js"() {
+  "node_modules/drizzle-orm/relations.js"() {
     init_table();
     init_column();
     init_entity();
@@ -26823,7 +28095,7 @@ var init_relations = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/sql/functions/aggregate.js
+// node_modules/drizzle-orm/sql/functions/aggregate.js
 function count(expression) {
   return sql`count(${expression || sql.raw("*")})`.mapWith(Number);
 }
@@ -26849,14 +28121,14 @@ function min(expression) {
   return sql`min(${expression})`.mapWith(is(expression, Column) ? expression : String);
 }
 var init_aggregate = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/sql/functions/aggregate.js"() {
+  "node_modules/drizzle-orm/sql/functions/aggregate.js"() {
     init_column();
     init_entity();
     init_sql();
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/sql/functions/vector.js
+// node_modules/drizzle-orm/sql/functions/vector.js
 function toSql(value) {
   return JSON.stringify(value);
 }
@@ -26897,29 +28169,29 @@ function jaccardDistance(column, value) {
   return sql`${column} <%> ${value}`;
 }
 var init_vector2 = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/sql/functions/vector.js"() {
+  "node_modules/drizzle-orm/sql/functions/vector.js"() {
     init_sql();
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/sql/functions/index.js
+// node_modules/drizzle-orm/sql/functions/index.js
 var init_functions = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/sql/functions/index.js"() {
+  "node_modules/drizzle-orm/sql/functions/index.js"() {
     init_aggregate();
     init_vector2();
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/sql/index.js
+// node_modules/drizzle-orm/sql/index.js
 var init_sql2 = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/sql/index.js"() {
+  "node_modules/drizzle-orm/sql/index.js"() {
     init_expressions();
     init_functions();
     init_sql();
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/index.js
+// node_modules/drizzle-orm/index.js
 var drizzle_orm_exports = {};
 __export(drizzle_orm_exports, {
   BaseName: () => BaseName,
@@ -27042,7 +28314,7 @@ __export(drizzle_orm_exports, {
   textDecoder: () => textDecoder
 });
 var init_drizzle_orm = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/index.js"() {
+  "node_modules/drizzle-orm/index.js"() {
     init_alias();
     init_column_builder();
     init_column();
@@ -27060,10 +28332,10 @@ var init_drizzle_orm = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/selection-proxy.js
+// node_modules/drizzle-orm/selection-proxy.js
 var SelectionProxyHandler;
 var init_selection_proxy = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/selection-proxy.js"() {
+  "node_modules/drizzle-orm/selection-proxy.js"() {
     init_alias();
     init_column();
     init_entity();
@@ -27139,10 +28411,10 @@ var init_selection_proxy = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/checks.js
+// node_modules/drizzle-orm/pg-core/checks.js
 var CheckBuilder, Check;
 var init_checks = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/checks.js"() {
+  "node_modules/drizzle-orm/pg-core/checks.js"() {
     init_entity();
     CheckBuilder = class {
       constructor(name2, value) {
@@ -27169,9 +28441,9 @@ var init_checks = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/index.js
+// node_modules/drizzle-orm/pg-core/columns/index.js
 var init_columns = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/columns/index.js"() {
+  "node_modules/drizzle-orm/pg-core/columns/index.js"() {
     init_bigint();
     init_bigserial();
     init_boolean();
@@ -27210,10 +28482,10 @@ var init_columns = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/indexes.js
+// node_modules/drizzle-orm/pg-core/indexes.js
 var IndexBuilderOn, IndexBuilder, Index;
 var init_indexes = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/indexes.js"() {
+  "node_modules/drizzle-orm/pg-core/indexes.js"() {
     init_sql();
     init_entity();
     init_columns();
@@ -27324,10 +28596,10 @@ var init_indexes = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/policies.js
+// node_modules/drizzle-orm/pg-core/policies.js
 var PgPolicy;
 var init_policies = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/policies.js"() {
+  "node_modules/drizzle-orm/pg-core/policies.js"() {
     init_entity();
     PgPolicy = class {
       constructor(name2, config2) {
@@ -27356,15 +28628,15 @@ var init_policies = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/view-common.js
+// node_modules/drizzle-orm/pg-core/view-common.js
 var PgViewConfig;
 var init_view_common2 = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/view-common.js"() {
+  "node_modules/drizzle-orm/pg-core/view-common.js"() {
     PgViewConfig = /* @__PURE__ */ Symbol.for("drizzle:PgViewConfig");
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/casing.js
+// node_modules/drizzle-orm/casing.js
 function toSnakeCase(input) {
   const words = input.replace(/['\u2019]/g, "").match(/[\da-z]+|[A-Z]+(?![a-z])|[A-Z][\da-z]+/g) ?? [];
   return words.map((word) => word.toLowerCase()).join("_");
@@ -27381,7 +28653,7 @@ function noopCase(input) {
 }
 var CasingCache;
 var init_casing = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/casing.js"() {
+  "node_modules/drizzle-orm/casing.js"() {
     init_entity();
     init_table();
     CasingCache = class {
@@ -27423,10 +28695,10 @@ var init_casing = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/view-base.js
+// node_modules/drizzle-orm/pg-core/view-base.js
 var PgViewBase;
 var init_view_base = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/view-base.js"() {
+  "node_modules/drizzle-orm/pg-core/view-base.js"() {
     init_entity();
     init_sql();
     PgViewBase = class extends View {
@@ -27435,10 +28707,10 @@ var init_view_base = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/dialect.js
+// node_modules/drizzle-orm/pg-core/dialect.js
 var PgDialect;
 var init_dialect = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/dialect.js"() {
+  "node_modules/drizzle-orm/pg-core/dialect.js"() {
     init_alias();
     init_casing();
     init_column();
@@ -28560,10 +29832,10 @@ var init_dialect = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/query-builders/query-builder.js
+// node_modules/drizzle-orm/query-builders/query-builder.js
 var TypedQueryBuilder;
 var init_query_builder = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/query-builders/query-builder.js"() {
+  "node_modules/drizzle-orm/query-builders/query-builder.js"() {
     init_entity();
     TypedQueryBuilder = class {
       static [entityKind] = "TypedQueryBuilder";
@@ -28575,7 +29847,7 @@ var init_query_builder = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/select.js
+// node_modules/drizzle-orm/pg-core/query-builders/select.js
 function createSetOperator(type, isAll) {
   return (leftSelect, rightSelect, ...restSelects) => {
     const setOperators = [rightSelect, ...restSelects].map((select2) => ({
@@ -28595,7 +29867,7 @@ function createSetOperator(type, isAll) {
 }
 var PgSelectBuilder, PgSelectQueryBuilderBase, PgSelectBase, getPgSetOperators, union2, unionAll, intersect, intersectAll, except, exceptAll;
 var init_select2 = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/select.js"() {
+  "node_modules/drizzle-orm/pg-core/query-builders/select.js"() {
     init_entity();
     init_view_base();
     init_query_builder();
@@ -29409,10 +30681,10 @@ var init_select2 = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/query-builder.js
+// node_modules/drizzle-orm/pg-core/query-builders/query-builder.js
 var QueryBuilder;
 var init_query_builder2 = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/query-builder.js"() {
+  "node_modules/drizzle-orm/pg-core/query-builders/query-builder.js"() {
     init_entity();
     init_dialect();
     init_selection_proxy();
@@ -29506,7 +30778,7 @@ var init_query_builder2 = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/view.js
+// node_modules/drizzle-orm/pg-core/view.js
 function pgViewWithSchema(name2, selection, schema) {
   if (selection) {
     return new ManualViewBuilder(name2, selection, schema);
@@ -29521,7 +30793,7 @@ function pgMaterializedViewWithSchema(name2, selection, schema) {
 }
 var DefaultViewBuilderCore, ViewBuilder, ManualViewBuilder, MaterializedViewBuilderCore, MaterializedViewBuilder, ManualMaterializedViewBuilder, PgView, PgMaterializedViewConfig, PgMaterializedView;
 var init_view = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/view.js"() {
+  "node_modules/drizzle-orm/pg-core/view.js"() {
     init_entity();
     init_selection_proxy();
     init_utils();
@@ -29755,7 +31027,7 @@ var init_view = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/utils.js
+// node_modules/drizzle-orm/pg-core/utils.js
 function extractUsedTable(table) {
   if (is(table, PgTable)) {
     return [table[Schema] ? `${table[Schema]}.${table[Table.Symbol.BaseName]}` : table[Table.Symbol.BaseName]];
@@ -29769,7 +31041,7 @@ function extractUsedTable(table) {
   return [];
 }
 var init_utils3 = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/utils.js"() {
+  "node_modules/drizzle-orm/pg-core/utils.js"() {
     init_entity();
     init_table2();
     init_sql();
@@ -29778,10 +31050,10 @@ var init_utils3 = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/delete.js
+// node_modules/drizzle-orm/pg-core/query-builders/delete.js
 var PgDeleteBase;
 var init_delete = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/delete.js"() {
+  "node_modules/drizzle-orm/pg-core/query-builders/delete.js"() {
     init_entity();
     init_query_promise();
     init_selection_proxy();
@@ -29886,10 +31158,10 @@ var init_delete = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/insert.js
+// node_modules/drizzle-orm/pg-core/query-builders/insert.js
 var PgInsertBuilder, PgInsertBase;
 var init_insert = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/insert.js"() {
+  "node_modules/drizzle-orm/pg-core/query-builders/insert.js"() {
     init_entity();
     init_query_promise();
     init_selection_proxy();
@@ -30093,10 +31365,10 @@ var init_insert = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/refresh-materialized-view.js
+// node_modules/drizzle-orm/pg-core/query-builders/refresh-materialized-view.js
 var PgRefreshMaterializedView;
 var init_refresh_materialized_view = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/refresh-materialized-view.js"() {
+  "node_modules/drizzle-orm/pg-core/query-builders/refresh-materialized-view.js"() {
     init_entity();
     init_query_promise();
     init_tracing();
@@ -30155,16 +31427,16 @@ var init_refresh_materialized_view = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/select.types.js
+// node_modules/drizzle-orm/pg-core/query-builders/select.types.js
 var init_select_types = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/select.types.js"() {
+  "node_modules/drizzle-orm/pg-core/query-builders/select.types.js"() {
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/update.js
+// node_modules/drizzle-orm/pg-core/query-builders/update.js
 var PgUpdateBuilder, PgUpdateBase;
 var init_update = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/update.js"() {
+  "node_modules/drizzle-orm/pg-core/query-builders/update.js"() {
     init_entity();
     init_table2();
     init_query_promise();
@@ -30388,9 +31660,9 @@ var init_update = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/index.js
+// node_modules/drizzle-orm/pg-core/query-builders/index.js
 var init_query_builders = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/index.js"() {
+  "node_modules/drizzle-orm/pg-core/query-builders/index.js"() {
     init_delete();
     init_insert();
     init_query_builder2();
@@ -30401,10 +31673,10 @@ var init_query_builders = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/count.js
+// node_modules/drizzle-orm/pg-core/query-builders/count.js
 var PgCountBuilder;
 var init_count = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/count.js"() {
+  "node_modules/drizzle-orm/pg-core/query-builders/count.js"() {
     init_entity();
     init_sql();
     PgCountBuilder = class _PgCountBuilder extends SQL {
@@ -30459,10 +31731,10 @@ var init_count = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/query.js
+// node_modules/drizzle-orm/pg-core/query-builders/query.js
 var RelationalQueryBuilder, PgRelationalQuery;
 var init_query = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/query.js"() {
+  "node_modules/drizzle-orm/pg-core/query-builders/query.js"() {
     init_entity();
     init_query_promise();
     init_relations();
@@ -30581,17 +31853,17 @@ var init_query = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/raw.js
+// node_modules/drizzle-orm/pg-core/query-builders/raw.js
 var PgRaw;
 var init_raw = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/query-builders/raw.js"() {
+  "node_modules/drizzle-orm/pg-core/query-builders/raw.js"() {
     init_entity();
     init_query_promise();
     PgRaw = class extends QueryPromise {
-      constructor(execute, sql4, query, mapBatchResult) {
+      constructor(execute, sql5, query, mapBatchResult) {
         super();
         this.execute = execute;
-        this.sql = sql4;
+        this.sql = sql5;
         this.query = query;
         this.mapBatchResult = mapBatchResult;
       }
@@ -30617,10 +31889,10 @@ var init_raw = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/db.js
+// node_modules/drizzle-orm/pg-core/db.js
 var PgDatabase;
 var init_db = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/db.js"() {
+  "node_modules/drizzle-orm/pg-core/db.js"() {
     init_entity();
     init_query_builders();
     init_selection_proxy();
@@ -30910,9 +32182,9 @@ var init_db = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/cache/core/cache.js
-async function hashQuery(sql4, params) {
-  const dataToHash = `${sql4}-${JSON.stringify(params)}`;
+// node_modules/drizzle-orm/cache/core/cache.js
+async function hashQuery(sql5, params) {
+  const dataToHash = `${sql5}-${JSON.stringify(params)}`;
   const encoder = new TextEncoder();
   const data = encoder.encode(dataToHash);
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
@@ -30922,7 +32194,7 @@ async function hashQuery(sql4, params) {
 }
 var Cache, NoopCache;
 var init_cache = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/cache/core/cache.js"() {
+  "node_modules/drizzle-orm/cache/core/cache.js"() {
     init_entity();
     Cache = class {
       static [entityKind] = "Cache";
@@ -30943,16 +32215,16 @@ var init_cache = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/alias.js
+// node_modules/drizzle-orm/pg-core/alias.js
 var init_alias2 = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/alias.js"() {
+  "node_modules/drizzle-orm/pg-core/alias.js"() {
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/roles.js
+// node_modules/drizzle-orm/pg-core/roles.js
 var PgRole;
 var init_roles = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/roles.js"() {
+  "node_modules/drizzle-orm/pg-core/roles.js"() {
     init_entity();
     PgRole = class {
       constructor(name2, config2) {
@@ -30980,13 +32252,13 @@ var init_roles = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/sequence.js
+// node_modules/drizzle-orm/pg-core/sequence.js
 function pgSequenceWithSchema(name2, options, schema) {
   return new PgSequence(name2, options, schema);
 }
 var PgSequence;
 var init_sequence = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/sequence.js"() {
+  "node_modules/drizzle-orm/pg-core/sequence.js"() {
     init_entity();
     PgSequence = class {
       constructor(seqName, seqOptions, schema) {
@@ -30999,10 +32271,10 @@ var init_sequence = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/schema.js
+// node_modules/drizzle-orm/pg-core/schema.js
 var PgSchema;
 var init_schema = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/schema.js"() {
+  "node_modules/drizzle-orm/pg-core/schema.js"() {
     init_entity();
     init_sql();
     init_enum();
@@ -31043,10 +32315,10 @@ var init_schema = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/session.js
+// node_modules/drizzle-orm/pg-core/session.js
 var PgPreparedQuery, PgSession, PgTransaction;
 var init_session = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/session.js"() {
+  "node_modules/drizzle-orm/pg-core/session.js"() {
     init_cache();
     init_entity();
     init_errors();
@@ -31214,22 +32486,22 @@ var init_session = __esm({
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/subquery.js
+// node_modules/drizzle-orm/pg-core/subquery.js
 var init_subquery2 = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/subquery.js"() {
+  "node_modules/drizzle-orm/pg-core/subquery.js"() {
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/utils/index.js
+// node_modules/drizzle-orm/pg-core/utils/index.js
 var init_utils4 = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/utils/index.js"() {
+  "node_modules/drizzle-orm/pg-core/utils/index.js"() {
     init_array();
   }
 });
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/index.js
+// node_modules/drizzle-orm/pg-core/index.js
 var init_pg_core = __esm({
-  "node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/pg-core/index.js"() {
+  "node_modules/drizzle-orm/pg-core/index.js"() {
     init_alias2();
     init_checks();
     init_columns();
@@ -31262,10 +32534,18 @@ __export(schema_exports, {
   acidentes: () => acidentes,
   adiantamentos: () => adiantamentos,
   armazens: () => armazens,
+  atividadesFunil: () => atividadesFunil,
+  ativosTi: () => ativosTi,
   auditLog: () => auditLog,
+  auditoriaDetalhada: () => auditoriaDetalhada,
+  bancoHoras: () => bancoHoras,
+  biDashboards: () => biDashboards,
+  biWidgets: () => biWidgets,
   carregamentos: () => carregamentos,
   categoriaContaPagarEnum: () => categoriaContaPagarEnum,
   categoriaContaReceberEnum: () => categoriaContaReceberEnum,
+  categoriaTicketTiEnum: () => categoriaTicketTiEnum,
+  chamadosSac: () => chamadosSac,
   chatConversations: () => chatConversations,
   chatMembers: () => chatMembers,
   chatMessageTypeEnum: () => chatMessageTypeEnum,
@@ -31273,52 +32553,86 @@ __export(schema_exports, {
   chatRoleEnum: () => chatRoleEnum,
   checklists: () => checklists,
   cicloCobrancaEnum: () => cicloCobrancaEnum,
+  clientes: () => clientes,
   cobrancas: () => cobrancas,
+  comissoes: () => comissoes,
+  conferenciaVeiculos: () => conferenciaVeiculos,
   contasPagar: () => contasPagar,
   contasReceber: () => contasReceber,
+  contatosCrm: () => contatosCrm,
   controleTanque: () => controleTanque,
   despesasViagem: () => despesasViagem,
   docas: () => docas,
   documentos: () => documentos,
   empresas: () => empresas,
   estoque: () => estoque,
+  etapasFunil: () => etapasFunil,
   formaPagamentoEnum: () => formaPagamentoEnum,
   formaPagamentoSaasEnum: () => formaPagamentoSaasEnum,
+  fotosConferencia: () => fotosConferencia,
   funcaoEnum: () => funcaoEnum,
   funcionarios: () => funcionarios,
+  funis: () => funis,
+  grupoEmpresas: () => grupoEmpresas,
+  gruposEmpresariais: () => gruposEmpresariais,
   historicoPneus: () => historicoPneus,
   iaAgenteSetorEnum: () => iaAgenteSetorEnum,
   iaAgentes: () => iaAgentes,
   iaConhecimento: () => iaConhecimento,
   iaMensagens: () => iaMensagens,
   iaSessoes: () => iaSessoes,
+  integracoes: () => integracoes,
+  interacoesSac: () => interacoesSac,
   itemChecklistEnum: () => itemChecklistEnum,
   itensCarregamento: () => itensCarregamento,
+  itensConferencia: () => itensConferencia,
+  itensPedido: () => itensPedido,
   itensRecebimento: () => itensRecebimento,
+  leads: () => leads,
   licencas: () => licencas,
+  licencasRegulatorias: () => licencasRegulatorias,
   localizacoes: () => localizacoes,
+  logIntegracoes: () => logIntegracoes,
   manutencoes: () => manutencoes,
+  moduloPermissoes: () => moduloPermissoes,
   movimentacoesEstoque: () => movimentacoesEstoque,
+  negociacoes: () => negociacoes,
   notasFiscaisViagem: () => notasFiscaisViagem,
   operacaoTanqueEnum: () => operacaoTanqueEnum,
+  pedidos: () => pedidos,
   planoCodEnum: () => planoCodEnum,
   planos: () => planos,
   pneus: () => pneus,
+  prioridadeSacEnum: () => prioridadeSacEnum,
+  prioridadeTicketTiEnum: () => prioridadeTicketTiEnum,
   produtos: () => produtos,
+  propostas: () => propostas,
   recebimentos: () => recebimentos,
+  registrosPonto: () => registrosPonto,
+  sessoes: () => sessoes,
   statusAcertoCargaEnum: () => statusAcertoCargaEnum,
   statusAcidenteEnum: () => statusAcidenteEnum,
   statusAdiantamentoEnum: () => statusAdiantamentoEnum,
   statusCarregamentoEnum: () => statusCarregamentoEnum,
   statusCobrancaEnum: () => statusCobrancaEnum,
+  statusConferenciaEnum: () => statusConferenciaEnum,
   statusContaPagarEnum: () => statusContaPagarEnum,
   statusContaReceberEnum: () => statusContaReceberEnum,
+  statusIntegracaoEnum: () => statusIntegracaoEnum,
   statusItemRecebimentoEnum: () => statusItemRecebimentoEnum,
+  statusLeadEnum: () => statusLeadEnum,
   statusLicencaEnum: () => statusLicencaEnum,
+  statusLicencaLogEnum: () => statusLicencaLogEnum,
   statusNfEnum: () => statusNfEnum,
+  statusPedidoEnum: () => statusPedidoEnum,
   statusPneuEnum: () => statusPneuEnum,
+  statusPropostaEnum: () => statusPropostaEnum,
   statusRecebimentoEnum: () => statusRecebimentoEnum,
+  statusSacEnum: () => statusSacEnum,
+  statusTicketTiEnum: () => statusTicketTiEnum,
   statusViagemEnum: () => statusViagemEnum,
+  statusVisitanteEnum: () => statusVisitanteEnum,
+  ticketsTi: () => ticketsTi,
   tipoAbastecimentoEnum: () => tipoAbastecimentoEnum,
   tipoChecklistEnum: () => tipoChecklistEnum,
   tipoCobrancaEnum: () => tipoCobrancaEnum,
@@ -31328,19 +32642,25 @@ __export(schema_exports, {
   tipoDespesaEnum: () => tipoDespesaEnum,
   tipoDocumentoEnum: () => tipoDocumentoEnum,
   tipoEmpresaEnum: () => tipoEmpresaEnum,
+  tipoEventoAuditoriaEnum: () => tipoEventoAuditoriaEnum,
   tipoManutencaoEnum: () => tipoManutencaoEnum,
   tipoMovimentacaoEnum: () => tipoMovimentacaoEnum,
+  tipoPontoEnum: () => tipoPontoEnum,
   tipoRecebimentoEnum: () => tipoRecebimentoEnum,
   tipoTanqueEnum: () => tipoTanqueEnum,
   tipoVeiculoEnum: () => tipoVeiculoEnum,
   tipoViagemEnum: () => tipoViagemEnum,
   turnoEnum: () => turnoEnum,
+  userPermissoes: () => userPermissoes,
   userRoleEnum: () => userRoleEnum,
   users: () => users,
   veiculos: () => veiculos,
-  viagens: () => viagens
+  viagens: () => viagens,
+  visitantes: () => visitantes,
+  visitas: () => visitas,
+  winthorSync: () => winthorSync
 });
-var userRoleEnum, funcaoEnum, tipoContratoEnum, tipoCobrancaEnum, tipoContaEnum, tipoVeiculoEnum, tipoCombustivelEnum, tipoAbastecimentoEnum, tipoManutencaoEnum, tipoViagemEnum, statusViagemEnum, tipoDespesaEnum, turnoEnum, tipoChecklistEnum, itemChecklistEnum, categoriaContaPagarEnum, statusContaPagarEnum, categoriaContaReceberEnum, statusContaReceberEnum, formaPagamentoEnum, statusAdiantamentoEnum, tipoTanqueEnum, operacaoTanqueEnum, statusAcidenteEnum, chatRoleEnum, chatMessageTypeEnum, tipoEmpresaEnum, users, empresas, funcionarios, veiculos, abastecimentos, manutencoes, viagens, despesasViagem, checklists, contasPagar, contasReceber, adiantamentos, controleTanque, auditLog, acidentes, chatConversations, chatMembers, chatMessages, statusNfEnum, notasFiscaisViagem, statusAcertoCargaEnum, acertosCarga, statusCarregamentoEnum, carregamentos, itensCarregamento, planoCodEnum, statusLicencaEnum, cicloCobrancaEnum, statusCobrancaEnum, formaPagamentoSaasEnum, planos, licencas, cobrancas, statusPneuEnum, pneus, historicoPneus, tipoDocumentoEnum, documentos, statusRecebimentoEnum, tipoRecebimentoEnum, recebimentos, statusItemRecebimentoEnum, itensRecebimento, tipoMovimentacaoEnum, armazens, docas, localizacoes, produtos, estoque, movimentacoesEstoque, iaAgenteSetorEnum, iaAgentes, iaSessoes, iaMensagens, iaConhecimento;
+var userRoleEnum, funcaoEnum, tipoContratoEnum, tipoCobrancaEnum, tipoContaEnum, tipoVeiculoEnum, tipoCombustivelEnum, tipoAbastecimentoEnum, tipoManutencaoEnum, tipoViagemEnum, statusViagemEnum, tipoDespesaEnum, turnoEnum, tipoChecklistEnum, itemChecklistEnum, categoriaContaPagarEnum, statusContaPagarEnum, categoriaContaReceberEnum, statusContaReceberEnum, formaPagamentoEnum, statusAdiantamentoEnum, tipoTanqueEnum, operacaoTanqueEnum, statusAcidenteEnum, chatRoleEnum, chatMessageTypeEnum, tipoEmpresaEnum, users, empresas, funcionarios, veiculos, abastecimentos, manutencoes, viagens, despesasViagem, checklists, contasPagar, contasReceber, adiantamentos, controleTanque, auditLog, acidentes, chatConversations, chatMembers, chatMessages, statusNfEnum, notasFiscaisViagem, statusAcertoCargaEnum, acertosCarga, statusCarregamentoEnum, carregamentos, itensCarregamento, planoCodEnum, statusLicencaEnum, cicloCobrancaEnum, statusCobrancaEnum, formaPagamentoSaasEnum, planos, licencas, cobrancas, statusPneuEnum, pneus, historicoPneus, tipoDocumentoEnum, documentos, statusRecebimentoEnum, tipoRecebimentoEnum, recebimentos, statusItemRecebimentoEnum, itensRecebimento, tipoMovimentacaoEnum, armazens, docas, localizacoes, produtos, estoque, movimentacoesEstoque, iaAgenteSetorEnum, iaAgentes, iaSessoes, iaMensagens, iaConhecimento, statusVisitanteEnum, visitantes, visitas, statusSacEnum, prioridadeSacEnum, chamadosSac, interacoesSac, statusLicencaLogEnum, licencasRegulatorias, statusLeadEnum, clientes, leads, contatosCrm, statusPedidoEnum, pedidos, itensPedido, statusPropostaEnum, propostas, comissoes, moduloPermissoes, userPermissoes, tipoEventoAuditoriaEnum, auditoriaDetalhada, statusTicketTiEnum, prioridadeTicketTiEnum, categoriaTicketTiEnum, ticketsTi, ativosTi, biDashboards, biWidgets, gruposEmpresariais, grupoEmpresas, sessoes, tipoPontoEnum, registrosPonto, bancoHoras, funis, etapasFunil, negociacoes, atividadesFunil, statusIntegracaoEnum, integracoes, logIntegracoes, winthorSync, statusConferenciaEnum, conferenciaVeiculos, fotosConferencia, itensConferencia;
 var init_schema2 = __esm({
   "drizzle/schema.ts"() {
     init_pg_core();
@@ -31370,7 +32690,7 @@ var init_schema2 = __esm({
     statusAcidenteEnum = pgEnum("status_acidente", ["aberto", "em_reparo", "resolvido"]);
     chatRoleEnum = pgEnum("chat_role", ["admin", "member"]);
     chatMessageTypeEnum = pgEnum("chat_message_type", ["text", "image", "file"]);
-    tipoEmpresaEnum = pgEnum("tipo_empresa", ["independente", "matriz", "filial"]);
+    tipoEmpresaEnum = pgEnum("tipo_empresa", ["independente", "matriz", "filial", "grupo"]);
     users = pgTable("users", {
       id: serial("id").primaryKey(),
       openId: varchar("openId", { length: 64 }).notNull().unique(),
@@ -31404,6 +32724,8 @@ var init_schema2 = __esm({
       tipoEmpresa: tipoEmpresaEnum("tipoEmpresa").default("independente").notNull(),
       matrizId: integer2("matrizId"),
       // ID da empresa matriz (se for filial)
+      grupoId: integer2("grupoId"),
+      // ID do grupo empresarial (empresas do mesmo dono, CNPJs diferentes)
       ativo: boolean4("ativo").default(true).notNull(),
       createdAt: timestamp("createdAt").defaultNow().notNull(),
       updatedAt: timestamp("updatedAt").defaultNow().notNull(),
@@ -32386,12 +33708,634 @@ var init_schema2 = __esm({
       updatedAt: timestamp("updatedAt").defaultNow().notNull(),
       deletedAt: timestamp("deletedAt")
     });
+    statusVisitanteEnum = pgEnum("status_visitante", [
+      "agendado",
+      "aguardando",
+      "em_atendimento",
+      "finalizado",
+      "cancelado"
+    ]);
+    visitantes = pgTable("visitantes", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      nome: varchar("nome", { length: 255 }).notNull(),
+      documento: varchar("documento", { length: 20 }),
+      telefone: varchar("telefone", { length: 20 }),
+      email: varchar("email", { length: 320 }),
+      empresa: varchar("empresa", { length: 255 }),
+      foto: text("foto"),
+      observacoes: text("observacoes"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull()
+    });
+    visitas = pgTable("visitas", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      visitanteId: integer2("visitanteId").notNull(),
+      status: statusVisitanteEnum("status").default("agendado").notNull(),
+      motivo: varchar("motivo", { length: 255 }).notNull(),
+      setor: varchar("setor", { length: 100 }),
+      pessoaContato: varchar("pessoaContato", { length: 255 }),
+      cracha: varchar("cracha", { length: 50 }),
+      dataAgendamento: timestamp("dataAgendamento"),
+      dataEntrada: timestamp("dataEntrada"),
+      dataSaida: timestamp("dataSaida"),
+      observacoes: text("observacoes"),
+      createdBy: integer2("createdBy"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+      deletedAt: timestamp("deletedAt")
+    });
+    statusSacEnum = pgEnum("status_sac", [
+      "aberto",
+      "em_andamento",
+      "aguardando_cliente",
+      "resolvido",
+      "fechado"
+    ]);
+    prioridadeSacEnum = pgEnum("prioridade_sac", [
+      "baixa",
+      "media",
+      "alta",
+      "urgente"
+    ]);
+    chamadosSac = pgTable("chamados_sac", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      protocolo: varchar("protocolo", { length: 20 }).notNull(),
+      clienteNome: varchar("clienteNome", { length: 255 }).notNull(),
+      clienteEmail: varchar("clienteEmail", { length: 320 }),
+      clienteTelefone: varchar("clienteTelefone", { length: 20 }),
+      assunto: varchar("assunto", { length: 255 }).notNull(),
+      descricao: text("descricao").notNull(),
+      categoria: varchar("categoria", { length: 100 }),
+      status: statusSacEnum("status").default("aberto").notNull(),
+      prioridade: prioridadeSacEnum("prioridade").default("media").notNull(),
+      responsavelId: integer2("responsavelId"),
+      viagemId: integer2("viagemId"),
+      resolucao: text("resolucao"),
+      resolvidoEm: timestamp("resolvidoEm"),
+      createdBy: integer2("createdBy"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+      deletedAt: timestamp("deletedAt")
+    });
+    interacoesSac = pgTable("interacoes_sac", {
+      id: serial("id").primaryKey(),
+      chamadoId: integer2("chamadoId").notNull(),
+      userId: integer2("userId"),
+      tipo: varchar("tipo", { length: 50 }).default("mensagem").notNull(),
+      conteudo: text("conteudo").notNull(),
+      createdAt: timestamp("createdAt").defaultNow().notNull()
+    });
+    statusLicencaLogEnum = pgEnum("status_licenca_log", [
+      "pendente",
+      "em_analise",
+      "aprovada",
+      "vencida",
+      "rejeitada"
+    ]);
+    licencasRegulatorias = pgTable("licencas_regulatorias", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      tipo: varchar("tipo", { length: 100 }).notNull(),
+      // ANVISA, VISA, IBAMA, etc.
+      numero: varchar("numero", { length: 100 }),
+      orgaoEmissor: varchar("orgaoEmissor", { length: 200 }),
+      descricao: text("descricao"),
+      status: statusLicencaLogEnum("status_licenca_log").default("pendente").notNull(),
+      dataEmissao: timestamp("dataEmissao"),
+      dataVencimento: timestamp("dataVencimento"),
+      arquivo: text("arquivo"),
+      responsavelId: integer2("responsavelId"),
+      observacoes: text("observacoes"),
+      createdBy: integer2("createdBy"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+      deletedAt: timestamp("deletedAt")
+    });
+    statusLeadEnum = pgEnum("status_lead", [
+      "novo",
+      "qualificado",
+      "em_negociacao",
+      "proposta_enviada",
+      "ganho",
+      "perdido"
+    ]);
+    clientes = pgTable("clientes", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      nome: varchar("nome", { length: 255 }).notNull(),
+      cnpjCpf: varchar("cnpjCpf", { length: 20 }),
+      email: varchar("email", { length: 320 }),
+      telefone: varchar("telefone", { length: 20 }),
+      endereco: text("endereco"),
+      cidade: varchar("cidade", { length: 100 }),
+      estado: varchar("estado", { length: 2 }),
+      segmento: varchar("segmento", { length: 100 }),
+      responsavelId: integer2("responsavelId"),
+      observacoes: text("observacoes"),
+      ativo: boolean4("ativo").default(true).notNull(),
+      createdBy: integer2("createdBy"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+      deletedAt: timestamp("deletedAt")
+    });
+    leads = pgTable("leads", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      clienteId: integer2("clienteId"),
+      nome: varchar("nome", { length: 255 }).notNull(),
+      email: varchar("email", { length: 320 }),
+      telefone: varchar("telefone", { length: 20 }),
+      empresa: varchar("empresa", { length: 255 }),
+      origem: varchar("origem", { length: 100 }),
+      status: statusLeadEnum("status").default("novo").notNull(),
+      valorEstimado: varchar("valorEstimado", { length: 20 }),
+      responsavelId: integer2("responsavelId"),
+      proximoContato: timestamp("proximoContato"),
+      observacoes: text("observacoes"),
+      createdBy: integer2("createdBy"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+      deletedAt: timestamp("deletedAt")
+    });
+    contatosCrm = pgTable("contatos_crm", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      clienteId: integer2("clienteId"),
+      leadId: integer2("leadId"),
+      tipo: varchar("tipo", { length: 50 }).notNull(),
+      // ligação, email, reunião, visita
+      descricao: text("descricao").notNull(),
+      resultado: text("resultado"),
+      userId: integer2("userId"),
+      createdAt: timestamp("createdAt").defaultNow().notNull()
+    });
+    statusPedidoEnum = pgEnum("status_pedido", [
+      "rascunho",
+      "enviado",
+      "aprovado",
+      "em_separacao",
+      "expedido",
+      "entregue",
+      "cancelado"
+    ]);
+    pedidos = pgTable("pedidos", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      clienteId: integer2("clienteId"),
+      numero: varchar("numero", { length: 30 }).notNull(),
+      status: statusPedidoEnum("status").default("rascunho").notNull(),
+      clienteNome: varchar("clienteNome", { length: 255 }).notNull(),
+      valorTotal: varchar("valorTotal", { length: 20 }).default("0"),
+      desconto: varchar("desconto", { length: 20 }).default("0"),
+      frete: varchar("frete", { length: 20 }).default("0"),
+      formaPagamento: varchar("formaPagamento", { length: 100 }),
+      condicaoPagamento: varchar("condicaoPagamento", { length: 100 }),
+      previsaoEntrega: timestamp("previsaoEntrega"),
+      observacoes: text("observacoes"),
+      vendedorId: integer2("vendedorId"),
+      createdBy: integer2("createdBy"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+      deletedAt: timestamp("deletedAt")
+    });
+    itensPedido = pgTable("itens_pedido", {
+      id: serial("id").primaryKey(),
+      pedidoId: integer2("pedidoId").notNull(),
+      produtoId: integer2("produtoId"),
+      descricao: varchar("descricao", { length: 255 }).notNull(),
+      quantidade: varchar("quantidade", { length: 20 }).notNull(),
+      valorUnitario: varchar("valorUnitario", { length: 20 }).notNull(),
+      valorTotal: varchar("valorTotal", { length: 20 }).notNull(),
+      createdAt: timestamp("createdAt").defaultNow().notNull()
+    });
+    statusPropostaEnum = pgEnum("status_proposta", [
+      "rascunho",
+      "enviada",
+      "em_analise",
+      "aprovada",
+      "rejeitada",
+      "expirada"
+    ]);
+    propostas = pgTable("propostas", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      clienteId: integer2("clienteId"),
+      leadId: integer2("leadId"),
+      numero: varchar("numero", { length: 30 }).notNull(),
+      titulo: varchar("titulo", { length: 255 }).notNull(),
+      status: statusPropostaEnum("status").default("rascunho").notNull(),
+      valorTotal: varchar("valorTotal", { length: 20 }).default("0"),
+      validade: timestamp("validade"),
+      descricao: text("descricao"),
+      condicoes: text("condicoes"),
+      vendedorId: integer2("vendedorId"),
+      createdBy: integer2("createdBy"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+      deletedAt: timestamp("deletedAt")
+    });
+    comissoes = pgTable("comissoes", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      vendedorId: integer2("vendedorId").notNull(),
+      pedidoId: integer2("pedidoId"),
+      percentual: varchar("percentual", { length: 10 }).notNull(),
+      valorBase: varchar("valorBase", { length: 20 }).notNull(),
+      valorComissao: varchar("valorComissao", { length: 20 }).notNull(),
+      pago: boolean4("pago").default(false).notNull(),
+      dataPagamento: timestamp("dataPagamento"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull()
+    });
+    moduloPermissoes = pgTable("modulo_permissoes", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      role: userRoleEnum("role").notNull(),
+      modulo: varchar("modulo", { length: 100 }).notNull(),
+      podeVer: boolean4("podeVer").default(false).notNull(),
+      podeCriar: boolean4("podeCriar").default(false).notNull(),
+      podeEditar: boolean4("podeEditar").default(false).notNull(),
+      podeDeletar: boolean4("podeDeletar").default(false).notNull(),
+      podeExportar: boolean4("podeExportar").default(false).notNull(),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull()
+    });
+    userPermissoes = pgTable("user_permissoes", {
+      id: serial("id").primaryKey(),
+      userId: integer2("userId").notNull(),
+      empresaId: integer2("empresaId").notNull(),
+      modulo: varchar("modulo", { length: 100 }).notNull(),
+      podeVer: boolean4("podeVer").default(false).notNull(),
+      podeCriar: boolean4("podeCriar").default(false).notNull(),
+      podeEditar: boolean4("podeEditar").default(false).notNull(),
+      podeDeletar: boolean4("podeDeletar").default(false).notNull(),
+      podeExportar: boolean4("podeExportar").default(false).notNull(),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull()
+    });
+    tipoEventoAuditoriaEnum = pgEnum("tipo_evento_auditoria", [
+      "login",
+      "logout",
+      "create",
+      "update",
+      "delete",
+      "restore",
+      "export",
+      "import",
+      "permission_change",
+      "config_change",
+      "access_denied",
+      "password_change",
+      "role_change"
+    ]);
+    auditoriaDetalhada = pgTable("auditoria_detalhada", {
+      id: bigint4("id", { mode: "number" }).generatedAlwaysAsIdentity().primaryKey(),
+      empresaId: integer2("empresaId"),
+      userId: integer2("userId").notNull(),
+      userName: varchar("userName", { length: 255 }),
+      userRole: varchar("userRole", { length: 50 }),
+      tipoEvento: tipoEventoAuditoriaEnum("tipoEvento").notNull(),
+      modulo: varchar("modulo", { length: 100 }),
+      tabela: varchar("tabela", { length: 100 }),
+      registroId: integer2("registroId"),
+      descricao: text("descricao").notNull(),
+      dadosAntes: text("dadosAntes"),
+      dadosDepois: text("dadosDepois"),
+      ip: varchar("ip", { length: 45 }),
+      userAgent: text("userAgent"),
+      sessionId: varchar("sessionId", { length: 100 }),
+      risco: varchar("risco", { length: 20 }).default("baixo"),
+      // baixo, medio, alto, critico
+      createdAt: timestamp("createdAt").defaultNow().notNull()
+    });
+    statusTicketTiEnum = pgEnum("status_ticket_ti", [
+      "aberto",
+      "em_andamento",
+      "aguardando",
+      "resolvido",
+      "fechado"
+    ]);
+    prioridadeTicketTiEnum = pgEnum("prioridade_ticket_ti", [
+      "baixa",
+      "media",
+      "alta",
+      "critica"
+    ]);
+    categoriaTicketTiEnum = pgEnum("categoria_ticket_ti", [
+      "hardware",
+      "software",
+      "rede",
+      "acesso",
+      "email",
+      "impressora",
+      "outro"
+    ]);
+    ticketsTi = pgTable("tickets_ti", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      protocolo: varchar("protocolo", { length: 20 }).notNull(),
+      solicitanteId: integer2("solicitanteId").notNull(),
+      titulo: varchar("titulo", { length: 255 }).notNull(),
+      descricao: text("descricao").notNull(),
+      categoria: categoriaTicketTiEnum("categoria").default("outro").notNull(),
+      prioridade: prioridadeTicketTiEnum("prioridade_ticket_ti").default("media").notNull(),
+      status: statusTicketTiEnum("status_ticket_ti").default("aberto").notNull(),
+      responsavelId: integer2("responsavelId"),
+      resolucao: text("resolucao"),
+      resolvidoEm: timestamp("resolvidoEm"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+      deletedAt: timestamp("deletedAt")
+    });
+    ativosTi = pgTable("ativos_ti", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      tipo: varchar("tipo", { length: 100 }).notNull(),
+      // notebook, desktop, impressora, servidor, switch, etc.
+      marca: varchar("marca", { length: 100 }),
+      modelo: varchar("modelo", { length: 100 }),
+      patrimonio: varchar("patrimonio", { length: 50 }),
+      serial: varchar("serial", { length: 100 }),
+      responsavelId: integer2("responsavelId"),
+      setor: varchar("setor", { length: 100 }),
+      status: varchar("status", { length: 50 }).default("ativo").notNull(),
+      dataAquisicao: timestamp("dataAquisicao"),
+      garantiaAte: timestamp("garantiaAte"),
+      observacoes: text("observacoes"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+      deletedAt: timestamp("deletedAt")
+    });
+    biDashboards = pgTable("bi_dashboards", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      nome: varchar("nome", { length: 255 }).notNull(),
+      descricao: text("descricao"),
+      tipo: varchar("tipo", { length: 50 }).default("custom").notNull(),
+      // financeiro, operacional, vendas, rh, custom
+      config: text("config"),
+      // JSON com configuração dos widgets
+      publico: boolean4("publico").default(false).notNull(),
+      createdBy: integer2("createdBy"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+      deletedAt: timestamp("deletedAt")
+    });
+    biWidgets = pgTable("bi_widgets", {
+      id: serial("id").primaryKey(),
+      dashboardId: integer2("dashboardId").notNull(),
+      empresaId: integer2("empresaId").notNull(),
+      titulo: varchar("titulo", { length: 255 }).notNull(),
+      tipo: varchar("tipo", { length: 50 }).notNull(),
+      // kpi, grafico_linha, grafico_barra, grafico_pizza, tabela, mapa
+      fonte: varchar("fonte", { length: 100 }).notNull(),
+      // viagens, financeiro, frota, vendas, rh, etc.
+      metrica: varchar("metrica", { length: 100 }).notNull(),
+      // total, media, contagem, soma, etc.
+      filtros: text("filtros"),
+      // JSON com filtros
+      posicao: integer2("posicao").default(0),
+      largura: integer2("largura").default(6),
+      // grid 12 colunas
+      altura: integer2("altura").default(4),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull()
+    });
+    gruposEmpresariais = pgTable("grupos_empresariais", {
+      id: serial("id").primaryKey(),
+      nome: varchar("nome", { length: 255 }).notNull(),
+      cnpj: varchar("cnpj", { length: 18 }),
+      descricao: text("descricao"),
+      adminUserId: integer2("adminUserId"),
+      ativo: boolean4("ativo").default(true).notNull(),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull()
+    });
+    grupoEmpresas = pgTable("grupo_empresas", {
+      id: serial("id").primaryKey(),
+      grupoId: integer2("grupoId").notNull(),
+      empresaId: integer2("empresaId").notNull(),
+      papel: varchar("papel", { length: 20 }).default("filial").notNull(),
+      // matriz, filial
+      createdAt: timestamp("createdAt").defaultNow().notNull()
+    });
+    sessoes = pgTable("sessoes", {
+      id: serial("id").primaryKey(),
+      userId: integer2("userId").notNull(),
+      token: varchar("token", { length: 500 }).notNull(),
+      ip: varchar("ip", { length: 45 }),
+      userAgent: text("userAgent"),
+      ativo: boolean4("ativo").default(true).notNull(),
+      expiresAt: timestamp("expiresAt").notNull(),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      lastActivityAt: timestamp("lastActivityAt").defaultNow().notNull()
+    });
+    tipoPontoEnum = pgEnum("tipo_ponto", ["entrada", "saida", "inicio_intervalo", "fim_intervalo"]);
+    registrosPonto = pgTable("registros_ponto", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      funcionarioId: integer2("funcionarioId").notNull(),
+      tipo: tipoPontoEnum("tipo_ponto").notNull(),
+      dataHora: timestamp("dataHora").defaultNow().notNull(),
+      latitude: varchar("latitude", { length: 20 }),
+      longitude: varchar("longitude", { length: 20 }),
+      ip: varchar("ip", { length: 45 }),
+      foto: text("foto"),
+      observacao: text("observacao"),
+      ajustadoPor: integer2("ajustadoPor"),
+      motivoAjuste: text("motivoAjuste"),
+      createdAt: timestamp("createdAt").defaultNow().notNull()
+    });
+    bancoHoras = pgTable("banco_horas", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      funcionarioId: integer2("funcionarioId").notNull(),
+      data: date5("data").notNull(),
+      horasTrabalhadas: varchar("horasTrabalhadas", { length: 10 }),
+      horasExtras: varchar("horasExtras", { length: 10 }),
+      horasDevidas: varchar("horasDevidas", { length: 10 }),
+      saldo: varchar("saldo", { length: 10 }),
+      createdAt: timestamp("createdAt").defaultNow().notNull()
+    });
+    funis = pgTable("funis", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      nome: varchar("nome", { length: 255 }).notNull(),
+      descricao: text("descricao"),
+      ativo: boolean4("ativo").default(true).notNull(),
+      createdBy: integer2("createdBy"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull()
+    });
+    etapasFunil = pgTable("etapas_funil", {
+      id: serial("id").primaryKey(),
+      funilId: integer2("funilId").notNull(),
+      empresaId: integer2("empresaId").notNull(),
+      nome: varchar("nome", { length: 255 }).notNull(),
+      cor: varchar("cor", { length: 20 }).default("#3b82f6"),
+      posicao: integer2("posicao").default(0).notNull(),
+      createdAt: timestamp("createdAt").defaultNow().notNull()
+    });
+    negociacoes = pgTable("negociacoes", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      funilId: integer2("funilId").notNull(),
+      etapaId: integer2("etapaId").notNull(),
+      clienteId: integer2("clienteId"),
+      leadId: integer2("leadId"),
+      titulo: varchar("titulo", { length: 255 }).notNull(),
+      valor: varchar("valor", { length: 20 }).default("0"),
+      responsavelId: integer2("responsavelId"),
+      probabilidade: integer2("probabilidade").default(50),
+      previsaoFechamento: timestamp("previsaoFechamento"),
+      motivoPerda: text("motivoPerda"),
+      ganho: boolean4("ganho"),
+      observacoes: text("observacoes"),
+      createdBy: integer2("createdBy"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+      deletedAt: timestamp("deletedAt")
+    });
+    atividadesFunil = pgTable("atividades_funil", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      negociacaoId: integer2("negociacaoId").notNull(),
+      tipo: varchar("tipo", { length: 50 }).notNull(),
+      // ligacao, email, reuniao, tarefa, nota
+      titulo: varchar("titulo", { length: 255 }).notNull(),
+      descricao: text("descricao"),
+      dataAgendada: timestamp("dataAgendada"),
+      concluida: boolean4("concluida").default(false).notNull(),
+      userId: integer2("userId"),
+      createdAt: timestamp("createdAt").defaultNow().notNull()
+    });
+    statusIntegracaoEnum = pgEnum("status_integracao", ["ativa", "inativa", "erro", "configurando"]);
+    integracoes = pgTable("integracoes", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      tipo: varchar("tipo", { length: 50 }).notNull(),
+      // whatsapp, winthor, webhook, api_externa
+      nome: varchar("nome", { length: 255 }).notNull(),
+      status: statusIntegracaoEnum("status_integracao").default("configurando").notNull(),
+      config: text("config"),
+      // JSON criptografado com credenciais
+      webhookUrl: text("webhookUrl"),
+      webhookSecret: varchar("webhookSecret", { length: 255 }),
+      ultimaSincronizacao: timestamp("ultimaSincronizacao"),
+      erroUltimo: text("erroUltimo"),
+      ativo: boolean4("ativo").default(true).notNull(),
+      createdBy: integer2("createdBy"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull()
+    });
+    logIntegracoes = pgTable("log_integracoes", {
+      id: bigint4("id", { mode: "number" }).generatedAlwaysAsIdentity().primaryKey(),
+      integracaoId: integer2("integracaoId").notNull(),
+      empresaId: integer2("empresaId").notNull(),
+      direcao: varchar("direcao", { length: 10 }).notNull(),
+      // entrada, saida
+      endpoint: varchar("endpoint", { length: 500 }),
+      payload: text("payload"),
+      resposta: text("resposta"),
+      statusCode: integer2("statusCode"),
+      sucesso: boolean4("sucesso").default(true).notNull(),
+      createdAt: timestamp("createdAt").defaultNow().notNull()
+    });
+    winthorSync = pgTable("winthor_sync", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      integracaoId: integer2("integracaoId").notNull(),
+      tabelaOrigem: varchar("tabelaOrigem", { length: 100 }).notNull(),
+      // PCPRODUT, PCFORNEC, PCNFSAID, etc.
+      tabelaDestino: varchar("tabelaDestino", { length: 100 }).notNull(),
+      ultimoId: integer2("ultimoId").default(0),
+      ultimaSincronizacao: timestamp("ultimaSincronizacao"),
+      registrosSincronizados: integer2("registrosSincronizados").default(0),
+      ativo: boolean4("ativo").default(true).notNull(),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull()
+    });
+    statusConferenciaEnum = pgEnum("status_conferencia", [
+      "saida_registrada",
+      "em_viagem",
+      "retorno_registrado",
+      "em_conferencia",
+      "aguardando_motorista",
+      "confirmado_motorista",
+      "finalizado"
+    ]);
+    conferenciaVeiculos = pgTable("conferencia_veiculos", {
+      id: serial("id").primaryKey(),
+      empresaId: integer2("empresaId").notNull(),
+      veiculoId: integer2("veiculoId").notNull(),
+      motoristaId: integer2("motoristaId"),
+      viagemId: integer2("viagemId"),
+      status: statusConferenciaEnum("status_conferencia").default("saida_registrada").notNull(),
+      // Saída
+      despachanteSaidaId: integer2("despachanteSaidaId"),
+      dataSaida: timestamp("dataSaida"),
+      kmSaida: varchar("kmSaida", { length: 20 }),
+      observacoesSaida: text("observacoesSaida"),
+      // Retorno
+      despachanteRetornoId: integer2("despachanteRetornoId"),
+      dataRetorno: timestamp("dataRetorno"),
+      kmRetorno: varchar("kmRetorno", { length: 20 }),
+      observacoesRetorno: text("observacoesRetorno"),
+      // Conferência (feita pelo conferente/despachante)
+      conferenteId: integer2("conferenteId"),
+      dataConferencia: timestamp("dataConferencia"),
+      cargaOk: boolean4("cargaOk"),
+      cargaObservacoes: text("cargaObservacoes"),
+      avariasEncontradas: boolean4("avariasEncontradas").default(false),
+      avariasDescricao: text("avariasDescricao"),
+      batidasEncontradas: boolean4("batidasEncontradas").default(false),
+      batidasDescricao: text("batidasDescricao"),
+      pneusOk: boolean4("pneusOk"),
+      pneusObservacoes: text("pneusObservacoes"),
+      limpezaOk: boolean4("limpezaOk"),
+      documentosOk: boolean4("documentosOk"),
+      nivelCombustivel: varchar("nivelCombustivel", { length: 20 }),
+      observacoesConferencia: text("observacoesConferencia"),
+      // Confirmação do motorista
+      motoristaConfirmou: boolean4("motoristaConfirmou").default(false),
+      motoristaConfirmouEm: timestamp("motoristaConfirmouEm"),
+      motoristaContestacao: text("motoristaContestacao"),
+      assinaturaMotorista: text("assinaturaMotorista"),
+      // base64 da assinatura digital
+      createdBy: integer2("createdBy"),
+      createdAt: timestamp("createdAt").defaultNow().notNull(),
+      updatedAt: timestamp("updatedAt").defaultNow().notNull()
+    });
+    fotosConferencia = pgTable("fotos_conferencia", {
+      id: serial("id").primaryKey(),
+      conferenciaId: integer2("conferenciaId").notNull(),
+      empresaId: integer2("empresaId").notNull(),
+      tipo: varchar("tipo", { length: 50 }).notNull(),
+      // saida_frente, saida_traseira, saida_lateral_esq, saida_lateral_dir, retorno_frente, retorno_traseira, avaria, batida, carga, pneu, outro
+      descricao: varchar("descricao", { length: 255 }),
+      url: text("url").notNull(),
+      momento: varchar("momento", { length: 20 }).notNull(),
+      // saida, retorno, conferencia
+      uploadedBy: integer2("uploadedBy"),
+      createdAt: timestamp("createdAt").defaultNow().notNull()
+    });
+    itensConferencia = pgTable("itens_conferencia", {
+      id: serial("id").primaryKey(),
+      conferenciaId: integer2("conferenciaId").notNull(),
+      item: varchar("item", { length: 255 }).notNull(),
+      conforme: boolean4("conforme"),
+      observacao: text("observacao"),
+      createdAt: timestamp("createdAt").defaultNow().notNull()
+    });
   }
 });
 
-// node_modules/.pnpm/bcryptjs@2.4.3/node_modules/bcryptjs/dist/bcrypt.js
+// node_modules/bcryptjs/dist/bcrypt.js
 var require_bcrypt = __commonJS({
-  "node_modules/.pnpm/bcryptjs@2.4.3/node_modules/bcryptjs/dist/bcrypt.js"(exports2, module2) {
+  "node_modules/bcryptjs/dist/bcrypt.js"(exports2, module2) {
     (function(global2, factory2) {
       if (typeof define === "function" && define["amd"])
         define([], factory2);
@@ -32401,7 +34345,7 @@ var require_bcrypt = __commonJS({
         (global2["dcodeIO"] = global2["dcodeIO"] || {})["bcrypt"] = factory2();
     })(exports2, function() {
       "use strict";
-      var bcrypt2 = {};
+      var bcrypt3 = {};
       var randomFallback = null;
       function random(len) {
         if (typeof module2 !== "undefined" && module2 && module2["exports"])
@@ -32426,10 +34370,10 @@ var require_bcrypt = __commonJS({
       } catch (e) {
       }
       randomFallback = null;
-      bcrypt2.setRandomFallback = function(random2) {
+      bcrypt3.setRandomFallback = function(random2) {
         randomFallback = random2;
       };
-      bcrypt2.genSaltSync = function(rounds, seed_length) {
+      bcrypt3.genSaltSync = function(rounds, seed_length) {
         rounds = rounds || GENSALT_DEFAULT_LOG2_ROUNDS;
         if (typeof rounds !== "number")
           throw Error("Illegal arguments: " + typeof rounds + ", " + typeof seed_length);
@@ -32446,7 +34390,7 @@ var require_bcrypt = __commonJS({
         salt.push(base64_encode(random(BCRYPT_SALT_LEN), BCRYPT_SALT_LEN));
         return salt.join("");
       };
-      bcrypt2.genSalt = function(rounds, seed_length, callback) {
+      bcrypt3.genSalt = function(rounds, seed_length, callback) {
         if (typeof seed_length === "function")
           callback = seed_length, seed_length = void 0;
         if (typeof rounds === "function")
@@ -32458,7 +34402,7 @@ var require_bcrypt = __commonJS({
         function _async(callback2) {
           nextTick(function() {
             try {
-              callback2(null, bcrypt2.genSaltSync(rounds));
+              callback2(null, bcrypt3.genSaltSync(rounds));
             } catch (err) {
               callback2(err);
             }
@@ -32479,19 +34423,19 @@ var require_bcrypt = __commonJS({
             });
           });
       };
-      bcrypt2.hashSync = function(s, salt) {
+      bcrypt3.hashSync = function(s, salt) {
         if (typeof salt === "undefined")
           salt = GENSALT_DEFAULT_LOG2_ROUNDS;
         if (typeof salt === "number")
-          salt = bcrypt2.genSaltSync(salt);
+          salt = bcrypt3.genSaltSync(salt);
         if (typeof s !== "string" || typeof salt !== "string")
           throw Error("Illegal arguments: " + typeof s + ", " + typeof salt);
         return _hash(s, salt);
       };
-      bcrypt2.hash = function(s, salt, callback, progressCallback) {
+      bcrypt3.hash = function(s, salt, callback, progressCallback) {
         function _async(callback2) {
           if (typeof s === "string" && typeof salt === "number")
-            bcrypt2.genSalt(salt, function(err, salt2) {
+            bcrypt3.genSalt(salt, function(err, salt2) {
               _hash(s, salt2, callback2, progressCallback);
             });
           else if (typeof s === "string" && typeof salt === "string")
@@ -32526,14 +34470,14 @@ var require_bcrypt = __commonJS({
           return false;
         return wrong === 0;
       }
-      bcrypt2.compareSync = function(s, hash2) {
+      bcrypt3.compareSync = function(s, hash2) {
         if (typeof s !== "string" || typeof hash2 !== "string")
           throw Error("Illegal arguments: " + typeof s + ", " + typeof hash2);
         if (hash2.length !== 60)
           return false;
-        return safeStringCompare(bcrypt2.hashSync(s, hash2.substr(0, hash2.length - 31)), hash2);
+        return safeStringCompare(bcrypt3.hashSync(s, hash2.substr(0, hash2.length - 31)), hash2);
       };
-      bcrypt2.compare = function(s, hash2, callback, progressCallback) {
+      bcrypt3.compare = function(s, hash2, callback, progressCallback) {
         function _async(callback2) {
           if (typeof s !== "string" || typeof hash2 !== "string") {
             nextTick(callback2.bind(this, Error("Illegal arguments: " + typeof s + ", " + typeof hash2)));
@@ -32543,7 +34487,7 @@ var require_bcrypt = __commonJS({
             nextTick(callback2.bind(this, null, false));
             return;
           }
-          bcrypt2.hash(s, hash2.substr(0, 29), function(err, comp) {
+          bcrypt3.hash(s, hash2.substr(0, 29), function(err, comp) {
             if (err)
               callback2(err);
             else
@@ -32565,12 +34509,12 @@ var require_bcrypt = __commonJS({
             });
           });
       };
-      bcrypt2.getRounds = function(hash2) {
+      bcrypt3.getRounds = function(hash2) {
         if (typeof hash2 !== "string")
           throw Error("Illegal arguments: " + typeof hash2);
         return parseInt(hash2.split("$")[2], 10);
       };
-      bcrypt2.getSalt = function(hash2) {
+      bcrypt3.getSalt = function(hash2) {
         if (typeof hash2 !== "string")
           throw Error("Illegal arguments: " + typeof hash2);
         if (hash2.length !== 60)
@@ -34193,23 +36137,23 @@ var require_bcrypt = __commonJS({
           }, progressCallback);
         }
       }
-      bcrypt2.encodeBase64 = base64_encode;
-      bcrypt2.decodeBase64 = base64_decode;
-      return bcrypt2;
+      bcrypt3.encodeBase64 = base64_encode;
+      bcrypt3.decodeBase64 = base64_decode;
+      return bcrypt3;
     });
   }
 });
 
-// node_modules/.pnpm/bcryptjs@2.4.3/node_modules/bcryptjs/index.js
+// node_modules/bcryptjs/index.js
 var require_bcryptjs = __commonJS({
-  "node_modules/.pnpm/bcryptjs@2.4.3/node_modules/bcryptjs/index.js"(exports2, module2) {
+  "node_modules/bcryptjs/index.js"(exports2, module2) {
     module2.exports = require_bcrypt();
   }
 });
 
-// node_modules/.pnpm/delayed-stream@1.0.0/node_modules/delayed-stream/lib/delayed_stream.js
+// node_modules/delayed-stream/lib/delayed_stream.js
 var require_delayed_stream = __commonJS({
-  "node_modules/.pnpm/delayed-stream@1.0.0/node_modules/delayed-stream/lib/delayed_stream.js"(exports2, module2) {
+  "node_modules/delayed-stream/lib/delayed_stream.js"(exports2, module2) {
     var Stream4 = require("stream").Stream;
     var util3 = require("util");
     module2.exports = DelayedStream;
@@ -34298,9 +36242,9 @@ var require_delayed_stream = __commonJS({
   }
 });
 
-// node_modules/.pnpm/combined-stream@1.0.8/node_modules/combined-stream/lib/combined_stream.js
+// node_modules/combined-stream/lib/combined_stream.js
 var require_combined_stream = __commonJS({
-  "node_modules/.pnpm/combined-stream@1.0.8/node_modules/combined-stream/lib/combined_stream.js"(exports2, module2) {
+  "node_modules/combined-stream/lib/combined_stream.js"(exports2, module2) {
     var util3 = require("util");
     var Stream4 = require("stream").Stream;
     var DelayedStream = require_delayed_stream();
@@ -34467,9 +36411,9 @@ var require_combined_stream = __commonJS({
   }
 });
 
-// node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/defer.js
+// node_modules/asynckit/lib/defer.js
 var require_defer = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/defer.js"(exports2, module2) {
+  "node_modules/asynckit/lib/defer.js"(exports2, module2) {
     module2.exports = defer;
     function defer(fn) {
       var nextTick = typeof setImmediate == "function" ? setImmediate : typeof process == "object" && typeof process.nextTick == "function" ? process.nextTick : null;
@@ -34482,9 +36426,9 @@ var require_defer = __commonJS({
   }
 });
 
-// node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/async.js
+// node_modules/asynckit/lib/async.js
 var require_async = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/async.js"(exports2, module2) {
+  "node_modules/asynckit/lib/async.js"(exports2, module2) {
     var defer = require_defer();
     module2.exports = async;
     function async(callback) {
@@ -34505,9 +36449,9 @@ var require_async = __commonJS({
   }
 });
 
-// node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/abort.js
+// node_modules/asynckit/lib/abort.js
 var require_abort = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/abort.js"(exports2, module2) {
+  "node_modules/asynckit/lib/abort.js"(exports2, module2) {
     module2.exports = abort;
     function abort(state) {
       Object.keys(state.jobs).forEach(clean.bind(state));
@@ -34521,9 +36465,9 @@ var require_abort = __commonJS({
   }
 });
 
-// node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/iterate.js
+// node_modules/asynckit/lib/iterate.js
 var require_iterate = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/iterate.js"(exports2, module2) {
+  "node_modules/asynckit/lib/iterate.js"(exports2, module2) {
     var async = require_async();
     var abort = require_abort();
     module2.exports = iterate;
@@ -34554,9 +36498,9 @@ var require_iterate = __commonJS({
   }
 });
 
-// node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/state.js
+// node_modules/asynckit/lib/state.js
 var require_state = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/state.js"(exports2, module2) {
+  "node_modules/asynckit/lib/state.js"(exports2, module2) {
     module2.exports = state;
     function state(list, sortMethod) {
       var isNamedList = !Array.isArray(list), initState = {
@@ -34576,9 +36520,9 @@ var require_state = __commonJS({
   }
 });
 
-// node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/terminator.js
+// node_modules/asynckit/lib/terminator.js
 var require_terminator = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/terminator.js"(exports2, module2) {
+  "node_modules/asynckit/lib/terminator.js"(exports2, module2) {
     var abort = require_abort();
     var async = require_async();
     module2.exports = terminator;
@@ -34593,9 +36537,9 @@ var require_terminator = __commonJS({
   }
 });
 
-// node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/parallel.js
+// node_modules/asynckit/parallel.js
 var require_parallel = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/parallel.js"(exports2, module2) {
+  "node_modules/asynckit/parallel.js"(exports2, module2) {
     var iterate = require_iterate();
     var initState = require_state();
     var terminator = require_terminator();
@@ -34620,9 +36564,9 @@ var require_parallel = __commonJS({
   }
 });
 
-// node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/serialOrdered.js
+// node_modules/asynckit/serialOrdered.js
 var require_serialOrdered = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/serialOrdered.js"(exports2, module2) {
+  "node_modules/asynckit/serialOrdered.js"(exports2, module2) {
     var iterate = require_iterate();
     var initState = require_state();
     var terminator = require_terminator();
@@ -34654,9 +36598,9 @@ var require_serialOrdered = __commonJS({
   }
 });
 
-// node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/serial.js
+// node_modules/asynckit/serial.js
 var require_serial = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/serial.js"(exports2, module2) {
+  "node_modules/asynckit/serial.js"(exports2, module2) {
     var serialOrdered = require_serialOrdered();
     module2.exports = serial2;
     function serial2(list, iterator2, callback) {
@@ -34665,9 +36609,9 @@ var require_serial = __commonJS({
   }
 });
 
-// node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/index.js
+// node_modules/asynckit/index.js
 var require_asynckit = __commonJS({
-  "node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/index.js"(exports2, module2) {
+  "node_modules/asynckit/index.js"(exports2, module2) {
     module2.exports = {
       parallel: require_parallel(),
       serial: require_serial(),
@@ -34676,9 +36620,9 @@ var require_asynckit = __commonJS({
   }
 });
 
-// node_modules/.pnpm/has-tostringtag@1.0.2/node_modules/has-tostringtag/shams.js
+// node_modules/has-tostringtag/shams.js
 var require_shams2 = __commonJS({
-  "node_modules/.pnpm/has-tostringtag@1.0.2/node_modules/has-tostringtag/shams.js"(exports2, module2) {
+  "node_modules/has-tostringtag/shams.js"(exports2, module2) {
     "use strict";
     var hasSymbols = require_shams();
     module2.exports = function hasToStringTagShams() {
@@ -34687,9 +36631,9 @@ var require_shams2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/es-set-tostringtag@2.1.0/node_modules/es-set-tostringtag/index.js
+// node_modules/es-set-tostringtag/index.js
 var require_es_set_tostringtag = __commonJS({
-  "node_modules/.pnpm/es-set-tostringtag@2.1.0/node_modules/es-set-tostringtag/index.js"(exports2, module2) {
+  "node_modules/es-set-tostringtag/index.js"(exports2, module2) {
     "use strict";
     var GetIntrinsic = require_get_intrinsic();
     var $defineProperty = GetIntrinsic("%Object.defineProperty%", true);
@@ -34719,9 +36663,9 @@ var require_es_set_tostringtag = __commonJS({
   }
 });
 
-// node_modules/.pnpm/form-data@4.0.5/node_modules/form-data/lib/populate.js
+// node_modules/form-data/lib/populate.js
 var require_populate = __commonJS({
-  "node_modules/.pnpm/form-data@4.0.5/node_modules/form-data/lib/populate.js"(exports2, module2) {
+  "node_modules/form-data/lib/populate.js"(exports2, module2) {
     "use strict";
     module2.exports = function(dst, src) {
       Object.keys(src).forEach(function(prop) {
@@ -34732,16 +36676,16 @@ var require_populate = __commonJS({
   }
 });
 
-// node_modules/.pnpm/form-data@4.0.5/node_modules/form-data/lib/form_data.js
+// node_modules/form-data/lib/form_data.js
 var require_form_data = __commonJS({
-  "node_modules/.pnpm/form-data@4.0.5/node_modules/form-data/lib/form_data.js"(exports2, module2) {
+  "node_modules/form-data/lib/form_data.js"(exports2, module2) {
     "use strict";
     var CombinedStream = require_combined_stream();
     var util3 = require("util");
     var path3 = require("path");
     var http3 = require("http");
     var https2 = require("https");
-    var parseUrl3 = require("url").parse;
+    var parseUrl2 = require("url").parse;
     var fs2 = require("fs");
     var Stream4 = require("stream").Stream;
     var crypto4 = require("crypto");
@@ -34994,7 +36938,7 @@ var require_form_data = __commonJS({
       var options;
       var defaults3 = { method: "post" };
       if (typeof params === "string") {
-        params = parseUrl3(params);
+        params = parseUrl2(params);
         options = populate({
           port: params.port,
           path: params.pathname,
@@ -35051,14 +36995,725 @@ var require_form_data = __commonJS({
   }
 });
 
-// node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/debug.js
-var require_debug2 = __commonJS({
-  "node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/debug.js"(exports2, module2) {
+// node_modules/proxy-from-env/index.js
+var require_proxy_from_env = __commonJS({
+  "node_modules/proxy-from-env/index.js"(exports2) {
+    "use strict";
+    var parseUrl2 = require("url").parse;
+    var DEFAULT_PORTS = {
+      ftp: 21,
+      gopher: 70,
+      http: 80,
+      https: 443,
+      ws: 80,
+      wss: 443
+    };
+    var stringEndsWith = String.prototype.endsWith || function(s) {
+      return s.length <= this.length && this.indexOf(s, this.length - s.length) !== -1;
+    };
+    function getProxyForUrl(url3) {
+      var parsedUrl = typeof url3 === "string" ? parseUrl2(url3) : url3 || {};
+      var proto = parsedUrl.protocol;
+      var hostname3 = parsedUrl.host;
+      var port2 = parsedUrl.port;
+      if (typeof hostname3 !== "string" || !hostname3 || typeof proto !== "string") {
+        return "";
+      }
+      proto = proto.split(":", 1)[0];
+      hostname3 = hostname3.replace(/:\d*$/, "");
+      port2 = parseInt(port2) || DEFAULT_PORTS[proto] || 0;
+      if (!shouldProxy(hostname3, port2)) {
+        return "";
+      }
+      var proxy = getEnv("npm_config_" + proto + "_proxy") || getEnv(proto + "_proxy") || getEnv("npm_config_proxy") || getEnv("all_proxy");
+      if (proxy && proxy.indexOf("://") === -1) {
+        proxy = proto + "://" + proxy;
+      }
+      return proxy;
+    }
+    function shouldProxy(hostname3, port2) {
+      var NO_PROXY = (getEnv("npm_config_no_proxy") || getEnv("no_proxy")).toLowerCase();
+      if (!NO_PROXY) {
+        return true;
+      }
+      if (NO_PROXY === "*") {
+        return false;
+      }
+      return NO_PROXY.split(/[,\s]/).every(function(proxy) {
+        if (!proxy) {
+          return true;
+        }
+        var parsedProxy = proxy.match(/^(.+):(\d+)$/);
+        var parsedProxyHostname = parsedProxy ? parsedProxy[1] : proxy;
+        var parsedProxyPort = parsedProxy ? parseInt(parsedProxy[2]) : 0;
+        if (parsedProxyPort && parsedProxyPort !== port2) {
+          return true;
+        }
+        if (!/^[.*]/.test(parsedProxyHostname)) {
+          return hostname3 !== parsedProxyHostname;
+        }
+        if (parsedProxyHostname.charAt(0) === "*") {
+          parsedProxyHostname = parsedProxyHostname.slice(1);
+        }
+        return !stringEndsWith.call(hostname3, parsedProxyHostname);
+      });
+    }
+    function getEnv(key) {
+      return process.env[key.toLowerCase()] || process.env[key.toUpperCase()] || "";
+    }
+    exports2.getProxyForUrl = getProxyForUrl;
+  }
+});
+
+// node_modules/debug/src/common.js
+var require_common = __commonJS({
+  "node_modules/debug/src/common.js"(exports2, module2) {
+    function setup(env) {
+      createDebug.debug = createDebug;
+      createDebug.default = createDebug;
+      createDebug.coerce = coerce;
+      createDebug.disable = disable;
+      createDebug.enable = enable;
+      createDebug.enabled = enabled;
+      createDebug.humanize = require_ms5();
+      createDebug.destroy = destroy;
+      Object.keys(env).forEach((key) => {
+        createDebug[key] = env[key];
+      });
+      createDebug.names = [];
+      createDebug.skips = [];
+      createDebug.formatters = {};
+      function selectColor(namespace) {
+        let hash2 = 0;
+        for (let i = 0; i < namespace.length; i++) {
+          hash2 = (hash2 << 5) - hash2 + namespace.charCodeAt(i);
+          hash2 |= 0;
+        }
+        return createDebug.colors[Math.abs(hash2) % createDebug.colors.length];
+      }
+      createDebug.selectColor = selectColor;
+      function createDebug(namespace) {
+        let prevTime;
+        let enableOverride = null;
+        let namespacesCache;
+        let enabledCache;
+        function debug(...args) {
+          if (!debug.enabled) {
+            return;
+          }
+          const self2 = debug;
+          const curr = Number(/* @__PURE__ */ new Date());
+          const ms = curr - (prevTime || curr);
+          self2.diff = ms;
+          self2.prev = prevTime;
+          self2.curr = curr;
+          prevTime = curr;
+          args[0] = createDebug.coerce(args[0]);
+          if (typeof args[0] !== "string") {
+            args.unshift("%O");
+          }
+          let index = 0;
+          args[0] = args[0].replace(/%([a-zA-Z%])/g, (match, format) => {
+            if (match === "%%") {
+              return "%";
+            }
+            index++;
+            const formatter = createDebug.formatters[format];
+            if (typeof formatter === "function") {
+              const val = args[index];
+              match = formatter.call(self2, val);
+              args.splice(index, 1);
+              index--;
+            }
+            return match;
+          });
+          createDebug.formatArgs.call(self2, args);
+          const logFn = self2.log || createDebug.log;
+          logFn.apply(self2, args);
+        }
+        debug.namespace = namespace;
+        debug.useColors = createDebug.useColors();
+        debug.color = createDebug.selectColor(namespace);
+        debug.extend = extend3;
+        debug.destroy = createDebug.destroy;
+        Object.defineProperty(debug, "enabled", {
+          enumerable: true,
+          configurable: false,
+          get: () => {
+            if (enableOverride !== null) {
+              return enableOverride;
+            }
+            if (namespacesCache !== createDebug.namespaces) {
+              namespacesCache = createDebug.namespaces;
+              enabledCache = createDebug.enabled(namespace);
+            }
+            return enabledCache;
+          },
+          set: (v) => {
+            enableOverride = v;
+          }
+        });
+        if (typeof createDebug.init === "function") {
+          createDebug.init(debug);
+        }
+        return debug;
+      }
+      function extend3(namespace, delimiter) {
+        const newDebug = createDebug(this.namespace + (typeof delimiter === "undefined" ? ":" : delimiter) + namespace);
+        newDebug.log = this.log;
+        return newDebug;
+      }
+      function enable(namespaces) {
+        createDebug.save(namespaces);
+        createDebug.namespaces = namespaces;
+        createDebug.names = [];
+        createDebug.skips = [];
+        const split = (typeof namespaces === "string" ? namespaces : "").trim().replace(/\s+/g, ",").split(",").filter(Boolean);
+        for (const ns of split) {
+          if (ns[0] === "-") {
+            createDebug.skips.push(ns.slice(1));
+          } else {
+            createDebug.names.push(ns);
+          }
+        }
+      }
+      function matchesTemplate(search, template) {
+        let searchIndex = 0;
+        let templateIndex = 0;
+        let starIndex = -1;
+        let matchIndex = 0;
+        while (searchIndex < search.length) {
+          if (templateIndex < template.length && (template[templateIndex] === search[searchIndex] || template[templateIndex] === "*")) {
+            if (template[templateIndex] === "*") {
+              starIndex = templateIndex;
+              matchIndex = searchIndex;
+              templateIndex++;
+            } else {
+              searchIndex++;
+              templateIndex++;
+            }
+          } else if (starIndex !== -1) {
+            templateIndex = starIndex + 1;
+            matchIndex++;
+            searchIndex = matchIndex;
+          } else {
+            return false;
+          }
+        }
+        while (templateIndex < template.length && template[templateIndex] === "*") {
+          templateIndex++;
+        }
+        return templateIndex === template.length;
+      }
+      function disable() {
+        const namespaces = [
+          ...createDebug.names,
+          ...createDebug.skips.map((namespace) => "-" + namespace)
+        ].join(",");
+        createDebug.enable("");
+        return namespaces;
+      }
+      function enabled(name2) {
+        for (const skip of createDebug.skips) {
+          if (matchesTemplate(name2, skip)) {
+            return false;
+          }
+        }
+        for (const ns of createDebug.names) {
+          if (matchesTemplate(name2, ns)) {
+            return true;
+          }
+        }
+        return false;
+      }
+      function coerce(val) {
+        if (val instanceof Error) {
+          return val.stack || val.message;
+        }
+        return val;
+      }
+      function destroy() {
+        console.warn("Instance method `debug.destroy()` is deprecated and no longer does anything. It will be removed in the next major version of `debug`.");
+      }
+      createDebug.enable(createDebug.load());
+      return createDebug;
+    }
+    module2.exports = setup;
+  }
+});
+
+// node_modules/debug/src/browser.js
+var require_browser5 = __commonJS({
+  "node_modules/debug/src/browser.js"(exports2, module2) {
+    exports2.formatArgs = formatArgs;
+    exports2.save = save;
+    exports2.load = load;
+    exports2.useColors = useColors;
+    exports2.storage = localstorage();
+    exports2.destroy = /* @__PURE__ */ (() => {
+      let warned = false;
+      return () => {
+        if (!warned) {
+          warned = true;
+          console.warn("Instance method `debug.destroy()` is deprecated and no longer does anything. It will be removed in the next major version of `debug`.");
+        }
+      };
+    })();
+    exports2.colors = [
+      "#0000CC",
+      "#0000FF",
+      "#0033CC",
+      "#0033FF",
+      "#0066CC",
+      "#0066FF",
+      "#0099CC",
+      "#0099FF",
+      "#00CC00",
+      "#00CC33",
+      "#00CC66",
+      "#00CC99",
+      "#00CCCC",
+      "#00CCFF",
+      "#3300CC",
+      "#3300FF",
+      "#3333CC",
+      "#3333FF",
+      "#3366CC",
+      "#3366FF",
+      "#3399CC",
+      "#3399FF",
+      "#33CC00",
+      "#33CC33",
+      "#33CC66",
+      "#33CC99",
+      "#33CCCC",
+      "#33CCFF",
+      "#6600CC",
+      "#6600FF",
+      "#6633CC",
+      "#6633FF",
+      "#66CC00",
+      "#66CC33",
+      "#9900CC",
+      "#9900FF",
+      "#9933CC",
+      "#9933FF",
+      "#99CC00",
+      "#99CC33",
+      "#CC0000",
+      "#CC0033",
+      "#CC0066",
+      "#CC0099",
+      "#CC00CC",
+      "#CC00FF",
+      "#CC3300",
+      "#CC3333",
+      "#CC3366",
+      "#CC3399",
+      "#CC33CC",
+      "#CC33FF",
+      "#CC6600",
+      "#CC6633",
+      "#CC9900",
+      "#CC9933",
+      "#CCCC00",
+      "#CCCC33",
+      "#FF0000",
+      "#FF0033",
+      "#FF0066",
+      "#FF0099",
+      "#FF00CC",
+      "#FF00FF",
+      "#FF3300",
+      "#FF3333",
+      "#FF3366",
+      "#FF3399",
+      "#FF33CC",
+      "#FF33FF",
+      "#FF6600",
+      "#FF6633",
+      "#FF9900",
+      "#FF9933",
+      "#FFCC00",
+      "#FFCC33"
+    ];
+    function useColors() {
+      if (typeof window !== "undefined" && window.process && (window.process.type === "renderer" || window.process.__nwjs)) {
+        return true;
+      }
+      if (typeof navigator !== "undefined" && navigator.userAgent && navigator.userAgent.toLowerCase().match(/(edge|trident)\/(\d+)/)) {
+        return false;
+      }
+      let m;
+      return typeof document !== "undefined" && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance || // Is firebug? http://stackoverflow.com/a/398120/376773
+      typeof window !== "undefined" && window.console && (window.console.firebug || window.console.exception && window.console.table) || // Is firefox >= v31?
+      // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+      typeof navigator !== "undefined" && navigator.userAgent && (m = navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/)) && parseInt(m[1], 10) >= 31 || // Double check webkit in userAgent just in case we are in a worker
+      typeof navigator !== "undefined" && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/);
+    }
+    function formatArgs(args) {
+      args[0] = (this.useColors ? "%c" : "") + this.namespace + (this.useColors ? " %c" : " ") + args[0] + (this.useColors ? "%c " : " ") + "+" + module2.exports.humanize(this.diff);
+      if (!this.useColors) {
+        return;
+      }
+      const c = "color: " + this.color;
+      args.splice(1, 0, c, "color: inherit");
+      let index = 0;
+      let lastC = 0;
+      args[0].replace(/%[a-zA-Z%]/g, (match) => {
+        if (match === "%%") {
+          return;
+        }
+        index++;
+        if (match === "%c") {
+          lastC = index;
+        }
+      });
+      args.splice(lastC, 0, c);
+    }
+    exports2.log = console.debug || console.log || (() => {
+    });
+    function save(namespaces) {
+      try {
+        if (namespaces) {
+          exports2.storage.setItem("debug", namespaces);
+        } else {
+          exports2.storage.removeItem("debug");
+        }
+      } catch (error48) {
+      }
+    }
+    function load() {
+      let r;
+      try {
+        r = exports2.storage.getItem("debug") || exports2.storage.getItem("DEBUG");
+      } catch (error48) {
+      }
+      if (!r && typeof process !== "undefined" && "env" in process) {
+        r = process.env.DEBUG;
+      }
+      return r;
+    }
+    function localstorage() {
+      try {
+        return localStorage;
+      } catch (error48) {
+      }
+    }
+    module2.exports = require_common()(exports2);
+    var { formatters: formatters2 } = module2.exports;
+    formatters2.j = function(v) {
+      try {
+        return JSON.stringify(v);
+      } catch (error48) {
+        return "[UnexpectedJSONParseError]: " + error48.message;
+      }
+    };
+  }
+});
+
+// node_modules/has-flag/index.js
+var require_has_flag = __commonJS({
+  "node_modules/has-flag/index.js"(exports2, module2) {
+    "use strict";
+    module2.exports = (flag, argv) => {
+      argv = argv || process.argv;
+      const prefix = flag.startsWith("-") ? "" : flag.length === 1 ? "-" : "--";
+      const pos = argv.indexOf(prefix + flag);
+      const terminatorPos = argv.indexOf("--");
+      return pos !== -1 && (terminatorPos === -1 ? true : pos < terminatorPos);
+    };
+  }
+});
+
+// node_modules/supports-color/index.js
+var require_supports_color = __commonJS({
+  "node_modules/supports-color/index.js"(exports2, module2) {
+    "use strict";
+    var os2 = require("os");
+    var hasFlag = require_has_flag();
+    var env = process.env;
+    var forceColor;
+    if (hasFlag("no-color") || hasFlag("no-colors") || hasFlag("color=false")) {
+      forceColor = false;
+    } else if (hasFlag("color") || hasFlag("colors") || hasFlag("color=true") || hasFlag("color=always")) {
+      forceColor = true;
+    }
+    if ("FORCE_COLOR" in env) {
+      forceColor = env.FORCE_COLOR.length === 0 || parseInt(env.FORCE_COLOR, 10) !== 0;
+    }
+    function translateLevel(level) {
+      if (level === 0) {
+        return false;
+      }
+      return {
+        level,
+        hasBasic: true,
+        has256: level >= 2,
+        has16m: level >= 3
+      };
+    }
+    function supportsColor(stream4) {
+      if (forceColor === false) {
+        return 0;
+      }
+      if (hasFlag("color=16m") || hasFlag("color=full") || hasFlag("color=truecolor")) {
+        return 3;
+      }
+      if (hasFlag("color=256")) {
+        return 2;
+      }
+      if (stream4 && !stream4.isTTY && forceColor !== true) {
+        return 0;
+      }
+      const min2 = forceColor ? 1 : 0;
+      if (process.platform === "win32") {
+        const osRelease = os2.release().split(".");
+        if (Number(process.versions.node.split(".")[0]) >= 8 && Number(osRelease[0]) >= 10 && Number(osRelease[2]) >= 10586) {
+          return Number(osRelease[2]) >= 14931 ? 3 : 2;
+        }
+        return 1;
+      }
+      if ("CI" in env) {
+        if (["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI"].some((sign) => sign in env) || env.CI_NAME === "codeship") {
+          return 1;
+        }
+        return min2;
+      }
+      if ("TEAMCITY_VERSION" in env) {
+        return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env.TEAMCITY_VERSION) ? 1 : 0;
+      }
+      if (env.COLORTERM === "truecolor") {
+        return 3;
+      }
+      if ("TERM_PROGRAM" in env) {
+        const version3 = parseInt((env.TERM_PROGRAM_VERSION || "").split(".")[0], 10);
+        switch (env.TERM_PROGRAM) {
+          case "iTerm.app":
+            return version3 >= 3 ? 3 : 2;
+          case "Apple_Terminal":
+            return 2;
+        }
+      }
+      if (/-256(color)?$/i.test(env.TERM)) {
+        return 2;
+      }
+      if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env.TERM)) {
+        return 1;
+      }
+      if ("COLORTERM" in env) {
+        return 1;
+      }
+      if (env.TERM === "dumb") {
+        return min2;
+      }
+      return min2;
+    }
+    function getSupportLevel(stream4) {
+      const level = supportsColor(stream4);
+      return translateLevel(level);
+    }
+    module2.exports = {
+      supportsColor: getSupportLevel,
+      stdout: getSupportLevel(process.stdout),
+      stderr: getSupportLevel(process.stderr)
+    };
+  }
+});
+
+// node_modules/debug/src/node.js
+var require_node5 = __commonJS({
+  "node_modules/debug/src/node.js"(exports2, module2) {
+    var tty = require("tty");
+    var util3 = require("util");
+    exports2.init = init;
+    exports2.log = log;
+    exports2.formatArgs = formatArgs;
+    exports2.save = save;
+    exports2.load = load;
+    exports2.useColors = useColors;
+    exports2.destroy = util3.deprecate(
+      () => {
+      },
+      "Instance method `debug.destroy()` is deprecated and no longer does anything. It will be removed in the next major version of `debug`."
+    );
+    exports2.colors = [6, 2, 3, 4, 5, 1];
+    try {
+      const supportsColor = require_supports_color();
+      if (supportsColor && (supportsColor.stderr || supportsColor).level >= 2) {
+        exports2.colors = [
+          20,
+          21,
+          26,
+          27,
+          32,
+          33,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          56,
+          57,
+          62,
+          63,
+          68,
+          69,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          92,
+          93,
+          98,
+          99,
+          112,
+          113,
+          128,
+          129,
+          134,
+          135,
+          148,
+          149,
+          160,
+          161,
+          162,
+          163,
+          164,
+          165,
+          166,
+          167,
+          168,
+          169,
+          170,
+          171,
+          172,
+          173,
+          178,
+          179,
+          184,
+          185,
+          196,
+          197,
+          198,
+          199,
+          200,
+          201,
+          202,
+          203,
+          204,
+          205,
+          206,
+          207,
+          208,
+          209,
+          214,
+          215,
+          220,
+          221
+        ];
+      }
+    } catch (error48) {
+    }
+    exports2.inspectOpts = Object.keys(process.env).filter((key) => {
+      return /^debug_/i.test(key);
+    }).reduce((obj, key) => {
+      const prop = key.substring(6).toLowerCase().replace(/_([a-z])/g, (_, k) => {
+        return k.toUpperCase();
+      });
+      let val = process.env[key];
+      if (/^(yes|on|true|enabled)$/i.test(val)) {
+        val = true;
+      } else if (/^(no|off|false|disabled)$/i.test(val)) {
+        val = false;
+      } else if (val === "null") {
+        val = null;
+      } else {
+        val = Number(val);
+      }
+      obj[prop] = val;
+      return obj;
+    }, {});
+    function useColors() {
+      return "colors" in exports2.inspectOpts ? Boolean(exports2.inspectOpts.colors) : tty.isatty(process.stderr.fd);
+    }
+    function formatArgs(args) {
+      const { namespace: name2, useColors: useColors2 } = this;
+      if (useColors2) {
+        const c = this.color;
+        const colorCode = "\x1B[3" + (c < 8 ? c : "8;5;" + c);
+        const prefix = `  ${colorCode};1m${name2} \x1B[0m`;
+        args[0] = prefix + args[0].split("\n").join("\n" + prefix);
+        args.push(colorCode + "m+" + module2.exports.humanize(this.diff) + "\x1B[0m");
+      } else {
+        args[0] = getDate() + name2 + " " + args[0];
+      }
+    }
+    function getDate() {
+      if (exports2.inspectOpts.hideDate) {
+        return "";
+      }
+      return (/* @__PURE__ */ new Date()).toISOString() + " ";
+    }
+    function log(...args) {
+      return process.stderr.write(util3.formatWithOptions(exports2.inspectOpts, ...args) + "\n");
+    }
+    function save(namespaces) {
+      if (namespaces) {
+        process.env.DEBUG = namespaces;
+      } else {
+        delete process.env.DEBUG;
+      }
+    }
+    function load() {
+      return process.env.DEBUG;
+    }
+    function init(debug) {
+      debug.inspectOpts = {};
+      const keys = Object.keys(exports2.inspectOpts);
+      for (let i = 0; i < keys.length; i++) {
+        debug.inspectOpts[keys[i]] = exports2.inspectOpts[keys[i]];
+      }
+    }
+    module2.exports = require_common()(exports2);
+    var { formatters: formatters2 } = module2.exports;
+    formatters2.o = function(v) {
+      this.inspectOpts.colors = this.useColors;
+      return util3.inspect(v, this.inspectOpts).split("\n").map((str2) => str2.trim()).join(" ");
+    };
+    formatters2.O = function(v) {
+      this.inspectOpts.colors = this.useColors;
+      return util3.inspect(v, this.inspectOpts);
+    };
+  }
+});
+
+// node_modules/debug/src/index.js
+var require_src5 = __commonJS({
+  "node_modules/debug/src/index.js"(exports2, module2) {
+    if (typeof process === "undefined" || process.type === "renderer" || process.browser === true || process.__nwjs) {
+      module2.exports = require_browser5();
+    } else {
+      module2.exports = require_node5();
+    }
+  }
+});
+
+// node_modules/follow-redirects/debug.js
+var require_debug5 = __commonJS({
+  "node_modules/follow-redirects/debug.js"(exports2, module2) {
     var debug;
     module2.exports = function() {
       if (!debug) {
         try {
-          debug = require_src()("follow-redirects");
+          debug = require_src5()("follow-redirects");
         } catch (error48) {
         }
         if (typeof debug !== "function") {
@@ -35071,16 +37726,16 @@ var require_debug2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/index.js
+// node_modules/follow-redirects/index.js
 var require_follow_redirects = __commonJS({
-  "node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/index.js"(exports2, module2) {
+  "node_modules/follow-redirects/index.js"(exports2, module2) {
     var url3 = require("url");
     var URL2 = url3.URL;
     var http3 = require("http");
     var https2 = require("https");
     var Writable = require("stream").Writable;
     var assert2 = require("assert");
-    var debug = require_debug2();
+    var debug = require_debug5();
     (function detectUnsupportedEnvironment() {
       var looksLikeNode = typeof process !== "undefined";
       var looksLikeBrowser = typeof window !== "undefined" && typeof document !== "undefined";
@@ -35393,7 +38048,7 @@ var require_follow_redirects = __commonJS({
         removeMatchingHeaders(/^content-/i, this._options.headers);
       }
       var currentHostHeader = removeMatchingHeaders(/^host$/i, this._options.headers);
-      var currentUrlParts = parseUrl3(this._currentUrl);
+      var currentUrlParts = parseUrl2(this._currentUrl);
       var currentHost = currentHostHeader || currentUrlParts.host;
       var currentUrl = /^\w+:/.test(location) ? this._currentUrl : url3.format(Object.assign(currentUrlParts, { host: currentHost }));
       var redirectUrl = resolveUrl(location, currentUrl);
@@ -35432,7 +38087,7 @@ var require_follow_redirects = __commonJS({
           if (isURL2(input)) {
             input = spreadUrlObject(input);
           } else if (isString3(input)) {
-            input = spreadUrlObject(parseUrl3(input));
+            input = spreadUrlObject(parseUrl2(input));
           } else {
             callback = options;
             options = validateUrl(input);
@@ -35468,7 +38123,7 @@ var require_follow_redirects = __commonJS({
     }
     function noop6() {
     }
-    function parseUrl3(input) {
+    function parseUrl2(input) {
       var parsed;
       if (useNativeURL) {
         parsed = new URL2(input);
@@ -35481,7 +38136,7 @@ var require_follow_redirects = __commonJS({
       return parsed;
     }
     function resolveUrl(relative, base) {
-      return useNativeURL ? new URL2(relative, base) : parseUrl3(url3.resolve(base, relative));
+      return useNativeURL ? new URL2(relative, base) : parseUrl2(url3.resolve(base, relative));
     }
     function validateUrl(input) {
       if (/^\[/.test(input.hostname) && !/^\[[:0-9a-f]+\]$/i.test(input.hostname)) {
@@ -35567,175 +38222,9 @@ var require_follow_redirects = __commonJS({
   }
 });
 
-// node_modules/cookie/index.js
-var require_cookie2 = __commonJS({
-  "node_modules/cookie/index.js"(exports2) {
-    "use strict";
-    exports2.parse = parse5;
-    exports2.serialize = serialize2;
-    var __toString = Object.prototype.toString;
-    var __hasOwnProperty = Object.prototype.hasOwnProperty;
-    var cookieNameRegExp = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
-    var cookieValueRegExp = /^("?)[\u0021\u0023-\u002B\u002D-\u003A\u003C-\u005B\u005D-\u007E]*\1$/;
-    var domainValueRegExp = /^([.]?[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)([.][a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$/i;
-    var pathValueRegExp = /^[\u0020-\u003A\u003D-\u007E]*$/;
-    function parse5(str2, opt) {
-      if (typeof str2 !== "string") {
-        throw new TypeError("argument str must be a string");
-      }
-      var obj = {};
-      var len = str2.length;
-      if (len < 2) return obj;
-      var dec = opt && opt.decode || decode3;
-      var index = 0;
-      var eqIdx = 0;
-      var endIdx = 0;
-      do {
-        eqIdx = str2.indexOf("=", index);
-        if (eqIdx === -1) break;
-        endIdx = str2.indexOf(";", index);
-        if (endIdx === -1) {
-          endIdx = len;
-        } else if (eqIdx > endIdx) {
-          index = str2.lastIndexOf(";", eqIdx - 1) + 1;
-          continue;
-        }
-        var keyStartIdx = startIndex(str2, index, eqIdx);
-        var keyEndIdx = endIndex(str2, eqIdx, keyStartIdx);
-        var key = str2.slice(keyStartIdx, keyEndIdx);
-        if (!__hasOwnProperty.call(obj, key)) {
-          var valStartIdx = startIndex(str2, eqIdx + 1, endIdx);
-          var valEndIdx = endIndex(str2, endIdx, valStartIdx);
-          if (str2.charCodeAt(valStartIdx) === 34 && str2.charCodeAt(valEndIdx - 1) === 34) {
-            valStartIdx++;
-            valEndIdx--;
-          }
-          var val = str2.slice(valStartIdx, valEndIdx);
-          obj[key] = tryDecode(val, dec);
-        }
-        index = endIdx + 1;
-      } while (index < len);
-      return obj;
-    }
-    function startIndex(str2, index, max2) {
-      do {
-        var code = str2.charCodeAt(index);
-        if (code !== 32 && code !== 9) return index;
-      } while (++index < max2);
-      return max2;
-    }
-    function endIndex(str2, index, min2) {
-      while (index > min2) {
-        var code = str2.charCodeAt(--index);
-        if (code !== 32 && code !== 9) return index + 1;
-      }
-      return min2;
-    }
-    function serialize2(name2, val, opt) {
-      var enc = opt && opt.encode || encodeURIComponent;
-      if (typeof enc !== "function") {
-        throw new TypeError("option encode is invalid");
-      }
-      if (!cookieNameRegExp.test(name2)) {
-        throw new TypeError("argument name is invalid");
-      }
-      var value = enc(val);
-      if (!cookieValueRegExp.test(value)) {
-        throw new TypeError("argument val is invalid");
-      }
-      var str2 = name2 + "=" + value;
-      if (!opt) return str2;
-      if (null != opt.maxAge) {
-        var maxAge = Math.floor(opt.maxAge);
-        if (!isFinite(maxAge)) {
-          throw new TypeError("option maxAge is invalid");
-        }
-        str2 += "; Max-Age=" + maxAge;
-      }
-      if (opt.domain) {
-        if (!domainValueRegExp.test(opt.domain)) {
-          throw new TypeError("option domain is invalid");
-        }
-        str2 += "; Domain=" + opt.domain;
-      }
-      if (opt.path) {
-        if (!pathValueRegExp.test(opt.path)) {
-          throw new TypeError("option path is invalid");
-        }
-        str2 += "; Path=" + opt.path;
-      }
-      if (opt.expires) {
-        var expires = opt.expires;
-        if (!isDate3(expires) || isNaN(expires.valueOf())) {
-          throw new TypeError("option expires is invalid");
-        }
-        str2 += "; Expires=" + expires.toUTCString();
-      }
-      if (opt.httpOnly) {
-        str2 += "; HttpOnly";
-      }
-      if (opt.secure) {
-        str2 += "; Secure";
-      }
-      if (opt.partitioned) {
-        str2 += "; Partitioned";
-      }
-      if (opt.priority) {
-        var priority = typeof opt.priority === "string" ? opt.priority.toLowerCase() : opt.priority;
-        switch (priority) {
-          case "low":
-            str2 += "; Priority=Low";
-            break;
-          case "medium":
-            str2 += "; Priority=Medium";
-            break;
-          case "high":
-            str2 += "; Priority=High";
-            break;
-          default:
-            throw new TypeError("option priority is invalid");
-        }
-      }
-      if (opt.sameSite) {
-        var sameSite = typeof opt.sameSite === "string" ? opt.sameSite.toLowerCase() : opt.sameSite;
-        switch (sameSite) {
-          case true:
-            str2 += "; SameSite=Strict";
-            break;
-          case "lax":
-            str2 += "; SameSite=Lax";
-            break;
-          case "strict":
-            str2 += "; SameSite=Strict";
-            break;
-          case "none":
-            str2 += "; SameSite=None";
-            break;
-          default:
-            throw new TypeError("option sameSite is invalid");
-        }
-      }
-      return str2;
-    }
-    function decode3(str2) {
-      return str2.indexOf("%") !== -1 ? decodeURIComponent(str2) : str2;
-    }
-    function isDate3(val) {
-      return __toString.call(val) === "[object Date]";
-    }
-    function tryDecode(str2, decode4) {
-      try {
-        return decode4(str2);
-      } catch (e) {
-        return str2;
-      }
-    }
-  }
-});
-
-// node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/data-stream.js
+// node_modules/jws/lib/data-stream.js
 var require_data_stream = __commonJS({
-  "node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/data-stream.js"(exports2, module2) {
+  "node_modules/jws/lib/data-stream.js"(exports2, module2) {
     var Buffer2 = require_safe_buffer().Buffer;
     var Stream4 = require("stream");
     var util3 = require("util");
@@ -35781,9 +38270,9 @@ var require_data_stream = __commonJS({
   }
 });
 
-// node_modules/.pnpm/ecdsa-sig-formatter@1.0.11/node_modules/ecdsa-sig-formatter/src/param-bytes-for-alg.js
+// node_modules/ecdsa-sig-formatter/src/param-bytes-for-alg.js
 var require_param_bytes_for_alg = __commonJS({
-  "node_modules/.pnpm/ecdsa-sig-formatter@1.0.11/node_modules/ecdsa-sig-formatter/src/param-bytes-for-alg.js"(exports2, module2) {
+  "node_modules/ecdsa-sig-formatter/src/param-bytes-for-alg.js"(exports2, module2) {
     "use strict";
     function getParamSize(keySize) {
       var result = (keySize / 8 | 0) + (keySize % 8 === 0 ? 0 : 1);
@@ -35805,9 +38294,9 @@ var require_param_bytes_for_alg = __commonJS({
   }
 });
 
-// node_modules/.pnpm/ecdsa-sig-formatter@1.0.11/node_modules/ecdsa-sig-formatter/src/ecdsa-sig-formatter.js
+// node_modules/ecdsa-sig-formatter/src/ecdsa-sig-formatter.js
 var require_ecdsa_sig_formatter = __commonJS({
-  "node_modules/.pnpm/ecdsa-sig-formatter@1.0.11/node_modules/ecdsa-sig-formatter/src/ecdsa-sig-formatter.js"(exports2, module2) {
+  "node_modules/ecdsa-sig-formatter/src/ecdsa-sig-formatter.js"(exports2, module2) {
     "use strict";
     var Buffer2 = require_safe_buffer().Buffer;
     var getParamBytesForAlg = require_param_bytes_for_alg();
@@ -35945,9 +38434,9 @@ var require_ecdsa_sig_formatter = __commonJS({
   }
 });
 
-// node_modules/.pnpm/buffer-equal-constant-time@1.0.1/node_modules/buffer-equal-constant-time/index.js
+// node_modules/buffer-equal-constant-time/index.js
 var require_buffer_equal_constant_time = __commonJS({
-  "node_modules/.pnpm/buffer-equal-constant-time@1.0.1/node_modules/buffer-equal-constant-time/index.js"(exports2, module2) {
+  "node_modules/buffer-equal-constant-time/index.js"(exports2, module2) {
     "use strict";
     var Buffer2 = require("buffer").Buffer;
     var SlowBuffer = require("buffer").SlowBuffer;
@@ -35979,9 +38468,9 @@ var require_buffer_equal_constant_time = __commonJS({
   }
 });
 
-// node_modules/.pnpm/jwa@2.0.1/node_modules/jwa/index.js
+// node_modules/jwa/index.js
 var require_jwa = __commonJS({
-  "node_modules/.pnpm/jwa@2.0.1/node_modules/jwa/index.js"(exports2, module2) {
+  "node_modules/jwa/index.js"(exports2, module2) {
     var Buffer2 = require_safe_buffer().Buffer;
     var crypto4 = require("crypto");
     var formatEcdsa = require_ecdsa_sig_formatter();
@@ -36203,9 +38692,9 @@ var require_jwa = __commonJS({
   }
 });
 
-// node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/tostring.js
+// node_modules/jws/lib/tostring.js
 var require_tostring = __commonJS({
-  "node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/tostring.js"(exports2, module2) {
+  "node_modules/jws/lib/tostring.js"(exports2, module2) {
     var Buffer2 = require("buffer").Buffer;
     module2.exports = function toString3(obj) {
       if (typeof obj === "string")
@@ -36217,9 +38706,9 @@ var require_tostring = __commonJS({
   }
 });
 
-// node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/sign-stream.js
+// node_modules/jws/lib/sign-stream.js
 var require_sign_stream = __commonJS({
-  "node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/sign-stream.js"(exports2, module2) {
+  "node_modules/jws/lib/sign-stream.js"(exports2, module2) {
     var Buffer2 = require_safe_buffer().Buffer;
     var DataStream = require_data_stream();
     var jwa = require_jwa();
@@ -36292,9 +38781,9 @@ var require_sign_stream = __commonJS({
   }
 });
 
-// node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/verify-stream.js
+// node_modules/jws/lib/verify-stream.js
 var require_verify_stream = __commonJS({
-  "node_modules/.pnpm/jws@4.0.1/node_modules/jws/lib/verify-stream.js"(exports2, module2) {
+  "node_modules/jws/lib/verify-stream.js"(exports2, module2) {
     var Buffer2 = require_safe_buffer().Buffer;
     var DataStream = require_data_stream();
     var jwa = require_jwa();
@@ -36407,9 +38896,9 @@ var require_verify_stream = __commonJS({
   }
 });
 
-// node_modules/.pnpm/jws@4.0.1/node_modules/jws/index.js
+// node_modules/jws/index.js
 var require_jws = __commonJS({
-  "node_modules/.pnpm/jws@4.0.1/node_modules/jws/index.js"(exports2) {
+  "node_modules/jws/index.js"(exports2) {
     var SignStream = require_sign_stream();
     var VerifyStream = require_verify_stream();
     var ALGORITHMS = [
@@ -36440,9 +38929,9 @@ var require_jws = __commonJS({
   }
 });
 
-// node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/decode.js
+// node_modules/jsonwebtoken/decode.js
 var require_decode = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/decode.js"(exports2, module2) {
+  "node_modules/jsonwebtoken/decode.js"(exports2, module2) {
     var jws = require_jws();
     module2.exports = function(jwt3, options) {
       options = options || {};
@@ -36472,9 +38961,9 @@ var require_decode = __commonJS({
   }
 });
 
-// node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/JsonWebTokenError.js
+// node_modules/jsonwebtoken/lib/JsonWebTokenError.js
 var require_JsonWebTokenError = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/JsonWebTokenError.js"(exports2, module2) {
+  "node_modules/jsonwebtoken/lib/JsonWebTokenError.js"(exports2, module2) {
     var JsonWebTokenError = function(message, error48) {
       Error.call(this, message);
       if (Error.captureStackTrace) {
@@ -36490,9 +38979,9 @@ var require_JsonWebTokenError = __commonJS({
   }
 });
 
-// node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/NotBeforeError.js
+// node_modules/jsonwebtoken/lib/NotBeforeError.js
 var require_NotBeforeError = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/NotBeforeError.js"(exports2, module2) {
+  "node_modules/jsonwebtoken/lib/NotBeforeError.js"(exports2, module2) {
     var JsonWebTokenError = require_JsonWebTokenError();
     var NotBeforeError = function(message, date6) {
       JsonWebTokenError.call(this, message);
@@ -36505,9 +38994,9 @@ var require_NotBeforeError = __commonJS({
   }
 });
 
-// node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/TokenExpiredError.js
+// node_modules/jsonwebtoken/lib/TokenExpiredError.js
 var require_TokenExpiredError = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/TokenExpiredError.js"(exports2, module2) {
+  "node_modules/jsonwebtoken/lib/TokenExpiredError.js"(exports2, module2) {
     var JsonWebTokenError = require_JsonWebTokenError();
     var TokenExpiredError = function(message, expiredAt) {
       JsonWebTokenError.call(this, message);
@@ -36520,10 +39009,10 @@ var require_TokenExpiredError = __commonJS({
   }
 });
 
-// node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/timespan.js
+// node_modules/jsonwebtoken/lib/timespan.js
 var require_timespan = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/timespan.js"(exports2, module2) {
-    var ms = require_ms2();
+  "node_modules/jsonwebtoken/lib/timespan.js"(exports2, module2) {
+    var ms = require_ms5();
     module2.exports = function(time4, iat) {
       var timestamp2 = iat || Math.floor(Date.now() / 1e3);
       if (typeof time4 === "string") {
@@ -36541,9 +39030,9 @@ var require_timespan = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/constants.js
+// node_modules/semver/internal/constants.js
 var require_constants = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/constants.js"(exports2, module2) {
+  "node_modules/semver/internal/constants.js"(exports2, module2) {
     "use strict";
     var SEMVER_SPEC_VERSION = "2.0.0";
     var MAX_LENGTH = 256;
@@ -36573,9 +39062,9 @@ var require_constants = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/debug.js
-var require_debug3 = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/debug.js"(exports2, module2) {
+// node_modules/semver/internal/debug.js
+var require_debug6 = __commonJS({
+  "node_modules/semver/internal/debug.js"(exports2, module2) {
     "use strict";
     var debug = typeof process === "object" && process.env && process.env.NODE_DEBUG && /\bsemver\b/i.test(process.env.NODE_DEBUG) ? (...args) => console.error("SEMVER", ...args) : () => {
     };
@@ -36583,16 +39072,16 @@ var require_debug3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/re.js
+// node_modules/semver/internal/re.js
 var require_re = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/re.js"(exports2, module2) {
+  "node_modules/semver/internal/re.js"(exports2, module2) {
     "use strict";
     var {
       MAX_SAFE_COMPONENT_LENGTH,
       MAX_SAFE_BUILD_LENGTH,
       MAX_LENGTH
     } = require_constants();
-    var debug = require_debug3();
+    var debug = require_debug6();
     exports2 = module2.exports = {};
     var re = exports2.re = [];
     var safeRe = exports2.safeRe = [];
@@ -36671,9 +39160,9 @@ var require_re = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/parse-options.js
+// node_modules/semver/internal/parse-options.js
 var require_parse_options = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/parse-options.js"(exports2, module2) {
+  "node_modules/semver/internal/parse-options.js"(exports2, module2) {
     "use strict";
     var looseOption = Object.freeze({ loose: true });
     var emptyOpts = Object.freeze({});
@@ -36690,9 +39179,9 @@ var require_parse_options = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/identifiers.js
+// node_modules/semver/internal/identifiers.js
 var require_identifiers = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/identifiers.js"(exports2, module2) {
+  "node_modules/semver/internal/identifiers.js"(exports2, module2) {
     "use strict";
     var numeric2 = /^[0-9]+$/;
     var compareIdentifiers = (a, b2) => {
@@ -36715,11 +39204,11 @@ var require_identifiers = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/classes/semver.js
+// node_modules/semver/classes/semver.js
 var require_semver = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/classes/semver.js"(exports2, module2) {
+  "node_modules/semver/classes/semver.js"(exports2, module2) {
     "use strict";
-    var debug = require_debug3();
+    var debug = require_debug6();
     var { MAX_LENGTH, MAX_SAFE_INTEGER } = require_constants();
     var { safeRe: re, t: t2 } = require_re();
     var parseOptions2 = require_parse_options();
@@ -36994,9 +39483,9 @@ var require_semver = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/parse.js
+// node_modules/semver/functions/parse.js
 var require_parse2 = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/parse.js"(exports2, module2) {
+  "node_modules/semver/functions/parse.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var parse5 = (version3, options, throwErrors = false) => {
@@ -37016,9 +39505,9 @@ var require_parse2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/valid.js
+// node_modules/semver/functions/valid.js
 var require_valid = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/valid.js"(exports2, module2) {
+  "node_modules/semver/functions/valid.js"(exports2, module2) {
     "use strict";
     var parse5 = require_parse2();
     var valid = (version3, options) => {
@@ -37029,9 +39518,9 @@ var require_valid = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/clean.js
+// node_modules/semver/functions/clean.js
 var require_clean = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/clean.js"(exports2, module2) {
+  "node_modules/semver/functions/clean.js"(exports2, module2) {
     "use strict";
     var parse5 = require_parse2();
     var clean = (version3, options) => {
@@ -37042,9 +39531,9 @@ var require_clean = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/inc.js
+// node_modules/semver/functions/inc.js
 var require_inc = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/inc.js"(exports2, module2) {
+  "node_modules/semver/functions/inc.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var inc = (version3, release, options, identifier, identifierBase) => {
@@ -37066,9 +39555,9 @@ var require_inc = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/diff.js
+// node_modules/semver/functions/diff.js
 var require_diff = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/diff.js"(exports2, module2) {
+  "node_modules/semver/functions/diff.js"(exports2, module2) {
     "use strict";
     var parse5 = require_parse2();
     var diff = (version1, version22) => {
@@ -37110,9 +39599,9 @@ var require_diff = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/major.js
+// node_modules/semver/functions/major.js
 var require_major = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/major.js"(exports2, module2) {
+  "node_modules/semver/functions/major.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var major = (a, loose) => new SemVer(a, loose).major;
@@ -37120,9 +39609,9 @@ var require_major = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/minor.js
+// node_modules/semver/functions/minor.js
 var require_minor = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/minor.js"(exports2, module2) {
+  "node_modules/semver/functions/minor.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var minor = (a, loose) => new SemVer(a, loose).minor;
@@ -37130,9 +39619,9 @@ var require_minor = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/patch.js
+// node_modules/semver/functions/patch.js
 var require_patch = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/patch.js"(exports2, module2) {
+  "node_modules/semver/functions/patch.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var patch = (a, loose) => new SemVer(a, loose).patch;
@@ -37140,9 +39629,9 @@ var require_patch = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/prerelease.js
+// node_modules/semver/functions/prerelease.js
 var require_prerelease = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/prerelease.js"(exports2, module2) {
+  "node_modules/semver/functions/prerelease.js"(exports2, module2) {
     "use strict";
     var parse5 = require_parse2();
     var prerelease = (version3, options) => {
@@ -37153,9 +39642,9 @@ var require_prerelease = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/compare.js
+// node_modules/semver/functions/compare.js
 var require_compare = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/compare.js"(exports2, module2) {
+  "node_modules/semver/functions/compare.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var compare = (a, b2, loose) => new SemVer(a, loose).compare(new SemVer(b2, loose));
@@ -37163,9 +39652,9 @@ var require_compare = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/rcompare.js
+// node_modules/semver/functions/rcompare.js
 var require_rcompare = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/rcompare.js"(exports2, module2) {
+  "node_modules/semver/functions/rcompare.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var rcompare = (a, b2, loose) => compare(b2, a, loose);
@@ -37173,9 +39662,9 @@ var require_rcompare = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/compare-loose.js
+// node_modules/semver/functions/compare-loose.js
 var require_compare_loose = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/compare-loose.js"(exports2, module2) {
+  "node_modules/semver/functions/compare-loose.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var compareLoose = (a, b2) => compare(a, b2, true);
@@ -37183,9 +39672,9 @@ var require_compare_loose = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/compare-build.js
+// node_modules/semver/functions/compare-build.js
 var require_compare_build = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/compare-build.js"(exports2, module2) {
+  "node_modules/semver/functions/compare-build.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var compareBuild = (a, b2, loose) => {
@@ -37197,9 +39686,9 @@ var require_compare_build = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/sort.js
+// node_modules/semver/functions/sort.js
 var require_sort = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/sort.js"(exports2, module2) {
+  "node_modules/semver/functions/sort.js"(exports2, module2) {
     "use strict";
     var compareBuild = require_compare_build();
     var sort = (list, loose) => list.sort((a, b2) => compareBuild(a, b2, loose));
@@ -37207,9 +39696,9 @@ var require_sort = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/rsort.js
+// node_modules/semver/functions/rsort.js
 var require_rsort = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/rsort.js"(exports2, module2) {
+  "node_modules/semver/functions/rsort.js"(exports2, module2) {
     "use strict";
     var compareBuild = require_compare_build();
     var rsort = (list, loose) => list.sort((a, b2) => compareBuild(b2, a, loose));
@@ -37217,9 +39706,9 @@ var require_rsort = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/gt.js
+// node_modules/semver/functions/gt.js
 var require_gt = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/gt.js"(exports2, module2) {
+  "node_modules/semver/functions/gt.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var gt2 = (a, b2, loose) => compare(a, b2, loose) > 0;
@@ -37227,9 +39716,9 @@ var require_gt = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/lt.js
+// node_modules/semver/functions/lt.js
 var require_lt = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/lt.js"(exports2, module2) {
+  "node_modules/semver/functions/lt.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var lt3 = (a, b2, loose) => compare(a, b2, loose) < 0;
@@ -37237,9 +39726,9 @@ var require_lt = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/eq.js
+// node_modules/semver/functions/eq.js
 var require_eq = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/eq.js"(exports2, module2) {
+  "node_modules/semver/functions/eq.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var eq2 = (a, b2, loose) => compare(a, b2, loose) === 0;
@@ -37247,9 +39736,9 @@ var require_eq = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/neq.js
+// node_modules/semver/functions/neq.js
 var require_neq = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/neq.js"(exports2, module2) {
+  "node_modules/semver/functions/neq.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var neq = (a, b2, loose) => compare(a, b2, loose) !== 0;
@@ -37257,9 +39746,9 @@ var require_neq = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/gte.js
+// node_modules/semver/functions/gte.js
 var require_gte = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/gte.js"(exports2, module2) {
+  "node_modules/semver/functions/gte.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var gte2 = (a, b2, loose) => compare(a, b2, loose) >= 0;
@@ -37267,9 +39756,9 @@ var require_gte = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/lte.js
+// node_modules/semver/functions/lte.js
 var require_lte = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/lte.js"(exports2, module2) {
+  "node_modules/semver/functions/lte.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
     var lte4 = (a, b2, loose) => compare(a, b2, loose) <= 0;
@@ -37277,9 +39766,9 @@ var require_lte = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/cmp.js
+// node_modules/semver/functions/cmp.js
 var require_cmp = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/cmp.js"(exports2, module2) {
+  "node_modules/semver/functions/cmp.js"(exports2, module2) {
     "use strict";
     var eq2 = require_eq();
     var neq = require_neq();
@@ -37327,9 +39816,9 @@ var require_cmp = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/coerce.js
+// node_modules/semver/functions/coerce.js
 var require_coerce = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/coerce.js"(exports2, module2) {
+  "node_modules/semver/functions/coerce.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var parse5 = require_parse2();
@@ -37373,9 +39862,9 @@ var require_coerce = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/lrucache.js
+// node_modules/semver/internal/lrucache.js
 var require_lrucache = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/internal/lrucache.js"(exports2, module2) {
+  "node_modules/semver/internal/lrucache.js"(exports2, module2) {
     "use strict";
     var LRUCache = class {
       constructor() {
@@ -37411,9 +39900,9 @@ var require_lrucache = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/classes/range.js
+// node_modules/semver/classes/range.js
 var require_range2 = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/classes/range.js"(exports2, module2) {
+  "node_modules/semver/classes/range.js"(exports2, module2) {
     "use strict";
     var SPACE_CHARACTERS = /\s+/g;
     var Range = class _Range {
@@ -37559,7 +40048,7 @@ var require_range2 = __commonJS({
     var cache = new LRU();
     var parseOptions2 = require_parse_options();
     var Comparator = require_comparator();
-    var debug = require_debug3();
+    var debug = require_debug6();
     var SemVer = require_semver();
     var {
       safeRe: re,
@@ -37788,9 +40277,9 @@ var require_range2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/classes/comparator.js
+// node_modules/semver/classes/comparator.js
 var require_comparator = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/classes/comparator.js"(exports2, module2) {
+  "node_modules/semver/classes/comparator.js"(exports2, module2) {
     "use strict";
     var ANY = /* @__PURE__ */ Symbol("SemVer ANY");
     var Comparator = class _Comparator {
@@ -37895,15 +40384,15 @@ var require_comparator = __commonJS({
     var parseOptions2 = require_parse_options();
     var { safeRe: re, t: t2 } = require_re();
     var cmp = require_cmp();
-    var debug = require_debug3();
+    var debug = require_debug6();
     var SemVer = require_semver();
     var Range = require_range2();
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/satisfies.js
+// node_modules/semver/functions/satisfies.js
 var require_satisfies = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/functions/satisfies.js"(exports2, module2) {
+  "node_modules/semver/functions/satisfies.js"(exports2, module2) {
     "use strict";
     var Range = require_range2();
     var satisfies = (version3, range, options) => {
@@ -37918,9 +40407,9 @@ var require_satisfies = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/to-comparators.js
+// node_modules/semver/ranges/to-comparators.js
 var require_to_comparators = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/to-comparators.js"(exports2, module2) {
+  "node_modules/semver/ranges/to-comparators.js"(exports2, module2) {
     "use strict";
     var Range = require_range2();
     var toComparators = (range, options) => new Range(range, options).set.map((comp) => comp.map((c) => c.value).join(" ").trim().split(" "));
@@ -37928,9 +40417,9 @@ var require_to_comparators = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/max-satisfying.js
+// node_modules/semver/ranges/max-satisfying.js
 var require_max_satisfying = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/max-satisfying.js"(exports2, module2) {
+  "node_modules/semver/ranges/max-satisfying.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var Range = require_range2();
@@ -37957,9 +40446,9 @@ var require_max_satisfying = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/min-satisfying.js
+// node_modules/semver/ranges/min-satisfying.js
 var require_min_satisfying = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/min-satisfying.js"(exports2, module2) {
+  "node_modules/semver/ranges/min-satisfying.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var Range = require_range2();
@@ -37986,9 +40475,9 @@ var require_min_satisfying = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/min-version.js
+// node_modules/semver/ranges/min-version.js
 var require_min_version = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/min-version.js"(exports2, module2) {
+  "node_modules/semver/ranges/min-version.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var Range = require_range2();
@@ -38045,9 +40534,9 @@ var require_min_version = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/valid.js
+// node_modules/semver/ranges/valid.js
 var require_valid2 = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/valid.js"(exports2, module2) {
+  "node_modules/semver/ranges/valid.js"(exports2, module2) {
     "use strict";
     var Range = require_range2();
     var validRange = (range, options) => {
@@ -38061,9 +40550,9 @@ var require_valid2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/outside.js
+// node_modules/semver/ranges/outside.js
 var require_outside = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/outside.js"(exports2, module2) {
+  "node_modules/semver/ranges/outside.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
     var Comparator = require_comparator();
@@ -38130,9 +40619,9 @@ var require_outside = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/gtr.js
+// node_modules/semver/ranges/gtr.js
 var require_gtr = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/gtr.js"(exports2, module2) {
+  "node_modules/semver/ranges/gtr.js"(exports2, module2) {
     "use strict";
     var outside = require_outside();
     var gtr = (version3, range, options) => outside(version3, range, ">", options);
@@ -38140,9 +40629,9 @@ var require_gtr = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/ltr.js
+// node_modules/semver/ranges/ltr.js
 var require_ltr = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/ltr.js"(exports2, module2) {
+  "node_modules/semver/ranges/ltr.js"(exports2, module2) {
     "use strict";
     var outside = require_outside();
     var ltr = (version3, range, options) => outside(version3, range, "<", options);
@@ -38150,9 +40639,9 @@ var require_ltr = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/intersects.js
+// node_modules/semver/ranges/intersects.js
 var require_intersects = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/intersects.js"(exports2, module2) {
+  "node_modules/semver/ranges/intersects.js"(exports2, module2) {
     "use strict";
     var Range = require_range2();
     var intersects = (r1, r2, options) => {
@@ -38164,9 +40653,9 @@ var require_intersects = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/simplify.js
+// node_modules/semver/ranges/simplify.js
 var require_simplify = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/simplify.js"(exports2, module2) {
+  "node_modules/semver/ranges/simplify.js"(exports2, module2) {
     "use strict";
     var satisfies = require_satisfies();
     var compare = require_compare();
@@ -38214,9 +40703,9 @@ var require_simplify = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/subset.js
+// node_modules/semver/ranges/subset.js
 var require_subset = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/ranges/subset.js"(exports2, module2) {
+  "node_modules/semver/ranges/subset.js"(exports2, module2) {
     "use strict";
     var Range = require_range2();
     var Comparator = require_comparator();
@@ -38376,9 +40865,9 @@ var require_subset = __commonJS({
   }
 });
 
-// node_modules/.pnpm/semver@7.7.4/node_modules/semver/index.js
+// node_modules/semver/index.js
 var require_semver2 = __commonJS({
-  "node_modules/.pnpm/semver@7.7.4/node_modules/semver/index.js"(exports2, module2) {
+  "node_modules/semver/index.js"(exports2, module2) {
     "use strict";
     var internalRe = require_re();
     var constants = require_constants();
@@ -38471,25 +40960,25 @@ var require_semver2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/asymmetricKeyDetailsSupported.js
+// node_modules/jsonwebtoken/lib/asymmetricKeyDetailsSupported.js
 var require_asymmetricKeyDetailsSupported = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/asymmetricKeyDetailsSupported.js"(exports2, module2) {
+  "node_modules/jsonwebtoken/lib/asymmetricKeyDetailsSupported.js"(exports2, module2) {
     var semver = require_semver2();
     module2.exports = semver.satisfies(process.version, ">=15.7.0");
   }
 });
 
-// node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/rsaPssKeyDetailsSupported.js
+// node_modules/jsonwebtoken/lib/rsaPssKeyDetailsSupported.js
 var require_rsaPssKeyDetailsSupported = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/rsaPssKeyDetailsSupported.js"(exports2, module2) {
+  "node_modules/jsonwebtoken/lib/rsaPssKeyDetailsSupported.js"(exports2, module2) {
     var semver = require_semver2();
     module2.exports = semver.satisfies(process.version, ">=16.9.0");
   }
 });
 
-// node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/validateAsymmetricKey.js
+// node_modules/jsonwebtoken/lib/validateAsymmetricKey.js
 var require_validateAsymmetricKey = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/validateAsymmetricKey.js"(exports2, module2) {
+  "node_modules/jsonwebtoken/lib/validateAsymmetricKey.js"(exports2, module2) {
     var ASYMMETRIC_KEY_DETAILS_SUPPORTED = require_asymmetricKeyDetailsSupported();
     var RSA_PSS_KEY_DETAILS_SUPPORTED = require_rsaPssKeyDetailsSupported();
     var allowedAlgorithmsForKeys = {
@@ -38540,17 +41029,17 @@ var require_validateAsymmetricKey = __commonJS({
   }
 });
 
-// node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/psSupported.js
+// node_modules/jsonwebtoken/lib/psSupported.js
 var require_psSupported = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/psSupported.js"(exports2, module2) {
+  "node_modules/jsonwebtoken/lib/psSupported.js"(exports2, module2) {
     var semver = require_semver2();
     module2.exports = semver.satisfies(process.version, "^6.12.0 || >=8.0.0");
   }
 });
 
-// node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/verify.js
+// node_modules/jsonwebtoken/verify.js
 var require_verify = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/verify.js"(exports2, module2) {
+  "node_modules/jsonwebtoken/verify.js"(exports2, module2) {
     var JsonWebTokenError = require_JsonWebTokenError();
     var NotBeforeError = require_NotBeforeError();
     var TokenExpiredError = require_TokenExpiredError();
@@ -38763,9 +41252,9 @@ var require_verify = __commonJS({
   }
 });
 
-// node_modules/.pnpm/lodash.includes@4.3.0/node_modules/lodash.includes/index.js
+// node_modules/lodash.includes/index.js
 var require_lodash = __commonJS({
-  "node_modules/.pnpm/lodash.includes@4.3.0/node_modules/lodash.includes/index.js"(exports2, module2) {
+  "node_modules/lodash.includes/index.js"(exports2, module2) {
     var INFINITY2 = 1 / 0;
     var MAX_SAFE_INTEGER = 9007199254740991;
     var MAX_INTEGER = 17976931348623157e292;
@@ -38947,9 +41436,9 @@ var require_lodash = __commonJS({
   }
 });
 
-// node_modules/.pnpm/lodash.isboolean@3.0.3/node_modules/lodash.isboolean/index.js
+// node_modules/lodash.isboolean/index.js
 var require_lodash2 = __commonJS({
-  "node_modules/.pnpm/lodash.isboolean@3.0.3/node_modules/lodash.isboolean/index.js"(exports2, module2) {
+  "node_modules/lodash.isboolean/index.js"(exports2, module2) {
     var boolTag = "[object Boolean]";
     var objectProto = Object.prototype;
     var objectToString = objectProto.toString;
@@ -38963,9 +41452,9 @@ var require_lodash2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/lodash.isinteger@4.0.4/node_modules/lodash.isinteger/index.js
+// node_modules/lodash.isinteger/index.js
 var require_lodash3 = __commonJS({
-  "node_modules/.pnpm/lodash.isinteger@4.0.4/node_modules/lodash.isinteger/index.js"(exports2, module2) {
+  "node_modules/lodash.isinteger/index.js"(exports2, module2) {
     var INFINITY2 = 1 / 0;
     var MAX_INTEGER = 17976931348623157e292;
     var NAN2 = 0 / 0;
@@ -39027,9 +41516,9 @@ var require_lodash3 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/lodash.isnumber@3.0.3/node_modules/lodash.isnumber/index.js
+// node_modules/lodash.isnumber/index.js
 var require_lodash4 = __commonJS({
-  "node_modules/.pnpm/lodash.isnumber@3.0.3/node_modules/lodash.isnumber/index.js"(exports2, module2) {
+  "node_modules/lodash.isnumber/index.js"(exports2, module2) {
     var numberTag = "[object Number]";
     var objectProto = Object.prototype;
     var objectToString = objectProto.toString;
@@ -39043,9 +41532,9 @@ var require_lodash4 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/lodash.isplainobject@4.0.6/node_modules/lodash.isplainobject/index.js
+// node_modules/lodash.isplainobject/index.js
 var require_lodash5 = __commonJS({
-  "node_modules/.pnpm/lodash.isplainobject@4.0.6/node_modules/lodash.isplainobject/index.js"(exports2, module2) {
+  "node_modules/lodash.isplainobject/index.js"(exports2, module2) {
     var objectTag = "[object Object]";
     function isHostObject(value) {
       var result = false;
@@ -39087,9 +41576,9 @@ var require_lodash5 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/lodash.isstring@4.0.1/node_modules/lodash.isstring/index.js
+// node_modules/lodash.isstring/index.js
 var require_lodash6 = __commonJS({
-  "node_modules/.pnpm/lodash.isstring@4.0.1/node_modules/lodash.isstring/index.js"(exports2, module2) {
+  "node_modules/lodash.isstring/index.js"(exports2, module2) {
     var stringTag = "[object String]";
     var objectProto = Object.prototype;
     var objectToString = objectProto.toString;
@@ -39104,9 +41593,9 @@ var require_lodash6 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/lodash.once@4.1.1/node_modules/lodash.once/index.js
+// node_modules/lodash.once/index.js
 var require_lodash7 = __commonJS({
-  "node_modules/.pnpm/lodash.once@4.1.1/node_modules/lodash.once/index.js"(exports2, module2) {
+  "node_modules/lodash.once/index.js"(exports2, module2) {
     var FUNC_ERROR_TEXT = "Expected a function";
     var INFINITY2 = 1 / 0;
     var MAX_INTEGER = 17976931348623157e292;
@@ -39185,9 +41674,9 @@ var require_lodash7 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/sign.js
+// node_modules/jsonwebtoken/sign.js
 var require_sign2 = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/sign.js"(exports2, module2) {
+  "node_modules/jsonwebtoken/sign.js"(exports2, module2) {
     var timespan = require_timespan();
     var PS_SUPPORTED = require_psSupported();
     var validateAsymmetricKey = require_validateAsymmetricKey();
@@ -39410,9 +41899,9 @@ var require_sign2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/index.js
+// node_modules/jsonwebtoken/index.js
 var require_jsonwebtoken = __commonJS({
-  "node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/index.js"(exports2, module2) {
+  "node_modules/jsonwebtoken/index.js"(exports2, module2) {
     module2.exports = {
       decode: require_decode(),
       verify: require_verify(),
@@ -39424,7 +41913,7 @@ var require_jsonwebtoken = __commonJS({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/tslib.mjs
+// node_modules/openai/internal/tslib.mjs
 function __classPrivateFieldSet(receiver, state, value, kind, f) {
   if (kind === "m")
     throw new TypeError("Private method is not writable");
@@ -39442,14 +41931,14 @@ function __classPrivateFieldGet(receiver, state, kind, f) {
   return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 }
 var init_tslib = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/tslib.mjs"() {
+  "node_modules/openai/internal/tslib.mjs"() {
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/uuid.mjs
+// node_modules/openai/internal/utils/uuid.mjs
 var uuid42;
 var init_uuid2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/uuid.mjs"() {
+  "node_modules/openai/internal/utils/uuid.mjs"() {
     uuid42 = function() {
       const { crypto: crypto4 } = globalThis;
       if (crypto4?.randomUUID) {
@@ -39463,7 +41952,7 @@ var init_uuid2 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/errors.mjs
+// node_modules/openai/internal/errors.mjs
 function isAbortError2(err) {
   return typeof err === "object" && err !== null && // Spec-compliant fetch implementations
   ("name" in err && err.name === "AbortError" || // Expo fetch
@@ -39471,7 +41960,7 @@ function isAbortError2(err) {
 }
 var castToError;
 var init_errors2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/errors.mjs"() {
+  "node_modules/openai/internal/errors.mjs"() {
     castToError = (err) => {
       if (err instanceof Error)
         return err;
@@ -39499,10 +41988,10 @@ var init_errors2 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/error.mjs
+// node_modules/openai/core/error.mjs
 var OpenAIError, APIError, APIUserAbortError, APIConnectionError, APIConnectionTimeoutError, BadRequestError, AuthenticationError, PermissionDeniedError, NotFoundError, ConflictError, UnprocessableEntityError, RateLimitError, InternalServerError, LengthFinishReasonError, ContentFilterFinishReasonError, InvalidWebhookSignatureError, OAuthError, SubjectTokenProviderError;
 var init_error = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/error.mjs"() {
+  "node_modules/openai/core/error.mjs"() {
     init_errors2();
     OpenAIError = class extends Error {
     };
@@ -39639,7 +42128,7 @@ var init_error = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/values.mjs
+// node_modules/openai/internal/utils/values.mjs
 function maybeObj(x) {
   if (typeof x !== "object") {
     return {};
@@ -39661,7 +42150,7 @@ function isObj(obj) {
 }
 var startsWithSchemeRegexp, isAbsoluteURL2, isArray4, isReadonlyArray, validatePositiveInteger, safeJSON;
 var init_values = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/values.mjs"() {
+  "node_modules/openai/internal/utils/values.mjs"() {
     init_error();
     startsWithSchemeRegexp = /^[a-z][a-z0-9+.-]*:/i;
     isAbsoluteURL2 = (url3) => {
@@ -39688,23 +42177,23 @@ var init_values = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/sleep.mjs
+// node_modules/openai/internal/utils/sleep.mjs
 var sleep;
 var init_sleep = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/sleep.mjs"() {
+  "node_modules/openai/internal/utils/sleep.mjs"() {
     sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/version.mjs
+// node_modules/openai/version.mjs
 var VERSION3;
 var init_version2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/version.mjs"() {
+  "node_modules/openai/version.mjs"() {
     VERSION3 = "6.34.0";
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/detect-platform.mjs
+// node_modules/openai/internal/detect-platform.mjs
 function getDetectedPlatform() {
   if (typeof Deno !== "undefined" && Deno.build != null) {
     return "deno";
@@ -39742,7 +42231,7 @@ function getBrowserInfo() {
 }
 var isRunningInBrowser, getPlatformProperties, normalizeArch, normalizePlatform, _platformHeaders, getPlatformHeaders;
 var init_detect_platform = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/detect-platform.mjs"() {
+  "node_modules/openai/internal/detect-platform.mjs"() {
     init_version2();
     isRunningInBrowser = () => {
       return (
@@ -39843,7 +42332,7 @@ var init_detect_platform = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/shims.mjs
+// node_modules/openai/internal/shims.mjs
 function getDefaultFetch() {
   if (typeof fetch !== "undefined") {
     return fetch;
@@ -39915,14 +42404,14 @@ async function CancelReadableStream(stream4) {
   await cancelPromise;
 }
 var init_shims = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/shims.mjs"() {
+  "node_modules/openai/internal/shims.mjs"() {
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/request-options.mjs
+// node_modules/openai/internal/request-options.mjs
 var FallbackEncoder;
 var init_request_options = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/request-options.mjs"() {
+  "node_modules/openai/internal/request-options.mjs"() {
     FallbackEncoder = ({ headers, body }) => {
       return {
         bodyHeaders: {
@@ -39934,10 +42423,10 @@ var init_request_options = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/qs/formats.mjs
+// node_modules/openai/internal/qs/formats.mjs
 var default_format, default_formatter, formatters, RFC1738;
 var init_formats = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/qs/formats.mjs"() {
+  "node_modules/openai/internal/qs/formats.mjs"() {
     default_format = "RFC3986";
     default_formatter = (v) => String(v);
     formatters = {
@@ -39948,7 +42437,7 @@ var init_formats = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/qs/utils.mjs
+// node_modules/openai/internal/qs/utils.mjs
 function is_buffer(obj) {
   if (!obj || typeof obj !== "object") {
     return false;
@@ -39967,7 +42456,7 @@ function maybe_map(val, fn) {
 }
 var has, hex_table, limit, encode5;
 var init_utils5 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/qs/utils.mjs"() {
+  "node_modules/openai/internal/qs/utils.mjs"() {
     init_formats();
     init_values();
     has = (obj, key) => (has = Object.hasOwn ?? Function.prototype.call.bind(Object.prototype.hasOwnProperty), has(obj, key));
@@ -40034,7 +42523,7 @@ var init_utils5 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/qs/stringify.mjs
+// node_modules/openai/internal/qs/stringify.mjs
 function is_non_nullish_primitive(v) {
   return typeof v === "string" || typeof v === "number" || typeof v === "boolean" || typeof v === "symbol" || typeof v === "bigint";
 }
@@ -40274,7 +42763,7 @@ function stringify3(object2, opts = {}) {
 }
 var array_prefix_generators, push_to_array, toISOString, defaults2, sentinel;
 var init_stringify = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/qs/stringify.mjs"() {
+  "node_modules/openai/internal/qs/stringify.mjs"() {
     init_utils5();
     init_formats();
     init_values();
@@ -40319,17 +42808,17 @@ var init_stringify = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/query.mjs
+// node_modules/openai/internal/utils/query.mjs
 function stringifyQuery(query) {
   return stringify3(query, { arrayFormat: "brackets" });
 }
 var init_query2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/query.mjs"() {
+  "node_modules/openai/internal/utils/query.mjs"() {
     init_stringify();
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/bytes.mjs
+// node_modules/openai/internal/utils/bytes.mjs
 function concatBytes(buffers) {
   let length = 0;
   for (const buffer2 of buffers) {
@@ -40353,11 +42842,11 @@ function decodeUTF8(bytes) {
 }
 var encodeUTF8_, decodeUTF8_;
 var init_bytes = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/bytes.mjs"() {
+  "node_modules/openai/internal/utils/bytes.mjs"() {
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/decoders/line.mjs
+// node_modules/openai/internal/decoders/line.mjs
 function findNewlineIndex(buffer2, startIndex) {
   const newline = 10;
   const carriage = 13;
@@ -40389,7 +42878,7 @@ function findDoubleNewlineIndex(buffer2) {
 }
 var _LineDecoder_buffer, _LineDecoder_carriageReturnIndex, LineDecoder;
 var init_line2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/decoders/line.mjs"() {
+  "node_modules/openai/internal/decoders/line.mjs"() {
     init_tslib();
     init_bytes();
     LineDecoder = class {
@@ -40439,7 +42928,7 @@ var init_line2 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/log.mjs
+// node_modules/openai/internal/utils/log.mjs
 function noop5() {
 }
 function makeLogFn(fnLevel, logger, logLevel) {
@@ -40470,7 +42959,7 @@ function loggerFor(client) {
 }
 var levelNumbers, parseLogLevel, noopLogger, cachedLoggers, formatRequestDetails;
 var init_log = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/log.mjs"() {
+  "node_modules/openai/internal/utils/log.mjs"() {
     init_values();
     levelNumbers = {
       off: 0,
@@ -40518,7 +43007,7 @@ var init_log = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/streaming.mjs
+// node_modules/openai/core/streaming.mjs
 async function* _iterSSEMessages(response, controller) {
   if (!response.body) {
     controller.abort();
@@ -40573,7 +43062,7 @@ function partition(str2, delimiter) {
 }
 var _Stream_client, Stream3, SSEDecoder;
 var init_streaming = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/streaming.mjs"() {
+  "node_modules/openai/core/streaming.mjs"() {
     init_tslib();
     init_error();
     init_shims();
@@ -40789,7 +43278,7 @@ var init_streaming = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/parse.mjs
+// node_modules/openai/internal/parse.mjs
 async function defaultParseResponse(client, props) {
   const { response, requestLogID, retryOfRequestLogID, startTime } = props;
   const body = await (async () => {
@@ -40839,16 +43328,16 @@ function addRequestID(value, response) {
   });
 }
 var init_parse = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/parse.mjs"() {
+  "node_modules/openai/internal/parse.mjs"() {
     init_streaming();
     init_log();
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/api-promise.mjs
+// node_modules/openai/core/api-promise.mjs
 var _APIPromise_client, APIPromise;
 var init_api_promise = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/api-promise.mjs"() {
+  "node_modules/openai/core/api-promise.mjs"() {
     init_tslib();
     init_parse();
     APIPromise = class _APIPromise extends Promise {
@@ -40914,10 +43403,10 @@ var init_api_promise = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/pagination.mjs
+// node_modules/openai/core/pagination.mjs
 var _AbstractPage_client, AbstractPage, PagePromise, Page, CursorPage, ConversationCursorPage;
 var init_pagination = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/pagination.mjs"() {
+  "node_modules/openai/core/pagination.mjs"() {
     init_tslib();
     init_error();
     init_parse();
@@ -41054,10 +43543,10 @@ var init_pagination = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/auth/workload-identity-auth.mjs
+// node_modules/openai/auth/workload-identity-auth.mjs
 var SUBJECT_TOKEN_TYPES, TOKEN_EXCHANGE_GRANT_TYPE, WorkloadIdentityAuth;
 var init_workload_identity_auth = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/auth/workload-identity-auth.mjs"() {
+  "node_modules/openai/auth/workload-identity-auth.mjs"() {
     init_shims();
     init_error();
     SUBJECT_TOKEN_TYPES = {
@@ -41146,7 +43635,7 @@ var init_workload_identity_auth = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/uploads.mjs
+// node_modules/openai/internal/uploads.mjs
 function makeFile(fileBits, fileName, options) {
   checkFileSupport();
   return new File(fileBits, fileName ?? "unknown_file", options);
@@ -41176,7 +43665,7 @@ function supportsFormData(fetchObject) {
 }
 var checkFileSupport, isAsyncIterable2, maybeMultipartFormRequestOptions, multipartFormRequestOptions, supportsFormDataMap, createForm, isNamedBlob, isUploadable, hasUploadableValue, addFormValue;
 var init_uploads = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/uploads.mjs"() {
+  "node_modules/openai/internal/uploads.mjs"() {
     init_shims();
     checkFileSupport = () => {
       if (typeof File === "undefined") {
@@ -41243,7 +43732,7 @@ var init_uploads = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/to-file.mjs
+// node_modules/openai/internal/to-file.mjs
 async function toFile(value, name2, options) {
   checkFileSupport();
   value = await value;
@@ -41293,7 +43782,7 @@ function propsForError(value) {
 }
 var isBlobLike, isFileLike, isResponseLike;
 var init_to_file = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/to-file.mjs"() {
+  "node_modules/openai/internal/to-file.mjs"() {
     init_uploads();
     init_uploads();
     isBlobLike = (value) => value != null && typeof value === "object" && typeof value.size === "number" && typeof value.type === "string" && typeof value.text === "function" && typeof value.slice === "function" && typeof value.arrayBuffer === "function";
@@ -41302,17 +43791,17 @@ var init_to_file = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/uploads.mjs
+// node_modules/openai/core/uploads.mjs
 var init_uploads2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/uploads.mjs"() {
+  "node_modules/openai/core/uploads.mjs"() {
     init_to_file();
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/resource.mjs
+// node_modules/openai/core/resource.mjs
 var APIResource;
 var init_resource = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/core/resource.mjs"() {
+  "node_modules/openai/core/resource.mjs"() {
     APIResource = class {
       constructor(client) {
         this._client = client;
@@ -41321,13 +43810,13 @@ var init_resource = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/path.mjs
+// node_modules/openai/internal/utils/path.mjs
 function encodeURIPath(str2) {
   return str2.replace(/[^A-Za-z0-9\-._~!$&'()*+,;=:@]+/g, encodeURIComponent);
 }
 var EMPTY, createPathTagFunction, path2;
 var init_path = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/path.mjs"() {
+  "node_modules/openai/internal/utils/path.mjs"() {
     init_error();
     EMPTY = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.create(null));
     createPathTagFunction = (pathEncoder = encodeURIPath) => function path3(statics, ...params) {
@@ -41382,10 +43871,10 @@ ${underline}`);
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/completions/messages.mjs
+// node_modules/openai/resources/chat/completions/messages.mjs
 var Messages;
 var init_messages = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/completions/messages.mjs"() {
+  "node_modules/openai/resources/chat/completions/messages.mjs"() {
     init_resource();
     init_pagination();
     init_path();
@@ -41411,14 +43900,14 @@ var init_messages = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/error.mjs
+// node_modules/openai/error.mjs
 var init_error2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/error.mjs"() {
+  "node_modules/openai/error.mjs"() {
     init_error();
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/parser.mjs
+// node_modules/openai/lib/parser.mjs
 function isChatCompletionFunctionTool(tool) {
   return tool !== void 0 && "function" in tool && tool.function !== void 0;
 }
@@ -41525,15 +44014,15 @@ function validateInputTools(tools) {
   }
 }
 var init_parser = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/parser.mjs"() {
+  "node_modules/openai/lib/parser.mjs"() {
     init_error2();
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/chatCompletionUtils.mjs
+// node_modules/openai/lib/chatCompletionUtils.mjs
 var isAssistantMessage, isToolMessage;
 var init_chatCompletionUtils = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/chatCompletionUtils.mjs"() {
+  "node_modules/openai/lib/chatCompletionUtils.mjs"() {
     isAssistantMessage = (message) => {
       return message?.role === "assistant";
     };
@@ -41543,10 +44032,10 @@ var init_chatCompletionUtils = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/EventStream.mjs
+// node_modules/openai/lib/EventStream.mjs
 var _EventStream_instances, _EventStream_connectedPromise, _EventStream_resolveConnectedPromise, _EventStream_rejectConnectedPromise, _EventStream_endPromise, _EventStream_resolveEndPromise, _EventStream_rejectEndPromise, _EventStream_listeners, _EventStream_ended, _EventStream_errored, _EventStream_aborted, _EventStream_catchingPromiseCreated, _EventStream_handleError, EventStream;
 var init_EventStream = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/EventStream.mjs"() {
+  "node_modules/openai/lib/EventStream.mjs"() {
     init_tslib();
     init_error2();
     EventStream = class {
@@ -41726,19 +44215,19 @@ var init_EventStream = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/RunnableFunction.mjs
+// node_modules/openai/lib/RunnableFunction.mjs
 function isRunnableFunctionWithParse(fn) {
   return typeof fn.parse === "function";
 }
 var init_RunnableFunction = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/RunnableFunction.mjs"() {
+  "node_modules/openai/lib/RunnableFunction.mjs"() {
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/AbstractChatCompletionRunner.mjs
+// node_modules/openai/lib/AbstractChatCompletionRunner.mjs
 var _AbstractChatCompletionRunner_instances, _AbstractChatCompletionRunner_getFinalContent, _AbstractChatCompletionRunner_getFinalMessage, _AbstractChatCompletionRunner_getFinalFunctionToolCall, _AbstractChatCompletionRunner_getFinalFunctionToolCallResult, _AbstractChatCompletionRunner_calculateTotalUsage, _AbstractChatCompletionRunner_validateParams, _AbstractChatCompletionRunner_stringifyFunctionCallResult, DEFAULT_MAX_CHAT_COMPLETIONS, AbstractChatCompletionRunner;
 var init_AbstractChatCompletionRunner = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/AbstractChatCompletionRunner.mjs"() {
+  "node_modules/openai/lib/AbstractChatCompletionRunner.mjs"() {
     init_tslib();
     init_error2();
     init_parser();
@@ -42008,10 +44497,10 @@ var init_AbstractChatCompletionRunner = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionRunner.mjs
+// node_modules/openai/lib/ChatCompletionRunner.mjs
 var ChatCompletionRunner;
 var init_ChatCompletionRunner = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionRunner.mjs"() {
+  "node_modules/openai/lib/ChatCompletionRunner.mjs"() {
     init_AbstractChatCompletionRunner();
     init_chatCompletionUtils();
     ChatCompletionRunner = class _ChatCompletionRunner extends AbstractChatCompletionRunner {
@@ -42034,7 +44523,7 @@ var init_ChatCompletionRunner = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/_vendor/partial-json-parser/parser.mjs
+// node_modules/openai/_vendor/partial-json-parser/parser.mjs
 function parseJSON(jsonString, allowPartial = Allow.ALL) {
   if (typeof jsonString !== "string") {
     throw new TypeError(`expecting str, got ${typeof jsonString}`);
@@ -42046,7 +44535,7 @@ function parseJSON(jsonString, allowPartial = Allow.ALL) {
 }
 var STR, NUM, ARR, OBJ, NULL, BOOL, NAN, INFINITY, MINUS_INFINITY, INF, SPECIAL, ATOM, COLLECTION, ALL, Allow, PartialJSON, MalformedJSON, _parseJSON, partialParse;
 var init_parser2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/_vendor/partial-json-parser/parser.mjs"() {
+  "node_modules/openai/_vendor/partial-json-parser/parser.mjs"() {
     STR = 1;
     NUM = 2;
     ARR = 4;
@@ -42251,14 +44740,14 @@ var init_parser2 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/streaming.mjs
+// node_modules/openai/streaming.mjs
 var init_streaming2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/streaming.mjs"() {
+  "node_modules/openai/streaming.mjs"() {
     init_streaming();
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionStream.mjs
+// node_modules/openai/lib/ChatCompletionStream.mjs
 function finalizeChatCompletion(snapshot, params) {
   const { id, choices, created, model, system_fingerprint, ...rest } = snapshot;
   const completion = {
@@ -42354,7 +44843,7 @@ function assertNever2(_x) {
 }
 var _ChatCompletionStream_instances, _ChatCompletionStream_params, _ChatCompletionStream_choiceEventStates, _ChatCompletionStream_currentChatCompletionSnapshot, _ChatCompletionStream_beginRequest, _ChatCompletionStream_getChoiceEventState, _ChatCompletionStream_addChunk, _ChatCompletionStream_emitToolCallDoneEvent, _ChatCompletionStream_emitContentDoneEvents, _ChatCompletionStream_endRequest, _ChatCompletionStream_getAutoParseableResponseFormat, _ChatCompletionStream_accumulateChatCompletion, ChatCompletionStream;
 var init_ChatCompletionStream = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionStream.mjs"() {
+  "node_modules/openai/lib/ChatCompletionStream.mjs"() {
     init_tslib();
     init_parser2();
     init_error2();
@@ -42737,10 +45226,10 @@ var init_ChatCompletionStream = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionStreamingRunner.mjs
+// node_modules/openai/lib/ChatCompletionStreamingRunner.mjs
 var ChatCompletionStreamingRunner;
 var init_ChatCompletionStreamingRunner = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionStreamingRunner.mjs"() {
+  "node_modules/openai/lib/ChatCompletionStreamingRunner.mjs"() {
     init_ChatCompletionStream();
     ChatCompletionStreamingRunner = class _ChatCompletionStreamingRunner extends ChatCompletionStream {
       static fromReadableStream(stream4) {
@@ -42764,10 +45253,10 @@ var init_ChatCompletionStreamingRunner = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/completions/completions.mjs
+// node_modules/openai/resources/chat/completions/completions.mjs
 var Completions;
 var init_completions = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/completions/completions.mjs"() {
+  "node_modules/openai/resources/chat/completions/completions.mjs"() {
     init_resource();
     init_messages();
     init_messages();
@@ -42873,10 +45362,10 @@ var init_completions = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/chat.mjs
+// node_modules/openai/resources/chat/chat.mjs
 var Chat;
 var init_chat = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/chat.mjs"() {
+  "node_modules/openai/resources/chat/chat.mjs"() {
     init_resource();
     init_completions();
     init_completions();
@@ -42890,30 +45379,30 @@ var init_chat = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/completions/index.mjs
+// node_modules/openai/resources/chat/completions/index.mjs
 var init_completions2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/completions/index.mjs"() {
+  "node_modules/openai/resources/chat/completions/index.mjs"() {
     init_completions();
     init_completions();
     init_messages();
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/index.mjs
+// node_modules/openai/resources/chat/index.mjs
 var init_chat2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/chat/index.mjs"() {
+  "node_modules/openai/resources/chat/index.mjs"() {
     init_chat();
     init_completions2();
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/shared.mjs
+// node_modules/openai/resources/shared.mjs
 var init_shared = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/shared.mjs"() {
+  "node_modules/openai/resources/shared.mjs"() {
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/headers.mjs
+// node_modules/openai/internal/headers.mjs
 function* iterateHeaders(headers) {
   if (!headers)
     return;
@@ -42954,7 +45443,7 @@ function* iterateHeaders(headers) {
 }
 var brand_privateNullableHeaders, buildHeaders;
 var init_headers = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/headers.mjs"() {
+  "node_modules/openai/internal/headers.mjs"() {
     init_values();
     brand_privateNullableHeaders = /* @__PURE__ */ Symbol("brand.privateNullableHeaders");
     buildHeaders = (newHeaders) => {
@@ -42982,10 +45471,10 @@ var init_headers = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/speech.mjs
+// node_modules/openai/resources/audio/speech.mjs
 var Speech;
 var init_speech = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/speech.mjs"() {
+  "node_modules/openai/resources/audio/speech.mjs"() {
     init_resource();
     init_headers();
     Speech = class extends APIResource {
@@ -43018,10 +45507,10 @@ var init_speech = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/transcriptions.mjs
+// node_modules/openai/resources/audio/transcriptions.mjs
 var Transcriptions;
 var init_transcriptions = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/transcriptions.mjs"() {
+  "node_modules/openai/resources/audio/transcriptions.mjs"() {
     init_resource();
     init_uploads();
     Transcriptions = class extends APIResource {
@@ -43037,10 +45526,10 @@ var init_transcriptions = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/translations.mjs
+// node_modules/openai/resources/audio/translations.mjs
 var Translations;
 var init_translations = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/translations.mjs"() {
+  "node_modules/openai/resources/audio/translations.mjs"() {
     init_resource();
     init_uploads();
     Translations = class extends APIResource {
@@ -43051,10 +45540,10 @@ var init_translations = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/audio.mjs
+// node_modules/openai/resources/audio/audio.mjs
 var Audio;
 var init_audio = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/audio/audio.mjs"() {
+  "node_modules/openai/resources/audio/audio.mjs"() {
     init_resource();
     init_speech();
     init_speech();
@@ -43076,10 +45565,10 @@ var init_audio = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/batches.mjs
+// node_modules/openai/resources/batches.mjs
 var Batches;
 var init_batches = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/batches.mjs"() {
+  "node_modules/openai/resources/batches.mjs"() {
     init_resource();
     init_pagination();
     init_path();
@@ -43114,10 +45603,10 @@ var init_batches = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/assistants.mjs
+// node_modules/openai/resources/beta/assistants.mjs
 var Assistants;
 var init_assistants = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/assistants.mjs"() {
+  "node_modules/openai/resources/beta/assistants.mjs"() {
     init_resource();
     init_pagination();
     init_headers();
@@ -43185,10 +45674,10 @@ var init_assistants = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/sessions.mjs
+// node_modules/openai/resources/beta/realtime/sessions.mjs
 var Sessions;
 var init_sessions = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/sessions.mjs"() {
+  "node_modules/openai/resources/beta/realtime/sessions.mjs"() {
     init_resource();
     init_headers();
     Sessions = class extends APIResource {
@@ -43218,10 +45707,10 @@ var init_sessions = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/transcription-sessions.mjs
+// node_modules/openai/resources/beta/realtime/transcription-sessions.mjs
 var TranscriptionSessions;
 var init_transcription_sessions = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/transcription-sessions.mjs"() {
+  "node_modules/openai/resources/beta/realtime/transcription-sessions.mjs"() {
     init_resource();
     init_headers();
     TranscriptionSessions = class extends APIResource {
@@ -43251,10 +45740,10 @@ var init_transcription_sessions = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/realtime.mjs
+// node_modules/openai/resources/beta/realtime/realtime.mjs
 var Realtime;
 var init_realtime = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/realtime.mjs"() {
+  "node_modules/openai/resources/beta/realtime/realtime.mjs"() {
     init_resource();
     init_sessions();
     init_sessions();
@@ -43272,10 +45761,10 @@ var init_realtime = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/sessions.mjs
+// node_modules/openai/resources/beta/chatkit/sessions.mjs
 var Sessions2;
 var init_sessions2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/sessions.mjs"() {
+  "node_modules/openai/resources/beta/chatkit/sessions.mjs"() {
     init_resource();
     init_headers();
     init_path();
@@ -43320,10 +45809,10 @@ var init_sessions2 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/threads.mjs
+// node_modules/openai/resources/beta/chatkit/threads.mjs
 var Threads;
 var init_threads = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/threads.mjs"() {
+  "node_modules/openai/resources/beta/chatkit/threads.mjs"() {
     init_resource();
     init_pagination();
     init_headers();
@@ -43398,10 +45887,10 @@ var init_threads = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/chatkit.mjs
+// node_modules/openai/resources/beta/chatkit/chatkit.mjs
 var ChatKit;
 var init_chatkit = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/chatkit.mjs"() {
+  "node_modules/openai/resources/beta/chatkit/chatkit.mjs"() {
     init_resource();
     init_sessions2();
     init_sessions2();
@@ -43419,10 +45908,10 @@ var init_chatkit = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/messages.mjs
+// node_modules/openai/resources/beta/threads/messages.mjs
 var Messages2;
 var init_messages2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/messages.mjs"() {
+  "node_modules/openai/resources/beta/threads/messages.mjs"() {
     init_resource();
     init_pagination();
     init_headers();
@@ -43493,10 +45982,10 @@ var init_messages2 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/runs/steps.mjs
+// node_modules/openai/resources/beta/threads/runs/steps.mjs
 var Steps;
 var init_steps = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/runs/steps.mjs"() {
+  "node_modules/openai/resources/beta/threads/runs/steps.mjs"() {
     init_resource();
     init_pagination();
     init_headers();
@@ -43532,10 +46021,10 @@ var init_steps = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/base64.mjs
+// node_modules/openai/internal/utils/base64.mjs
 var toFloat32Array;
 var init_base64 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/base64.mjs"() {
+  "node_modules/openai/internal/utils/base64.mjs"() {
     init_error();
     init_bytes();
     toFloat32Array = (base64Str) => {
@@ -43555,10 +46044,10 @@ var init_base64 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/env.mjs
+// node_modules/openai/internal/utils/env.mjs
 var readEnv;
 var init_env = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils/env.mjs"() {
+  "node_modules/openai/internal/utils/env.mjs"() {
     readEnv = (env) => {
       if (typeof globalThis.process !== "undefined") {
         return globalThis.process.env?.[env]?.trim() ?? void 0;
@@ -43571,9 +46060,9 @@ var init_env = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils.mjs
+// node_modules/openai/internal/utils.mjs
 var init_utils6 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/internal/utils.mjs"() {
+  "node_modules/openai/internal/utils.mjs"() {
     init_values();
     init_base64();
     init_env();
@@ -43584,12 +46073,12 @@ var init_utils6 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/AssistantStream.mjs
+// node_modules/openai/lib/AssistantStream.mjs
 function assertNever3(_x) {
 }
 var _AssistantStream_instances, _a2, _AssistantStream_events, _AssistantStream_runStepSnapshots, _AssistantStream_messageSnapshots, _AssistantStream_messageSnapshot, _AssistantStream_finalRun, _AssistantStream_currentContentIndex, _AssistantStream_currentContent, _AssistantStream_currentToolCallIndex, _AssistantStream_currentToolCall, _AssistantStream_currentEvent, _AssistantStream_currentRunSnapshot, _AssistantStream_currentRunStepSnapshot, _AssistantStream_addEvent, _AssistantStream_endRequest, _AssistantStream_handleMessage, _AssistantStream_handleRunStep, _AssistantStream_handleEvent, _AssistantStream_accumulateRunStep, _AssistantStream_accumulateMessage, _AssistantStream_accumulateContent, _AssistantStream_handleRun, AssistantStream;
 var init_AssistantStream = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/AssistantStream.mjs"() {
+  "node_modules/openai/lib/AssistantStream.mjs"() {
     init_tslib();
     init_streaming2();
     init_error2();
@@ -44110,10 +46599,10 @@ var init_AssistantStream = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/runs/runs.mjs
+// node_modules/openai/resources/beta/threads/runs/runs.mjs
 var Runs;
 var init_runs = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/runs/runs.mjs"() {
+  "node_modules/openai/resources/beta/threads/runs/runs.mjs"() {
     init_resource();
     init_steps();
     init_steps();
@@ -44290,10 +46779,10 @@ var init_runs = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/threads.mjs
+// node_modules/openai/resources/beta/threads/threads.mjs
 var Threads2;
 var init_threads2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/threads/threads.mjs"() {
+  "node_modules/openai/resources/beta/threads/threads.mjs"() {
     init_resource();
     init_messages2();
     init_messages2();
@@ -44384,10 +46873,10 @@ var init_threads2 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/beta.mjs
+// node_modules/openai/resources/beta/beta.mjs
 var Beta;
 var init_beta = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/beta/beta.mjs"() {
+  "node_modules/openai/resources/beta/beta.mjs"() {
     init_resource();
     init_assistants();
     init_assistants();
@@ -44413,10 +46902,10 @@ var init_beta = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/completions.mjs
+// node_modules/openai/resources/completions.mjs
 var Completions2;
 var init_completions3 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/completions.mjs"() {
+  "node_modules/openai/resources/completions.mjs"() {
     init_resource();
     Completions2 = class extends APIResource {
       create(body, options) {
@@ -44426,10 +46915,10 @@ var init_completions3 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/containers/files/content.mjs
+// node_modules/openai/resources/containers/files/content.mjs
 var Content;
 var init_content = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/containers/files/content.mjs"() {
+  "node_modules/openai/resources/containers/files/content.mjs"() {
     init_resource();
     init_headers();
     init_path();
@@ -44449,10 +46938,10 @@ var init_content = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/containers/files/files.mjs
+// node_modules/openai/resources/containers/files/files.mjs
 var Files;
 var init_files = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/containers/files/files.mjs"() {
+  "node_modules/openai/resources/containers/files/files.mjs"() {
     init_resource();
     init_content();
     init_content();
@@ -44505,10 +46994,10 @@ var init_files = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/containers/containers.mjs
+// node_modules/openai/resources/containers/containers.mjs
 var Containers;
 var init_containers = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/containers/containers.mjs"() {
+  "node_modules/openai/resources/containers/containers.mjs"() {
     init_resource();
     init_files();
     init_files();
@@ -44552,10 +47041,10 @@ var init_containers = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/conversations/items.mjs
+// node_modules/openai/resources/conversations/items.mjs
 var Items;
 var init_items = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/conversations/items.mjs"() {
+  "node_modules/openai/resources/conversations/items.mjs"() {
     init_resource();
     init_pagination();
     init_path();
@@ -44595,10 +47084,10 @@ var init_items = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/conversations/conversations.mjs
+// node_modules/openai/resources/conversations/conversations.mjs
 var Conversations;
 var init_conversations = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/conversations/conversations.mjs"() {
+  "node_modules/openai/resources/conversations/conversations.mjs"() {
     init_resource();
     init_items();
     init_items();
@@ -44637,10 +47126,10 @@ var init_conversations = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/embeddings.mjs
+// node_modules/openai/resources/embeddings.mjs
 var Embeddings;
 var init_embeddings = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/embeddings.mjs"() {
+  "node_modules/openai/resources/embeddings.mjs"() {
     init_resource();
     init_utils6();
     Embeddings = class extends APIResource {
@@ -44687,10 +47176,10 @@ var init_embeddings = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/evals/runs/output-items.mjs
+// node_modules/openai/resources/evals/runs/output-items.mjs
 var OutputItems;
 var init_output_items = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/evals/runs/output-items.mjs"() {
+  "node_modules/openai/resources/evals/runs/output-items.mjs"() {
     init_resource();
     init_pagination();
     init_path();
@@ -44713,10 +47202,10 @@ var init_output_items = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/evals/runs/runs.mjs
+// node_modules/openai/resources/evals/runs/runs.mjs
 var Runs2;
 var init_runs2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/evals/runs/runs.mjs"() {
+  "node_modules/openai/resources/evals/runs/runs.mjs"() {
     init_resource();
     init_output_items();
     init_output_items();
@@ -44770,10 +47259,10 @@ var init_runs2 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/evals/evals.mjs
+// node_modules/openai/resources/evals/evals.mjs
 var Evals;
 var init_evals = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/evals/evals.mjs"() {
+  "node_modules/openai/resources/evals/evals.mjs"() {
     init_resource();
     init_runs2();
     init_runs2();
@@ -44824,10 +47313,10 @@ var init_evals = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/files.mjs
+// node_modules/openai/resources/files.mjs
 var Files2;
 var init_files2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/files.mjs"() {
+  "node_modules/openai/resources/files.mjs"() {
     init_resource();
     init_pagination();
     init_headers();
@@ -44911,20 +47400,20 @@ var init_files2 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/methods.mjs
+// node_modules/openai/resources/fine-tuning/methods.mjs
 var Methods;
 var init_methods = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/methods.mjs"() {
+  "node_modules/openai/resources/fine-tuning/methods.mjs"() {
     init_resource();
     Methods = class extends APIResource {
     };
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/alpha/graders.mjs
+// node_modules/openai/resources/fine-tuning/alpha/graders.mjs
 var Graders;
 var init_graders = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/alpha/graders.mjs"() {
+  "node_modules/openai/resources/fine-tuning/alpha/graders.mjs"() {
     init_resource();
     Graders = class extends APIResource {
       /**
@@ -44971,10 +47460,10 @@ var init_graders = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/alpha/alpha.mjs
+// node_modules/openai/resources/fine-tuning/alpha/alpha.mjs
 var Alpha;
 var init_alpha = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/alpha/alpha.mjs"() {
+  "node_modules/openai/resources/fine-tuning/alpha/alpha.mjs"() {
     init_resource();
     init_graders();
     init_graders();
@@ -44988,10 +47477,10 @@ var init_alpha = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/checkpoints/permissions.mjs
+// node_modules/openai/resources/fine-tuning/checkpoints/permissions.mjs
 var Permissions;
 var init_permissions = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/checkpoints/permissions.mjs"() {
+  "node_modules/openai/resources/fine-tuning/checkpoints/permissions.mjs"() {
     init_resource();
     init_pagination();
     init_path();
@@ -45075,10 +47564,10 @@ var init_permissions = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/checkpoints/checkpoints.mjs
+// node_modules/openai/resources/fine-tuning/checkpoints/checkpoints.mjs
 var Checkpoints;
 var init_checkpoints = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/checkpoints/checkpoints.mjs"() {
+  "node_modules/openai/resources/fine-tuning/checkpoints/checkpoints.mjs"() {
     init_resource();
     init_permissions();
     init_permissions();
@@ -45092,10 +47581,10 @@ var init_checkpoints = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/jobs/checkpoints.mjs
+// node_modules/openai/resources/fine-tuning/jobs/checkpoints.mjs
 var Checkpoints2;
 var init_checkpoints2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/jobs/checkpoints.mjs"() {
+  "node_modules/openai/resources/fine-tuning/jobs/checkpoints.mjs"() {
     init_resource();
     init_pagination();
     init_path();
@@ -45120,10 +47609,10 @@ var init_checkpoints2 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/jobs/jobs.mjs
+// node_modules/openai/resources/fine-tuning/jobs/jobs.mjs
 var Jobs;
 var init_jobs = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/jobs/jobs.mjs"() {
+  "node_modules/openai/resources/fine-tuning/jobs/jobs.mjs"() {
     init_resource();
     init_checkpoints2();
     init_checkpoints2();
@@ -45243,10 +47732,10 @@ var init_jobs = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/fine-tuning.mjs
+// node_modules/openai/resources/fine-tuning/fine-tuning.mjs
 var FineTuning;
 var init_fine_tuning = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/fine-tuning.mjs"() {
+  "node_modules/openai/resources/fine-tuning/fine-tuning.mjs"() {
     init_resource();
     init_methods();
     init_methods();
@@ -45272,20 +47761,20 @@ var init_fine_tuning = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/graders/grader-models.mjs
+// node_modules/openai/resources/graders/grader-models.mjs
 var GraderModels;
 var init_grader_models = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/graders/grader-models.mjs"() {
+  "node_modules/openai/resources/graders/grader-models.mjs"() {
     init_resource();
     GraderModels = class extends APIResource {
     };
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/graders/graders.mjs
+// node_modules/openai/resources/graders/graders.mjs
 var Graders2;
 var init_graders2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/graders/graders.mjs"() {
+  "node_modules/openai/resources/graders/graders.mjs"() {
     init_resource();
     init_grader_models();
     init_grader_models();
@@ -45299,10 +47788,10 @@ var init_graders2 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/images.mjs
+// node_modules/openai/resources/images.mjs
 var Images;
 var init_images = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/images.mjs"() {
+  "node_modules/openai/resources/images.mjs"() {
     init_resource();
     init_uploads();
     Images = class extends APIResource {
@@ -45329,10 +47818,10 @@ var init_images = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/models.mjs
+// node_modules/openai/resources/models.mjs
 var Models;
 var init_models = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/models.mjs"() {
+  "node_modules/openai/resources/models.mjs"() {
     init_resource();
     init_pagination();
     init_path();
@@ -45362,10 +47851,10 @@ var init_models = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/moderations.mjs
+// node_modules/openai/resources/moderations.mjs
 var Moderations;
 var init_moderations = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/moderations.mjs"() {
+  "node_modules/openai/resources/moderations.mjs"() {
     init_resource();
     Moderations = class extends APIResource {
       /**
@@ -45379,10 +47868,10 @@ var init_moderations = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/realtime/calls.mjs
+// node_modules/openai/resources/realtime/calls.mjs
 var Calls;
 var init_calls = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/realtime/calls.mjs"() {
+  "node_modules/openai/resources/realtime/calls.mjs"() {
     init_resource();
     init_headers();
     init_path();
@@ -45455,10 +47944,10 @@ var init_calls = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/realtime/client-secrets.mjs
+// node_modules/openai/resources/realtime/client-secrets.mjs
 var ClientSecrets;
 var init_client_secrets = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/realtime/client-secrets.mjs"() {
+  "node_modules/openai/resources/realtime/client-secrets.mjs"() {
     init_resource();
     ClientSecrets = class extends APIResource {
       /**
@@ -45491,10 +47980,10 @@ var init_client_secrets = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/realtime/realtime.mjs
+// node_modules/openai/resources/realtime/realtime.mjs
 var Realtime2;
 var init_realtime2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/realtime/realtime.mjs"() {
+  "node_modules/openai/resources/realtime/realtime.mjs"() {
     init_resource();
     init_calls();
     init_calls();
@@ -45512,7 +48001,7 @@ var init_realtime2 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ResponsesParser.mjs
+// node_modules/openai/lib/ResponsesParser.mjs
 function maybeParseResponse(response, params) {
   if (!params || !hasAutoParseableInput2(params)) {
     return {
@@ -45633,19 +48122,19 @@ function addOutputText(rsp) {
   rsp.output_text = texts.join("");
 }
 var init_ResponsesParser = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/ResponsesParser.mjs"() {
+  "node_modules/openai/lib/ResponsesParser.mjs"() {
     init_error2();
     init_parser();
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/responses/ResponseStream.mjs
+// node_modules/openai/lib/responses/ResponseStream.mjs
 function finalizeResponse(snapshot, params) {
   return maybeParseResponse(snapshot, params);
 }
 var _ResponseStream_instances, _ResponseStream_params, _ResponseStream_currentResponseSnapshot, _ResponseStream_finalResponse, _ResponseStream_beginRequest, _ResponseStream_addEvent, _ResponseStream_endRequest, _ResponseStream_accumulateResponse, ResponseStream;
 var init_ResponseStream = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/responses/ResponseStream.mjs"() {
+  "node_modules/openai/lib/responses/ResponseStream.mjs"() {
     init_tslib();
     init_error2();
     init_EventStream();
@@ -45902,10 +48391,10 @@ var init_ResponseStream = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/responses/input-items.mjs
+// node_modules/openai/resources/responses/input-items.mjs
 var InputItems;
 var init_input_items = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/responses/input-items.mjs"() {
+  "node_modules/openai/resources/responses/input-items.mjs"() {
     init_resource();
     init_pagination();
     init_path();
@@ -45930,10 +48419,10 @@ var init_input_items = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/responses/input-tokens.mjs
+// node_modules/openai/resources/responses/input-tokens.mjs
 var InputTokens;
 var init_input_tokens = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/responses/input-tokens.mjs"() {
+  "node_modules/openai/resources/responses/input-tokens.mjs"() {
     init_resource();
     InputTokens = class extends APIResource {
       /**
@@ -45954,10 +48443,10 @@ var init_input_tokens = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/responses/responses.mjs
+// node_modules/openai/resources/responses/responses.mjs
 var Responses;
 var init_responses = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/responses/responses.mjs"() {
+  "node_modules/openai/resources/responses/responses.mjs"() {
     init_ResponsesParser();
     init_ResponseStream();
     init_resource();
@@ -46057,10 +48546,10 @@ var init_responses = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/content.mjs
+// node_modules/openai/resources/skills/content.mjs
 var Content2;
 var init_content2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/content.mjs"() {
+  "node_modules/openai/resources/skills/content.mjs"() {
     init_resource();
     init_headers();
     init_path();
@@ -46079,10 +48568,10 @@ var init_content2 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/versions/content.mjs
+// node_modules/openai/resources/skills/versions/content.mjs
 var Content3;
 var init_content3 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/versions/content.mjs"() {
+  "node_modules/openai/resources/skills/versions/content.mjs"() {
     init_resource();
     init_headers();
     init_path();
@@ -46102,10 +48591,10 @@ var init_content3 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/versions/versions.mjs
+// node_modules/openai/resources/skills/versions/versions.mjs
 var Versions;
 var init_versions = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/versions/versions.mjs"() {
+  "node_modules/openai/resources/skills/versions/versions.mjs"() {
     init_resource();
     init_content3();
     init_content3();
@@ -46151,10 +48640,10 @@ var init_versions = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/skills.mjs
+// node_modules/openai/resources/skills/skills.mjs
 var Skills;
 var init_skills = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/skills/skills.mjs"() {
+  "node_modules/openai/resources/skills/skills.mjs"() {
     init_resource();
     init_content2();
     init_content2();
@@ -46205,10 +48694,10 @@ var init_skills = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/uploads/parts.mjs
+// node_modules/openai/resources/uploads/parts.mjs
 var Parts;
 var init_parts = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/uploads/parts.mjs"() {
+  "node_modules/openai/resources/uploads/parts.mjs"() {
     init_resource();
     init_uploads();
     init_path();
@@ -46233,10 +48722,10 @@ var init_parts = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/uploads/uploads.mjs
+// node_modules/openai/resources/uploads/uploads.mjs
 var Uploads;
 var init_uploads3 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/uploads/uploads.mjs"() {
+  "node_modules/openai/resources/uploads/uploads.mjs"() {
     init_resource();
     init_parts();
     init_parts();
@@ -46305,10 +48794,10 @@ var init_uploads3 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/Util.mjs
+// node_modules/openai/lib/Util.mjs
 var allSettledWithThrow;
 var init_Util = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/lib/Util.mjs"() {
+  "node_modules/openai/lib/Util.mjs"() {
     allSettledWithThrow = async (promises) => {
       const results = await Promise.allSettled(promises);
       const rejected = results.filter((result) => result.status === "rejected");
@@ -46329,10 +48818,10 @@ var init_Util = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/vector-stores/file-batches.mjs
+// node_modules/openai/resources/vector-stores/file-batches.mjs
 var FileBatches;
 var init_file_batches = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/vector-stores/file-batches.mjs"() {
+  "node_modules/openai/resources/vector-stores/file-batches.mjs"() {
     init_resource();
     init_pagination();
     init_headers();
@@ -46457,10 +48946,10 @@ var init_file_batches = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/vector-stores/files.mjs
+// node_modules/openai/resources/vector-stores/files.mjs
 var Files3;
 var init_files3 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/vector-stores/files.mjs"() {
+  "node_modules/openai/resources/vector-stores/files.mjs"() {
     init_resource();
     init_pagination();
     init_headers();
@@ -46599,10 +49088,10 @@ var init_files3 = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/vector-stores/vector-stores.mjs
+// node_modules/openai/resources/vector-stores/vector-stores.mjs
 var VectorStores;
 var init_vector_stores = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/vector-stores/vector-stores.mjs"() {
+  "node_modules/openai/resources/vector-stores/vector-stores.mjs"() {
     init_resource();
     init_file_batches();
     init_file_batches();
@@ -46683,10 +49172,10 @@ var init_vector_stores = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/videos.mjs
+// node_modules/openai/resources/videos.mjs
 var Videos;
 var init_videos = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/videos.mjs"() {
+  "node_modules/openai/resources/videos.mjs"() {
     init_resource();
     init_pagination();
     init_headers();
@@ -46765,10 +49254,10 @@ var init_videos = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/webhooks/webhooks.mjs
+// node_modules/openai/resources/webhooks/webhooks.mjs
 var _Webhooks_instances, _Webhooks_validateSecret, _Webhooks_getRequiredHeader, Webhooks;
 var init_webhooks = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/webhooks/webhooks.mjs"() {
+  "node_modules/openai/resources/webhooks/webhooks.mjs"() {
     init_tslib();
     init_error2();
     init_resource();
@@ -46850,23 +49339,23 @@ var init_webhooks = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/webhooks/index.mjs
+// node_modules/openai/resources/webhooks/index.mjs
 var init_webhooks2 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/webhooks/index.mjs"() {
+  "node_modules/openai/resources/webhooks/index.mjs"() {
     init_webhooks();
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/webhooks.mjs
+// node_modules/openai/resources/webhooks.mjs
 var init_webhooks3 = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/webhooks.mjs"() {
+  "node_modules/openai/resources/webhooks.mjs"() {
     init_webhooks2();
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/index.mjs
+// node_modules/openai/resources/index.mjs
 var init_resources = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/resources/index.mjs"() {
+  "node_modules/openai/resources/index.mjs"() {
     init_chat2();
     init_shared();
     init_audio();
@@ -46893,10 +49382,10 @@ var init_resources = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/client.mjs
+// node_modules/openai/client.mjs
 var _OpenAI_instances, _a3, _OpenAI_encoder, _OpenAI_baseURLOverridden, WORKLOAD_IDENTITY_API_KEY_PLACEHOLDER, OpenAI;
 var init_client = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/client.mjs"() {
+  "node_modules/openai/client.mjs"() {
     init_tslib();
     init_uuid2();
     init_values();
@@ -47474,10 +49963,10 @@ var init_client = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/azure.mjs
+// node_modules/openai/azure.mjs
 var AzureOpenAI, _deployments_endpoints;
 var init_azure = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/azure.mjs"() {
+  "node_modules/openai/azure.mjs"() {
     init_headers();
     init_error2();
     init_utils6();
@@ -47570,7 +50059,7 @@ var init_azure = __esm({
   }
 });
 
-// node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/index.mjs
+// node_modules/openai/index.mjs
 var openai_exports = {};
 __export(openai_exports, {
   APIConnectionError: () => APIConnectionError,
@@ -47597,7 +50086,7 @@ __export(openai_exports, {
   toFile: () => toFile
 });
 var init_openai = __esm({
-  "node_modules/.pnpm/openai@6.34.0_zod@4.3.6/node_modules/openai/index.mjs"() {
+  "node_modules/openai/index.mjs"() {
     init_client();
     init_uploads2();
     init_api_promise();
@@ -47608,9 +50097,9 @@ var init_openai = __esm({
   }
 });
 
-// node_modules/.pnpm/object-assign@4.1.1/node_modules/object-assign/index.js
+// node_modules/object-assign/index.js
 var require_object_assign = __commonJS({
-  "node_modules/.pnpm/object-assign@4.1.1/node_modules/object-assign/index.js"(exports2, module2) {
+  "node_modules/object-assign/index.js"(exports2, module2) {
     "use strict";
     var getOwnPropertySymbols = Object.getOwnPropertySymbols;
     var hasOwnProperty2 = Object.prototype.hasOwnProperty;
@@ -47678,9 +50167,9 @@ var require_object_assign = __commonJS({
   }
 });
 
-// node_modules/.pnpm/cors@2.8.6/node_modules/cors/lib/index.js
+// node_modules/cors/lib/index.js
 var require_lib3 = __commonJS({
-  "node_modules/.pnpm/cors@2.8.6/node_modules/cors/lib/index.js"(exports2, module2) {
+  "node_modules/cors/lib/index.js"(exports2, module2) {
     (function() {
       "use strict";
       var assign = require_object_assign();
@@ -47890,7 +50379,7 @@ var require_lib3 = __commonJS({
 var import_crypto4 = require("crypto");
 var import_express = __toESM(require_express2());
 
-// node_modules/.pnpm/@trpc+server@11.16.0_typescript@6.0.2/node_modules/@trpc/server/dist/codes-DagpWZLc.mjs
+// node_modules/@trpc/server/dist/codes-DagpWZLc.mjs
 function mergeWithoutOverrides(obj1, ...objs) {
   const newObj = Object.assign(emptyObject(), obj1);
   for (const overrides of objs) for (const key in overrides) {
@@ -47981,7 +50470,7 @@ var retryableRpcCodes = [
   TRPC_ERROR_CODES_BY_KEY.INTERNAL_SERVER_ERROR
 ];
 
-// node_modules/.pnpm/@trpc+server@11.16.0_typescript@6.0.2/node_modules/@trpc/server/dist/getErrorShape-vC8mUXJD.mjs
+// node_modules/@trpc/server/dist/getErrorShape-vC8mUXJD.mjs
 var __create2 = Object.create;
 var __defProp2 = Object.defineProperty;
 var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
@@ -48173,7 +50662,7 @@ function getErrorShape(opts) {
   return config2.errorFormatter((0, import_objectSpread2.default)((0, import_objectSpread2.default)({}, opts), {}, { shape }));
 }
 
-// node_modules/.pnpm/@trpc+server@11.16.0_typescript@6.0.2/node_modules/@trpc/server/dist/tracked-DiE3uR1B.mjs
+// node_modules/@trpc/server/dist/tracked-DiE3uR1B.mjs
 var defaultFormatter = ({ shape }) => {
   return shape;
 };
@@ -48432,7 +50921,7 @@ function isTrackedEnvelope(value) {
   return Array.isArray(value) && value[2] === trackedSymbol;
 }
 
-// node_modules/.pnpm/@trpc+server@11.16.0_typescript@6.0.2/node_modules/@trpc/server/dist/observable-UMO3vUa_.mjs
+// node_modules/@trpc/server/dist/observable-UMO3vUa_.mjs
 function isObservable(x) {
   return typeof x === "object" && x !== null && "subscribe" in x;
 }
@@ -48501,7 +50990,7 @@ function observableToAsyncIterable(observable$1, signal) {
   } };
 }
 
-// node_modules/.pnpm/@trpc+server@11.16.0_typescript@6.0.2/node_modules/@trpc/server/dist/resolveResponse-C5I6V_wc.mjs
+// node_modules/@trpc/server/dist/resolveResponse-C5I6V_wc.mjs
 function parseConnectionParamsFromUnknown(parsed) {
   try {
     if (parsed === null) return null;
@@ -50172,7 +52661,7 @@ async function resolveResponse(opts) {
   }
 }
 
-// node_modules/.pnpm/@trpc+server@11.16.0_typescript@6.0.2/node_modules/@trpc/server/dist/initTRPC-B1ggxyJl.mjs
+// node_modules/@trpc/server/dist/initTRPC-B1ggxyJl.mjs
 var import_objectSpread2$2 = __toESM2(require_objectSpread2(), 1);
 var middlewareMarker = "middlewareMarker";
 function createMiddlewareFactory() {
@@ -50479,7 +52968,7 @@ var TRPCBuilder = class TRPCBuilder2 {
 };
 var initTRPC = new TRPCBuilder();
 
-// node_modules/.pnpm/@trpc+server@11.16.0_typescript@6.0.2/node_modules/@trpc/server/dist/node-http-CPiHo2kI.mjs
+// node_modules/@trpc/server/dist/node-http-CPiHo2kI.mjs
 var import_node_http = require("node:http");
 function createBody(req, opts) {
   if ("body" in req) {
@@ -50679,7 +53168,7 @@ async function nodeHTTPRequestHandler(opts) {
   });
 }
 
-// node_modules/.pnpm/@trpc+server@11.16.0_typescript@6.0.2/node_modules/@trpc/server/dist/adapters/express.mjs
+// node_modules/@trpc/server/dist/adapters/express.mjs
 var import_objectSpread26 = __toESM2(require_objectSpread2(), 1);
 function createExpressMiddleware(opts) {
   return (req, res) => {
@@ -50699,7 +53188,7 @@ function createExpressMiddleware(opts) {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/classic/external.js
+// node_modules/zod/v4/classic/external.js
 var external_exports = {};
 __export(external_exports, {
   $brand: () => $brand,
@@ -50940,7 +53429,7 @@ __export(external_exports, {
   xor: () => xor
 });
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/core/index.js
+// node_modules/zod/v4/core/index.js
 var core_exports2 = {};
 __export(core_exports2, {
   $ZodAny: () => $ZodAny,
@@ -51218,7 +53707,7 @@ __export(core_exports2, {
   version: () => version
 });
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/core/core.js
+// node_modules/zod/v4/core/core.js
 var NEVER = Object.freeze({
   status: "aborted"
 });
@@ -51293,7 +53782,7 @@ function config(newConfig) {
   return globalConfig;
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/core/util.js
+// node_modules/zod/v4/core/util.js
 var util_exports = {};
 __export(util_exports, {
   BIGINT_FORMAT_RANGES: () => BIGINT_FORMAT_RANGES,
@@ -51972,7 +54461,7 @@ var Class = class {
   }
 };
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/core/errors.js
+// node_modules/zod/v4/core/errors.js
 var initializer = (inst, def) => {
   inst.name = "$ZodError";
   Object.defineProperty(inst, "_zod", {
@@ -52108,7 +54597,7 @@ function prettifyError(error48) {
   return lines.join("\n");
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/core/parse.js
+// node_modules/zod/v4/core/parse.js
 var _parse = (_Err) => (schema, value, _ctx, _params) => {
   const ctx = _ctx ? Object.assign(_ctx, { async: false }) : { async: false };
   const result = schema._zod.run({ value, issues: [] }, ctx);
@@ -52196,7 +54685,7 @@ var _safeDecodeAsync = (_Err) => async (schema, value, _ctx) => {
 };
 var safeDecodeAsync = /* @__PURE__ */ _safeDecodeAsync($ZodRealError);
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/core/regexes.js
+// node_modules/zod/v4/core/regexes.js
 var regexes_exports = {};
 __export(regexes_exports, {
   base64: () => base64,
@@ -52353,7 +54842,7 @@ var sha512_hex = /^[0-9a-fA-F]{128}$/;
 var sha512_base64 = /* @__PURE__ */ fixedBase64(86, "==");
 var sha512_base64url = /* @__PURE__ */ fixedBase64url(86);
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/core/checks.js
+// node_modules/zod/v4/core/checks.js
 var $ZodCheck = /* @__PURE__ */ $constructor("$ZodCheck", (inst, def) => {
   var _a4;
   inst._zod ?? (inst._zod = {});
@@ -52901,7 +55390,7 @@ var $ZodCheckOverwrite = /* @__PURE__ */ $constructor("$ZodCheckOverwrite", (ins
   };
 });
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/core/doc.js
+// node_modules/zod/v4/core/doc.js
 var Doc = class {
   constructor(args = []) {
     this.content = [];
@@ -52937,14 +55426,14 @@ var Doc = class {
   }
 };
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/core/versions.js
+// node_modules/zod/v4/core/versions.js
 var version = {
   major: 4,
   minor: 3,
   patch: 6
 };
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/core/schemas.js
+// node_modules/zod/v4/core/schemas.js
 var $ZodType = /* @__PURE__ */ $constructor("$ZodType", (inst, def) => {
   var _a4;
   inst ?? (inst = {});
@@ -54915,7 +57404,7 @@ function handleRefineResult(result, payload, input, inst) {
   }
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/index.js
+// node_modules/zod/v4/locales/index.js
 var locales_exports = {};
 __export(locales_exports, {
   ar: () => ar_default,
@@ -54969,7 +57458,7 @@ __export(locales_exports, {
   zhTW: () => zh_TW_default
 });
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/ar.js
+// node_modules/zod/v4/locales/ar.js
 var error = () => {
   const Sizable = {
     string: { unit: "\u062D\u0631\u0641", verb: "\u0623\u0646 \u064A\u062D\u0648\u064A" },
@@ -55076,7 +57565,7 @@ function ar_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/az.js
+// node_modules/zod/v4/locales/az.js
 var error2 = () => {
   const Sizable = {
     string: { unit: "simvol", verb: "olmal\u0131d\u0131r" },
@@ -55182,7 +57671,7 @@ function az_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/be.js
+// node_modules/zod/v4/locales/be.js
 function getBelarusianPlural(count2, one, few, many) {
   const absCount = Math.abs(count2);
   const lastDigit = absCount % 10;
@@ -55339,7 +57828,7 @@ function be_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/bg.js
+// node_modules/zod/v4/locales/bg.js
 var error4 = () => {
   const Sizable = {
     string: { unit: "\u0441\u0438\u043C\u0432\u043E\u043B\u0430", verb: "\u0434\u0430 \u0441\u044A\u0434\u044A\u0440\u0436\u0430" },
@@ -55460,7 +57949,7 @@ function bg_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/ca.js
+// node_modules/zod/v4/locales/ca.js
 var error5 = () => {
   const Sizable = {
     string: { unit: "car\xE0cters", verb: "contenir" },
@@ -55569,7 +58058,7 @@ function ca_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/cs.js
+// node_modules/zod/v4/locales/cs.js
 var error6 = () => {
   const Sizable = {
     string: { unit: "znak\u016F", verb: "m\xEDt" },
@@ -55681,7 +58170,7 @@ function cs_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/da.js
+// node_modules/zod/v4/locales/da.js
 var error7 = () => {
   const Sizable = {
     string: { unit: "tegn", verb: "havde" },
@@ -55797,7 +58286,7 @@ function da_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/de.js
+// node_modules/zod/v4/locales/de.js
 var error8 = () => {
   const Sizable = {
     string: { unit: "Zeichen", verb: "zu haben" },
@@ -55906,7 +58395,7 @@ function de_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/en.js
+// node_modules/zod/v4/locales/en.js
 var error9 = () => {
   const Sizable = {
     string: { unit: "characters", verb: "to have" },
@@ -56015,7 +58504,7 @@ function en_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/eo.js
+// node_modules/zod/v4/locales/eo.js
 var error10 = () => {
   const Sizable = {
     string: { unit: "karaktrojn", verb: "havi" },
@@ -56125,7 +58614,7 @@ function eo_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/es.js
+// node_modules/zod/v4/locales/es.js
 var error11 = () => {
   const Sizable = {
     string: { unit: "caracteres", verb: "tener" },
@@ -56258,7 +58747,7 @@ function es_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/fa.js
+// node_modules/zod/v4/locales/fa.js
 var error12 = () => {
   const Sizable = {
     string: { unit: "\u06A9\u0627\u0631\u0627\u06A9\u062A\u0631", verb: "\u062F\u0627\u0634\u062A\u0647 \u0628\u0627\u0634\u062F" },
@@ -56373,7 +58862,7 @@ function fa_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/fi.js
+// node_modules/zod/v4/locales/fi.js
 var error13 = () => {
   const Sizable = {
     string: { unit: "merkki\xE4", subject: "merkkijonon" },
@@ -56486,7 +58975,7 @@ function fi_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/fr.js
+// node_modules/zod/v4/locales/fr.js
 var error14 = () => {
   const Sizable = {
     string: { unit: "caract\xE8res", verb: "avoir" },
@@ -56595,7 +59084,7 @@ function fr_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/fr-CA.js
+// node_modules/zod/v4/locales/fr-CA.js
 var error15 = () => {
   const Sizable = {
     string: { unit: "caract\xE8res", verb: "avoir" },
@@ -56703,7 +59192,7 @@ function fr_CA_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/he.js
+// node_modules/zod/v4/locales/he.js
 var error16 = () => {
   const TypeNames = {
     string: { label: "\u05DE\u05D7\u05E8\u05D5\u05D6\u05EA", gender: "f" },
@@ -56898,7 +59387,7 @@ function he_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/hu.js
+// node_modules/zod/v4/locales/hu.js
 var error17 = () => {
   const Sizable = {
     string: { unit: "karakter", verb: "legyen" },
@@ -57007,7 +59496,7 @@ function hu_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/hy.js
+// node_modules/zod/v4/locales/hy.js
 function getArmenianPlural(count2, one, many) {
   return Math.abs(count2) === 1 ? one : many;
 }
@@ -57155,7 +59644,7 @@ function hy_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/id.js
+// node_modules/zod/v4/locales/id.js
 var error19 = () => {
   const Sizable = {
     string: { unit: "karakter", verb: "memiliki" },
@@ -57262,7 +59751,7 @@ function id_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/is.js
+// node_modules/zod/v4/locales/is.js
 var error20 = () => {
   const Sizable = {
     string: { unit: "stafi", verb: "a\xF0 hafa" },
@@ -57372,7 +59861,7 @@ function is_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/it.js
+// node_modules/zod/v4/locales/it.js
 var error21 = () => {
   const Sizable = {
     string: { unit: "caratteri", verb: "avere" },
@@ -57481,7 +59970,7 @@ function it_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/ja.js
+// node_modules/zod/v4/locales/ja.js
 var error22 = () => {
   const Sizable = {
     string: { unit: "\u6587\u5B57", verb: "\u3067\u3042\u308B" },
@@ -57589,7 +60078,7 @@ function ja_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/ka.js
+// node_modules/zod/v4/locales/ka.js
 var error23 = () => {
   const Sizable = {
     string: { unit: "\u10E1\u10D8\u10DB\u10D1\u10DD\u10DA\u10DD", verb: "\u10E3\u10DC\u10D3\u10D0 \u10E8\u10D4\u10D8\u10EA\u10D0\u10D5\u10D3\u10D4\u10E1" },
@@ -57702,7 +60191,7 @@ function ka_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/km.js
+// node_modules/zod/v4/locales/km.js
 var error24 = () => {
   const Sizable = {
     string: { unit: "\u178F\u17BD\u17A2\u1780\u17D2\u179F\u179A", verb: "\u1782\u17BD\u179A\u1798\u17B6\u1793" },
@@ -57813,12 +60302,12 @@ function km_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/kh.js
+// node_modules/zod/v4/locales/kh.js
 function kh_default() {
   return km_default();
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/ko.js
+// node_modules/zod/v4/locales/ko.js
 var error25 = () => {
   const Sizable = {
     string: { unit: "\uBB38\uC790", verb: "to have" },
@@ -57930,7 +60419,7 @@ function ko_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/lt.js
+// node_modules/zod/v4/locales/lt.js
 var capitalizeFirstCharacter = (text2) => {
   return text2.charAt(0).toUpperCase() + text2.slice(1);
 };
@@ -58134,7 +60623,7 @@ function lt_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/mk.js
+// node_modules/zod/v4/locales/mk.js
 var error27 = () => {
   const Sizable = {
     string: { unit: "\u0437\u043D\u0430\u0446\u0438", verb: "\u0434\u0430 \u0438\u043C\u0430\u0430\u0442" },
@@ -58244,7 +60733,7 @@ function mk_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/ms.js
+// node_modules/zod/v4/locales/ms.js
 var error28 = () => {
   const Sizable = {
     string: { unit: "aksara", verb: "mempunyai" },
@@ -58352,7 +60841,7 @@ function ms_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/nl.js
+// node_modules/zod/v4/locales/nl.js
 var error29 = () => {
   const Sizable = {
     string: { unit: "tekens", verb: "heeft" },
@@ -58463,7 +60952,7 @@ function nl_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/no.js
+// node_modules/zod/v4/locales/no.js
 var error30 = () => {
   const Sizable = {
     string: { unit: "tegn", verb: "\xE5 ha" },
@@ -58572,7 +61061,7 @@ function no_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/ota.js
+// node_modules/zod/v4/locales/ota.js
 var error31 = () => {
   const Sizable = {
     string: { unit: "harf", verb: "olmal\u0131d\u0131r" },
@@ -58682,7 +61171,7 @@ function ota_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/ps.js
+// node_modules/zod/v4/locales/ps.js
 var error32 = () => {
   const Sizable = {
     string: { unit: "\u062A\u0648\u06A9\u064A", verb: "\u0648\u0644\u0631\u064A" },
@@ -58797,7 +61286,7 @@ function ps_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/pl.js
+// node_modules/zod/v4/locales/pl.js
 var error33 = () => {
   const Sizable = {
     string: { unit: "znak\xF3w", verb: "mie\u0107" },
@@ -58907,7 +61396,7 @@ function pl_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/pt.js
+// node_modules/zod/v4/locales/pt.js
 var error34 = () => {
   const Sizable = {
     string: { unit: "caracteres", verb: "ter" },
@@ -59016,7 +61505,7 @@ function pt_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/ru.js
+// node_modules/zod/v4/locales/ru.js
 function getRussianPlural(count2, one, few, many) {
   const absCount = Math.abs(count2);
   const lastDigit = absCount % 10;
@@ -59173,7 +61662,7 @@ function ru_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/sl.js
+// node_modules/zod/v4/locales/sl.js
 var error36 = () => {
   const Sizable = {
     string: { unit: "znakov", verb: "imeti" },
@@ -59283,7 +61772,7 @@ function sl_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/sv.js
+// node_modules/zod/v4/locales/sv.js
 var error37 = () => {
   const Sizable = {
     string: { unit: "tecken", verb: "att ha" },
@@ -59394,7 +61883,7 @@ function sv_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/ta.js
+// node_modules/zod/v4/locales/ta.js
 var error38 = () => {
   const Sizable = {
     string: { unit: "\u0B8E\u0BB4\u0BC1\u0BA4\u0BCD\u0BA4\u0BC1\u0B95\u0BCD\u0B95\u0BB3\u0BCD", verb: "\u0B95\u0BCA\u0BA3\u0BCD\u0B9F\u0BBF\u0BB0\u0BC1\u0B95\u0BCD\u0B95 \u0BB5\u0BC7\u0BA3\u0BCD\u0B9F\u0BC1\u0BAE\u0BCD" },
@@ -59505,7 +61994,7 @@ function ta_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/th.js
+// node_modules/zod/v4/locales/th.js
 var error39 = () => {
   const Sizable = {
     string: { unit: "\u0E15\u0E31\u0E27\u0E2D\u0E31\u0E01\u0E29\u0E23", verb: "\u0E04\u0E27\u0E23\u0E21\u0E35" },
@@ -59616,7 +62105,7 @@ function th_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/tr.js
+// node_modules/zod/v4/locales/tr.js
 var error40 = () => {
   const Sizable = {
     string: { unit: "karakter", verb: "olmal\u0131" },
@@ -59722,7 +62211,7 @@ function tr_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/uk.js
+// node_modules/zod/v4/locales/uk.js
 var error41 = () => {
   const Sizable = {
     string: { unit: "\u0441\u0438\u043C\u0432\u043E\u043B\u0456\u0432", verb: "\u043C\u0430\u0442\u0438\u043C\u0435" },
@@ -59831,12 +62320,12 @@ function uk_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/ua.js
+// node_modules/zod/v4/locales/ua.js
 function ua_default() {
   return uk_default();
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/ur.js
+// node_modules/zod/v4/locales/ur.js
 var error42 = () => {
   const Sizable = {
     string: { unit: "\u062D\u0631\u0648\u0641", verb: "\u06C1\u0648\u0646\u0627" },
@@ -59947,7 +62436,7 @@ function ur_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/uz.js
+// node_modules/zod/v4/locales/uz.js
 var error43 = () => {
   const Sizable = {
     string: { unit: "belgi", verb: "bo\u2018lishi kerak" },
@@ -60057,7 +62546,7 @@ function uz_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/vi.js
+// node_modules/zod/v4/locales/vi.js
 var error44 = () => {
   const Sizable = {
     string: { unit: "k\xFD t\u1EF1", verb: "c\xF3" },
@@ -60166,7 +62655,7 @@ function vi_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/zh-CN.js
+// node_modules/zod/v4/locales/zh-CN.js
 var error45 = () => {
   const Sizable = {
     string: { unit: "\u5B57\u7B26", verb: "\u5305\u542B" },
@@ -60276,7 +62765,7 @@ function zh_CN_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/zh-TW.js
+// node_modules/zod/v4/locales/zh-TW.js
 var error46 = () => {
   const Sizable = {
     string: { unit: "\u5B57\u5143", verb: "\u64C1\u6709" },
@@ -60384,7 +62873,7 @@ function zh_TW_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/locales/yo.js
+// node_modules/zod/v4/locales/yo.js
 var error47 = () => {
   const Sizable = {
     string: { unit: "\xE0mi", verb: "n\xED" },
@@ -60492,7 +62981,7 @@ function yo_default() {
   };
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/core/registries.js
+// node_modules/zod/v4/core/registries.js
 var _a;
 var $output = /* @__PURE__ */ Symbol("ZodOutput");
 var $input = /* @__PURE__ */ Symbol("ZodInput");
@@ -60542,7 +63031,7 @@ function registry() {
 (_a = globalThis).__zod_globalRegistry ?? (_a.__zod_globalRegistry = registry());
 var globalRegistry = globalThis.__zod_globalRegistry;
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/core/api.js
+// node_modules/zod/v4/core/api.js
 // @__NO_SIDE_EFFECTS__
 function _string(Class2, params) {
   return new Class2({
@@ -61581,7 +64070,7 @@ function _stringFormat(Class2, format, fnOrRegex, _params = {}) {
   return inst;
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/core/to-json-schema.js
+// node_modules/zod/v4/core/to-json-schema.js
 function initializeContext(params) {
   let target = params?.target ?? "draft-2020-12";
   if (target === "draft-4")
@@ -61933,7 +64422,7 @@ var createStandardJSONSchemaMethod = (schema, io, processors = {}) => (params) =
   return finalize(ctx, schema);
 };
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/core/json-schema-processors.js
+// node_modules/zod/v4/core/json-schema-processors.js
 var formatMap = {
   guid: "uuid",
   url: "uri",
@@ -62484,7 +64973,7 @@ function toJSONSchema(input, params) {
   return finalize(ctx, input);
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/core/json-schema-generator.js
+// node_modules/zod/v4/core/json-schema-generator.js
 var JSONSchemaGenerator = class {
   /** @deprecated Access via ctx instead */
   get metadataRegistry() {
@@ -62559,10 +65048,10 @@ var JSONSchemaGenerator = class {
   }
 };
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/core/json-schema.js
+// node_modules/zod/v4/core/json-schema.js
 var json_schema_exports = {};
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/classic/schemas.js
+// node_modules/zod/v4/classic/schemas.js
 var schemas_exports2 = {};
 __export(schemas_exports2, {
   ZodAny: () => ZodAny,
@@ -62731,7 +65220,7 @@ __export(schemas_exports2, {
   xor: () => xor
 });
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/classic/checks.js
+// node_modules/zod/v4/classic/checks.js
 var checks_exports2 = {};
 __export(checks_exports2, {
   endsWith: () => _endsWith,
@@ -62765,7 +65254,7 @@ __export(checks_exports2, {
   uppercase: () => _uppercase
 });
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/classic/iso.js
+// node_modules/zod/v4/classic/iso.js
 var iso_exports = {};
 __export(iso_exports, {
   ZodISODate: () => ZodISODate,
@@ -62806,7 +65295,7 @@ function duration2(params) {
   return _isoDuration(ZodISODuration, params);
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/classic/errors.js
+// node_modules/zod/v4/classic/errors.js
 var initializer2 = (inst, issues) => {
   $ZodError.init(inst, issues);
   inst.name = "ZodError";
@@ -62846,7 +65335,7 @@ var ZodRealError = $constructor("ZodError", initializer2, {
   Parent: Error
 });
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/classic/parse.js
+// node_modules/zod/v4/classic/parse.js
 var parse2 = /* @__PURE__ */ _parse(ZodRealError);
 var parseAsync2 = /* @__PURE__ */ _parseAsync(ZodRealError);
 var safeParse2 = /* @__PURE__ */ _safeParse(ZodRealError);
@@ -62860,7 +65349,7 @@ var safeDecode2 = /* @__PURE__ */ _safeDecode(ZodRealError);
 var safeEncodeAsync2 = /* @__PURE__ */ _safeEncodeAsync(ZodRealError);
 var safeDecodeAsync2 = /* @__PURE__ */ _safeDecodeAsync(ZodRealError);
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/classic/schemas.js
+// node_modules/zod/v4/classic/schemas.js
 var ZodType = /* @__PURE__ */ $constructor("ZodType", (inst, def) => {
   $ZodType.init(inst, def);
   Object.assign(inst["~standard"], {
@@ -63939,7 +66428,7 @@ function preprocess(fn, schema) {
   return pipe(transform(fn), schema);
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/classic/compat.js
+// node_modules/zod/v4/classic/compat.js
 var ZodIssueCode = {
   invalid_type: "invalid_type",
   too_big: "too_big",
@@ -63965,7 +66454,7 @@ var ZodFirstPartyTypeKind;
 /* @__PURE__ */ (function(ZodFirstPartyTypeKind2) {
 })(ZodFirstPartyTypeKind || (ZodFirstPartyTypeKind = {}));
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/classic/from-json-schema.js
+// node_modules/zod/v4/classic/from-json-schema.js
 var z = {
   ...schemas_exports2,
   ...checks_exports2,
@@ -64439,7 +66928,7 @@ function fromJSONSchema(schema, params) {
   return convertSchema(schema, ctx);
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/classic/coerce.js
+// node_modules/zod/v4/classic/coerce.js
 var coerce_exports = {};
 __export(coerce_exports, {
   bigint: () => bigint3,
@@ -64464,7 +66953,7 @@ function date4(params) {
   return _coercedDate(ZodDate, params);
 }
 
-// node_modules/.pnpm/zod@4.3.6/node_modules/zod/v4/classic/external.js
+// node_modules/zod/v4/classic/external.js
 config(en_default());
 
 // _core/env.ts
@@ -64567,7 +67056,7 @@ var AXIOS_TIMEOUT_MS = 3e4;
 var UNAUTHED_ERR_MSG = "Please login (10001)";
 var NOT_ADMIN_ERR_MSG = "You do not have required permission (10002)";
 
-// node_modules/.pnpm/superjson@2.2.6/node_modules/superjson/dist/double-indexed-kv.js
+// node_modules/superjson/dist/double-indexed-kv.js
 var DoubleIndexedKV = class {
   constructor() {
     this.keyToValue = /* @__PURE__ */ new Map();
@@ -64589,7 +67078,7 @@ var DoubleIndexedKV = class {
   }
 };
 
-// node_modules/.pnpm/superjson@2.2.6/node_modules/superjson/dist/registry.js
+// node_modules/superjson/dist/registry.js
 var Registry = class {
   constructor(generateIdentifier) {
     this.generateIdentifier = generateIdentifier;
@@ -64615,7 +67104,7 @@ var Registry = class {
   }
 };
 
-// node_modules/.pnpm/superjson@2.2.6/node_modules/superjson/dist/class-registry.js
+// node_modules/superjson/dist/class-registry.js
 var ClassRegistry = class extends Registry {
   constructor() {
     super((c) => c.name);
@@ -64636,7 +67125,7 @@ var ClassRegistry = class extends Registry {
   }
 };
 
-// node_modules/.pnpm/superjson@2.2.6/node_modules/superjson/dist/util.js
+// node_modules/superjson/dist/util.js
 function valuesOfObj(record2) {
   if ("values" in Object) {
     return Object.values(record2);
@@ -64679,7 +67168,7 @@ function findArr(record2, predicate) {
   return void 0;
 }
 
-// node_modules/.pnpm/superjson@2.2.6/node_modules/superjson/dist/custom-transformer-registry.js
+// node_modules/superjson/dist/custom-transformer-registry.js
 var CustomTransformerRegistry = class {
   constructor() {
     this.transfomers = {};
@@ -64695,7 +67184,7 @@ var CustomTransformerRegistry = class {
   }
 };
 
-// node_modules/.pnpm/superjson@2.2.6/node_modules/superjson/dist/is.js
+// node_modules/superjson/dist/is.js
 var getType = (payload) => Object.prototype.toString.call(payload).slice(8, -1);
 var isUndefined = (payload) => typeof payload === "undefined";
 var isNull = (payload) => payload === null;
@@ -64726,7 +67215,7 @@ var isInfinite = (payload) => payload === Infinity || payload === -Infinity;
 var isTypedArray = (payload) => ArrayBuffer.isView(payload) && !(payload instanceof DataView);
 var isURL = (payload) => payload instanceof URL;
 
-// node_modules/.pnpm/superjson@2.2.6/node_modules/superjson/dist/pathstringifier.js
+// node_modules/superjson/dist/pathstringifier.js
 var escapeKey = (key) => key.replace(/\\/g, "\\\\").replace(/\./g, "\\.");
 var stringifyPath = (path3) => path3.map(String).map(escapeKey).join(".");
 var parsePath = (string4, legacyPaths) => {
@@ -64763,7 +67252,7 @@ var parsePath = (string4, legacyPaths) => {
   return result;
 };
 
-// node_modules/.pnpm/superjson@2.2.6/node_modules/superjson/dist/transformer.js
+// node_modules/superjson/dist/transformer.js
 function simpleTransformation(isApplicable, annotation, transform2, untransform) {
   return {
     isApplicable,
@@ -64964,7 +67453,7 @@ var untransformValue = (json3, type, superJson) => {
   }
 };
 
-// node_modules/.pnpm/superjson@2.2.6/node_modules/superjson/dist/accessDeep.js
+// node_modules/superjson/dist/accessDeep.js
 var getNthKey = (value, n) => {
   if (n > value.size)
     throw new Error("index out of bounds");
@@ -65080,7 +67569,7 @@ var setDeep = (object2, path3, mapper) => {
   return object2;
 };
 
-// node_modules/.pnpm/superjson@2.2.6/node_modules/superjson/dist/plainer.js
+// node_modules/superjson/dist/plainer.js
 var enableLegacyPaths = (version3) => version3 < 1;
 function traverse(tree, walker2, version3, origin2 = []) {
   if (!tree) {
@@ -65228,17 +67717,17 @@ var walker = (object2, identities, superJson, dedupe, path3 = [], objectsInThisP
   return result;
 };
 
-// node_modules/.pnpm/is-what@5.5.0/node_modules/is-what/dist/getType.js
+// node_modules/is-what/dist/getType.js
 function getType2(payload) {
   return Object.prototype.toString.call(payload).slice(8, -1);
 }
 
-// node_modules/.pnpm/is-what@5.5.0/node_modules/is-what/dist/isArray.js
+// node_modules/is-what/dist/isArray.js
 function isArray2(payload) {
   return getType2(payload) === "Array";
 }
 
-// node_modules/.pnpm/is-what@5.5.0/node_modules/is-what/dist/isPlainObject.js
+// node_modules/is-what/dist/isPlainObject.js
 function isPlainObject4(payload) {
   if (getType2(payload) !== "Object")
     return false;
@@ -65246,7 +67735,7 @@ function isPlainObject4(payload) {
   return !!prototype2 && prototype2.constructor === Object && prototype2 === Object.prototype;
 }
 
-// node_modules/.pnpm/copy-anything@4.0.5/node_modules/copy-anything/dist/index.js
+// node_modules/copy-anything/dist/index.js
 function assignProp2(carry, key, newVal, originalObject, includeNonenumerable) {
   const propType = {}.propertyIsEnumerable.call(originalObject, key) ? "enumerable" : "nonenumerable";
   if (propType === "enumerable")
@@ -65282,7 +67771,7 @@ function copy(target, options = {}) {
   }, {});
 }
 
-// node_modules/.pnpm/superjson@2.2.6/node_modules/superjson/dist/index.js
+// node_modules/superjson/dist/index.js
 var SuperJSON = class {
   /**
    * @param dedupeReferentialEqualities  If true, SuperJSON will make sure only one instance of referentially equal objects are serialized and the rest are replaced with `null`.
@@ -65459,11 +67948,11 @@ var import_path = __toESM(require("path"));
 var import_dotenv = __toESM(require_main());
 init_drizzle_orm();
 
-// node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/index.js
+// node_modules/postgres/src/index.js
 var import_os = __toESM(require("os"), 1);
 var import_fs = __toESM(require("fs"), 1);
 
-// node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/query.js
+// node_modules/postgres/src/query.js
 var originCache = /* @__PURE__ */ new Map();
 var originStackCache = /* @__PURE__ */ new Map();
 var originError = /* @__PURE__ */ Symbol("OriginError");
@@ -65600,7 +68089,7 @@ function cachedError(xs) {
   return originCache.get(xs);
 }
 
-// node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/errors.js
+// node_modules/postgres/src/errors.js
 var PostgresError = class extends Error {
   constructor(x) {
     super(x.message);
@@ -65650,7 +68139,7 @@ function notSupported(x) {
   return error48;
 }
 
-// node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/types.js
+// node_modules/postgres/src/types.js
 var types = {
   string: {
     to: 25,
@@ -65936,14 +68425,14 @@ fromKebab.column = { to: fromKebab };
 var kebab = { ...toKebab };
 kebab.column.to = fromKebab;
 
-// node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/connection.js
+// node_modules/postgres/src/connection.js
 var import_net = __toESM(require("net"), 1);
 var import_tls = __toESM(require("tls"), 1);
 var import_crypto = __toESM(require("crypto"), 1);
 var import_stream = __toESM(require("stream"), 1);
 var import_perf_hooks = require("perf_hooks");
 
-// node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/result.js
+// node_modules/postgres/src/result.js
 var Result = class extends Array {
   constructor() {
     super();
@@ -65960,7 +68449,7 @@ var Result = class extends Array {
   }
 };
 
-// node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/queue.js
+// node_modules/postgres/src/queue.js
 var queue_default = Queue;
 function Queue(initial = []) {
   let xs = initial.slice();
@@ -65987,7 +68476,7 @@ function Queue(initial = []) {
   };
 }
 
-// node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/bytes.js
+// node_modules/postgres/src/bytes.js
 var size = 256;
 var buffer = Buffer.allocUnsafe(size);
 var messages = "BCcDdEFfHPpQSX".split("").reduce((acc, x) => {
@@ -66060,7 +68549,7 @@ function reset() {
   return b;
 }
 
-// node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/connection.js
+// node_modules/postgres/src/connection.js
 var connection_default = Connection;
 var uid = 1;
 var Sync = bytes_default().S().end();
@@ -66900,13 +69389,13 @@ function timer(fn, seconds) {
   }
 }
 
-// node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/subscribe.js
+// node_modules/postgres/src/subscribe.js
 var noop3 = () => {
 };
 function Subscribe(postgres2, options) {
   const subscribers = /* @__PURE__ */ new Map(), slot = "postgresjs_" + Math.random().toString(36).slice(2), state = {};
   let connection2, stream4, ended = false;
-  const sql4 = subscribe.sql = postgres2({
+  const sql5 = subscribe.sql = postgres2({
     ...options,
     transform: { column: {}, value: {}, row: {} },
     max: 1,
@@ -66922,18 +69411,18 @@ function Subscribe(postgres2, options) {
         return;
       stream4 = null;
       state.pid = state.secret = void 0;
-      connected(await init(sql4, slot, options.publications));
+      connected(await init(sql5, slot, options.publications));
       subscribers.forEach((event) => event.forEach(({ onsubscribe }) => onsubscribe()));
     },
     no_subscribe: true
   });
-  const end = sql4.end, close = sql4.close;
-  sql4.end = async () => {
+  const end = sql5.end, close = sql5.close;
+  sql5.end = async () => {
     ended = true;
     stream4 && await new Promise((r) => (stream4.once("close", r), stream4.end()));
     return end();
   };
-  sql4.close = async () => {
+  sql5.close = async () => {
     stream4 && await new Promise((r) => (stream4.once("close", r), stream4.end()));
     return close();
   };
@@ -66941,7 +69430,7 @@ function Subscribe(postgres2, options) {
   async function subscribe(event, fn, onsubscribe = noop3, onerror = noop3) {
     event = parseEvent(event);
     if (!connection2)
-      connection2 = init(sql4, slot, options.publications);
+      connection2 = init(sql5, slot, options.publications);
     const subscriber = { fn, onsubscribe };
     const fns = subscribers.has(event) ? subscribers.get(event).add(subscriber) : subscribers.set(event, /* @__PURE__ */ new Set([subscriber])).get(event);
     const unsubscribe = () => {
@@ -66952,7 +69441,7 @@ function Subscribe(postgres2, options) {
       connected(x);
       onsubscribe();
       stream4 && stream4.on("error", onerror);
-      return { unsubscribe, state, sql: sql4 };
+      return { unsubscribe, state, sql: sql5 };
     });
   }
   function connected(x) {
@@ -66960,14 +69449,14 @@ function Subscribe(postgres2, options) {
     state.pid = x.state.pid;
     state.secret = x.state.secret;
   }
-  async function init(sql5, slot2, publications) {
+  async function init(sql6, slot2, publications) {
     if (!publications)
       throw new Error("Missing publication names");
-    const xs = await sql5.unsafe(
+    const xs = await sql6.unsafe(
       `CREATE_REPLICATION_SLOT ${slot2} TEMPORARY LOGICAL pgoutput NOEXPORT_SNAPSHOT`
     );
     const [x] = xs;
-    const stream5 = await sql5.unsafe(
+    const stream5 = await sql6.unsafe(
       `START_REPLICATION SLOT ${slot2} LOGICAL ${x.consistent_point} (proto_version '1', publication_names '${publications}')`
     ).writable();
     const state2 = {
@@ -66975,14 +69464,14 @@ function Subscribe(postgres2, options) {
     };
     stream5.on("data", data);
     stream5.on("error", error48);
-    stream5.on("close", sql5.close);
+    stream5.on("close", sql6.close);
     return { stream: stream5, state: xs.state };
     function error48(e) {
       console.error("Unexpected error during logical streaming - reconnecting", e);
     }
     function data(x2) {
       if (x2[0] === 119) {
-        parse4(x2.subarray(25), state2, sql5.options.parsers, handle, options.transform);
+        parse4(x2.subarray(25), state2, sql6.options.parsers, handle, options.transform);
       } else if (x2[0] === 107 && x2[17]) {
         state2.lsn = x2.subarray(1, 9);
         pong();
@@ -67112,24 +69601,24 @@ function parseEvent(x) {
   return (command || "*") + (path3 ? ":" + (path3.indexOf(".") === -1 ? "public." + path3 : path3) : "") + (key ? "=" + key : "");
 }
 
-// node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/large.js
+// node_modules/postgres/src/large.js
 var import_stream2 = __toESM(require("stream"), 1);
-function largeObject(sql4, oid, mode = 131072 | 262144) {
+function largeObject(sql5, oid, mode = 131072 | 262144) {
   return new Promise(async (resolve, reject) => {
-    await sql4.begin(async (sql5) => {
+    await sql5.begin(async (sql6) => {
       let finish;
-      !oid && ([{ oid }] = await sql5`select lo_creat(-1) as oid`);
-      const [{ fd }] = await sql5`select lo_open(${oid}, ${mode}) as fd`;
+      !oid && ([{ oid }] = await sql6`select lo_creat(-1) as oid`);
+      const [{ fd }] = await sql6`select lo_open(${oid}, ${mode}) as fd`;
       const lo = {
         writable,
         readable,
-        close: () => sql5`select lo_close(${fd})`.then(finish),
-        tell: () => sql5`select lo_tell64(${fd})`,
-        read: (x) => sql5`select loread(${fd}, ${x}) as data`,
-        write: (x) => sql5`select lowrite(${fd}, ${x})`,
-        truncate: (x) => sql5`select lo_truncate64(${fd}, ${x})`,
-        seek: (x, whence = 0) => sql5`select lo_lseek64(${fd}, ${x}, ${whence})`,
-        size: () => sql5`
+        close: () => sql6`select lo_close(${fd})`.then(finish),
+        tell: () => sql6`select lo_tell64(${fd})`,
+        read: (x) => sql6`select loread(${fd}, ${x}) as data`,
+        write: (x) => sql6`select lowrite(${fd}, ${x})`,
+        truncate: (x) => sql6`select lo_truncate64(${fd}, ${x})`,
+        seek: (x, whence = 0) => sql6`select lo_lseek64(${fd}, ${x}, ${whence})`,
+        size: () => sql6`
           select
             lo_lseek64(${fd}, location, 0) as position,
             seek.size
@@ -67178,7 +69667,7 @@ function largeObject(sql4, oid, mode = 131072 | 262144) {
   });
 }
 
-// node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/index.js
+// node_modules/postgres/src/index.js
 Object.assign(Postgres, {
   PostgresError,
   toPascal,
@@ -67204,12 +69693,12 @@ function Postgres(a, b2) {
   let ending = false;
   const queries = queue_default(), connecting = queue_default(), reserved = queue_default(), closed = queue_default(), ended = queue_default(), open = queue_default(), busy = queue_default(), full = queue_default(), queues = { connecting, reserved, closed, ended, open, busy, full };
   const connections = [...Array(options.max)].map(() => connection_default(options, queues, { onopen, onend, onclose }));
-  const sql4 = Sql(handler);
-  Object.assign(sql4, {
+  const sql5 = Sql(handler);
+  Object.assign(sql5, {
     get parameters() {
       return options.parameters;
     },
-    largeObject: largeObject.bind(null, sql4),
+    largeObject: largeObject.bind(null, sql5),
     subscribe,
     CLOSE,
     END: CLOSE,
@@ -67221,14 +69710,14 @@ function Postgres(a, b2) {
     close,
     end
   });
-  return sql4;
+  return sql5;
   function Sql(handler2) {
     handler2.debug = options.debug;
     Object.entries(options.types).reduce((acc, [name2, type]) => {
       acc[name2] = (x) => new Parameter(x, type.to);
       return acc;
     }, typed);
-    Object.assign(sql5, {
+    Object.assign(sql6, {
       types: typed,
       typed,
       unsafe,
@@ -67237,11 +69726,11 @@ function Postgres(a, b2) {
       json: json3,
       file: file2
     });
-    return sql5;
+    return sql6;
     function typed(value, type) {
       return new Parameter(value, type);
     }
-    function sql5(strings, ...args) {
+    function sql6(strings, ...args) {
       const query = strings && Array.isArray(strings.raw) ? new Query(strings, args, handler2, cancel) : typeof strings === "string" && !args.length ? new Identifier(options.transform.column.to ? options.transform.column.to(strings) : strings) : new Builder(strings, args);
       return query;
     }
@@ -67272,7 +69761,7 @@ function Postgres(a, b2) {
   }
   async function listen(name2, fn, onlisten) {
     const listener = { fn, onlisten };
-    const sql5 = listen.sql || (listen.sql = Postgres({
+    const sql6 = listen.sql || (listen.sql = Postgres({
       ...options,
       max: 1,
       idle_timeout: null,
@@ -67296,7 +69785,7 @@ function Postgres(a, b2) {
       listener.onlisten && listener.onlisten();
       return { state: result2.state, unlisten };
     }
-    channels[name2] = { result: sql5`listen ${sql5.unsafe('"' + name2.replace(/"/g, '""') + '"')}`, listeners: [listener] };
+    channels[name2] = { result: sql6`listen ${sql6.unsafe('"' + name2.replace(/"/g, '""') + '"')}`, listeners: [listener] };
     const result = await channels[name2].result;
     listener.onlisten && listener.onlisten();
     return { state: result.state, unlisten };
@@ -67307,11 +69796,11 @@ function Postgres(a, b2) {
       if (channels[name2].listeners.length)
         return;
       delete channels[name2];
-      return sql5`unlisten ${sql5.unsafe('"' + name2.replace(/"/g, '""') + '"')}`;
+      return sql6`unlisten ${sql6.unsafe('"' + name2.replace(/"/g, '""') + '"')}`;
     }
   }
   async function notify(channel, payload) {
-    return await sql4`select pg_notify(${channel}, ${"" + payload})`;
+    return await sql5`select pg_notify(${channel}, ${"" + payload})`;
   }
   async function reserve() {
     const queue = queue_default();
@@ -67323,12 +69812,12 @@ function Postgres(a, b2) {
     move(c, reserved);
     c.reserved = () => queue.length ? c.execute(queue.shift()) : move(c, reserved);
     c.reserved.release = true;
-    const sql5 = Sql(handler2);
-    sql5.release = () => {
+    const sql6 = Sql(handler2);
+    sql6.release = () => {
       c.reserved = null;
       onopen(c);
     };
-    return sql5;
+    return sql6;
     function handler2(q) {
       c.queue === full ? queue.push(q) : c.execute(q) || move(c, full);
     }
@@ -67338,7 +69827,7 @@ function Postgres(a, b2) {
     const queries2 = queue_default();
     let savepoints = 0, connection2, prepare = null;
     try {
-      await sql4.unsafe("begin " + options2.replace(/[^a-z ]/ig, ""), [], { onexecute }).execute();
+      await sql5.unsafe("begin " + options2.replace(/[^a-z ]/ig, ""), [], { onexecute }).execute();
       return await Promise.race([
         scope(connection2, fn),
         new Promise((_, reject) => connection2.onclose = reject)
@@ -67347,29 +69836,29 @@ function Postgres(a, b2) {
       throw error48;
     }
     async function scope(c, fn2, name2) {
-      const sql5 = Sql(handler2);
-      sql5.savepoint = savepoint;
-      sql5.prepare = (x) => prepare = x.replace(/[^a-z0-9$-_. ]/gi);
+      const sql6 = Sql(handler2);
+      sql6.savepoint = savepoint;
+      sql6.prepare = (x) => prepare = x.replace(/[^a-z0-9$-_. ]/gi);
       let uncaughtError, result;
-      name2 && await sql5`savepoint ${sql5(name2)}`;
+      name2 && await sql6`savepoint ${sql6(name2)}`;
       try {
         result = await new Promise((resolve, reject) => {
-          const x = fn2(sql5);
+          const x = fn2(sql6);
           Promise.resolve(Array.isArray(x) ? Promise.all(x) : x).then(resolve, reject);
         });
         if (uncaughtError)
           throw uncaughtError;
       } catch (e) {
-        await (name2 ? sql5`rollback to ${sql5(name2)}` : sql5`rollback`);
+        await (name2 ? sql6`rollback to ${sql6(name2)}` : sql6`rollback`);
         throw e instanceof PostgresError && e.code === "25P02" && uncaughtError || e;
       }
       if (!name2) {
-        prepare ? await sql5`prepare transaction '${sql5.unsafe(prepare)}'` : await sql5`commit`;
+        prepare ? await sql6`prepare transaction '${sql6.unsafe(prepare)}'` : await sql6`commit`;
       }
       return result;
       function savepoint(name3, fn3) {
         if (name3 && Array.isArray(name3.raw))
-          return savepoint((sql6) => sql6.apply(sql6, arguments));
+          return savepoint((sql7) => sql7.apply(sql7, arguments));
         arguments.length === 1 && (fn3 = name3, name3 = null);
         return scope(c, fn3, "s" + savepoints++ + (name3 ? "_" + name3 : ""));
       }
@@ -67581,7 +70070,7 @@ function osUsername() {
   }
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/postgres-js/driver.js
+// node_modules/drizzle-orm/postgres-js/driver.js
 init_entity();
 init_logger();
 init_db();
@@ -67589,7 +70078,7 @@ init_dialect();
 init_relations();
 init_utils();
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/postgres-js/session.js
+// node_modules/drizzle-orm/postgres-js/session.js
 init_entity();
 init_logger();
 init_pg_core();
@@ -67732,7 +70221,7 @@ var PostgresJsTransaction = class _PostgresJsTransaction extends PgTransaction {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+better-sqlite3@7.6.13_@types+pg@8.20.0_better-sqlite3@12.8.0_postgres@3.4.9/node_modules/drizzle-orm/postgres-js/driver.js
+// node_modules/drizzle-orm/postgres-js/driver.js
 var PostgresJsDatabase = class extends PgDatabase {
   static [entityKind] = "PostgresJsDatabase";
 };
@@ -67808,10 +70297,34 @@ import_dotenv.default.config({ path: import_path.default.resolve(process.cwd(), 
 import_dotenv.default.config();
 var _db = null;
 var _client = null;
+function sanitizeDatabaseUrl(url3) {
+  let clean = url3.trim();
+  if (clean.startsWith("DATABASE_URL=")) {
+    clean = clean.slice("DATABASE_URL=".length).trim();
+  }
+  if (clean.startsWith('"') && clean.endsWith('"') || clean.startsWith("'") && clean.endsWith("'")) {
+    clean = clean.slice(1, -1);
+  }
+  return clean;
+}
 async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      _client = src_default(process.env.DATABASE_URL);
+      const dbUrl = sanitizeDatabaseUrl(process.env.DATABASE_URL);
+      console.log("[Database] Connecting to:", dbUrl.replace(/:[^:@]+@/, ":***@"));
+      _client = src_default(dbUrl, {
+        connect_timeout: 15,
+        // 15s máximo para conectar
+        idle_timeout: 30,
+        // fecha conexões ociosas após 30s
+        max_lifetime: 1800,
+        // recicla conexões a cada 30min
+        max: 10,
+        // máximo de 10 conexões simultâneas
+        onnotice: () => {
+        }
+        // silencia avisos do postgres
+      });
       _db = drizzle(_client);
     } catch (error48) {
       console.warn("[Database] Failed to connect:", error48);
@@ -67882,6 +70395,12 @@ async function getAllUsers() {
   if (!db) return [];
   return await db.select().from(users);
 }
+async function getUserByEmail(email3) {
+  const db = await getDb();
+  if (!db) return void 0;
+  const result = await db.select().from(users).where(eq(users.email, email3)).limit(1);
+  return result.length > 0 ? result[0] : void 0;
+}
 async function updateUser(id, data) {
   const db = await getDb();
   if (!db) return;
@@ -67891,6 +70410,12 @@ async function deleteUser(id) {
   const db = await getDb();
   if (!db) return;
   await db.delete(users).where(eq(users.id, id));
+}
+async function getRawClient() {
+  if (!_client && process.env.DATABASE_URL) {
+    await getDb();
+  }
+  return _client;
 }
 
 // _core/audit.ts
@@ -70340,14 +72865,14 @@ var HttpError = class extends Error {
 };
 var ForbiddenError = (msg) => new HttpError(403, msg);
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/bind.js
+// node_modules/axios/lib/helpers/bind.js
 function bind(fn, thisArg) {
   return function wrap() {
     return fn.apply(thisArg, arguments);
   };
 }
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/utils.js
+// node_modules/axios/lib/utils.js
 var { toString } = Object.prototype;
 var { getPrototypeOf } = Object;
 var { iterator, toStringTag } = Symbol;
@@ -70774,7 +73299,7 @@ var utils_default = {
   isIterable
 };
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/core/AxiosError.js
+// node_modules/axios/lib/core/AxiosError.js
 var AxiosError = class _AxiosError extends Error {
   static from(error48, code, config2, request, response, customProps) {
     const axiosError = new _AxiosError(error48.message, code || error48.code, config2, request, response);
@@ -70849,11 +73374,11 @@ AxiosError.ERR_NOT_SUPPORT = "ERR_NOT_SUPPORT";
 AxiosError.ERR_INVALID_URL = "ERR_INVALID_URL";
 var AxiosError_default = AxiosError;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/platform/node/classes/FormData.js
+// node_modules/axios/lib/platform/node/classes/FormData.js
 var import_form_data = __toESM(require_form_data(), 1);
 var FormData_default = import_form_data.default;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/toFormData.js
+// node_modules/axios/lib/helpers/toFormData.js
 function isVisitable(thing) {
   return utils_default.isPlainObject(thing) || utils_default.isArray(thing);
 }
@@ -70971,7 +73496,7 @@ function toFormData(obj, formData, options) {
 }
 var toFormData_default = toFormData;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/AxiosURLSearchParams.js
+// node_modules/axios/lib/helpers/AxiosURLSearchParams.js
 function encode3(str2) {
   const charMap = {
     "!": "%21",
@@ -71004,7 +73529,7 @@ prototype.toString = function toString2(encoder) {
 };
 var AxiosURLSearchParams_default = AxiosURLSearchParams;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/buildURL.js
+// node_modules/axios/lib/helpers/buildURL.js
 function encode4(val) {
   return encodeURIComponent(val).replace(/%3A/gi, ":").replace(/%24/g, "$").replace(/%2C/gi, ",").replace(/%20/g, "+");
 }
@@ -71033,7 +73558,7 @@ function buildURL(url3, params, options) {
   return url3;
 }
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/core/InterceptorManager.js
+// node_modules/axios/lib/core/InterceptorManager.js
 var InterceptorManager = class {
   constructor() {
     this.handlers = [];
@@ -71098,7 +73623,7 @@ var InterceptorManager = class {
 };
 var InterceptorManager_default = InterceptorManager;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/defaults/transitional.js
+// node_modules/axios/lib/defaults/transitional.js
 var transitional_default = {
   silentJSONParsing: true,
   forcedJSONParsing: true,
@@ -71106,14 +73631,14 @@ var transitional_default = {
   legacyInterceptorReqResOrdering: true
 };
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/platform/node/index.js
+// node_modules/axios/lib/platform/node/index.js
 var import_crypto2 = __toESM(require("crypto"), 1);
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/platform/node/classes/URLSearchParams.js
+// node_modules/axios/lib/platform/node/classes/URLSearchParams.js
 var import_url = __toESM(require("url"), 1);
 var URLSearchParams_default = import_url.default.URLSearchParams;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/platform/node/index.js
+// node_modules/axios/lib/platform/node/index.js
 var ALPHA = "abcdefghijklmnopqrstuvwxyz";
 var DIGIT = "0123456789";
 var ALPHABET = {
@@ -71143,7 +73668,7 @@ var node_default = {
   protocols: ["http", "https", "file", "data"]
 };
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/platform/common/utils.js
+// node_modules/axios/lib/platform/common/utils.js
 var utils_exports = {};
 __export(utils_exports, {
   hasBrowserEnv: () => hasBrowserEnv,
@@ -71161,13 +73686,13 @@ var hasStandardBrowserWebWorkerEnv = (() => {
 })();
 var origin = hasBrowserEnv && window.location.href || "http://localhost";
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/platform/index.js
+// node_modules/axios/lib/platform/index.js
 var platform_default = {
   ...utils_exports,
   ...node_default
 };
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/toURLEncodedForm.js
+// node_modules/axios/lib/helpers/toURLEncodedForm.js
 function toURLEncodedForm(data, options) {
   return toFormData_default(data, new platform_default.classes.URLSearchParams(), {
     visitor: function(value, key, path3, helpers) {
@@ -71181,7 +73706,7 @@ function toURLEncodedForm(data, options) {
   });
 }
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/formDataToJSON.js
+// node_modules/axios/lib/helpers/formDataToJSON.js
 function parsePropPath(name2) {
   return utils_default.matchAll(/\w+|\[(\w*)]/g, name2).map((match) => {
     return match[0] === "[]" ? "" : match[1] || match[0];
@@ -71234,7 +73759,7 @@ function formDataToJSON(formData) {
 }
 var formDataToJSON_default = formDataToJSON;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/defaults/index.js
+// node_modules/axios/lib/defaults/index.js
 function stringifySafely(rawValue, parser, encoder) {
   if (utils_default.isString(rawValue)) {
     try {
@@ -71347,7 +73872,7 @@ utils_default.forEach(["delete", "get", "head", "post", "put", "patch"], (method
 });
 var defaults_default = defaults;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/parseHeaders.js
+// node_modules/axios/lib/helpers/parseHeaders.js
 var ignoreDuplicateOf = utils_default.toObjectSet([
   "age",
   "authorization",
@@ -71392,7 +73917,7 @@ var parseHeaders_default = (rawHeaders) => {
   return parsed;
 };
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/core/AxiosHeaders.js
+// node_modules/axios/lib/core/AxiosHeaders.js
 var $internals = /* @__PURE__ */ Symbol("internals");
 function normalizeHeader(header) {
   return header && String(header).trim().toLowerCase();
@@ -71401,7 +73926,7 @@ function normalizeValue(value) {
   if (value === false || value == null) {
     return value;
   }
-  return utils_default.isArray(value) ? value.map(normalizeValue) : String(value).replace(/[\r\n]+$/, "");
+  return utils_default.isArray(value) ? value.map(normalizeValue) : String(value);
 }
 function parseTokens(str2) {
   const tokens = /* @__PURE__ */ Object.create(null);
@@ -71628,7 +74153,7 @@ utils_default.reduceDescriptors(AxiosHeaders.prototype, ({ value }, key) => {
 utils_default.freezeMethods(AxiosHeaders);
 var AxiosHeaders_default = AxiosHeaders;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/core/transformData.js
+// node_modules/axios/lib/core/transformData.js
 function transformData(fns, response) {
   const config2 = this || defaults_default;
   const context = response || config2;
@@ -71641,12 +74166,12 @@ function transformData(fns, response) {
   return data;
 }
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/cancel/isCancel.js
+// node_modules/axios/lib/cancel/isCancel.js
 function isCancel(value) {
   return !!(value && value.__CANCEL__);
 }
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/cancel/CanceledError.js
+// node_modules/axios/lib/cancel/CanceledError.js
 var CanceledError = class extends AxiosError_default {
   /**
    * A `CanceledError` is an object that is thrown when an operation is canceled.
@@ -71665,7 +74190,7 @@ var CanceledError = class extends AxiosError_default {
 };
 var CanceledError_default = CanceledError;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/core/settle.js
+// node_modules/axios/lib/core/settle.js
 function settle(resolve, reject, response) {
   const validateStatus2 = response.config.validateStatus;
   if (!response.status || !validateStatus2 || validateStatus2(response.status)) {
@@ -71683,7 +74208,7 @@ function settle(resolve, reject, response) {
   }
 }
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/isAbsoluteURL.js
+// node_modules/axios/lib/helpers/isAbsoluteURL.js
 function isAbsoluteURL(url3) {
   if (typeof url3 !== "string") {
     return false;
@@ -71691,12 +74216,12 @@ function isAbsoluteURL(url3) {
   return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url3);
 }
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/combineURLs.js
+// node_modules/axios/lib/helpers/combineURLs.js
 function combineURLs(baseURL, relativeURL) {
   return relativeURL ? baseURL.replace(/\/?\/$/, "") + "/" + relativeURL.replace(/^\/+/, "") : baseURL;
 }
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/core/buildFullPath.js
+// node_modules/axios/lib/core/buildFullPath.js
 function buildFullPath(baseURL, requestedURL, allowAbsoluteUrls) {
   let isRelativeUrl = !isAbsoluteURL(requestedURL);
   if (baseURL && (isRelativeUrl || allowAbsoluteUrls == false)) {
@@ -71705,74 +74230,8 @@ function buildFullPath(baseURL, requestedURL, allowAbsoluteUrls) {
   return requestedURL;
 }
 
-// node_modules/.pnpm/proxy-from-env@2.1.0/node_modules/proxy-from-env/index.js
-var DEFAULT_PORTS = {
-  ftp: 21,
-  gopher: 70,
-  http: 80,
-  https: 443,
-  ws: 80,
-  wss: 443
-};
-function parseUrl2(urlString) {
-  try {
-    return new URL(urlString);
-  } catch {
-    return null;
-  }
-}
-function getProxyForUrl(url3) {
-  var parsedUrl = (typeof url3 === "string" ? parseUrl2(url3) : url3) || {};
-  var proto = parsedUrl.protocol;
-  var hostname3 = parsedUrl.host;
-  var port2 = parsedUrl.port;
-  if (typeof hostname3 !== "string" || !hostname3 || typeof proto !== "string") {
-    return "";
-  }
-  proto = proto.split(":", 1)[0];
-  hostname3 = hostname3.replace(/:\d*$/, "");
-  port2 = parseInt(port2) || DEFAULT_PORTS[proto] || 0;
-  if (!shouldProxy(hostname3, port2)) {
-    return "";
-  }
-  var proxy = getEnv(proto + "_proxy") || getEnv("all_proxy");
-  if (proxy && proxy.indexOf("://") === -1) {
-    proxy = proto + "://" + proxy;
-  }
-  return proxy;
-}
-function shouldProxy(hostname3, port2) {
-  var NO_PROXY = getEnv("no_proxy").toLowerCase();
-  if (!NO_PROXY) {
-    return true;
-  }
-  if (NO_PROXY === "*") {
-    return false;
-  }
-  return NO_PROXY.split(/[,\s]/).every(function(proxy) {
-    if (!proxy) {
-      return true;
-    }
-    var parsedProxy = proxy.match(/^(.+):(\d+)$/);
-    var parsedProxyHostname = parsedProxy ? parsedProxy[1] : proxy;
-    var parsedProxyPort = parsedProxy ? parseInt(parsedProxy[2]) : 0;
-    if (parsedProxyPort && parsedProxyPort !== port2) {
-      return true;
-    }
-    if (!/^[.*]/.test(parsedProxyHostname)) {
-      return hostname3 !== parsedProxyHostname;
-    }
-    if (parsedProxyHostname.charAt(0) === "*") {
-      parsedProxyHostname = parsedProxyHostname.slice(1);
-    }
-    return !hostname3.endsWith(parsedProxyHostname);
-  });
-}
-function getEnv(key) {
-  return process.env[key.toLowerCase()] || process.env[key.toUpperCase()] || "";
-}
-
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/adapters/http.js
+// node_modules/axios/lib/adapters/http.js
+var import_proxy_from_env = __toESM(require_proxy_from_env(), 1);
 var import_http = __toESM(require("http"), 1);
 var import_https = __toESM(require("https"), 1);
 var import_http2 = __toESM(require("http2"), 1);
@@ -71780,16 +74239,16 @@ var import_util8 = __toESM(require("util"), 1);
 var import_follow_redirects = __toESM(require_follow_redirects(), 1);
 var import_zlib = __toESM(require("zlib"), 1);
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/env/data.js
-var VERSION = "1.14.0";
+// node_modules/axios/lib/env/data.js
+var VERSION = "1.13.6";
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/parseProtocol.js
+// node_modules/axios/lib/helpers/parseProtocol.js
 function parseProtocol(url3) {
   const match = /^([-+\w]{1,25})(:?\/\/|:)/.exec(url3);
   return match && match[1] || "";
 }
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/fromDataURI.js
+// node_modules/axios/lib/helpers/fromDataURI.js
 var DATA_URL_PATTERN = /^(?:([^;]+);)?(?:[^;]+;)?(base64|),([\s\S]*)$/;
 function fromDataURI(uri, asBlob, options) {
   const _Blob = options && options.Blob || platform_default.classes.Blob;
@@ -71818,10 +74277,10 @@ function fromDataURI(uri, asBlob, options) {
   throw new AxiosError_default("Unsupported protocol " + protocol, AxiosError_default.ERR_NOT_SUPPORT);
 }
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/adapters/http.js
+// node_modules/axios/lib/adapters/http.js
 var import_stream6 = __toESM(require("stream"), 1);
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/AxiosTransformStream.js
+// node_modules/axios/lib/helpers/AxiosTransformStream.js
 var import_stream3 = __toESM(require("stream"), 1);
 var kInternals = /* @__PURE__ */ Symbol("internals");
 var AxiosTransformStream = class extends import_stream3.default.Transform {
@@ -71944,14 +74403,14 @@ var AxiosTransformStream = class extends import_stream3.default.Transform {
 };
 var AxiosTransformStream_default = AxiosTransformStream;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/adapters/http.js
+// node_modules/axios/lib/adapters/http.js
 var import_events = require("events");
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/formDataToStream.js
+// node_modules/axios/lib/helpers/formDataToStream.js
 var import_util7 = __toESM(require("util"), 1);
 var import_stream4 = require("stream");
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/readBlob.js
+// node_modules/axios/lib/helpers/readBlob.js
 var { asyncIterator } = Symbol;
 var readBlob = async function* (blob) {
   if (blob.stream) {
@@ -71966,7 +74425,7 @@ var readBlob = async function* (blob) {
 };
 var readBlob_default = readBlob;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/formDataToStream.js
+// node_modules/axios/lib/helpers/formDataToStream.js
 var BOUNDARY_ALPHABET = platform_default.ALPHABET.ALPHA_DIGIT + "-_";
 var textEncoder = typeof TextEncoder === "function" ? new TextEncoder() : new import_util7.default.TextEncoder();
 var CRLF = "\r\n";
@@ -72050,7 +74509,7 @@ var formDataToStream = (form, headersHandler, options) => {
 };
 var formDataToStream_default = formDataToStream;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/ZlibHeaderTransformStream.js
+// node_modules/axios/lib/helpers/ZlibHeaderTransformStream.js
 var import_stream5 = __toESM(require("stream"), 1);
 var ZlibHeaderTransformStream = class extends import_stream5.default.Transform {
   __transform(chunk, encoding, callback) {
@@ -72072,7 +74531,7 @@ var ZlibHeaderTransformStream = class extends import_stream5.default.Transform {
 };
 var ZlibHeaderTransformStream_default = ZlibHeaderTransformStream;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/callbackify.js
+// node_modules/axios/lib/helpers/callbackify.js
 var callbackify = (fn, reducer) => {
   return utils_default.isAsyncFn(fn) ? function(...args) {
     const cb = args.pop();
@@ -72087,7 +74546,7 @@ var callbackify = (fn, reducer) => {
 };
 var callbackify_default = callbackify;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/speedometer.js
+// node_modules/axios/lib/helpers/speedometer.js
 function speedometer(samplesCount, min2) {
   samplesCount = samplesCount || 10;
   const bytes = new Array(samplesCount);
@@ -72123,7 +74582,7 @@ function speedometer(samplesCount, min2) {
 }
 var speedometer_default = speedometer;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/throttle.js
+// node_modules/axios/lib/helpers/throttle.js
 function throttle(fn, freq) {
   let timestamp2 = 0;
   let threshold = 1e3 / freq;
@@ -72158,7 +74617,7 @@ function throttle(fn, freq) {
 }
 var throttle_default = throttle;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/progressEventReducer.js
+// node_modules/axios/lib/helpers/progressEventReducer.js
 var progressEventReducer = (listener, isDownloadStream, freq = 3) => {
   let bytesNotified = 0;
   const _speedometer = speedometer_default(50, 250);
@@ -72196,7 +74655,7 @@ var progressEventDecorator = (total, throttled) => {
 };
 var asyncDecorator = (fn) => (...args) => utils_default.asap(() => fn(...args));
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/estimateDataURLDecodedBytes.js
+// node_modules/axios/lib/helpers/estimateDataURLDecodedBytes.js
 function estimateDataURLDecodedBytes(url3) {
   if (!url3 || typeof url3 !== "string") return 0;
   if (!url3.startsWith("data:")) return 0;
@@ -72247,7 +74706,7 @@ function estimateDataURLDecodedBytes(url3) {
   return Buffer.byteLength(body, "utf8");
 }
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/adapters/http.js
+// node_modules/axios/lib/adapters/http.js
 var zlibOptions = {
   flush: import_zlib.default.constants.Z_SYNC_FLUSH,
   finishFlush: import_zlib.default.constants.Z_SYNC_FLUSH
@@ -72302,9 +74761,6 @@ var Http2Sessions = class {
           } else {
             entries.splice(i, 1);
           }
-          if (!session.closed) {
-            session.close();
-          }
           return;
         }
       }
@@ -72350,7 +74806,7 @@ function dispatchBeforeRedirect(options, responseDetails) {
 function setProxy(options, configProxy, location) {
   let proxy = configProxy;
   if (!proxy && proxy !== false) {
-    const proxyUrl = getProxyForUrl(location);
+    const proxyUrl = import_proxy_from_env.default.getProxyForUrl(location);
     if (proxyUrl) {
       proxy = new URL(proxyUrl);
     }
@@ -72923,7 +75379,7 @@ var http_default = isHttpAdapterSupported && function httpAdapter(config2) {
   });
 };
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/isURLSameOrigin.js
+// node_modules/axios/lib/helpers/isURLSameOrigin.js
 var isURLSameOrigin_default = platform_default.hasStandardBrowserEnv ? /* @__PURE__ */ ((origin2, isMSIE) => (url3) => {
   url3 = new URL(url3, platform_default.origin);
   return origin2.protocol === url3.protocol && origin2.host === url3.host && (isMSIE || origin2.port === url3.port);
@@ -72932,7 +75388,7 @@ var isURLSameOrigin_default = platform_default.hasStandardBrowserEnv ? /* @__PUR
   platform_default.navigator && /(msie|trident)/i.test(platform_default.navigator.userAgent)
 ) : () => true;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/cookies.js
+// node_modules/axios/lib/helpers/cookies.js
 var cookies_default = platform_default.hasStandardBrowserEnv ? (
   // Standard browser envs support document.cookie
   {
@@ -72978,7 +75434,7 @@ var cookies_default = platform_default.hasStandardBrowserEnv ? (
   }
 );
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/core/mergeConfig.js
+// node_modules/axios/lib/core/mergeConfig.js
 var headersToObject = (thing) => thing instanceof AxiosHeaders_default ? { ...thing } : thing;
 function mergeConfig(config1, config2) {
   config2 = config2 || {};
@@ -73059,7 +75515,7 @@ function mergeConfig(config1, config2) {
   return config3;
 }
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/resolveConfig.js
+// node_modules/axios/lib/helpers/resolveConfig.js
 var resolveConfig_default = (config2) => {
   const newConfig = mergeConfig({}, config2);
   let { data, withXSRFToken, xsrfHeaderName, xsrfCookieName, headers, auth } = newConfig;
@@ -73102,7 +75558,7 @@ var resolveConfig_default = (config2) => {
   return newConfig;
 };
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/adapters/xhr.js
+// node_modules/axios/lib/adapters/xhr.js
 var isXHRAdapterSupported = typeof XMLHttpRequest !== "undefined";
 var xhr_default = isXHRAdapterSupported && function(config2) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -73244,7 +75700,7 @@ var xhr_default = isXHRAdapterSupported && function(config2) {
   });
 };
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/composeSignals.js
+// node_modules/axios/lib/helpers/composeSignals.js
 var composeSignals = (signals, timeout) => {
   const { length } = signals = signals ? signals.filter(Boolean) : [];
   if (timeout || length) {
@@ -73282,7 +75738,7 @@ var composeSignals = (signals, timeout) => {
 };
 var composeSignals_default = composeSignals;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/trackStream.js
+// node_modules/axios/lib/helpers/trackStream.js
 var streamChunk = function* (chunk, chunkSize) {
   let len = chunk.byteLength;
   if (!chunkSize || len < chunkSize) {
@@ -73362,7 +75818,7 @@ var trackStream = (stream4, chunkSize, onProgress, onFinish) => {
   );
 };
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/adapters/fetch.js
+// node_modules/axios/lib/adapters/fetch.js
 var DEFAULT_CHUNK_SIZE = 64 * 1024;
 var { isFunction: isFunction3 } = utils_default;
 var globalFetchAPI = (({ Request: Request2, Response: Response2 }) => ({
@@ -73396,16 +75852,14 @@ var factory = (env) => {
   const encodeText = isFetchSupported && (typeof TextEncoder2 === "function" ? /* @__PURE__ */ ((encoder) => (str2) => encoder.encode(str2))(new TextEncoder2()) : async (str2) => new Uint8Array(await new Request2(str2).arrayBuffer()));
   const supportsRequestStream = isRequestSupported && isReadableStreamSupported && test(() => {
     let duplexAccessed = false;
-    const body = new ReadableStream2();
     const hasContentType = new Request2(platform_default.origin, {
-      body,
+      body: new ReadableStream2(),
       method: "POST",
       get duplex() {
         duplexAccessed = true;
         return "half";
       }
     }).headers.has("Content-Type");
-    body.cancel();
     return duplexAccessed && !hasContentType;
   });
   const supportsResponseStream = isResponseSupported && isReadableStreamSupported && test(() => utils_default.isReadableStream(new Response2("").body));
@@ -73586,7 +76040,7 @@ var getFetch = (config2) => {
 };
 var adapter = getFetch();
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/adapters/adapters.js
+// node_modules/axios/lib/adapters/adapters.js
 var knownAdapters = {
   http: http_default,
   xhr: xhr_default,
@@ -73651,7 +76105,7 @@ var adapters_default = {
   adapters: knownAdapters
 };
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/core/dispatchRequest.js
+// node_modules/axios/lib/core/dispatchRequest.js
 function throwIfCancellationRequested(config2) {
   if (config2.cancelToken) {
     config2.cancelToken.throwIfRequested();
@@ -73692,7 +76146,7 @@ function dispatchRequest(config2) {
   );
 }
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/validator.js
+// node_modules/axios/lib/helpers/validator.js
 var validators = {};
 ["object", "boolean", "number", "function", "string", "symbol"].forEach((type, i) => {
   validators[type] = function validator(thing) {
@@ -73759,7 +76213,7 @@ var validator_default = {
   validators
 };
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/core/Axios.js
+// node_modules/axios/lib/core/Axios.js
 var validators2 = validator_default.validators;
 var Axios = class {
   constructor(instanceConfig) {
@@ -73948,7 +76402,7 @@ utils_default.forEach(["post", "put", "patch"], function forEachMethodWithData(m
 });
 var Axios_default = Axios;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/cancel/CancelToken.js
+// node_modules/axios/lib/cancel/CancelToken.js
 var CancelToken = class _CancelToken {
   constructor(executor) {
     if (typeof executor !== "function") {
@@ -74046,19 +76500,19 @@ var CancelToken = class _CancelToken {
 };
 var CancelToken_default = CancelToken;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/spread.js
+// node_modules/axios/lib/helpers/spread.js
 function spread(callback) {
   return function wrap(arr) {
     return callback.apply(null, arr);
   };
 }
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/isAxiosError.js
+// node_modules/axios/lib/helpers/isAxiosError.js
 function isAxiosError(payload) {
   return utils_default.isObject(payload) && payload.isAxiosError === true;
 }
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/helpers/HttpStatusCode.js
+// node_modules/axios/lib/helpers/HttpStatusCode.js
 var HttpStatusCode = {
   Continue: 100,
   SwitchingProtocols: 101,
@@ -74135,7 +76589,7 @@ Object.entries(HttpStatusCode).forEach(([key, value]) => {
 });
 var HttpStatusCode_default = HttpStatusCode;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/lib/axios.js
+// node_modules/axios/lib/axios.js
 function createInstance(defaultConfig) {
   const context = new Axios_default(defaultConfig);
   const instance = bind(Axios_default.prototype.request, context);
@@ -74168,7 +76622,7 @@ axios.HttpStatusCode = HttpStatusCode_default;
 axios.default = axios;
 var axios_default = axios;
 
-// node_modules/.pnpm/axios@1.14.0/node_modules/axios/index.js
+// node_modules/axios/index.js
 var {
   Axios: Axios2,
   AxiosError: AxiosError2,
@@ -74189,7 +76643,7 @@ var {
 } = axios_default;
 
 // _core/sdk.ts
-var import_cookie = __toESM(require_cookie2());
+var import_cookie = __toESM(require_cookie());
 var import_jsonwebtoken = __toESM(require_jsonwebtoken());
 var EXCHANGE_TOKEN_PATH = `/webdev.v1.WebDevAuthPublicService/ExchangeToken`;
 var GET_USER_INFO_PATH = `/webdev.v1.WebDevAuthPublicService/GetUserInfo`;
@@ -74574,8 +77028,65 @@ var authRouter = router({
 // routers/users.ts
 init_schema2();
 init_drizzle_orm();
+var import_bcryptjs2 = __toESM(require_bcryptjs());
+var ALL_ROLES = [
+  "user",
+  "admin",
+  "master_admin",
+  "monitor",
+  "dispatcher",
+  "ti_master",
+  "financeiro",
+  "comercial",
+  "motorista",
+  "operador_wms",
+  "rh"
+];
 var usersRouter = router({
-  // Listar todos os usuários (apenas para admins)
+  // ── Criar usuário (admin cria para sua empresa; master_admin pode escolher) ──
+  create: adminProcedure.input(external_exports.object({
+    name: external_exports.string().min(2),
+    lastName: external_exports.string().optional(),
+    email: external_exports.string().email(),
+    password: external_exports.string().min(6, "Senha deve ter ao menos 6 caracteres"),
+    phone: external_exports.string().optional(),
+    role: external_exports.enum(ALL_ROLES).default("user"),
+    empresaId: external_exports.number().optional()
+  })).mutation(async ({ input, ctx }) => {
+    try {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indispon\xEDvel" });
+      const existing = await getUserByEmail(input.email).catch(() => null);
+      if (existing) throw new TRPCError({ code: "CONFLICT", message: "E-mail j\xE1 cadastrado no sistema" });
+      let targetEmpresaId = input.empresaId;
+      if (ctx.user.role !== "master_admin") {
+        targetEmpresaId = ctx.user.empresaId;
+      }
+      if (!targetEmpresaId) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "\xC9 obrigat\xF3rio vincular o usu\xE1rio a uma empresa" });
+      }
+      if (input.role === "master_admin" && ctx.user.role !== "master_admin") {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Apenas Master ADM pode criar outro Master ADM" });
+      }
+      const hashedPassword = await import_bcryptjs2.default.hash(input.password, 10);
+      await db.insert(users).values({
+        name: input.name,
+        lastName: input.lastName ?? "",
+        email: input.email,
+        password: hashedPassword,
+        phone: input.phone ?? "",
+        role: input.role,
+        status: "approved",
+        // criado pelo admin já vem aprovado
+        empresaId: targetEmpresaId
+      });
+      return { success: true };
+    } catch (error48) {
+      if (error48 instanceof TRPCError) throw error48;
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao criar usu\xE1rio" });
+    }
+  }),
+  // ── Listar todos os usuários ──────────────────────────────────────────────
   listAll: adminProcedure.query(async ({ ctx }) => {
     try {
       const allUsers = await getAllUsers();
@@ -74597,14 +77108,14 @@ var usersRouter = router({
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao listar usu\xE1rios" });
     }
   }),
-  // Atualizar dados do usuário
+  // ── Atualizar dados do usuário ────────────────────────────────────────────
   update: adminProcedure.input(external_exports.object({
     id: external_exports.number(),
     name: external_exports.string().optional(),
     lastName: external_exports.string().optional(),
     email: external_exports.string().email().optional(),
     phone: external_exports.string().optional(),
-    role: external_exports.enum(["user", "admin", "master_admin", "monitor", "dispatcher"]).optional(),
+    role: external_exports.enum(ALL_ROLES).optional(),
     empresaId: external_exports.number().nullable().optional()
   })).mutation(async ({ input, ctx }) => {
     try {
@@ -74615,7 +77126,7 @@ var usersRouter = router({
       if (input.phone !== void 0) updateData.phone = input.phone;
       if (input.role !== void 0) {
         if (input.role === "master_admin" && ctx.user.role !== "master_admin") {
-          throw new TRPCError({ code: "FORBIDDEN", message: "Apenas master_admin pode promover a master_admin" });
+          throw new TRPCError({ code: "FORBIDDEN", message: "Apenas Master ADM pode promover a Master ADM" });
         }
         updateData.role = input.role;
       }
@@ -74623,11 +77134,54 @@ var usersRouter = router({
       await updateUser(input.id, updateData);
       return { success: true };
     } catch (error48) {
-      console.error("Erro ao atualizar usu\xE1rio:", error48);
+      if (error48 instanceof TRPCError) throw error48;
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao atualizar usu\xE1rio" });
     }
   }),
-  // Aprovar usuário (mudar status de pending para approved)
+  // ── Trocar senha de qualquer usuário (admin/master) ───────────────────────
+  changePassword: adminProcedure.input(external_exports.object({
+    userId: external_exports.number(),
+    newPassword: external_exports.string().min(6, "Senha deve ter ao menos 6 caracteres")
+  })).mutation(async ({ input, ctx }) => {
+    try {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indispon\xEDvel" });
+      if (ctx.user.role !== "master_admin") {
+        const [target] = await db.select().from(users).where(eq(users.id, input.userId));
+        if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "Usu\xE1rio n\xE3o encontrado" });
+        if (target.empresaId !== ctx.user.empresaId) {
+          throw new TRPCError({ code: "FORBIDDEN", message: "Sem permiss\xE3o para alterar este usu\xE1rio" });
+        }
+      }
+      const hashedPassword = await import_bcryptjs2.default.hash(input.newPassword, 10);
+      await db.update(users).set({ password: hashedPassword }).where(eq(users.id, input.userId));
+      return { success: true };
+    } catch (error48) {
+      if (error48 instanceof TRPCError) throw error48;
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao trocar senha" });
+    }
+  }),
+  // ── Alterar própria senha (usuário logado) ────────────────────────────────
+  changeOwnPassword: protectedProcedure.input(external_exports.object({
+    currentPassword: external_exports.string().min(1, "Informe a senha atual"),
+    newPassword: external_exports.string().min(6, "Nova senha deve ter ao menos 6 caracteres")
+  })).mutation(async ({ input, ctx }) => {
+    try {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indispon\xEDvel" });
+      const [currentUser] = await db.select().from(users).where(eq(users.id, ctx.user.id));
+      if (!currentUser) throw new TRPCError({ code: "NOT_FOUND", message: "Usu\xE1rio n\xE3o encontrado" });
+      const valid = await import_bcryptjs2.default.compare(input.currentPassword, currentUser.password);
+      if (!valid) throw new TRPCError({ code: "UNAUTHORIZED", message: "Senha atual incorreta" });
+      const hashedPassword = await import_bcryptjs2.default.hash(input.newPassword, 10);
+      await db.update(users).set({ password: hashedPassword }).where(eq(users.id, ctx.user.id));
+      return { success: true };
+    } catch (error48) {
+      if (error48 instanceof TRPCError) throw error48;
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao alterar senha" });
+    }
+  }),
+  // ── Aprovar usuário ───────────────────────────────────────────────────────
   approve: adminProcedure.input(external_exports.object({
     id: external_exports.number(),
     empresaId: external_exports.number().optional()
@@ -74642,35 +77196,28 @@ var usersRouter = router({
       await updateUser(input.id, updateData);
       return { success: true };
     } catch (error48) {
-      console.error("Erro ao aprovar usu\xE1rio:", error48);
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao aprovar usu\xE1rio" });
     }
   }),
-  // Rejeitar usuário (mudar status de pending para rejected)
-  reject: adminProcedure.input(external_exports.object({
-    id: external_exports.number()
-  })).mutation(async ({ input, ctx }) => {
+  // ── Rejeitar usuário ──────────────────────────────────────────────────────
+  reject: adminProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input }) => {
     try {
       await updateUser(input.id, { status: "rejected" });
       return { success: true };
     } catch (error48) {
-      console.error("Erro ao rejeitar usu\xE1rio:", error48);
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao rejeitar usu\xE1rio" });
     }
   }),
-  // Deletar usuário
-  delete: adminProcedure.input(external_exports.object({
-    id: external_exports.number()
-  })).mutation(async ({ input, ctx }) => {
+  // ── Deletar usuário ───────────────────────────────────────────────────────
+  delete: adminProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input }) => {
     try {
       await deleteUser(input.id);
       return { success: true };
     } catch (error48) {
-      console.error("Erro ao deletar usu\xE1rio:", error48);
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao deletar usu\xE1rio" });
     }
   }),
-  // Vincular usuário a uma empresa (master_admin only)
+  // ── Vincular usuário a empresa (master_admin only) ────────────────────────
   setEmpresa: masterAdminProcedure.input(external_exports.object({
     userId: external_exports.number(),
     empresaId: external_exports.number().nullable()
@@ -74683,6 +77230,21 @@ var usersRouter = router({
     } catch (error48) {
       if (error48 instanceof TRPCError) throw error48;
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao vincular empresa" });
+    }
+  }),
+  // ── Listar empresas disponíveis para vínculo ──────────────────────────────
+  listEmpresas: adminProcedure.query(async ({ ctx }) => {
+    try {
+      const db = await getDb();
+      if (!db) return [];
+      const { empresas: empresas2 } = await Promise.resolve().then(() => (init_schema2(), schema_exports));
+      const all3 = await db.select({ id: empresas2.id, nome: empresas2.nome }).from(empresas2);
+      if (ctx.user.role !== "master_admin") {
+        return all3.filter((e) => e.id === ctx.user.empresaId);
+      }
+      return all3;
+    } catch {
+      return [];
     }
   })
 });
@@ -74796,6 +77358,23 @@ var chatRouter = router({
       { conversationId: newConv.id, userId: ctx.user.id },
       { conversationId: newConv.id, userId: input.targetUserId }
     ]);
+    return { conversationId: newConv.id };
+  }),
+  // Criar grupo de conversa
+  createGroupConversation: protectedProcedure.input(external_exports.object({
+    name: external_exports.string().min(1).max(100),
+    memberIds: external_exports.array(external_exports.number()).min(1).max(50)
+  })).mutation(async ({ input, ctx }) => {
+    const db = requireDb(await getDb(), "chat.createGroupConversation");
+    const [newConv] = await db.insert(chatConversations).values({
+      empresaId: ctx.user.empresaId || 1,
+      isGroup: true,
+      name: input.name
+    }).returning();
+    const allMemberIds = Array.from(/* @__PURE__ */ new Set([ctx.user.id, ...input.memberIds]));
+    await db.insert(chatMembers).values(
+      allMemberIds.map((userId) => ({ conversationId: newConv.id, userId }))
+    );
     return { conversationId: newConv.id };
   }),
   // Listar todos os usuários para iniciar novo chat
@@ -75509,6 +78088,13 @@ function gerarCodigoConvite() {
   return codigo;
 }
 var empresasRouter = router({
+  // ─── LISTAR EMPRESAS PÚBLICO (dropdown no cadastro) ──────────────────────────────
+  // Retorna id, nome e código de convite de todas as empresas ativas
+  listPublic: publicProcedure.query(async () => {
+    const db = await getDb();
+    if (!db) return [];
+    return await db.select({ id: empresas.id, nome: empresas.nome, codigoConvite: empresas.codigoConvite }).from(empresas).where(and(isNull2(empresas.deletedAt), eq(empresas.ativo, true))).orderBy(empresas.nome);
+  }),
   list: masterAdminProcedure.query(async () => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indispon\xEDvel" });
@@ -75564,8 +78150,9 @@ var empresasRouter = router({
     telefone: external_exports.string().optional(),
     cidade: external_exports.string().optional(),
     estado: external_exports.string().max(2).optional(),
-    tipoEmpresa: external_exports.enum(["independente", "matriz", "filial"]).default("independente"),
-    matrizId: external_exports.number().optional()
+    tipoEmpresa: external_exports.enum(["independente", "matriz", "filial", "grupo"]).default("independente"),
+    matrizId: external_exports.number().optional(),
+    grupoId: external_exports.number().optional()
   })).mutation(async ({ input }) => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indispon\xEDvel" });
@@ -75585,6 +78172,7 @@ var empresasRouter = router({
       codigoConvite,
       tipoEmpresa: input.tipoEmpresa,
       matrizId: input.matrizId || null,
+      grupoId: input.grupoId || null,
       ativo: true,
       createdAt: /* @__PURE__ */ new Date(),
       updatedAt: /* @__PURE__ */ new Date()
@@ -75600,8 +78188,9 @@ var empresasRouter = router({
     telefone: external_exports.string().optional(),
     cidade: external_exports.string().optional(),
     estado: external_exports.string().max(2).optional(),
-    tipoEmpresa: external_exports.enum(["independente", "matriz", "filial"]).optional(),
-    matrizId: external_exports.number().nullable().optional()
+    tipoEmpresa: external_exports.enum(["independente", "matriz", "filial", "grupo"]).optional(),
+    matrizId: external_exports.number().nullable().optional(),
+    grupoId: external_exports.number().nullable().optional()
   })).mutation(async ({ input }) => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indispon\xEDvel" });
@@ -76079,6 +78668,9 @@ var licenciamentoRouter = router({
     cnpj: external_exports.string().optional(),
     cidade: external_exports.string().optional(),
     estado: external_exports.string().max(2).optional(),
+    tipoEmpresa: external_exports.enum(["independente", "matriz", "filial", "grupo"]).default("independente"),
+    grupoId: external_exports.number().optional(),
+    matrizId: external_exports.number().optional(),
     nomeUsuario: external_exports.string().min(2, "Seu nome deve ter ao menos 2 caracteres"),
     email: external_exports.string().email("E-mail inv\xE1lido"),
     senha: external_exports.string().min(6, "Senha deve ter ao menos 6 caracteres"),
@@ -76102,12 +78694,15 @@ var licenciamentoRouter = router({
       estado: input.estado ?? null,
       email: input.email,
       telefone: input.telefone ?? null,
+      tipoEmpresa: input.tipoEmpresa,
+      matrizId: input.matrizId ?? null,
+      grupoId: input.grupoId ?? null,
       codigoConvite,
       ativo: true
     }).returning();
     if (!novaEmpresa) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao criar empresa" });
-    const bcrypt2 = await Promise.resolve().then(() => __toESM(require_bcryptjs()));
-    const hashedSenha = await bcrypt2.hash(input.senha, 10);
+    const bcrypt3 = await Promise.resolve().then(() => __toESM(require_bcryptjs()));
+    const hashedSenha = await bcrypt3.hash(input.senha, 10);
     const openId = `local_${Date.now()}_${randomBytes2(4).toString("hex")}`;
     const [novoUsuario] = await db.insert(users2).values({
       name: input.nomeUsuario,
@@ -76618,8 +79213,8 @@ ${agenteConfig.instrucoes}` : "") },
 init_schema2();
 init_drizzle_orm();
 var recepcaoRouter = router({
-  // ─── RECEBIMENTOS ──────────────────────────────────────────────────────────
-  listRecebimentos: protectedProcedure.input(external_exports.object({
+  // ─── RECEBIMENTOS (Nomes e campos usados pelo Frontend) ───────────────────
+  list: protectedProcedure.input(external_exports.object({
     status: external_exports.string().optional(),
     search: external_exports.string().optional(),
     limit: external_exports.number().default(50),
@@ -76632,43 +79227,35 @@ var recepcaoRouter = router({
       eq(recebimentos.empresaId, empresaId),
       isNull2(recebimentos.deletedAt)
     ];
-    if (input.status) conditions.push(eq(recebimentos.status, input.status));
-    if (input.search) conditions.push(ilike(recebimentos.numero, `%${input.search}%`));
+    if (input.status && input.status !== "todos") conditions.push(eq(recebimentos.status, input.status));
+    if (input.search) {
+      conditions.push(or(
+        ilike(recebimentos.fornecedorNome, `%${input.search}%`),
+        ilike(recebimentos.nfNumero, `%${input.search}%`),
+        ilike(recebimentos.transportadoraNome, `%${input.search}%`)
+      ));
+    }
     const rows = await db.select().from(recebimentos).where(and(...conditions)).orderBy(desc(recebimentos.createdAt)).limit(input.limit).offset(input.offset);
-    return rows;
+    return rows.map((r) => ({
+      id: r.id,
+      status: r.status,
+      fornecedor: r.fornecedorNome,
+      notaFiscal: r.nfNumero,
+      transportadora: r.transportadoraNome,
+      doca: r.docaId ? `Doca ${r.docaId}` : null,
+      // Simplificação para exibição
+      previsaoChegada: r.dataAgendamento,
+      observacoes: r.observacoes,
+      createdAt: r.createdAt
+    }));
   }),
-  getRecebimento: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).query(async ({ input, ctx }) => {
-    const db = await getDb();
-    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    const empresaId = ctx.user.empresaId;
-    const [rec] = await db.select().from(recebimentos).where(and(eq(recebimentos.id, input.id), eq(recebimentos.empresaId, empresaId), isNull2(recebimentos.deletedAt))).limit(1);
-    if (!rec) throw new TRPCError({ code: "NOT_FOUND", message: "Recebimento n\xE3o encontrado" });
-    const itens = await db.select().from(itensRecebimento).where(and(eq(itensRecebimento.recebimentoId, input.id), isNull2(itensRecebimento.deletedAt)));
-    return { ...rec, itens };
-  }),
-  createRecebimento: protectedProcedure.input(external_exports.object({
-    tipo: external_exports.enum(["nf_entrada", "devolucao", "transferencia", "bonificacao", "outro"]).default("nf_entrada"),
-    fornecedorNome: external_exports.string().optional(),
-    fornecedorCnpj: external_exports.string().optional(),
-    nfNumero: external_exports.string().optional(),
-    nfSerie: external_exports.string().optional(),
-    nfChave: external_exports.string().optional(),
-    nfValorTotal: external_exports.string().optional(),
-    nfDataEmissao: external_exports.string().optional(),
-    transportadoraNome: external_exports.string().optional(),
-    veiculoPlaca: external_exports.string().optional(),
-    docaId: external_exports.number().optional(),
-    armazemId: external_exports.number().optional(),
-    dataAgendamento: external_exports.string().optional(),
-    observacoes: external_exports.string().optional(),
-    itens: external_exports.array(external_exports.object({
-      codigoProduto: external_exports.string().optional(),
-      descricaoProduto: external_exports.string(),
-      unidade: external_exports.string().optional(),
-      ean: external_exports.string().optional(),
-      quantidadeEsperada: external_exports.string(),
-      valorUnitario: external_exports.string().optional()
-    })).optional()
+  create: protectedProcedure.input(external_exports.object({
+    fornecedor: external_exports.string(),
+    notaFiscal: external_exports.string().optional(),
+    transportadora: external_exports.string().optional(),
+    doca: external_exports.string().optional(),
+    previsaoChegada: external_exports.date().optional(),
+    observacoes: external_exports.string().optional()
   })).mutation(async ({ input, ctx }) => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
@@ -76679,44 +79266,65 @@ var recepcaoRouter = router({
     const [newRec] = await db.insert(recebimentos).values({
       empresaId,
       numero,
-      tipo: input.tipo,
       status: "aguardando",
-      fornecedorNome: input.fornecedorNome,
-      fornecedorCnpj: input.fornecedorCnpj,
-      nfNumero: input.nfNumero,
-      nfSerie: input.nfSerie,
-      nfChave: input.nfChave,
-      nfValorTotal: input.nfValorTotal,
-      nfDataEmissao: input.nfDataEmissao,
-      transportadoraNome: input.transportadoraNome,
-      veiculoPlaca: input.veiculoPlaca,
-      docaId: input.docaId,
-      armazemId: input.armazemId,
-      dataAgendamento: input.dataAgendamento ? new Date(input.dataAgendamento) : void 0,
+      fornecedorNome: input.fornecedor,
+      nfNumero: input.notaFiscal,
+      transportadoraNome: input.transportadora,
+      dataAgendamento: input.previsaoChegada,
       observacoes: input.observacoes,
-      totalItensEsperados: input.itens?.length ?? 0,
       createdBy: ctx.user.id
     }).returning();
-    if (input.itens && input.itens.length > 0) {
-      await db.insert(itensRecebimento).values(
-        input.itens.map((item) => ({
-          recebimentoId: newRec.id,
-          empresaId,
-          descricaoProduto: item.descricaoProduto,
-          codigoProduto: item.codigoProduto,
-          unidade: item.unidade ?? "UN",
-          ean: item.ean,
-          quantidadeEsperada: item.quantidadeEsperada,
-          valorUnitario: item.valorUnitario,
-          status: "pendente"
-        }))
-      );
-    }
     return newRec;
+  }),
+  iniciarConferencia: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    await db.update(recebimentos).set({
+      status: "em_conferencia",
+      dataInicio: /* @__PURE__ */ new Date(),
+      updatedAt: /* @__PURE__ */ new Date()
+    }).where(and(eq(recebimentos.id, input.id), eq(recebimentos.empresaId, empresaId)));
+    return { success: true };
+  }),
+  concluir: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    await db.update(recebimentos).set({
+      status: "concluido",
+      dataFim: /* @__PURE__ */ new Date(),
+      updatedAt: /* @__PURE__ */ new Date()
+    }).where(and(eq(recebimentos.id, input.id), eq(recebimentos.empresaId, empresaId)));
+    return { success: true };
+  }),
+  // ─── MÉTODOS ORIGINAIS (Para manutenção e outros usos) ───────────────────
+  listRecebimentos: protectedProcedure.input(external_exports.object({
+    status: external_exports.string().optional(),
+    search: external_exports.string().optional()
+  })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const conditions = [
+      eq(recebimentos.empresaId, empresaId),
+      isNull2(recebimentos.deletedAt)
+    ];
+    if (input.status) conditions.push(eq(recebimentos.status, input.status));
+    return db.select().from(recebimentos).where(and(...conditions)).orderBy(desc(recebimentos.createdAt));
+  }),
+  getRecebimento: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const [rec] = await db.select().from(recebimentos).where(and(eq(recebimentos.id, input.id), eq(recebimentos.empresaId, empresaId), isNull2(recebimentos.deletedAt))).limit(1);
+    if (!rec) throw new TRPCError({ code: "NOT_FOUND", message: "Recebimento n\xE3o encontrado" });
+    const itens = await db.select().from(itensRecebimento).where(and(eq(itensRecebimento.recebimentoId, input.id), isNull2(itensRecebimento.deletedAt)));
+    return { ...rec, itens };
   }),
   updateStatus: protectedProcedure.input(external_exports.object({
     id: external_exports.number(),
-    status: external_exports.enum(["aguardando", "em_conferencia", "conferido", "divergencia", "recusado", "finalizado"]),
+    status: external_exports.enum(["aguardando", "em_conferencia", "conferido", "divergencia", "recusado", "finalizado", "concluido"]),
     observacoes: external_exports.string().optional()
   })).mutation(async ({ input, ctx }) => {
     const db = await getDb();
@@ -76728,7 +79336,7 @@ var recepcaoRouter = router({
     };
     if (input.observacoes) updateData.observacoes = input.observacoes;
     if (input.status === "em_conferencia") updateData.dataInicio = /* @__PURE__ */ new Date();
-    if (input.status === "finalizado" || input.status === "recusado") updateData.dataFim = /* @__PURE__ */ new Date();
+    if (input.status === "finalizado" || input.status === "concluido" || input.status === "recusado") updateData.dataFim = /* @__PURE__ */ new Date();
     await db.update(recebimentos).set(updateData).where(and(eq(recebimentos.id, input.id), eq(recebimentos.empresaId, empresaId)));
     return { success: true };
   }),
@@ -76757,27 +79365,11 @@ var recepcaoRouter = router({
     await db.update(recebimentos).set({ deletedAt: /* @__PURE__ */ new Date(), deletedBy: ctx.user.id }).where(and(eq(recebimentos.id, input.id), eq(recebimentos.empresaId, empresaId)));
     return { success: true };
   }),
-  // ─── DOCAS ─────────────────────────────────────────────────────────────────
   listDocas: protectedProcedure.query(async ({ ctx }) => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     return db.select().from(docas).where(and(eq(docas.empresaId, ctx.user.empresaId), eq(docas.ativo, true)));
   }),
-  createDoca: adminProcedure.input(external_exports.object({
-    armazemId: external_exports.number(),
-    nome: external_exports.string(),
-    codigo: external_exports.string().optional(),
-    tipo: external_exports.enum(["recebimento", "expedicao", "misto"]).default("recebimento")
-  })).mutation(async ({ input, ctx }) => {
-    const db = await getDb();
-    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    const [doca] = await db.insert(docas).values({
-      empresaId: ctx.user.empresaId,
-      ...input
-    }).returning();
-    return doca;
-  }),
-  // ─── DASHBOARD ─────────────────────────────────────────────────────────────
   dashboard: protectedProcedure.query(async ({ ctx }) => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
@@ -76786,11 +79378,20 @@ var recepcaoRouter = router({
       total: sql`count(*)`,
       aguardando: sql`count(*) filter (where status = 'aguardando')`,
       emConferencia: sql`count(*) filter (where status = 'em_conferencia')`,
-      finalizados: sql`count(*) filter (where status = 'finalizado')`,
+      finalizados: sql`count(*) filter (where status = 'concluido' or status = 'finalizado')`,
       divergencias: sql`count(*) filter (where status = 'divergencia')`
     }).from(recebimentos).where(and(eq(recebimentos.empresaId, empresaId), isNull2(recebimentos.deletedAt)));
     const recentes = await db.select().from(recebimentos).where(and(eq(recebimentos.empresaId, empresaId), isNull2(recebimentos.deletedAt))).orderBy(desc(recebimentos.createdAt)).limit(5);
-    return { totais, recentes };
+    return {
+      totais,
+      recentes: recentes.map((r) => ({
+        id: r.id,
+        status: r.status,
+        fornecedor: r.fornecedorNome,
+        notaFiscal: r.nfNumero,
+        createdAt: r.createdAt
+      }))
+    };
   })
 });
 
@@ -77036,12 +79637,2028 @@ var wmsRouter = router({
   })
 });
 
+// routers/crm.ts
+init_schema2();
+init_drizzle_orm();
+var crmRouter = router({
+  // ─── CLIENTES ──────────────────────────────────────────────────────────────
+  listClientes: protectedProcedure.input(external_exports.object({ search: external_exports.string().optional() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const conds = [eq(clientes.empresaId, ctx.user.empresaId), isNull2(clientes.deletedAt)];
+    if (input.search) conds.push(or(ilike(clientes.nome, `%${input.search}%`), ilike(clientes.cnpjCpf, `%${input.search}%`)));
+    return db.select().from(clientes).where(and(...conds)).orderBy(desc(clientes.createdAt));
+  }),
+  createCliente: protectedProcedure.input(external_exports.object({
+    nome: external_exports.string().min(2),
+    cnpjCpf: external_exports.string().optional(),
+    email: external_exports.string().optional(),
+    telefone: external_exports.string().optional(),
+    endereco: external_exports.string().optional(),
+    cidade: external_exports.string().optional(),
+    estado: external_exports.string().optional(),
+    segmento: external_exports.string().optional(),
+    observacoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [c] = await db.insert(clientes).values({ ...input, empresaId: ctx.user.empresaId, createdBy: ctx.user.id }).returning();
+    return c;
+  }),
+  updateCliente: protectedProcedure.input(external_exports.object({
+    id: external_exports.number(),
+    nome: external_exports.string().optional(),
+    cnpjCpf: external_exports.string().optional(),
+    email: external_exports.string().optional(),
+    telefone: external_exports.string().optional(),
+    endereco: external_exports.string().optional(),
+    cidade: external_exports.string().optional(),
+    estado: external_exports.string().optional(),
+    segmento: external_exports.string().optional(),
+    observacoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const { id, ...data } = input;
+    await db.update(clientes).set({ ...data, updatedAt: /* @__PURE__ */ new Date() }).where(and(eq(clientes.id, id), eq(clientes.empresaId, ctx.user.empresaId)));
+    return { success: true };
+  }),
+  // ─── LEADS ─────────────────────────────────────────────────────────────────
+  listLeads: protectedProcedure.input(external_exports.object({ status: external_exports.string().optional(), search: external_exports.string().optional() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const conds = [eq(leads.empresaId, ctx.user.empresaId), isNull2(leads.deletedAt)];
+    if (input.status && input.status !== "todos") conds.push(eq(leads.status, input.status));
+    if (input.search) conds.push(or(ilike(leads.nome, `%${input.search}%`), ilike(leads.empresa, `%${input.search}%`)));
+    return db.select().from(leads).where(and(...conds)).orderBy(desc(leads.createdAt));
+  }),
+  createLead: protectedProcedure.input(external_exports.object({
+    nome: external_exports.string().min(2),
+    email: external_exports.string().optional(),
+    telefone: external_exports.string().optional(),
+    empresa: external_exports.string().optional(),
+    origem: external_exports.string().optional(),
+    valorEstimado: external_exports.string().optional(),
+    observacoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [l] = await db.insert(leads).values({ ...input, empresaId: ctx.user.empresaId, createdBy: ctx.user.id }).returning();
+    return l;
+  }),
+  updateLeadStatus: protectedProcedure.input(external_exports.object({
+    id: external_exports.number(),
+    status: external_exports.enum(["novo", "qualificado", "em_negociacao", "proposta_enviada", "ganho", "perdido"])
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await db.update(leads).set({ status: input.status, updatedAt: /* @__PURE__ */ new Date() }).where(and(eq(leads.id, input.id), eq(leads.empresaId, ctx.user.empresaId)));
+    return { success: true };
+  }),
+  // ─── CONTATOS ──────────────────────────────────────────────────────────────
+  listContatos: protectedProcedure.input(external_exports.object({ clienteId: external_exports.number().optional(), leadId: external_exports.number().optional() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const conds = [eq(contatosCrm.empresaId, ctx.user.empresaId)];
+    if (input.clienteId) conds.push(eq(contatosCrm.clienteId, input.clienteId));
+    if (input.leadId) conds.push(eq(contatosCrm.leadId, input.leadId));
+    return db.select().from(contatosCrm).where(and(...conds)).orderBy(desc(contatosCrm.createdAt));
+  }),
+  createContato: protectedProcedure.input(external_exports.object({
+    clienteId: external_exports.number().optional(),
+    leadId: external_exports.number().optional(),
+    tipo: external_exports.string(),
+    descricao: external_exports.string(),
+    resultado: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [c] = await db.insert(contatosCrm).values({ ...input, empresaId: ctx.user.empresaId, userId: ctx.user.id }).returning();
+    return c;
+  }),
+  // ─── FUNIL DE VENDAS (Kanban) ──────────────────────────────────────────────
+  listFunis: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    return db.select().from(funis).where(eq(funis.empresaId, ctx.user.empresaId)).orderBy(desc(funis.createdAt));
+  }),
+  createFunil: protectedProcedure.input(external_exports.object({ nome: external_exports.string().min(2), descricao: external_exports.string().optional() })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const [f] = await db.insert(funis).values({ ...input, empresaId, createdBy: ctx.user.id }).returning();
+    const etapas = ["Prospec\xE7\xE3o", "Qualifica\xE7\xE3o", "Proposta", "Negocia\xE7\xE3o", "Fechamento"];
+    for (let i = 0; i < etapas.length; i++) {
+      await db.insert(etapasFunil).values({ funilId: f.id, empresaId, nome: etapas[i], posicao: i, cor: ["#3b82f6", "#8b5cf6", "#f59e0b", "#ef4444", "#22c55e"][i] });
+    }
+    return f;
+  }),
+  getFunilCompleto: protectedProcedure.input(external_exports.object({ funilId: external_exports.number() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const etapas = await db.select().from(etapasFunil).where(and(eq(etapasFunil.funilId, input.funilId), eq(etapasFunil.empresaId, empresaId))).orderBy(etapasFunil.posicao);
+    const negs = await db.select().from(negociacoes).where(and(eq(negociacoes.funilId, input.funilId), eq(negociacoes.empresaId, empresaId), isNull2(negociacoes.deletedAt))).orderBy(desc(negociacoes.updatedAt));
+    return { etapas, negociacoes: negs };
+  }),
+  createNegociacao: protectedProcedure.input(external_exports.object({
+    funilId: external_exports.number(),
+    etapaId: external_exports.number(),
+    titulo: external_exports.string().min(2),
+    valor: external_exports.string().optional(),
+    clienteId: external_exports.number().optional(),
+    leadId: external_exports.number().optional(),
+    probabilidade: external_exports.number().optional(),
+    previsaoFechamento: external_exports.date().optional(),
+    observacoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [n] = await db.insert(negociacoes).values({ ...input, empresaId: ctx.user.empresaId, responsavelId: ctx.user.id, createdBy: ctx.user.id }).returning();
+    return n;
+  }),
+  moveNegociacao: protectedProcedure.input(external_exports.object({ id: external_exports.number(), etapaId: external_exports.number() })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await db.update(negociacoes).set({ etapaId: input.etapaId, updatedAt: /* @__PURE__ */ new Date() }).where(and(eq(negociacoes.id, input.id), eq(negociacoes.empresaId, ctx.user.empresaId)));
+    return { success: true };
+  }),
+  // ─── DASHBOARD CRM ─────────────────────────────────────────────────────────
+  dashboard: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const [clienteStats] = await db.select({ total: sql`count(*)` }).from(clientes).where(and(eq(clientes.empresaId, empresaId), isNull2(clientes.deletedAt)));
+    const [leadStats] = await db.select({
+      total: sql`count(*)`,
+      novos: sql`count(*) filter (where status = 'novo')`,
+      ganhos: sql`count(*) filter (where status = 'ganho')`
+    }).from(leads).where(and(eq(leads.empresaId, empresaId), isNull2(leads.deletedAt)));
+    const [negStats] = await db.select({
+      total: sql`count(*)`,
+      valorTotal: sql`coalesce(sum(valor::numeric), 0)::text`
+    }).from(negociacoes).where(and(eq(negociacoes.empresaId, empresaId), isNull2(negociacoes.deletedAt)));
+    return { clientes: clienteStats, leads: leadStats, negociacoes: negStats };
+  })
+});
+
+// routers/vendas.ts
+init_schema2();
+init_drizzle_orm();
+var vendasRouter = router({
+  // ─── PEDIDOS ───────────────────────────────────────────────────────────────
+  listPedidos: protectedProcedure.input(external_exports.object({ status: external_exports.string().optional(), search: external_exports.string().optional() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const conds = [eq(pedidos.empresaId, ctx.user.empresaId), isNull2(pedidos.deletedAt)];
+    if (input.status && input.status !== "todos") conds.push(eq(pedidos.status, input.status));
+    if (input.search) conds.push(or(ilike(pedidos.clienteNome, `%${input.search}%`), ilike(pedidos.numero, `%${input.search}%`)));
+    return db.select().from(pedidos).where(and(...conds)).orderBy(desc(pedidos.createdAt));
+  }),
+  createPedido: protectedProcedure.input(external_exports.object({
+    clienteId: external_exports.number().optional(),
+    clienteNome: external_exports.string().min(2),
+    formaPagamento: external_exports.string().optional(),
+    condicaoPagamento: external_exports.string().optional(),
+    observacoes: external_exports.string().optional(),
+    itens: external_exports.array(external_exports.object({ descricao: external_exports.string(), quantidade: external_exports.string(), valorUnitario: external_exports.string(), valorTotal: external_exports.string() })).optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const numero = `PED-${Date.now().toString(36).toUpperCase()}`;
+    const valorTotal = input.itens?.reduce((s, i) => s + parseFloat(i.valorTotal || "0"), 0).toFixed(2) || "0";
+    const { itens, ...pedidoData } = input;
+    const [p] = await db.insert(pedidos).values({ ...pedidoData, numero, valorTotal, empresaId: ctx.user.empresaId, vendedorId: ctx.user.id, createdBy: ctx.user.id }).returning();
+    if (itens && itens.length > 0) {
+      for (const item of itens) {
+        await db.insert(itensPedido).values({ ...item, pedidoId: p.id });
+      }
+    }
+    return p;
+  }),
+  updatePedidoStatus: protectedProcedure.input(external_exports.object({
+    id: external_exports.number(),
+    status: external_exports.enum(["rascunho", "enviado", "aprovado", "em_separacao", "expedido", "entregue", "cancelado"])
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await db.update(pedidos).set({ status: input.status, updatedAt: /* @__PURE__ */ new Date() }).where(and(eq(pedidos.id, input.id), eq(pedidos.empresaId, ctx.user.empresaId)));
+    return { success: true };
+  }),
+  getItensPedido: protectedProcedure.input(external_exports.object({ pedidoId: external_exports.number() })).query(async ({ input }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    return db.select().from(itensPedido).where(eq(itensPedido.pedidoId, input.pedidoId));
+  }),
+  // ─── PROPOSTAS ─────────────────────────────────────────────────────────────
+  listPropostas: protectedProcedure.input(external_exports.object({ status: external_exports.string().optional(), search: external_exports.string().optional() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const conds = [eq(propostas.empresaId, ctx.user.empresaId), isNull2(propostas.deletedAt)];
+    if (input.status && input.status !== "todos") conds.push(eq(propostas.status, input.status));
+    if (input.search) conds.push(ilike(propostas.titulo, `%${input.search}%`));
+    return db.select().from(propostas).where(and(...conds)).orderBy(desc(propostas.createdAt));
+  }),
+  createProposta: protectedProcedure.input(external_exports.object({
+    clienteId: external_exports.number().optional(),
+    leadId: external_exports.number().optional(),
+    titulo: external_exports.string().min(2),
+    valorTotal: external_exports.string().optional(),
+    descricao: external_exports.string().optional(),
+    condicoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const numero = `PROP-${Date.now().toString(36).toUpperCase()}`;
+    const [p] = await db.insert(propostas).values({ ...input, numero, empresaId: ctx.user.empresaId, vendedorId: ctx.user.id, createdBy: ctx.user.id }).returning();
+    return p;
+  }),
+  // ─── COMISSÕES ─────────────────────────────────────────────────────────────
+  listComissoes: protectedProcedure.input(external_exports.object({ vendedorId: external_exports.number().optional() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const conds = [eq(comissoes.empresaId, ctx.user.empresaId)];
+    if (input.vendedorId) conds.push(eq(comissoes.vendedorId, input.vendedorId));
+    return db.select().from(comissoes).where(and(...conds)).orderBy(desc(comissoes.createdAt));
+  }),
+  // ─── DASHBOARD VENDAS ──────────────────────────────────────────────────────
+  dashboard: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const [pedidoStats] = await db.select({
+      total: sql`count(*)`,
+      valorTotal: sql`coalesce(sum("valorTotal"::numeric), 0)::text`,
+      entregues: sql`count(*) filter (where status = 'entregue')`
+    }).from(pedidos).where(and(eq(pedidos.empresaId, empresaId), isNull2(pedidos.deletedAt)));
+    const [propostaStats] = await db.select({
+      total: sql`count(*)`,
+      aprovadas: sql`count(*) filter (where status = 'aprovada')`
+    }).from(propostas).where(and(eq(propostas.empresaId, empresaId), isNull2(propostas.deletedAt)));
+    return { pedidos: pedidoStats, propostas: propostaStats };
+  })
+});
+
+// routers/auditoria.ts
+init_schema2();
+init_drizzle_orm();
+var auditoriaRouter = router({
+  // Lista completa de auditoria (admin master vê tudo, admin vê só da empresa)
+  list: protectedProcedure.input(external_exports.object({
+    modulo: external_exports.string().optional(),
+    tipoEvento: external_exports.string().optional(),
+    userId: external_exports.number().optional(),
+    risco: external_exports.string().optional(),
+    search: external_exports.string().optional(),
+    dataInicio: external_exports.string().optional(),
+    dataFim: external_exports.string().optional(),
+    page: external_exports.number().default(1),
+    limit: external_exports.number().default(50)
+  })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const conds = [];
+    if (ctx.user.role !== "master_admin") {
+      conds.push(eq(auditoriaDetalhada.empresaId, ctx.user.empresaId));
+    }
+    if (input.modulo) conds.push(eq(auditoriaDetalhada.modulo, input.modulo));
+    if (input.tipoEvento) conds.push(eq(auditoriaDetalhada.tipoEvento, input.tipoEvento));
+    if (input.userId) conds.push(eq(auditoriaDetalhada.userId, input.userId));
+    if (input.risco) conds.push(eq(auditoriaDetalhada.risco, input.risco));
+    if (input.search) conds.push(or(ilike(auditoriaDetalhada.descricao, `%${input.search}%`), ilike(auditoriaDetalhada.userName, `%${input.search}%`)));
+    if (input.dataInicio) conds.push(gte(auditoriaDetalhada.createdAt, new Date(input.dataInicio)));
+    if (input.dataFim) conds.push(lte(auditoriaDetalhada.createdAt, new Date(input.dataFim)));
+    const offset = (input.page - 1) * input.limit;
+    const where = conds.length > 0 ? and(...conds) : void 0;
+    const items = await db.select().from(auditoriaDetalhada).where(where).orderBy(desc(auditoriaDetalhada.createdAt)).limit(input.limit).offset(offset);
+    const [countResult] = await db.select({ total: sql`count(*)` }).from(auditoriaDetalhada).where(where);
+    return { items, total: countResult.total, page: input.page, totalPages: Math.ceil(countResult.total / input.limit) };
+  }),
+  // Logs legados (audit_log antigo)
+  listLegacy: protectedProcedure.input(external_exports.object({ page: external_exports.number().default(1), limit: external_exports.number().default(50) })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const conds = [];
+    if (ctx.user.role !== "master_admin") conds.push(eq(auditLog.empresaId, ctx.user.empresaId));
+    const offset = (input.page - 1) * input.limit;
+    const where = conds.length > 0 ? and(...conds) : void 0;
+    return db.select().from(auditLog).where(where).orderBy(desc(auditLog.createdAt)).limit(input.limit).offset(offset);
+  }),
+  // Estatísticas de auditoria
+  stats: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const conds = [];
+    if (ctx.user.role !== "master_admin") conds.push(eq(auditoriaDetalhada.empresaId, ctx.user.empresaId));
+    const where = conds.length > 0 ? and(...conds) : void 0;
+    const [stats] = await db.select({
+      total: sql`count(*)`,
+      criticos: sql`count(*) filter (where risco = 'critico')`,
+      altos: sql`count(*) filter (where risco = 'alto')`,
+      hoje: sql`count(*) filter (where "createdAt" >= current_date)`
+    }).from(auditoriaDetalhada).where(where);
+    return stats;
+  }),
+  // Módulos mais acessados
+  modulosMaisAcessados: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const conds = [];
+    if (ctx.user.role !== "master_admin") conds.push(eq(auditoriaDetalhada.empresaId, ctx.user.empresaId));
+    const where = conds.length > 0 ? and(...conds) : void 0;
+    return db.select({
+      modulo: auditoriaDetalhada.modulo,
+      total: sql`count(*)`
+    }).from(auditoriaDetalhada).where(where).groupBy(auditoriaDetalhada.modulo).orderBy(desc(sql`count(*)`)).limit(10);
+  })
+});
+
+// routers/ti.ts
+init_schema2();
+init_drizzle_orm();
+function gerarOS() {
+  const ano = (/* @__PURE__ */ new Date()).getFullYear();
+  const seq = Math.floor(Math.random() * 9e3) + 1e3;
+  return `OS-${ano}-${seq}`;
+}
+function gerarProtocolo() {
+  return `TI-${Date.now().toString(36).toUpperCase()}`;
+}
+var tiRouter = router({
+  // ══════════════════════════════════════════════════════════════════════════
+  // DASHBOARD
+  // ══════════════════════════════════════════════════════════════════════════
+  dashboard: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const [ticketStats] = await db.select({
+      total: sql`count(*)`,
+      abertos: sql`count(*) filter (where status = 'aberto')`,
+      emAndamento: sql`count(*) filter (where status = 'em_andamento')`,
+      resolvidosHoje: sql`count(*) filter (where status = 'resolvido' AND "resolvidoEm" >= current_date)`,
+      ativos: sql`count(*) filter (where status IN ('aberto','em_andamento','aguardando'))`
+    }).from(ticketsTi).where(and(eq(ticketsTi.empresaId, empresaId), isNull2(ticketsTi.deletedAt)));
+    const [ativoStats] = await db.select({
+      total: sql`count(*)`,
+      online: sql`count(*) filter (where status = 'online')`,
+      atencao: sql`count(*) filter (where status = 'atencao')`,
+      critico: sql`count(*) filter (where status = 'critico')`
+    }).from(ativosTi).where(and(eq(ativosTi.empresaId, empresaId), isNull2(ativosTi.deletedAt)));
+    return { tickets: ticketStats, ativos: ativoStats, licencas: { total: 0 } };
+  }),
+  getUnreadCount: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) return { tickets: 0, alertas: 0 };
+    const empresaId = ctx.user.empresaId;
+    const [r] = await db.select({
+      tickets: sql`count(*) filter (where status = 'aberto')`
+    }).from(ticketsTi).where(and(eq(ticketsTi.empresaId, empresaId), isNull2(ticketsTi.deletedAt)));
+    return { tickets: Number(r?.tickets || 0), alertas: 0 };
+  }),
+  // ══════════════════════════════════════════════════════════════════════════
+  // TICKETS / CHAMADOS
+  // ══════════════════════════════════════════════════════════════════════════
+  listTickets: protectedProcedure.input(external_exports.object({ status: external_exports.string().optional(), search: external_exports.string().optional(), prioridade: external_exports.string().optional() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const conds = [eq(ticketsTi.empresaId, ctx.user.empresaId), isNull2(ticketsTi.deletedAt)];
+    if (input.status && input.status !== "todos") conds.push(eq(ticketsTi.status, input.status));
+    if (input.search) conds.push(or(ilike(ticketsTi.titulo, `%${input.search}%`), ilike(ticketsTi.protocolo, `%${input.search}%`)));
+    return db.select().from(ticketsTi).where(and(...conds)).orderBy(desc(ticketsTi.createdAt));
+  }),
+  getTicket: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).query(async ({ input, ctx }) => {
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const rows = await client`
+        SELECT t.*, 
+          u.name as solicitante_nome, u.email as solicitante_email,
+          tec.name as tecnico_nome
+        FROM tickets_ti t
+        LEFT JOIN users u ON u.id = t."solicitanteId"
+        LEFT JOIN users tec ON tec.id = t."tecnicoId"
+        WHERE t.id = ${input.id} AND t."empresaId" = ${ctx.user.empresaId}
+      `;
+    if (!rows[0]) throw new TRPCError({ code: "NOT_FOUND" });
+    return rows[0];
+  }),
+  createTicket: protectedProcedure.input(external_exports.object({
+    titulo: external_exports.string().min(2),
+    descricao: external_exports.string().min(5),
+    categoria: external_exports.enum(["hardware", "software", "rede", "acesso", "email", "impressora", "outro"]).optional(),
+    prioridade: external_exports.enum(["baixa", "media", "alta", "critica"]).optional(),
+    ativoId: external_exports.number().optional(),
+    prazo: external_exports.string().optional(),
+    anexos: external_exports.array(external_exports.object({ nome: external_exports.string(), url: external_exports.string(), tipo: external_exports.string(), tamanho: external_exports.number().optional() })).optional()
+  })).mutation(async ({ input, ctx }) => {
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const protocolo = gerarProtocolo();
+    const numeroOs = gerarOS();
+    const rows = await client`
+        INSERT INTO tickets_ti (
+          "empresaId", "solicitanteId", protocolo, titulo, descricao,
+          categoria, prioridade, status, "createdAt", "updatedAt"
+        ) VALUES (
+          ${ctx.user.empresaId}, ${ctx.user.id}, ${protocolo},
+          ${input.titulo}, ${input.descricao},
+          ${input.categoria || "outro"}, ${input.prioridade || "media"}, 'aberto',
+          NOW(), NOW()
+        ) RETURNING *
+      `;
+    const ticket = rows[0];
+    if (!ticket) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await client`
+        INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
+        VALUES (${ticket.id},${ctx.user.empresaId},${ctx.user.id},${"Chamado aberto: " + input.descricao},'sistema',NOW())
+      `.catch(() => {
+    });
+    if (input.anexos) {
+      for (const a of input.anexos) {
+        await client`
+            INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"anexoUrl","anexoNome","anexoTipo","createdAt")
+            VALUES (${ticket.id},${ctx.user.empresaId},${ctx.user.id},'','anexo',${a.url},${a.nome},${a.tipo},NOW())
+          `.catch(() => {
+        });
+      }
+    }
+    return ticket;
+  }),
+  updateTicket: protectedProcedure.input(external_exports.object({
+    id: external_exports.number(),
+    status: external_exports.enum(["aberto", "em_andamento", "aguardando", "resolvido", "fechado"]).optional(),
+    prioridade: external_exports.enum(["baixa", "media", "alta", "critica"]).optional(),
+    tecnicoId: external_exports.number().optional(),
+    prazo: external_exports.string().optional(),
+    resolucao: external_exports.string().optional(),
+    slaHoras: external_exports.number().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const { id, ...data } = input;
+    const upd = { updatedAt: /* @__PURE__ */ new Date() };
+    if (data.status) upd.status = data.status;
+    if (data.prioridade) upd.prioridade = data.prioridade;
+    if (data.tecnicoId) upd.tecnicoId = data.tecnicoId;
+    if (data.resolucao) upd.resolucao = data.resolucao;
+    if (data.status === "resolvido" || data.status === "fechado") upd.resolvidoEm = /* @__PURE__ */ new Date();
+    await db.update(ticketsTi).set(upd).where(and(eq(ticketsTi.id, id), eq(ticketsTi.empresaId, ctx.user.empresaId)));
+    if (data.status) {
+      const client = await getRawClient();
+      if (client) await client`
+          INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
+          VALUES (${id},${ctx.user.empresaId},${ctx.user.id},${"Status: " + data.status + (data.resolucao ? " \u2014 " + data.resolucao : "")},'sistema',NOW())
+        `.catch(() => {
+      });
+    }
+    return { success: true };
+  }),
+  updateTicketStatus: protectedProcedure.input(external_exports.object({ id: external_exports.number(), status: external_exports.enum(["aberto", "em_andamento", "aguardando", "resolvido", "fechado"]), resolucao: external_exports.string().optional() })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const data = { status: input.status, updatedAt: /* @__PURE__ */ new Date() };
+    if (input.resolucao) data.resolucao = input.resolucao;
+    if (input.status === "resolvido" || input.status === "fechado") data.resolvidoEm = /* @__PURE__ */ new Date();
+    await db.update(ticketsTi).set(data).where(and(eq(ticketsTi.id, input.id), eq(ticketsTi.empresaId, ctx.user.empresaId)));
+    return { success: true };
+  }),
+  deleteTicket: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await db.update(ticketsTi).set({ deletedAt: /* @__PURE__ */ new Date() }).where(and(eq(ticketsTi.id, input.id), eq(ticketsTi.empresaId, ctx.user.empresaId)));
+    return { success: true };
+  }),
+  // ── Mensagens do ticket ────────────────────────────────────────────────────
+  listMensagens: protectedProcedure.input(external_exports.object({ ticketId: external_exports.number() })).query(async ({ input, ctx }) => {
+    const client = await getRawClient();
+    if (!client) return [];
+    return client`
+        SELECT m.*, u.name as autor_nome, u.email as autor_email
+        FROM ticket_mensagens m
+        LEFT JOIN users u ON u.id = m."autorId"
+        WHERE m."ticketId" = ${input.ticketId} AND m."empresaId" = ${ctx.user.empresaId}
+        ORDER BY m."createdAt" ASC
+      `.catch(() => []);
+  }),
+  sendMensagem: protectedProcedure.input(external_exports.object({
+    ticketId: external_exports.number(),
+    conteudo: external_exports.string(),
+    tipo: external_exports.enum(["mensagem", "nota_interna", "anexo", "sistema"]).optional(),
+    anexoUrl: external_exports.string().optional(),
+    anexoNome: external_exports.string().optional(),
+    anexoTipo: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const rows = await client`
+        INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"anexoUrl","anexoNome","anexoTipo","createdAt")
+        VALUES (${input.ticketId},${ctx.user.empresaId},${ctx.user.id},${input.conteudo},${input.tipo || "mensagem"},${input.anexoUrl || null},${input.anexoNome || null},${input.anexoTipo || null},NOW())
+        RETURNING *
+      `;
+    await client`UPDATE tickets_ti SET "updatedAt"=NOW() WHERE id=${input.ticketId}`.catch(() => {
+    });
+    return rows[0];
+  }),
+  // ══════════════════════════════════════════════════════════════════════════
+  // ATIVOS / INVENTÁRIO
+  // ══════════════════════════════════════════════════════════════════════════
+  listAtivos: protectedProcedure.input(external_exports.object({ search: external_exports.string().optional(), tipo: external_exports.string().optional() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const conds = [eq(ativosTi.empresaId, ctx.user.empresaId), isNull2(ativosTi.deletedAt)];
+    if (input.search) conds.push(or(ilike(ativosTi.tipo, `%${input.search}%`), ilike(ativosTi.patrimonio, `%${input.search}%`), ilike(ativosTi.marca, `%${input.search}%`)));
+    return db.select().from(ativosTi).where(and(...conds)).orderBy(desc(ativosTi.createdAt));
+  }),
+  createAtivo: protectedProcedure.input(external_exports.object({
+    tipo: external_exports.string().min(2),
+    marca: external_exports.string().optional(),
+    modelo: external_exports.string().optional(),
+    patrimonio: external_exports.string().optional(),
+    serial: external_exports.string().optional(),
+    setor: external_exports.string().optional(),
+    hostname: external_exports.string().optional(),
+    ip: external_exports.string().optional(),
+    so: external_exports.string().optional(),
+    anydesk: external_exports.string().optional(),
+    observacoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [a] = await db.insert(ativosTi).values({ ...input, empresaId: ctx.user.empresaId }).returning();
+    return a;
+  }),
+  updateAtivo: protectedProcedure.input(external_exports.object({
+    id: external_exports.number(),
+    tipo: external_exports.string().optional(),
+    marca: external_exports.string().optional(),
+    modelo: external_exports.string().optional(),
+    patrimonio: external_exports.string().optional(),
+    serial: external_exports.string().optional(),
+    setor: external_exports.string().optional(),
+    hostname: external_exports.string().optional(),
+    ip: external_exports.string().optional(),
+    so: external_exports.string().optional(),
+    anydesk: external_exports.string().optional(),
+    status: external_exports.string().optional(),
+    observacoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const { id, ...data } = input;
+    await db.update(ativosTi).set({ ...data, updatedAt: /* @__PURE__ */ new Date() }).where(and(eq(ativosTi.id, id), eq(ativosTi.empresaId, ctx.user.empresaId)));
+    return { success: true };
+  }),
+  deleteAtivo: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await db.update(ativosTi).set({ deletedAt: /* @__PURE__ */ new Date() }).where(and(eq(ativosTi.id, input.id), eq(ativosTi.empresaId, ctx.user.empresaId)));
+    return { success: true };
+  }),
+  // ══════════════════════════════════════════════════════════════════════════
+  // LICENÇAS
+  // ══════════════════════════════════════════════════════════════════════════
+  listLicencas: protectedProcedure.input(external_exports.object({ search: external_exports.string().optional() })).query(async ({ ctx, input }) => {
+    const client = await getRawClient();
+    if (!client) return [];
+    return client`
+        SELECT * FROM licencas_ti
+        WHERE "empresaId" = ${ctx.user.empresaId} AND "deletedAt" IS NULL
+        ${input.search ? client`AND (software ILIKE ${"%" + input.search + "%"} OR fornecedor ILIKE ${"%" + input.search + "%"})` : client``}
+        ORDER BY "createdAt" DESC
+      `.catch(() => []);
+  }),
+  createLicenca: protectedProcedure.input(external_exports.object({
+    software: external_exports.string().min(2),
+    fornecedor: external_exports.string().optional(),
+    tipo: external_exports.enum(["perpetua", "assinatura", "oem", "freeware", "opensource"]).optional(),
+    quantidadeTotal: external_exports.number().optional(),
+    quantidadeUsada: external_exports.number().optional(),
+    chave: external_exports.string().optional(),
+    vencimento: external_exports.string().optional(),
+    valor: external_exports.number().optional(),
+    observacoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const rows = await client`
+        INSERT INTO licencas_ti ("empresaId",software,fornecedor,tipo,"quantidadeTotal","quantidadeUsada",chave,vencimento,valor,observacoes,"createdAt","updatedAt")
+        VALUES (${ctx.user.empresaId},${input.software},${input.fornecedor || null},${input.tipo || "perpetua"},${input.quantidadeTotal || 1},${input.quantidadeUsada || 0},${input.chave || null},${input.vencimento ? new Date(input.vencimento) : null},${input.valor || null},${input.observacoes || null},NOW(),NOW())
+        RETURNING *
+      `;
+    return rows[0];
+  }),
+  updateLicenca: protectedProcedure.input(external_exports.object({
+    id: external_exports.number(),
+    software: external_exports.string().optional(),
+    fornecedor: external_exports.string().optional(),
+    quantidadeTotal: external_exports.number().optional(),
+    quantidadeUsada: external_exports.number().optional(),
+    chave: external_exports.string().optional(),
+    vencimento: external_exports.string().optional(),
+    valor: external_exports.number().optional(),
+    observacoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const { id, vencimento, ...rest } = input;
+    const sets = ['"updatedAt"=NOW()'];
+    const vals = [];
+    let i = 1;
+    for (const [k, v] of Object.entries(rest)) {
+      if (v !== void 0) {
+        sets.push(`"${k}"=$${i++}`);
+        vals.push(v);
+      }
+    }
+    if (vencimento) {
+      sets.push(`vencimento=$${i++}`);
+      vals.push(new Date(vencimento));
+    }
+    vals.push(id, ctx.user.empresaId);
+    await client.unsafe(`UPDATE licencas_ti SET ${sets.join(",")} WHERE id=$${i++} AND "empresaId"=$${i++}`, vals);
+    return { success: true };
+  }),
+  deleteLicenca: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input, ctx }) => {
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await client`UPDATE licencas_ti SET "deletedAt"=NOW() WHERE id=${input.id} AND "empresaId"=${ctx.user.empresaId}`;
+    return { success: true };
+  }),
+  // ══════════════════════════════════════════════════════════════════════════
+  // SERVIDORES
+  // ══════════════════════════════════════════════════════════════════════════
+  listServidores: protectedProcedure.query(async ({ ctx }) => {
+    const client = await getRawClient();
+    if (!client) return [];
+    return client`SELECT * FROM servidores_ti WHERE "empresaId"=${ctx.user.empresaId} AND "deletedAt" IS NULL ORDER BY "createdAt" DESC`.catch(() => []);
+  }),
+  createServidor: protectedProcedure.input(external_exports.object({
+    nome: external_exports.string().min(2),
+    tipo: external_exports.enum(["fisico", "virtual", "cloud", "container"]).optional(),
+    ip: external_exports.string().optional(),
+    so: external_exports.string().optional(),
+    cpu: external_exports.string().optional(),
+    ram: external_exports.string().optional(),
+    disco: external_exports.string().optional(),
+    localizacao: external_exports.string().optional(),
+    funcao: external_exports.string().optional(),
+    observacoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const rows = await client`
+        INSERT INTO servidores_ti ("empresaId",nome,tipo,ip,so,cpu,ram,disco,localizacao,funcao,observacoes,status,"createdAt","updatedAt")
+        VALUES (${ctx.user.empresaId},${input.nome},${input.tipo || "fisico"},${input.ip || null},${input.so || null},${input.cpu || null},${input.ram || null},${input.disco || null},${input.localizacao || null},${input.funcao || null},${input.observacoes || null},'online',NOW(),NOW())
+        RETURNING *
+      `;
+    return rows[0];
+  }),
+  updateServidor: protectedProcedure.input(external_exports.object({ id: external_exports.number(), status: external_exports.enum(["online", "offline", "manutencao"]).optional(), observacoes: external_exports.string().optional() })).mutation(async ({ input, ctx }) => {
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    if (input.status) await client`UPDATE servidores_ti SET status=${input.status},"updatedAt"=NOW() WHERE id=${input.id} AND "empresaId"=${ctx.user.empresaId}`;
+    return { success: true };
+  }),
+  // ══════════════════════════════════════════════════════════════════════════
+  // ACESSOS REMOTOS
+  // ══════════════════════════════════════════════════════════════════════════
+  listAcessos: protectedProcedure.query(async ({ ctx }) => {
+    const client = await getRawClient();
+    if (!client) return [];
+    return client`
+      SELECT a.*, u.name as usuario_nome FROM acessos_ti a
+      LEFT JOIN users u ON u.id = a."usuarioId"
+      WHERE a."empresaId"=${ctx.user.empresaId} AND a."deletedAt" IS NULL
+      ORDER BY a."createdAt" DESC
+    `.catch(() => []);
+  }),
+  createAcesso: protectedProcedure.input(external_exports.object({
+    nome: external_exports.string().min(2),
+    tipo: external_exports.enum(["anydesk", "rdp", "ssh", "vpn", "outro"]).optional(),
+    host: external_exports.string().optional(),
+    porta: external_exports.number().optional(),
+    usuario: external_exports.string().optional(),
+    anydesk_id: external_exports.string().optional(),
+    setor: external_exports.string().optional(),
+    observacoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const rows = await client`
+        INSERT INTO acessos_ti ("empresaId","usuarioId",nome,tipo,host,porta,usuario,anydesk_id,setor,observacoes,"createdAt","updatedAt")
+        VALUES (${ctx.user.empresaId},${ctx.user.id},${input.nome},${input.tipo || "outro"},${input.host || null},${input.porta || null},${input.usuario || null},${input.anydesk_id || null},${input.setor || null},${input.observacoes || null},NOW(),NOW())
+        RETURNING *
+      `;
+    return rows[0];
+  }),
+  // ══════════════════════════════════════════════════════════════════════════
+  // COMPRAS DE TI
+  // ══════════════════════════════════════════════════════════════════════════
+  listCompras: protectedProcedure.query(async ({ ctx }) => {
+    const client = await getRawClient();
+    if (!client) return [];
+    return client`SELECT * FROM compras_ti WHERE "empresaId"=${ctx.user.empresaId} AND "deletedAt" IS NULL ORDER BY "createdAt" DESC`.catch(() => []);
+  }),
+  createCompra: protectedProcedure.input(external_exports.object({
+    item: external_exports.string().min(2),
+    fornecedor: external_exports.string().optional(),
+    quantidade: external_exports.number().optional(),
+    valorUnitario: external_exports.number().optional(),
+    status: external_exports.enum(["solicitado", "aprovado", "comprado", "entregue", "cancelado"]).optional(),
+    justificativa: external_exports.string().optional(),
+    observacoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const rows = await client`
+        INSERT INTO compras_ti ("empresaId","solicitanteId",item,fornecedor,quantidade,"valorUnitario",status,justificativa,observacoes,"createdAt","updatedAt")
+        VALUES (${ctx.user.empresaId},${ctx.user.id},${input.item},${input.fornecedor || null},${input.quantidade || 1},${input.valorUnitario || null},${input.status || "solicitado"},${input.justificativa || null},${input.observacoes || null},NOW(),NOW())
+        RETURNING *
+      `;
+    return rows[0];
+  }),
+  updateCompra: protectedProcedure.input(external_exports.object({ id: external_exports.number(), status: external_exports.enum(["solicitado", "aprovado", "comprado", "entregue", "cancelado"]) })).mutation(async ({ input, ctx }) => {
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await client`UPDATE compras_ti SET status=${input.status},"updatedAt"=NOW() WHERE id=${input.id} AND "empresaId"=${ctx.user.empresaId}`;
+    return { success: true };
+  }),
+  // ══════════════════════════════════════════════════════════════════════════
+  // CMDB
+  // ══════════════════════════════════════════════════════════════════════════
+  listCmdb: protectedProcedure.query(async ({ ctx }) => {
+    const client = await getRawClient();
+    if (!client) return [];
+    return client`SELECT * FROM cmdb_ti WHERE "empresaId"=${ctx.user.empresaId} AND "deletedAt" IS NULL ORDER BY "createdAt" DESC`.catch(() => []);
+  }),
+  createCmdb: protectedProcedure.input(external_exports.object({
+    nome: external_exports.string().min(2),
+    tipo: external_exports.string().optional(),
+    versao: external_exports.string().optional(),
+    ambiente: external_exports.enum(["producao", "homologacao", "desenvolvimento", "teste"]).optional(),
+    responsavel: external_exports.string().optional(),
+    dependencias: external_exports.string().optional(),
+    observacoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const rows = await client`
+        INSERT INTO cmdb_ti ("empresaId",nome,tipo,versao,ambiente,responsavel,dependencias,observacoes,"createdAt","updatedAt")
+        VALUES (${ctx.user.empresaId},${input.nome},${input.tipo || null},${input.versao || null},${input.ambiente || "producao"},${input.responsavel || null},${input.dependencias || null},${input.observacoes || null},NOW(),NOW())
+        RETURNING *
+      `;
+    return rows[0];
+  }),
+  // ══════════════════════════════════════════════════════════════════════════
+  // MANUTENÇÕES
+  // ══════════════════════════════════════════════════════════════════════════
+  listManutencoes: protectedProcedure.query(async ({ ctx }) => {
+    const client = await getRawClient();
+    if (!client) return [];
+    return client`
+      SELECT m.*, u.name as tecnico_nome FROM manutencoes_ti m
+      LEFT JOIN users u ON u.id = m."tecnicoId"
+      WHERE m."empresaId"=${ctx.user.empresaId} AND m."deletedAt" IS NULL
+      ORDER BY m."createdAt" DESC
+    `.catch(() => []);
+  }),
+  createManutencao: protectedProcedure.input(external_exports.object({
+    ativoId: external_exports.number().optional(),
+    tipo: external_exports.enum(["preventiva", "corretiva", "preditiva"]).optional(),
+    descricao: external_exports.string().min(5),
+    tecnicoId: external_exports.number().optional(),
+    agendadoPara: external_exports.string().optional(),
+    pecasUtilizadas: external_exports.string().optional(),
+    custo: external_exports.number().optional(),
+    observacoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const rows = await client`
+        INSERT INTO manutencoes_ti ("empresaId","ativoId",tipo,descricao,"tecnicoId","agendadoPara","pecasUtilizadas",custo,observacoes,status,"createdAt","updatedAt")
+        VALUES (${ctx.user.empresaId},${input.ativoId || null},${input.tipo || "corretiva"},${input.descricao},${input.tecnicoId || ctx.user.id},${input.agendadoPara ? new Date(input.agendadoPara) : null},${input.pecasUtilizadas || null},${input.custo || null},${input.observacoes || null},'agendada',NOW(),NOW())
+        RETURNING *
+      `;
+    return rows[0];
+  }),
+  // ══════════════════════════════════════════════════════════════════════════
+  // MONITORAMENTO — Agentes
+  // ══════════════════════════════════════════════════════════════════════════
+  listAgentes: protectedProcedure.query(async ({ ctx }) => {
+    const client = await getRawClient();
+    if (!client) return [];
+    return client`
+      SELECT a.*,
+        (SELECT "coletadoEm" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as ultima_coleta,
+        (SELECT "cpuUso" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as cpu_atual,
+        (SELECT "ramUsoPct" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as ram_atual,
+        (SELECT "discoUsoPct" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as disco_atual,
+        (SELECT "anydeskId" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as anydesk_id_atual
+      FROM monitor_agentes a
+      WHERE a."empresaId"=${ctx.user.empresaId} AND a."deletedAt" IS NULL
+      ORDER BY a.hostname ASC
+    `.catch(() => []);
+  }),
+  getAgenteMetricas: protectedProcedure.input(external_exports.object({ agenteId: external_exports.number(), periodo: external_exports.enum(["1h", "24h", "7d", "30d", "90d"]).optional() })).query(async ({ input, ctx }) => {
+    const client = await getRawClient();
+    if (!client) return { metricas: [], ultima: null, picos: {} };
+    const periodoMap = { "1h": "1 hour", "24h": "24 hours", "7d": "7 days", "30d": "30 days", "90d": "90 days" };
+    const intervalo = periodoMap[input.periodo || "24h"] || "24 hours";
+    const metricas = await client`
+        SELECT date_trunc('hour',"coletadoEm") as hora,
+          round(avg("cpuUso")::numeric,1) as cpu_medio, round(max("cpuUso")::numeric,1) as cpu_pico,
+          round(avg("ramUsoPct")::numeric,1) as ram_medio, round(max("ramUsoPct")::numeric,1) as ram_pico,
+          round(avg("discoUsoPct")::numeric,1) as disco_medio,
+          round(avg("latenciaMs")::numeric,0) as latencia_media, count(*) as amostras
+        FROM monitor_metricas
+        WHERE "agenteId"=${input.agenteId} AND "empresaId"=${ctx.user.empresaId}
+          AND "coletadoEm" >= NOW() - ${intervalo}::interval
+        GROUP BY date_trunc('hour',"coletadoEm") ORDER BY hora ASC
+      `.catch(() => []);
+    const ultima = await client`SELECT * FROM monitor_metricas WHERE "agenteId"=${input.agenteId} AND "empresaId"=${ctx.user.empresaId} ORDER BY "coletadoEm" DESC LIMIT 1`.catch(() => [null]).then((r) => r[0] || null);
+    const picos = await client`SELECT max("cpuUso") as cpu_max,max("ramUsoPct") as ram_max,max("discoUsoPct") as disco_max FROM monitor_metricas WHERE "agenteId"=${input.agenteId} AND "empresaId"=${ctx.user.empresaId} AND "coletadoEm">=NOW()-${intervalo}::interval`.catch(() => [{}]).then((r) => r[0] || {});
+    return { metricas, ultima, picos };
+  }),
+  // ── Registro de agente (público — chamado pelo agente instalado no PC) ────
+  registerAgent: publicProcedure.input(external_exports.object({
+    hostname: external_exports.string(),
+    ip: external_exports.string().optional(),
+    so: external_exports.string().optional(),
+    mac: external_exports.string().optional(),
+    versao_agente: external_exports.string().optional(),
+    anydesk_id: external_exports.string().optional(),
+    empresa_token: external_exports.string().optional()
+  })).mutation(async ({ input }) => {
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const token = `agent_${Date.now().toString(36)}_${Math.random().toString(36).slice(2)}`;
+    let empresaId = 1;
+    if (input.empresa_token) {
+      const rows2 = await client`SELECT id FROM empresas WHERE codigo=${input.empresa_token} LIMIT 1`.catch(() => []);
+      if (rows2[0]) empresaId = rows2[0].id;
+    }
+    const rows = await client`
+        INSERT INTO monitor_agentes ("empresaId",hostname,ip,so,mac,"versaoAgente","anydeskId",token,status,"createdAt","updatedAt")
+        VALUES (${empresaId},${input.hostname},${input.ip || null},${input.so || null},${input.mac || null},${input.versao_agente || "1.0.0"},${input.anydesk_id || null},${token},'online',NOW(),NOW())
+        RETURNING *
+      `.catch(async () => {
+      return client`SELECT * FROM monitor_agentes WHERE hostname=${input.hostname} AND "empresaId"=${empresaId} LIMIT 1`.catch(() => []);
+    });
+    const agente = rows[0];
+    return { token: agente?.token || token, agenteId: agente?.id };
+  }),
+  // ── Ingestão de métricas (público — chamado pelo agente) ──────────────────
+  ingestMetrics: publicProcedure.input(external_exports.object({
+    token: external_exports.string(),
+    metricas: external_exports.array(external_exports.object({
+      hostname: external_exports.string(),
+      coletado_em: external_exports.string(),
+      cpu_uso: external_exports.number().optional(),
+      cpu_temp: external_exports.number().optional(),
+      ram_uso_pct: external_exports.number().optional(),
+      ram_total_mb: external_exports.number().optional(),
+      ram_usada_mb: external_exports.number().optional(),
+      disco_uso_pct: external_exports.number().optional(),
+      disco_total_gb: external_exports.number().optional(),
+      disco_usado_gb: external_exports.number().optional(),
+      rede_enviado_kb: external_exports.number().optional(),
+      rede_recebido_kb: external_exports.number().optional(),
+      latencia_ms: external_exports.number().optional(),
+      processos: external_exports.number().optional(),
+      anydesk_id: external_exports.string().optional(),
+      usuario_logado: external_exports.string().optional(),
+      uptime: external_exports.number().optional(),
+      top_processos: external_exports.any().optional()
+    }))
+  })).mutation(async ({ input }) => {
+    const client = await getRawClient();
+    if (!client) return { received: 0 };
+    const agentes = await client`SELECT * FROM monitor_agentes WHERE token=${input.token} LIMIT 1`.catch(() => []);
+    const agente = agentes[0];
+    if (!agente) return { received: 0, error: "Token inv\xE1lido" };
+    await client`UPDATE monitor_agentes SET status='online',"updatedAt"=NOW() WHERE id=${agente.id}`.catch(() => {
+    });
+    let inserted = 0;
+    for (const m of input.metricas) {
+      await client`
+          INSERT INTO monitor_metricas ("agenteId","empresaId","coletadoEm","cpuUso","cpuTemp","ramUsoPct","ramTotalMb","ramUsadaMb","discoUsoPct","discoTotalGb","discoUsadoGb","redeEnviadoKb","redeRecebidoKb","latenciaMs",processos,"anydeskId","usuarioLogado",uptime,"topProcessos")
+          VALUES (${agente.id},${agente.empresaId},${new Date(m.coletado_em)},${m.cpu_uso || null},${m.cpu_temp || null},${m.ram_uso_pct || null},${m.ram_total_mb || null},${m.ram_usada_mb || null},${m.disco_uso_pct || null},${m.disco_total_gb || null},${m.disco_usado_gb || null},${m.rede_enviado_kb || null},${m.rede_recebido_kb || null},${m.latencia_ms || null},${m.processos || null},${m.anydesk_id || null},${m.usuario_logado || null},${m.uptime || null},${m.top_processos ? JSON.stringify(m.top_processos) : null})
+        `.catch(() => {
+      });
+      inserted++;
+    }
+    return { received: inserted };
+  }),
+  listAlertas: protectedProcedure.input(external_exports.object({ limit: external_exports.number().optional() })).query(async ({ ctx, input }) => {
+    const client = await getRawClient();
+    if (!client) return [];
+    return client`
+        SELECT e.*, a.hostname FROM monitor_eventos e
+        LEFT JOIN monitor_agentes a ON a.id=e."agenteId"
+        WHERE e."empresaId"=${ctx.user.empresaId}
+        ORDER BY e."ocorridoEm" DESC LIMIT ${input.limit || 50}
+      `.catch(() => []);
+  }),
+  // ── Códigos de Pareamento PC↔Synapse ──────────────────────────────────────────────────────────────────────────────
+  gerarCodigoPareamento: protectedProcedure.input(external_exports.object({ descricao: external_exports.string().optional(), ativoId: external_exports.number().optional() })).mutation(async ({ input, ctx }) => {
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const parte1 = Math.random().toString(36).slice(2, 6).toUpperCase();
+    const parte2 = Math.random().toString(36).slice(2, 6).toUpperCase();
+    const codigo = `SYNC-${parte1}-${parte2}`;
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1e3);
+    const rows = await client`
+        INSERT INTO agent_pairing_codes ("empresaId",codigo,descricao,"ativoId","criadoPor","expiresAt","createdAt")
+        VALUES (${ctx.user.empresaId},${codigo},${input.descricao || null},${input.ativoId || null},${ctx.user.id},${expiresAt},NOW())
+        RETURNING *
+      `;
+    return rows[0];
+  }),
+  listCodigosPareamento: protectedProcedure.query(async ({ ctx }) => {
+    const client = await getRawClient();
+    if (!client) return [];
+    return client`
+      SELECT p.*, a.hostname as agente_hostname, a.ip as agente_ip
+      FROM agent_pairing_codes p
+      LEFT JOIN monitor_agentes a ON a.id = p."agenteId"
+      WHERE p."empresaId" = ${ctx.user.empresaId}
+      ORDER BY p."createdAt" DESC LIMIT 50
+    `.catch(() => []);
+  }),
+  revogarCodigoPareamento: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input, ctx }) => {
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await client`DELETE FROM agent_pairing_codes WHERE id=${input.id} AND "empresaId"=${ctx.user.empresaId}`;
+    return { success: true };
+  }),
+  // Chamado pelo agente na primeira execução para se vincular
+  pairAgent: publicProcedure.input(external_exports.object({
+    codigo: external_exports.string(),
+    hostname: external_exports.string(),
+    ip: external_exports.string().optional(),
+    so: external_exports.string().optional(),
+    mac: external_exports.string().optional(),
+    fingerprint: external_exports.string().optional(),
+    anydesk_id: external_exports.string().optional(),
+    versao_agente: external_exports.string().optional()
+  })).mutation(async ({ input }) => {
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const codes = await client`
+        SELECT * FROM agent_pairing_codes
+        WHERE codigo=${input.codigo} AND usado=false AND "expiresAt" > NOW()
+        LIMIT 1
+      `;
+    if (!codes[0]) throw new TRPCError({ code: "NOT_FOUND", message: "C\xF3digo inv\xE1lido ou expirado" });
+    const pairing = codes[0];
+    const token = `agent_${pairing.empresaId}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+    const agentes = await client`
+        INSERT INTO monitor_agentes ("empresaId",hostname,ip,so,mac,"versaoAgente","anydeskId",fingerprint,"pairingCode",token,status,"ultimoContato",online,ativo,"createdAt","updatedAt")
+        VALUES (${pairing.empresaId},${input.hostname},${input.ip || null},${input.so || null},${input.mac || null},${input.versao_agente || "1.0.0"},${input.anydesk_id || null},${input.fingerprint || null},${input.codigo},${token},'online',NOW(),true,true,NOW(),NOW())
+        ON CONFLICT DO NOTHING
+        RETURNING *
+      `;
+    let agente = agentes[0];
+    if (!agente) {
+      const existentes = await client`SELECT * FROM monitor_agentes WHERE fingerprint=${input.fingerprint || ""} AND "empresaId"=${pairing.empresaId} LIMIT 1`;
+      agente = existentes[0];
+    }
+    await client`UPDATE agent_pairing_codes SET usado=true,"agenteId"=${agente?.id || null},"usadoEm"=NOW() WHERE id=${pairing.id}`;
+    return { token, agenteId: agente?.id, empresaId: pairing.empresaId };
+  }),
+  // Obter token da empresa para o agente (após pareamento)
+  getEmpresaAgentToken: protectedProcedure.query(async ({ ctx }) => {
+    const client = await getRawClient();
+    if (!client) return { token: null };
+    const empresas2 = await client`SELECT "agentToken" FROM empresas WHERE id=${ctx.user.empresaId} LIMIT 1`;
+    let token = empresas2[0]?.agentToken;
+    if (!token) {
+      token = `et_${ctx.user.empresaId}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+      await client`UPDATE empresas SET "agentToken"=${token} WHERE id=${ctx.user.empresaId}`.catch(() => {
+      });
+    }
+    return { token, empresaId: ctx.user.empresaId };
+  }),
+  // ── Listar usuários da empresa (para atribuição de técnico) ────────────────────────
+  listTecnicos: protectedProcedure.query(async ({ ctx }) => {
+    const client = await getRawClient();
+    if (!client) return [];
+    return client`SELECT id, name, email FROM users WHERE "empresaId"=${ctx.user.empresaId} AND "deletedAt" IS NULL ORDER BY name ASC`.catch(() => []);
+  })
+});
+
+// routers/bi.ts
+init_schema2();
+init_drizzle_orm();
+var biRouter = router({
+  // ─── DASHBOARDS ────────────────────────────────────────────────────────────
+  listDashboards: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    return db.select().from(biDashboards).where(and(eq(biDashboards.empresaId, ctx.user.empresaId), isNull2(biDashboards.deletedAt))).orderBy(desc(biDashboards.createdAt));
+  }),
+  createDashboard: protectedProcedure.input(external_exports.object({
+    nome: external_exports.string().min(2),
+    descricao: external_exports.string().optional(),
+    tipo: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [d] = await db.insert(biDashboards).values({ ...input, empresaId: ctx.user.empresaId, createdBy: ctx.user.id }).returning();
+    return d;
+  }),
+  // ─── MÉTRICAS GERAIS (BI automático) ───────────────────────────────────────
+  metricas: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const [viagemStats] = await db.select({
+      total: sql`count(*)`,
+      emAndamento: sql`count(*) filter (where status = 'em_andamento')`,
+      concluidas: sql`count(*) filter (where status = 'concluida')`
+    }).from(viagens).where(eq(viagens.empresaId, empresaId));
+    const [pagar] = await db.select({
+      total: sql`coalesce(sum(valor::numeric), 0)::text`,
+      pendente: sql`coalesce(sum(valor::numeric) filter (where status = 'pendente'), 0)::text`
+    }).from(contasPagar).where(eq(contasPagar.empresaId, empresaId));
+    const [receber] = await db.select({
+      total: sql`coalesce(sum(valor::numeric), 0)::text`,
+      pendente: sql`coalesce(sum(valor::numeric) filter (where status = 'pendente'), 0)::text`
+    }).from(contasReceber).where(eq(contasReceber.empresaId, empresaId));
+    const [rhStats] = await db.select({ total: sql`count(*)` }).from(funcionarios).where(eq(funcionarios.empresaId, empresaId));
+    const [frotaStats] = await db.select({ total: sql`count(*)` }).from(veiculos).where(eq(veiculos.empresaId, empresaId));
+    const [vendaStats] = await db.select({
+      totalPedidos: sql`count(*)`,
+      valorPedidos: sql`coalesce(sum("valorTotal"::numeric), 0)::text`
+    }).from(pedidos).where(and(eq(pedidos.empresaId, empresaId), isNull2(pedidos.deletedAt)));
+    const [crmStats] = await db.select({
+      totalClientes: sql`count(*)`
+    }).from(clientes).where(and(eq(clientes.empresaId, empresaId), isNull2(clientes.deletedAt)));
+    const [leadStats] = await db.select({
+      totalLeads: sql`count(*)`,
+      novos: sql`count(*) filter (where status = 'novo')`
+    }).from(leads).where(and(eq(leads.empresaId, empresaId), isNull2(leads.deletedAt)));
+    return {
+      viagens: viagemStats,
+      financeiro: { pagar, receber },
+      rh: rhStats,
+      frota: frotaStats,
+      vendas: vendaStats,
+      crm: { ...crmStats, leads: leadStats }
+    };
+  }),
+  // ─── TENDÊNCIAS (últimos 30 dias) ──────────────────────────────────────────
+  tendencias: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const viagensPorDia = await db.execute(sql`
+      SELECT date_trunc('day', "createdAt")::date as dia, count(*) as total
+      FROM viagens WHERE "empresaId" = ${empresaId} AND "createdAt" >= current_date - interval '30 days'
+      GROUP BY dia ORDER BY dia
+    `);
+    const receitaPorDia = await db.execute(sql`
+      SELECT date_trunc('day', "createdAt")::date as dia, coalesce(sum(valor::numeric), 0) as total
+      FROM contas_receber WHERE "empresaId" = ${empresaId} AND "createdAt" >= current_date - interval '30 days'
+      GROUP BY dia ORDER BY dia
+    `);
+    return { viagensPorDia: viagensPorDia.rows || [], receitaPorDia: receitaPorDia.rows || [] };
+  })
+});
+
+// routers/ponto.ts
+init_schema2();
+init_drizzle_orm();
+var pontoRouter = router({
+  // Registrar ponto — usa o usuário logado automaticamente
+  registrar: protectedProcedure.input(external_exports.object({
+    tipo: external_exports.enum(["entrada", "saida", "inicio_intervalo", "fim_intervalo"]),
+    latitude: external_exports.string().optional(),
+    longitude: external_exports.string().optional(),
+    observacao: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco de dados indispon\xEDvel" });
+    const funcionarioId = ctx.user.id;
+    const empresaId = ctx.user.empresaId;
+    if (!empresaId) throw new TRPCError({ code: "BAD_REQUEST", message: "Usu\xE1rio n\xE3o vinculado a uma empresa" });
+    const [r] = await db.insert(registrosPonto).values({
+      funcionarioId,
+      empresaId,
+      tipo: input.tipo,
+      dataHora: /* @__PURE__ */ new Date(),
+      latitude: input.latitude,
+      longitude: input.longitude,
+      observacao: input.observacao
+    }).returning();
+    return r;
+  }),
+  // Meu ponto — registros do próprio usuário logado
+  meusPontos: protectedProcedure.input(external_exports.object({
+    dataInicio: external_exports.string().optional(),
+    dataFim: external_exports.string().optional()
+  })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const conds = [
+      eq(registrosPonto.empresaId, ctx.user.empresaId),
+      eq(registrosPonto.funcionarioId, ctx.user.id)
+    ];
+    if (input.dataInicio) conds.push(gte(registrosPonto.dataHora, new Date(input.dataInicio)));
+    if (input.dataFim) conds.push(lte(registrosPonto.dataHora, new Date(input.dataFim)));
+    return db.select().from(registrosPonto).where(and(...conds)).orderBy(desc(registrosPonto.dataHora)).limit(200);
+  }),
+  // Listar registros — admin pode ver todos, usuário comum vê só os seus
+  list: protectedProcedure.input(external_exports.object({
+    funcionarioId: external_exports.number().optional(),
+    dataInicio: external_exports.string().optional(),
+    dataFim: external_exports.string().optional()
+  })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const isAdmin = ctx.user.role === "admin" || ctx.user.role === "master_admin";
+    const conds = [eq(registrosPonto.empresaId, ctx.user.empresaId)];
+    if (!isAdmin) {
+      conds.push(eq(registrosPonto.funcionarioId, ctx.user.id));
+    } else if (input.funcionarioId) {
+      conds.push(eq(registrosPonto.funcionarioId, input.funcionarioId));
+    }
+    if (input.dataInicio) conds.push(gte(registrosPonto.dataHora, new Date(input.dataInicio)));
+    if (input.dataFim) conds.push(lte(registrosPonto.dataHora, new Date(input.dataFim)));
+    return db.select().from(registrosPonto).where(and(...conds)).orderBy(desc(registrosPonto.dataHora)).limit(200);
+  }),
+  // Resumo do dia — do próprio usuário logado
+  resumoDia: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const hoje = /* @__PURE__ */ new Date();
+    hoje.setHours(0, 0, 0, 0);
+    const amanha = new Date(hoje);
+    amanha.setDate(amanha.getDate() + 1);
+    return db.select().from(registrosPonto).where(and(
+      eq(registrosPonto.empresaId, ctx.user.empresaId),
+      eq(registrosPonto.funcionarioId, ctx.user.id),
+      gte(registrosPonto.dataHora, hoje),
+      lte(registrosPonto.dataHora, amanha)
+    )).orderBy(registrosPonto.dataHora);
+  }),
+  // Ajustar ponto (somente admin)
+  ajustar: protectedProcedure.input(external_exports.object({
+    id: external_exports.number(),
+    motivoAjuste: external_exports.string().min(5)
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    if (ctx.user.role !== "admin" && ctx.user.role !== "master_admin") {
+      throw new TRPCError({ code: "FORBIDDEN", message: "Apenas administradores podem ajustar registros de ponto" });
+    }
+    await db.update(registrosPonto).set({ ajustadoPor: ctx.user.id, motivoAjuste: input.motivoAjuste }).where(and(
+      eq(registrosPonto.id, input.id),
+      eq(registrosPonto.empresaId, ctx.user.empresaId)
+    ));
+    return { success: true };
+  }),
+  // Banco de horas do próprio usuário
+  meuBancoHoras: protectedProcedure.input(external_exports.object({
+    mes: external_exports.string().optional()
+  })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const conds = [
+      eq(bancoHoras.empresaId, ctx.user.empresaId),
+      eq(bancoHoras.funcionarioId, ctx.user.id)
+    ];
+    return db.select().from(bancoHoras).where(and(...conds)).orderBy(desc(bancoHoras.data)).limit(60);
+  }),
+  // Banco de horas (admin pode ver de qualquer funcionário)
+  getBancoHoras: protectedProcedure.input(external_exports.object({
+    funcionarioId: external_exports.number().optional(),
+    mes: external_exports.string().optional()
+  })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const isAdmin = ctx.user.role === "admin" || ctx.user.role === "master_admin";
+    const targetId = isAdmin && input.funcionarioId ? input.funcionarioId : ctx.user.id;
+    const conds = [
+      eq(bancoHoras.empresaId, ctx.user.empresaId),
+      eq(bancoHoras.funcionarioId, targetId)
+    ];
+    return db.select().from(bancoHoras).where(and(...conds)).orderBy(desc(bancoHoras.data)).limit(60);
+  })
+});
+
+// routers/conferencia.ts
+init_schema2();
+init_drizzle_orm();
+var conferenciaRouter = router({
+  // Listar conferências
+  list: protectedProcedure.input(external_exports.object({ status: external_exports.string().optional() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const conds = [eq(conferenciaVeiculos.empresaId, ctx.user.empresaId)];
+    if (input.status && input.status !== "todos") conds.push(eq(conferenciaVeiculos.status, input.status));
+    return db.select().from(conferenciaVeiculos).where(and(...conds)).orderBy(desc(conferenciaVeiculos.createdAt));
+  }),
+  // Detalhes completos (com fotos e itens)
+  getDetalhes: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [conf] = await db.select().from(conferenciaVeiculos).where(and(eq(conferenciaVeiculos.id, input.id), eq(conferenciaVeiculos.empresaId, ctx.user.empresaId)));
+    if (!conf) throw new TRPCError({ code: "NOT_FOUND" });
+    const fotos = await db.select().from(fotosConferencia).where(eq(fotosConferencia.conferenciaId, input.id)).orderBy(fotosConferencia.createdAt);
+    const itens = await db.select().from(itensConferencia).where(eq(itensConferencia.conferenciaId, input.id));
+    return { ...conf, fotos, itens };
+  }),
+  // 1. REGISTRAR SAÍDA (despachante registra o veículo saindo)
+  registrarSaida: protectedProcedure.input(external_exports.object({
+    veiculoId: external_exports.number(),
+    motoristaId: external_exports.number().optional(),
+    viagemId: external_exports.number().optional(),
+    kmSaida: external_exports.string().optional(),
+    observacoesSaida: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [c] = await db.insert(conferenciaVeiculos).values({
+      ...input,
+      empresaId: ctx.user.empresaId,
+      status: "saida_registrada",
+      despachanteSaidaId: ctx.user.id,
+      dataSaida: /* @__PURE__ */ new Date(),
+      createdBy: ctx.user.id
+    }).returning();
+    const itensChecklist = [
+      "N\xEDvel de combust\xEDvel",
+      "Pneus (calibragem e estado)",
+      "Luzes e far\xF3is",
+      "Freios",
+      "Documentos do ve\xEDculo",
+      "Extintor de inc\xEAndio",
+      "Tri\xE2ngulo de sinaliza\xE7\xE3o",
+      "Estepe",
+      "Limpeza geral",
+      "Carroceria (avarias/batidas)",
+      "Espelhos retrovisores",
+      "Cinto de seguran\xE7a"
+    ];
+    for (const item of itensChecklist) {
+      await db.insert(itensConferencia).values({ conferenciaId: c.id, item });
+    }
+    return c;
+  }),
+  // 2. REGISTRAR RETORNO (despachante registra o veículo voltando)
+  registrarRetorno: protectedProcedure.input(external_exports.object({
+    id: external_exports.number(),
+    kmRetorno: external_exports.string().optional(),
+    observacoesRetorno: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await db.update(conferenciaVeiculos).set({
+      status: "retorno_registrado",
+      despachanteRetornoId: ctx.user.id,
+      dataRetorno: /* @__PURE__ */ new Date(),
+      kmRetorno: input.kmRetorno,
+      observacoesRetorno: input.observacoesRetorno,
+      updatedAt: /* @__PURE__ */ new Date()
+    }).where(and(eq(conferenciaVeiculos.id, input.id), eq(conferenciaVeiculos.empresaId, ctx.user.empresaId)));
+    return { success: true };
+  }),
+  // 3. REALIZAR CONFERÊNCIA (conferente verifica carga, avarias, batidas com fotos)
+  realizarConferencia: protectedProcedure.input(external_exports.object({
+    id: external_exports.number(),
+    cargaOk: external_exports.boolean(),
+    cargaObservacoes: external_exports.string().optional(),
+    avariasEncontradas: external_exports.boolean(),
+    avariasDescricao: external_exports.string().optional(),
+    batidasEncontradas: external_exports.boolean(),
+    batidasDescricao: external_exports.string().optional(),
+    pneusOk: external_exports.boolean(),
+    pneusObservacoes: external_exports.string().optional(),
+    limpezaOk: external_exports.boolean(),
+    documentosOk: external_exports.boolean(),
+    nivelCombustivel: external_exports.string().optional(),
+    observacoesConferencia: external_exports.string().optional(),
+    itens: external_exports.array(external_exports.object({ id: external_exports.number(), conforme: external_exports.boolean(), observacao: external_exports.string().optional() })).optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const { id, itens, ...data } = input;
+    await db.update(conferenciaVeiculos).set({
+      ...data,
+      status: "aguardando_motorista",
+      conferenteId: ctx.user.id,
+      dataConferencia: /* @__PURE__ */ new Date(),
+      updatedAt: /* @__PURE__ */ new Date()
+    }).where(and(eq(conferenciaVeiculos.id, id), eq(conferenciaVeiculos.empresaId, ctx.user.empresaId)));
+    if (itens) {
+      for (const item of itens) {
+        await db.update(itensConferencia).set({ conforme: item.conforme, observacao: item.observacao }).where(eq(itensConferencia.id, item.id));
+      }
+    }
+    return { success: true };
+  }),
+  // 4. CONFIRMAÇÃO DO MOTORISTA (motorista confirma ou contesta)
+  confirmarMotorista: protectedProcedure.input(external_exports.object({
+    id: external_exports.number(),
+    confirma: external_exports.boolean(),
+    contestacao: external_exports.string().optional(),
+    assinatura: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await db.update(conferenciaVeiculos).set({
+      status: input.confirma ? "finalizado" : "aguardando_motorista",
+      motoristaConfirmou: input.confirma,
+      motoristaConfirmouEm: /* @__PURE__ */ new Date(),
+      motoristaContestacao: input.contestacao,
+      assinaturaMotorista: input.assinatura,
+      updatedAt: /* @__PURE__ */ new Date()
+    }).where(and(eq(conferenciaVeiculos.id, input.id), eq(conferenciaVeiculos.empresaId, ctx.user.empresaId)));
+    return { success: true };
+  }),
+  // Upload de foto
+  addFoto: protectedProcedure.input(external_exports.object({
+    conferenciaId: external_exports.number(),
+    tipo: external_exports.string(),
+    descricao: external_exports.string().optional(),
+    url: external_exports.string(),
+    momento: external_exports.enum(["saida", "retorno", "conferencia"])
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [f] = await db.insert(fotosConferencia).values({
+      ...input,
+      empresaId: ctx.user.empresaId,
+      uploadedBy: ctx.user.id
+    }).returning();
+    return f;
+  }),
+  // Dashboard
+  dashboard: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const [stats] = await db.select({
+      total: sql`count(*)`,
+      emViagem: sql`count(*) filter (where status in ('saida_registrada', 'em_viagem'))`,
+      aguardandoConferencia: sql`count(*) filter (where status = 'retorno_registrado')`,
+      aguardandoMotorista: sql`count(*) filter (where status = 'aguardando_motorista')`,
+      finalizados: sql`count(*) filter (where status = 'finalizado')`,
+      comAvarias: sql`count(*) filter (where "avariasEncontradas" = true)`,
+      comBatidas: sql`count(*) filter (where "batidasEncontradas" = true)`
+    }).from(conferenciaVeiculos).where(eq(conferenciaVeiculos.empresaId, empresaId));
+    return stats;
+  })
+});
+
+// routers/integracoes.ts
+init_schema2();
+init_drizzle_orm();
+var integracoesRouter = router({
+  // Listar integrações
+  list: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    return db.select().from(integracoes).where(eq(integracoes.empresaId, ctx.user.empresaId)).orderBy(desc(integracoes.createdAt));
+  }),
+  // Criar integração
+  create: protectedProcedure.input(external_exports.object({
+    tipo: external_exports.enum(["whatsapp", "winthor", "webhook", "api_externa"]),
+    nome: external_exports.string().min(2),
+    config: external_exports.string().optional(),
+    webhookUrl: external_exports.string().optional(),
+    webhookSecret: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    if (ctx.user.role !== "admin" && ctx.user.role !== "master_admin") throw new TRPCError({ code: "FORBIDDEN", message: "Apenas administradores podem criar integra\xE7\xF5es" });
+    const [i] = await db.insert(integracoes).values({
+      ...input,
+      empresaId: ctx.user.empresaId,
+      createdBy: ctx.user.id
+    }).returning();
+    return i;
+  }),
+  // Atualizar status
+  updateStatus: protectedProcedure.input(external_exports.object({
+    id: external_exports.number(),
+    status: external_exports.enum(["ativa", "inativa", "erro", "configurando"])
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await db.update(integracoes).set({ status: input.status, updatedAt: /* @__PURE__ */ new Date() }).where(and(eq(integracoes.id, input.id), eq(integracoes.empresaId, ctx.user.empresaId)));
+    return { success: true };
+  }),
+  // Logs de integração
+  getLogs: protectedProcedure.input(external_exports.object({
+    integracaoId: external_exports.number(),
+    page: external_exports.number().default(1),
+    limit: external_exports.number().default(50)
+  })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const offset = (input.page - 1) * input.limit;
+    return db.select().from(logIntegracoes).where(and(
+      eq(logIntegracoes.integracaoId, input.integracaoId),
+      eq(logIntegracoes.empresaId, ctx.user.empresaId)
+    )).orderBy(desc(logIntegracoes.createdAt)).limit(input.limit).offset(offset);
+  }),
+  // Winthor sync config
+  getWinthorSync: protectedProcedure.input(external_exports.object({ integracaoId: external_exports.number() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    return db.select().from(winthorSync).where(and(
+      eq(winthorSync.integracaoId, input.integracaoId),
+      eq(winthorSync.empresaId, ctx.user.empresaId)
+    ));
+  }),
+  // Configurar sync Winthor
+  createWinthorSync: protectedProcedure.input(external_exports.object({
+    integracaoId: external_exports.number(),
+    tabelaOrigem: external_exports.string(),
+    tabelaDestino: external_exports.string()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [s] = await db.insert(winthorSync).values({ ...input, empresaId: ctx.user.empresaId }).returning();
+    return s;
+  }),
+  // Templates de integração disponíveis
+  templates: protectedProcedure.query(async () => {
+    return [
+      { tipo: "whatsapp", nome: "WhatsApp Business API", descricao: "Envie e receba mensagens via WhatsApp. Integra\xE7\xE3o com Evolution API ou API oficial Meta.", campos: ["apiUrl", "apiKey", "instanceName"] },
+      { tipo: "winthor", nome: "TOTVS Winthor", descricao: "Sincronize produtos, clientes, notas fiscais e estoque com o Winthor (TOTVS).", campos: ["host", "port", "database", "user", "password", "schema"] },
+      { tipo: "webhook", nome: "Webhook Gen\xE9rico", descricao: "Receba notifica\xE7\xF5es de sistemas externos via webhook HTTP.", campos: ["webhookUrl", "webhookSecret"] },
+      { tipo: "api_externa", nome: "API Externa", descricao: "Conecte-se a qualquer API REST externa.", campos: ["baseUrl", "apiKey", "headers"] }
+    ];
+  })
+});
+
+// routers/permissoes.ts
+init_schema2();
+init_drizzle_orm();
+var MODULOS = [
+  "dashboard",
+  "frota",
+  "viagens",
+  "funcionarios",
+  "financeiro",
+  "wms",
+  "recepcionista",
+  "logistica",
+  "crm",
+  "vendas",
+  "auditoria",
+  "bi",
+  "ti",
+  "ponto",
+  "conferencia",
+  "integracoes",
+  "chat",
+  "ia",
+  "empresas",
+  "usuarios"
+];
+var permissoesRouter = router({
+  // Listar permissões por role
+  listByRole: protectedProcedure.input(external_exports.object({ role: external_exports.string() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    if (ctx.user.role !== "admin" && ctx.user.role !== "master_admin") throw new TRPCError({ code: "FORBIDDEN" });
+    return db.select().from(moduloPermissoes).where(and(
+      eq(moduloPermissoes.empresaId, ctx.user.empresaId),
+      eq(moduloPermissoes.role, input.role)
+    ));
+  }),
+  // Salvar permissões por role
+  saveByRole: protectedProcedure.input(external_exports.object({
+    role: external_exports.string(),
+    permissoes: external_exports.array(external_exports.object({
+      modulo: external_exports.string(),
+      podeVer: external_exports.boolean(),
+      podeCriar: external_exports.boolean(),
+      podeEditar: external_exports.boolean(),
+      podeDeletar: external_exports.boolean(),
+      podeExportar: external_exports.boolean()
+    }))
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    if (ctx.user.role !== "admin" && ctx.user.role !== "master_admin") throw new TRPCError({ code: "FORBIDDEN" });
+    const empresaId = ctx.user.empresaId;
+    await db.delete(moduloPermissoes).where(and(eq(moduloPermissoes.empresaId, empresaId), eq(moduloPermissoes.role, input.role)));
+    for (const p of input.permissoes) {
+      await db.insert(moduloPermissoes).values({ ...p, empresaId, role: input.role });
+    }
+    return { success: true };
+  }),
+  // Listar permissões de um usuário específico
+  listByUser: protectedProcedure.input(external_exports.object({ userId: external_exports.number() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    if (ctx.user.role !== "admin" && ctx.user.role !== "master_admin") throw new TRPCError({ code: "FORBIDDEN" });
+    return db.select().from(userPermissoes).where(and(
+      eq(userPermissoes.empresaId, ctx.user.empresaId),
+      eq(userPermissoes.userId, input.userId)
+    ));
+  }),
+  // Salvar permissões de um usuário específico
+  saveByUser: protectedProcedure.input(external_exports.object({
+    userId: external_exports.number(),
+    permissoes: external_exports.array(external_exports.object({
+      modulo: external_exports.string(),
+      podeVer: external_exports.boolean(),
+      podeCriar: external_exports.boolean(),
+      podeEditar: external_exports.boolean(),
+      podeDeletar: external_exports.boolean(),
+      podeExportar: external_exports.boolean()
+    }))
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    if (ctx.user.role !== "admin" && ctx.user.role !== "master_admin") throw new TRPCError({ code: "FORBIDDEN" });
+    const empresaId = ctx.user.empresaId;
+    await db.delete(userPermissoes).where(and(eq(userPermissoes.empresaId, empresaId), eq(userPermissoes.userId, input.userId)));
+    for (const p of input.permissoes) {
+      await db.insert(userPermissoes).values({ ...p, empresaId, userId: input.userId });
+    }
+    return { success: true };
+  }),
+  // Obter minhas permissões (para o frontend renderizar o menu)
+  minhasPermissoes: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    if (ctx.user.role === "master_admin") {
+      return MODULOS.map((m) => ({ modulo: m, podeVer: true, podeCriar: true, podeEditar: true, podeDeletar: true, podeExportar: true }));
+    }
+    const userPerms = await db.select().from(userPermissoes).where(and(
+      eq(userPermissoes.empresaId, ctx.user.empresaId),
+      eq(userPermissoes.userId, ctx.user.id)
+    ));
+    if (userPerms.length > 0) return userPerms;
+    const rolePerms = await db.select().from(moduloPermissoes).where(and(
+      eq(moduloPermissoes.empresaId, ctx.user.empresaId),
+      eq(moduloPermissoes.role, ctx.user.role)
+    ));
+    if (rolePerms.length > 0) return rolePerms;
+    if (ctx.user.role === "admin") {
+      return MODULOS.map((m) => ({ modulo: m, podeVer: true, podeCriar: true, podeEditar: true, podeDeletar: true, podeExportar: true }));
+    }
+    return MODULOS.map((m) => ({ modulo: m, podeVer: true, podeCriar: true, podeEditar: false, podeDeletar: false, podeExportar: false }));
+  }),
+  // Lista de módulos disponíveis
+  modulos: protectedProcedure.query(async () => {
+    return MODULOS.map((m) => ({
+      id: m,
+      nome: {
+        dashboard: "Dashboard",
+        frota: "Frota",
+        viagens: "Viagens",
+        funcionarios: "RH / Funcion\xE1rios",
+        financeiro: "Financeiro",
+        wms: "WMS / Estoque",
+        recepcionista: "Recepcionista",
+        logistica: "Log\xEDstica / SAC",
+        crm: "CRM",
+        vendas: "Vendas",
+        auditoria: "Auditoria",
+        bi: "BI / Intelig\xEAncia",
+        ti: "TI / Suporte",
+        ponto: "Ponto Eletr\xF4nico",
+        conferencia: "Confer\xEAncia de Ve\xEDculos",
+        integracoes: "Integra\xE7\xF5es",
+        chat: "Chat",
+        ia: "IA / Agentes",
+        empresas: "Empresas",
+        usuarios: "Usu\xE1rios"
+      }[m] || m
+    }));
+  })
+});
+
+// routers/recepcionista.ts
+init_schema2();
+init_drizzle_orm();
+var recepcionistaRouter = router({
+  // ─── VISITANTES ────────────────────────────────────────────────────────────
+  listVisitantes: protectedProcedure.input(external_exports.object({ search: external_exports.string().optional() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const conditions = [eq(visitantes.empresaId, empresaId)];
+    if (input.search) {
+      conditions.push(or(
+        ilike(visitantes.nome, `%${input.search}%`),
+        ilike(visitantes.documento, `%${input.search}%`),
+        ilike(visitantes.empresa, `%${input.search}%`)
+      ));
+    }
+    return db.select().from(visitantes).where(and(...conditions)).orderBy(desc(visitantes.createdAt));
+  }),
+  createVisitante: protectedProcedure.input(external_exports.object({
+    nome: external_exports.string().min(2),
+    documento: external_exports.string().optional(),
+    telefone: external_exports.string().optional(),
+    email: external_exports.string().optional(),
+    empresa: external_exports.string().optional(),
+    observacoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [v] = await db.insert(visitantes).values({
+      ...input,
+      empresaId: ctx.user.empresaId
+    }).returning();
+    return v;
+  }),
+  // ─── VISITAS ───────────────────────────────────────────────────────────────
+  listVisitas: protectedProcedure.input(external_exports.object({
+    status: external_exports.string().optional(),
+    search: external_exports.string().optional()
+  })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const conditions = [eq(visitas.empresaId, empresaId), isNull2(visitas.deletedAt)];
+    if (input.status && input.status !== "todos") conditions.push(eq(visitas.status, input.status));
+    if (input.search) {
+      conditions.push(or(
+        ilike(visitas.motivo, `%${input.search}%`),
+        ilike(visitas.pessoaContato, `%${input.search}%`)
+      ));
+    }
+    const rows = await db.select().from(visitas).where(and(...conditions)).orderBy(desc(visitas.createdAt));
+    const visitanteIds = [...new Set(rows.map((r) => r.visitanteId))];
+    const visitantesList = visitanteIds.length > 0 ? await db.select().from(visitantes).where(sql`${visitantes.id} IN (${sql.join(visitanteIds.map((id) => sql`${id}`), sql`, `)})`) : [];
+    const visitanteMap = Object.fromEntries(visitantesList.map((v) => [v.id, v]));
+    return rows.map((r) => ({ ...r, visitante: visitanteMap[r.visitanteId] || null }));
+  }),
+  createVisita: protectedProcedure.input(external_exports.object({
+    visitanteId: external_exports.number(),
+    motivo: external_exports.string().min(2),
+    setor: external_exports.string().optional(),
+    pessoaContato: external_exports.string().optional(),
+    dataAgendamento: external_exports.date().optional(),
+    observacoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [v] = await db.insert(visitas).values({
+      ...input,
+      empresaId: ctx.user.empresaId,
+      status: "agendado",
+      createdBy: ctx.user.id
+    }).returning();
+    return v;
+  }),
+  registrarEntrada: protectedProcedure.input(external_exports.object({ id: external_exports.number(), cracha: external_exports.string().optional() })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await db.update(visitas).set({
+      status: "em_atendimento",
+      dataEntrada: /* @__PURE__ */ new Date(),
+      cracha: input.cracha,
+      updatedAt: /* @__PURE__ */ new Date()
+    }).where(and(eq(visitas.id, input.id), eq(visitas.empresaId, ctx.user.empresaId)));
+    return { success: true };
+  }),
+  registrarSaida: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await db.update(visitas).set({
+      status: "finalizado",
+      dataSaida: /* @__PURE__ */ new Date(),
+      updatedAt: /* @__PURE__ */ new Date()
+    }).where(and(eq(visitas.id, input.id), eq(visitas.empresaId, ctx.user.empresaId)));
+    return { success: true };
+  }),
+  dashboard: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const [totais] = await db.select({
+      total: sql`count(*)`,
+      agendados: sql`count(*) filter (where status = 'agendado')`,
+      emAtendimento: sql`count(*) filter (where status = 'em_atendimento')`,
+      finalizados: sql`count(*) filter (where status = 'finalizado')`
+    }).from(visitas).where(and(eq(visitas.empresaId, empresaId), isNull2(visitas.deletedAt)));
+    return totais;
+  })
+});
+
+// routers/logistica.ts
+init_schema2();
+init_drizzle_orm();
+var logisticaRouter = router({
+  // ─── SAC ───────────────────────────────────────────────────────────────────
+  listChamados: protectedProcedure.input(external_exports.object({
+    status: external_exports.string().optional(),
+    prioridade: external_exports.string().optional(),
+    search: external_exports.string().optional()
+  })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const conditions = [eq(chamadosSac.empresaId, empresaId), isNull2(chamadosSac.deletedAt)];
+    if (input.status && input.status !== "todos") conditions.push(eq(chamadosSac.status, input.status));
+    if (input.prioridade && input.prioridade !== "todas") conditions.push(eq(chamadosSac.prioridade, input.prioridade));
+    if (input.search) {
+      conditions.push(or(
+        ilike(chamadosSac.protocolo, `%${input.search}%`),
+        ilike(chamadosSac.clienteNome, `%${input.search}%`),
+        ilike(chamadosSac.assunto, `%${input.search}%`)
+      ));
+    }
+    return db.select().from(chamadosSac).where(and(...conditions)).orderBy(desc(chamadosSac.createdAt));
+  }),
+  createChamado: protectedProcedure.input(external_exports.object({
+    clienteNome: external_exports.string().min(2),
+    clienteEmail: external_exports.string().optional(),
+    clienteTelefone: external_exports.string().optional(),
+    assunto: external_exports.string().min(2),
+    descricao: external_exports.string().min(5),
+    categoria: external_exports.string().optional(),
+    prioridade: external_exports.enum(["baixa", "media", "alta", "urgente"]).optional(),
+    viagemId: external_exports.number().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const [last] = await db.select({ id: chamadosSac.id }).from(chamadosSac).where(eq(chamadosSac.empresaId, empresaId)).orderBy(desc(chamadosSac.id)).limit(1);
+    const protocolo = `SAC-${String((last?.id ?? 0) + 1).padStart(6, "0")}`;
+    const [c] = await db.insert(chamadosSac).values({
+      ...input,
+      empresaId,
+      protocolo,
+      status: "aberto",
+      prioridade: input.prioridade || "media",
+      createdBy: ctx.user.id
+    }).returning();
+    return c;
+  }),
+  getChamado: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [chamado] = await db.select().from(chamadosSac).where(and(eq(chamadosSac.id, input.id), eq(chamadosSac.empresaId, ctx.user.empresaId))).limit(1);
+    if (!chamado) throw new TRPCError({ code: "NOT_FOUND" });
+    const interacoes = await db.select().from(interacoesSac).where(eq(interacoesSac.chamadoId, input.id)).orderBy(desc(interacoesSac.createdAt));
+    return { ...chamado, interacoes };
+  }),
+  addInteracao: protectedProcedure.input(external_exports.object({ chamadoId: external_exports.number(), conteudo: external_exports.string().min(1), tipo: external_exports.string().optional() })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [i] = await db.insert(interacoesSac).values({
+      chamadoId: input.chamadoId,
+      conteudo: input.conteudo,
+      tipo: input.tipo || "mensagem",
+      userId: ctx.user.id
+    }).returning();
+    return i;
+  }),
+  updateStatusChamado: protectedProcedure.input(external_exports.object({
+    id: external_exports.number(),
+    status: external_exports.enum(["aberto", "em_andamento", "aguardando_cliente", "resolvido", "fechado"]),
+    resolucao: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const updateData = { status: input.status, updatedAt: /* @__PURE__ */ new Date() };
+    if (input.resolucao) updateData.resolucao = input.resolucao;
+    if (input.status === "resolvido" || input.status === "fechado") updateData.resolvidoEm = /* @__PURE__ */ new Date();
+    await db.update(chamadosSac).set(updateData).where(and(eq(chamadosSac.id, input.id), eq(chamadosSac.empresaId, ctx.user.empresaId)));
+    return { success: true };
+  }),
+  // ─── LICENÇAS REGULATÓRIAS (ANVISA, VISA, IBAMA) ──────────────────────────
+  listLicencas: protectedProcedure.input(external_exports.object({ tipo: external_exports.string().optional(), status: external_exports.string().optional() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const conditions = [eq(licencasRegulatorias.empresaId, ctx.user.empresaId), isNull2(licencasRegulatorias.deletedAt)];
+    if (input.tipo) conditions.push(eq(licencasRegulatorias.tipo, input.tipo));
+    if (input.status && input.status !== "todos") conditions.push(eq(licencasRegulatorias.status, input.status));
+    return db.select().from(licencasRegulatorias).where(and(...conditions)).orderBy(desc(licencasRegulatorias.createdAt));
+  }),
+  createLicenca: protectedProcedure.input(external_exports.object({
+    tipo: external_exports.string().min(2),
+    numero: external_exports.string().optional(),
+    orgaoEmissor: external_exports.string().optional(),
+    descricao: external_exports.string().optional(),
+    dataEmissao: external_exports.date().optional(),
+    dataVencimento: external_exports.date().optional(),
+    observacoes: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const [l] = await db.insert(licencasRegulatorias).values({
+      ...input,
+      empresaId: ctx.user.empresaId,
+      status: "pendente",
+      createdBy: ctx.user.id
+    }).returning();
+    return l;
+  }),
+  dashboardSac: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = ctx.user.empresaId;
+    const [totais] = await db.select({
+      total: sql`count(*)`,
+      abertos: sql`count(*) filter (where status = 'aberto')`,
+      emAndamento: sql`count(*) filter (where status = 'em_andamento')`,
+      resolvidos: sql`count(*) filter (where status = 'resolvido' or status = 'fechado')`,
+      urgentes: sql`count(*) filter (where prioridade = 'urgente' and status not in ('resolvido','fechado'))`
+    }).from(chamadosSac).where(and(eq(chamadosSac.empresaId, empresaId), isNull2(chamadosSac.deletedAt)));
+    const [licencasTotais] = await db.select({
+      total: sql`count(*)`,
+      vencidas: sql`count(*) filter (where status = 'vencida')`,
+      proxVencer: sql`count(*) filter (where "dataVencimento" < now() + interval '30 days' and status = 'aprovada')`
+    }).from(licencasRegulatorias).where(and(eq(licencasRegulatorias.empresaId, empresaId), isNull2(licencasRegulatorias.deletedAt)));
+    return { sac: totais, licencas: licencasTotais };
+  })
+});
+
+// routers/notas.ts
+init_drizzle_orm();
+var notasRouter = router({
+  list: protectedProcedure.input(external_exports.object({
+    pasta: external_exports.string().optional(),
+    search: external_exports.string().optional(),
+    tag: external_exports.string().optional(),
+    arquivadas: external_exports.boolean().default(false)
+  })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    try {
+      const res = await db.execute(sql`
+        SELECT * FROM notas
+        WHERE "userId" = ${ctx.user.id}
+          AND "deletedAt" IS NULL
+          AND arquivada = ${input.arquivadas}
+          ${input.pasta && input.pasta !== "todas" ? sql`AND pasta = ${input.pasta}` : sql``}
+          ${input.search ? sql`AND (titulo ILIKE ${"%" + input.search + "%"} OR conteudo ILIKE ${"%" + input.search + "%"})` : sql``}
+          ${input.tag ? sql`AND tags ILIKE ${"%" + input.tag + "%"}` : sql``}
+        ORDER BY fixada DESC, "updatedAt" DESC
+      `);
+      return res.rows || res || [];
+    } catch {
+      return [];
+    }
+  }),
+  get: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).query(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    try {
+      const res = await db.execute(sql`
+        SELECT * FROM notas WHERE id = ${input.id} AND "userId" = ${ctx.user.id} AND "deletedAt" IS NULL LIMIT 1
+      `);
+      const rows = res.rows || res || [];
+      return rows[0] || null;
+    } catch {
+      return null;
+    }
+  }),
+  create: protectedProcedure.input(external_exports.object({
+    titulo: external_exports.string().default("Sem t\xEDtulo"),
+    conteudo: external_exports.string().default(""),
+    pasta: external_exports.string().default("Geral"),
+    tags: external_exports.string().default(""),
+    cor: external_exports.string().default("default")
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const res = await db.execute(sql`
+      INSERT INTO notas ("userId","empresaId","titulo","conteudo","pasta","tags","cor")
+      VALUES (${ctx.user.id}, ${ctx.user.empresaId}, ${input.titulo}, ${input.conteudo}, ${input.pasta}, ${input.tags}, ${input.cor})
+      RETURNING *
+    `);
+    const rows = res.rows || res || [];
+    return rows[0];
+  }),
+  update: protectedProcedure.input(external_exports.object({
+    id: external_exports.number(),
+    titulo: external_exports.string().optional(),
+    conteudo: external_exports.string().optional(),
+    pasta: external_exports.string().optional(),
+    tags: external_exports.string().optional(),
+    cor: external_exports.string().optional()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await db.execute(sql`
+      UPDATE notas SET
+        titulo = COALESCE(${input.titulo ?? null}, titulo),
+        conteudo = COALESCE(${input.conteudo ?? null}, conteudo),
+        pasta = COALESCE(${input.pasta ?? null}, pasta),
+        tags = COALESCE(${input.tags ?? null}, tags),
+        cor = COALESCE(${input.cor ?? null}, cor),
+        "updatedAt" = now()
+      WHERE id = ${input.id} AND "userId" = ${ctx.user.id}
+    `);
+    return { success: true };
+  }),
+  // Auto-save (só conteúdo e título, sem retorno pesado)
+  autoSave: protectedProcedure.input(external_exports.object({
+    id: external_exports.number(),
+    titulo: external_exports.string(),
+    conteudo: external_exports.string()
+  })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) return { success: false };
+    try {
+      await db.execute(sql`
+        UPDATE notas SET titulo = ${input.titulo}, conteudo = ${input.conteudo}, "updatedAt" = now()
+        WHERE id = ${input.id} AND "userId" = ${ctx.user.id}
+      `);
+      return { success: true };
+    } catch {
+      return { success: false };
+    }
+  }),
+  toggleFixada: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await db.execute(sql`
+      UPDATE notas SET fixada = NOT fixada, "updatedAt" = now()
+      WHERE id = ${input.id} AND "userId" = ${ctx.user.id}
+    `);
+    return { success: true };
+  }),
+  toggleArquivada: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await db.execute(sql`
+      UPDATE notas SET arquivada = NOT arquivada, "updatedAt" = now()
+      WHERE id = ${input.id} AND "userId" = ${ctx.user.id}
+    `);
+    return { success: true };
+  }),
+  delete: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    await db.execute(sql`
+      UPDATE notas SET "deletedAt" = now() WHERE id = ${input.id} AND "userId" = ${ctx.user.id}
+    `);
+    return { success: true };
+  }),
+  // Lista pastas únicas do usuário
+  listPastas: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    try {
+      const res = await db.execute(sql`
+        SELECT pasta, count(*) as total FROM notas
+        WHERE "userId" = ${ctx.user.id} AND "deletedAt" IS NULL AND arquivada = false
+        GROUP BY pasta ORDER BY pasta
+      `);
+      return res.rows || res || [];
+    } catch {
+      return [];
+    }
+  }),
+  // Lista tags únicas do usuário
+  listTags: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    try {
+      const res = await db.execute(sql`
+        SELECT tags FROM notas
+        WHERE "userId" = ${ctx.user.id} AND "deletedAt" IS NULL AND tags != ''
+      `);
+      const rows = res.rows || res || [];
+      const allTags = /* @__PURE__ */ new Set();
+      rows.forEach((r) => {
+        if (r.tags) r.tags.split(",").forEach((t2) => {
+          const clean = t2.trim();
+          if (clean) allTags.add(clean);
+        });
+      });
+      return Array.from(allTags).sort();
+    } catch {
+      return [];
+    }
+  }),
+  // Duplicar nota
+  duplicate: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input, ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const res = await db.execute(sql`
+      INSERT INTO notas ("userId","empresaId","titulo","conteudo","pasta","tags","cor")
+      SELECT "userId","empresaId", titulo || ' (cópia)', conteudo, pasta, tags, cor
+      FROM notas WHERE id = ${input.id} AND "userId" = ${ctx.user.id}
+      RETURNING *
+    `);
+    const rows = res.rows || res || [];
+    return rows[0];
+  })
+});
+
 // routers.ts
 var appRouter = router({
   system: systemRouter,
   auth: authRouter,
   users: usersRouter,
   chat: chatRouter,
+  // Módulos existentes
   veiculos: veiculosRouter,
   checklists: checklistsRouter,
   funcionarios: funcionariosRouter,
@@ -77060,7 +81677,20 @@ var appRouter = router({
   documentos: documentosRouter,
   ia: iaRouter,
   recepcao: recepcaoRouter,
-  wms: wmsRouter
+  wms: wmsRouter,
+  // Novos módulos
+  crm: crmRouter,
+  vendas: vendasRouter,
+  auditoria: auditoriaRouter,
+  ti: tiRouter,
+  bi: biRouter,
+  ponto: pontoRouter,
+  conferencia: conferenciaRouter,
+  integracoes: integracoesRouter,
+  permissoes: permissoesRouter,
+  recepcionista: recepcionistaRouter,
+  logistica: logisticaRouter,
+  notas: notasRouter
 });
 
 // _core/context.ts
@@ -77081,7 +81711,7 @@ async function createContext(opts) {
 // index.ts
 var import_cors = __toESM(require_lib3());
 
-// node_modules/.pnpm/helmet@8.1.0/node_modules/helmet/index.mjs
+// node_modules/helmet/index.mjs
 var dangerouslyDisableDefaultSrc = /* @__PURE__ */ Symbol("dangerouslyDisableDefaultSrc");
 var SHOULD_BE_QUOTED = /* @__PURE__ */ new Set(["none", "self", "strict-dynamic", "report-sample", "inline-speculation-rules", "unsafe-inline", "unsafe-eval", "unsafe-hashes", "wasm-unsafe-eval"]);
 var getDefaultDirectives = () => ({
@@ -77623,6 +82253,1397 @@ var helmet = Object.assign(
   }
 );
 
+// inline_migrations.ts
+var MIGRATION_STATEMENTS = [
+  `CREATE TYPE "public"."categoria_conta_pagar" AS ENUM('combustivel', 'manutencao', 'salario', 'freelancer', 'pedagio', 'seguro', 'ipva', 'licenciamento', 'pneu', 'outro')`,
+  `CREATE TYPE "public"."categoria_conta_receber" AS ENUM('frete', 'cte', 'devolucao', 'outro')`,
+  `CREATE TYPE "public"."chat_message_type" AS ENUM('text', 'image', 'file')`,
+  `CREATE TYPE "public"."chat_role" AS ENUM('admin', 'member')`,
+  `CREATE TYPE "public"."forma_pagamento" AS ENUM('dinheiro', 'pix', 'transferencia', 'cartao')`,
+  `CREATE TYPE "public"."funcao" AS ENUM('motorista', 'ajudante', 'despachante', 'gerente', 'admin', 'outro')`,
+  `CREATE TYPE "public"."item_checklist" AS ENUM('conforme', 'nao_conforme', 'na')`,
+  `CREATE TYPE "public"."operacao_tanque" AS ENUM('entrada', 'saida')`,
+  `CREATE TYPE "public"."status_acidente" AS ENUM('aberto', 'em_reparo', 'resolvido')`,
+  `CREATE TYPE "public"."status_adiantamento" AS ENUM('pendente', 'acertado', 'cancelado')`,
+  `CREATE TYPE "public"."status_conta_pagar" AS ENUM('pendente', 'pago', 'vencido', 'cancelado')`,
+  `CREATE TYPE "public"."status_conta_receber" AS ENUM('pendente', 'recebido', 'vencido', 'cancelado')`,
+  `CREATE TYPE "public"."status_viagem" AS ENUM('planejada', 'em_andamento', 'concluida', 'cancelada')`,
+  `CREATE TYPE "public"."tipo_abastecimento" AS ENUM('interno', 'externo')`,
+  `CREATE TYPE "public"."tipo_checklist" AS ENUM('saida', 'retorno')`,
+  `CREATE TYPE "public"."tipo_cobranca" AS ENUM('diaria', 'mensal', 'por_viagem')`,
+  `CREATE TYPE "public"."tipo_combustivel" AS ENUM('diesel', 'arla', 'gasolina', 'etanol', 'gas', 'outro')`,
+  `CREATE TYPE "public"."tipo_conta" AS ENUM('corrente', 'poupanca', 'pix')`,
+  `CREATE TYPE "public"."tipo_contrato" AS ENUM('clt', 'freelancer', 'terceirizado', 'estagiario')`,
+  `CREATE TYPE "public"."tipo_despesa" AS ENUM('combustivel', 'pedagio', 'borracharia', 'estacionamento', 'oficina', 'telefone', 'descarga', 'diaria', 'alimentacao', 'outro')`,
+  `CREATE TYPE "public"."tipo_manutencao" AS ENUM('preventiva', 'corretiva', 'revisao', 'pneu', 'eletrica', 'funilaria', 'outro')`,
+  `CREATE TYPE "public"."tipo_tanque" AS ENUM('diesel', 'arla')`,
+  `CREATE TYPE "public"."tipo_veiculo" AS ENUM('van', 'toco', 'truck', 'cavalo', 'carreta', 'empilhadeira', 'paletera', 'outro')`,
+  `CREATE TYPE "public"."tipo_viagem" AS ENUM('entrega', 'viagem')`,
+  `CREATE TYPE "public"."turno" AS ENUM('manha', 'tarde', 'noite')`,
+  `CREATE TYPE "public"."user_role" AS ENUM('user', 'admin', 'master_admin', 'monitor', 'dispatcher')`,
+  `CREATE TABLE "abastecimentos" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"empresaId" integer NOT NULL,
+	"veiculoId" integer NOT NULL,
+	"motoristaId" integer,
+	"data" date NOT NULL,
+	"tipoCombustivel" "tipo_combustivel" NOT NULL,
+	"quantidade" numeric(8, 3) NOT NULL,
+	"valorUnitario" numeric(8, 3),
+	"valorTotal" numeric(10, 2),
+	"kmAtual" integer,
+	"kmRodado" integer,
+	"mediaConsumo" numeric(5, 2),
+	"local" varchar(255),
+	"tipoAbastecimento" "tipo_abastecimento" DEFAULT 'interno',
+	"notaFiscal" varchar(50),
+	"observacoes" text,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"deletedAt" timestamp,
+	"deletedBy" integer,
+	"deleteReason" text
+)`,
+  `CREATE TABLE "acidentes" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"empresaId" integer NOT NULL,
+	"veiculoId" integer NOT NULL,
+	"motoristaId" integer,
+	"data" date NOT NULL,
+	"local" varchar(255),
+	"descricao" text NOT NULL,
+	"boletimOcorrencia" varchar(50),
+	"valorDano" numeric(10, 2),
+	"status" "status_acidente" DEFAULT 'aberto' NOT NULL,
+	"observacoes" text,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"deletedAt" timestamp,
+	"deletedBy" integer,
+	"deleteReason" text
+)`,
+  `CREATE TABLE "adiantamentos" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"empresaId" integer NOT NULL,
+	"funcionarioId" integer NOT NULL,
+	"viagemId" integer,
+	"valor" numeric(10, 2) NOT NULL,
+	"formaPagamento" "forma_pagamento" NOT NULL,
+	"data" date NOT NULL,
+	"status" "status_adiantamento" DEFAULT 'pendente' NOT NULL,
+	"valorAcertado" numeric(10, 2),
+	"dataAcerto" date,
+	"saldo" numeric(10, 2),
+	"observacoes" text,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"deletedAt" timestamp,
+	"deletedBy" integer,
+	"deleteReason" text
+)`,
+  `CREATE TABLE "audit_log" (
+	"id" bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "audit_log_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 CACHE 1),
+	"empresaId" integer,
+	"userId" integer NOT NULL,
+	"userName" varchar(255),
+	"acao" varchar(50) NOT NULL,
+	"tabela" varchar(100) NOT NULL,
+	"registroId" integer NOT NULL,
+	"dadosAntes" text,
+	"dadosDepois" text,
+	"ip" varchar(45),
+	"userAgent" text,
+	"createdAt" timestamp DEFAULT now() NOT NULL
+)`,
+  `CREATE TABLE "chat_conversations" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"empresaId" integer NOT NULL,
+	"name" varchar(255),
+	"isGroup" boolean DEFAULT false NOT NULL,
+	"lastMessageAt" timestamp DEFAULT now() NOT NULL,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"deletedAt" timestamp
+)`,
+  `CREATE TABLE "chat_members" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"conversationId" integer NOT NULL,
+	"userId" integer NOT NULL,
+	"role" "chat_role" DEFAULT 'member' NOT NULL,
+	"joinedAt" timestamp DEFAULT now() NOT NULL,
+	"lastReadAt" timestamp DEFAULT now() NOT NULL
+)`,
+  `CREATE TABLE "chat_messages" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"conversationId" integer NOT NULL,
+	"senderId" integer NOT NULL,
+	"content" text NOT NULL,
+	"type" "chat_message_type" DEFAULT 'text' NOT NULL,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"deletedAt" timestamp
+)`,
+  `CREATE TABLE "checklists" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"empresaId" integer NOT NULL,
+	"veiculoId" integer NOT NULL,
+	"cavaloPrincipalId" integer,
+	"motoristaId" integer,
+	"turno" "turno",
+	"tipo" "tipo_checklist" DEFAULT 'retorno' NOT NULL,
+	"cracha" "item_checklist",
+	"cnh" "item_checklist",
+	"documentosVeiculo" "item_checklist",
+	"epi" "item_checklist",
+	"computadorBordo" "item_checklist",
+	"cinto" "item_checklist",
+	"banco" "item_checklist",
+	"direcao" "item_checklist",
+	"luzesPainel" "item_checklist",
+	"tacografo" "item_checklist",
+	"extintor" "item_checklist",
+	"portas" "item_checklist",
+	"limpador" "item_checklist",
+	"buzina" "item_checklist",
+	"freioDeMao" "item_checklist",
+	"alarmeCacamba" "item_checklist",
+	"cabineLimpa" "item_checklist",
+	"objetosSoltos" "item_checklist",
+	"pneus" "item_checklist",
+	"vazamentos" "item_checklist",
+	"trianguloCones" "item_checklist",
+	"espelhos" "item_checklist",
+	"lonaCarga" "item_checklist",
+	"faixasRefletivas" "item_checklist",
+	"luzesLaterais" "item_checklist",
+	"luzesFreio" "item_checklist",
+	"farol" "item_checklist",
+	"piscaAlerta" "item_checklist",
+	"re" "item_checklist",
+	"setas" "item_checklist",
+	"macacoEstepe" "item_checklist",
+	"lanternas" "item_checklist",
+	"itensNaoConformes" integer DEFAULT 0,
+	"observacoes" text,
+	"assinaturaMotorista" text,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"deletedAt" timestamp,
+	"deletedBy" integer,
+	"deleteReason" text
+)`,
+  `CREATE TABLE "contas_pagar" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"empresaId" integer NOT NULL,
+	"descricao" text NOT NULL,
+	"categoria" "categoria_conta_pagar" NOT NULL,
+	"valor" numeric(10, 2) NOT NULL,
+	"dataVencimento" date NOT NULL,
+	"dataPagamento" date,
+	"status" "status_conta_pagar" DEFAULT 'pendente' NOT NULL,
+	"fornecedor" varchar(255),
+	"notaFiscal" varchar(50),
+	"veiculoId" integer,
+	"funcionarioId" integer,
+	"viagemId" integer,
+	"comprovante" text,
+	"observacoes" text,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"deletedAt" timestamp,
+	"deletedBy" integer,
+	"deleteReason" text
+)`,
+  `CREATE TABLE "contas_receber" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"empresaId" integer NOT NULL,
+	"descricao" text NOT NULL,
+	"categoria" "categoria_conta_receber" NOT NULL,
+	"valor" numeric(10, 2) NOT NULL,
+	"dataVencimento" date NOT NULL,
+	"dataRecebimento" date,
+	"status" "status_conta_receber" DEFAULT 'pendente' NOT NULL,
+	"cliente" varchar(255),
+	"notaFiscal" varchar(50),
+	"cteNumero" varchar(50),
+	"viagemId" integer,
+	"observacoes" text,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"deletedAt" timestamp,
+	"deletedBy" integer,
+	"deleteReason" text
+)`,
+  `CREATE TABLE "controle_tanque" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"empresaId" integer NOT NULL,
+	"tipo" "tipo_tanque" NOT NULL,
+	"data" date NOT NULL,
+	"operacao" "operacao_tanque" NOT NULL,
+	"quantidade" numeric(8, 3) NOT NULL,
+	"valorUnitario" numeric(8, 3),
+	"valorTotal" numeric(10, 2),
+	"fornecedor" varchar(255),
+	"notaFiscal" varchar(50),
+	"veiculoId" integer,
+	"motoristaId" integer,
+	"saldoAnterior" numeric(8, 3),
+	"saldoAtual" numeric(8, 3),
+	"observacoes" text,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"deletedAt" timestamp,
+	"deletedBy" integer,
+	"deleteReason" text
+)`,
+  `CREATE TABLE "despesas_viagem" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"viagemId" integer NOT NULL,
+	"empresaId" integer NOT NULL,
+	"tipo" "tipo_despesa" NOT NULL,
+	"descricao" text,
+	"valor" numeric(10, 2) NOT NULL,
+	"data" date,
+	"comprovante" text,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"deletedAt" timestamp,
+	"deletedBy" integer,
+	"deleteReason" text
+)`,
+  `CREATE TABLE "empresas" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"nome" varchar(255) NOT NULL,
+	"cnpj" varchar(18),
+	"telefone" varchar(20),
+	"email" varchar(320),
+	"endereco" text,
+	"cidade" varchar(100),
+	"estado" varchar(2),
+	"ativo" boolean DEFAULT true NOT NULL,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"deletedAt" timestamp,
+	"deletedBy" integer,
+	"deleteReason" text
+)`,
+  `CREATE TABLE "funcionarios" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"empresaId" integer NOT NULL,
+	"nome" varchar(255) NOT NULL,
+	"cpf" varchar(14),
+	"rg" varchar(20),
+	"telefone" varchar(20),
+	"email" varchar(320),
+	"funcao" "funcao" NOT NULL,
+	"tipoContrato" "tipo_contrato" NOT NULL,
+	"salario" numeric(10, 2),
+	"dataAdmissao" date,
+	"dataDemissao" date,
+	"valorDiaria" numeric(10, 2),
+	"valorMensal" numeric(10, 2),
+	"tipoCobranca" "tipo_cobranca",
+	"dataInicioContrato" date,
+	"dataFimContrato" date,
+	"diaPagamento" integer,
+	"cnh" varchar(20),
+	"categoriaCnh" varchar(5),
+	"vencimentoCnh" date,
+	"mopp" boolean DEFAULT false,
+	"vencimentoMopp" date,
+	"vencimentoAso" date,
+	"banco" varchar(100),
+	"agencia" varchar(10),
+	"conta" varchar(20),
+	"tipoConta" "tipo_conta",
+	"chavePix" varchar(255),
+	"observacoes" text,
+	"foto" text,
+	"ativo" boolean DEFAULT true NOT NULL,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"deletedAt" timestamp,
+	"deletedBy" integer,
+	"deleteReason" text
+)`,
+  `CREATE TABLE "manutencoes" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"empresaId" integer NOT NULL,
+	"veiculoId" integer NOT NULL,
+	"data" date NOT NULL,
+	"tipo" "tipo_manutencao" NOT NULL,
+	"descricao" text NOT NULL,
+	"empresa" varchar(255),
+	"valor" numeric(10, 2),
+	"kmAtual" integer,
+	"proximaManutencaoKm" integer,
+	"proximaManutencaoData" date,
+	"notaFiscal" varchar(50),
+	"observacoes" text,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"deletedAt" timestamp,
+	"deletedBy" integer,
+	"deleteReason" text
+)`,
+  `CREATE TABLE "users" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"openId" varchar(64) NOT NULL,
+	"name" text,
+	"email" varchar(320),
+	"loginMethod" varchar(64),
+	"password" varchar(255),
+	"role" "user_role" DEFAULT 'user' NOT NULL,
+	"status" varchar(20) DEFAULT 'pending' NOT NULL,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"lastSignedIn" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "users_openId_unique" UNIQUE("openId")
+)`,
+  `CREATE TABLE "veiculos" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"empresaId" integer NOT NULL,
+	"placa" varchar(10) NOT NULL,
+	"tipo" "tipo_veiculo" NOT NULL,
+	"cavaloPrincipalId" integer,
+	"marca" varchar(100),
+	"modelo" varchar(100),
+	"ano" integer,
+	"cor" varchar(50),
+	"renavam" varchar(20),
+	"chassi" varchar(30),
+	"capacidadeCarga" numeric(8, 2),
+	"motoristaId" integer,
+	"ajudanteId" integer,
+	"kmAtual" integer,
+	"mediaConsumo" numeric(5, 2),
+	"vencimentoCrlv" date,
+	"vencimentoSeguro" date,
+	"classificacao" integer DEFAULT 0,
+	"observacoes" text,
+	"ativo" boolean DEFAULT true NOT NULL,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"deletedAt" timestamp,
+	"deletedBy" integer,
+	"deleteReason" text
+)`,
+  `CREATE TABLE "viagens" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"empresaId" integer NOT NULL,
+	"tipo" "tipo_viagem" DEFAULT 'viagem' NOT NULL,
+	"veiculoId" integer NOT NULL,
+	"cavaloPrincipalId" integer,
+	"motoristaId" integer,
+	"ajudante1Id" integer,
+	"ajudante2Id" integer,
+	"ajudante3Id" integer,
+	"origem" varchar(255),
+	"destino" varchar(255),
+	"dataSaida" timestamp,
+	"dataChegada" timestamp,
+	"kmSaida" integer,
+	"kmChegada" integer,
+	"kmRodado" integer,
+	"descricaoCarga" text,
+	"tipoCarga" text,
+	"pesoCarga" numeric(8, 2),
+	"freteTotalIda" numeric(10, 2),
+	"freteTotalVolta" numeric(10, 2),
+	"freteTotal" numeric(10, 2),
+	"adiantamento" numeric(10, 2),
+	"saldoViagem" numeric(10, 2),
+	"totalDespesas" numeric(10, 2),
+	"mediaConsumo" numeric(5, 2),
+	"notaFiscal" varchar(50),
+	"status" "status_viagem" DEFAULT 'planejada' NOT NULL,
+	"observacoes" text,
+	"teveProblema" boolean DEFAULT false,
+	"voltouComCarga" boolean DEFAULT false,
+	"observacoesChegada" text,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"deletedAt" timestamp,
+	"deletedBy" integer,
+	"deleteReason" text
+)`,
+  `EXCEPTION
+  WHEN duplicate_object THEN null`,
+  `END $$`,
+  `CREATE TABLE IF NOT EXISTS "notas_fiscais_viagem" (
+  "id"                SERIAL PRIMARY KEY,
+  "empresaId"         INTEGER NOT NULL,
+  "viagemId"          INTEGER NOT NULL,
+  "numeroNf"          VARCHAR(20) NOT NULL,
+  "serie"             VARCHAR(5),
+  "chaveAcesso"       VARCHAR(44),
+  "destinatario"      VARCHAR(255),
+  "cnpjDestinatario"  VARCHAR(18),
+  "enderecoEntrega"   VARCHAR(500),
+  "cidade"            VARCHAR(100),
+  "uf"                VARCHAR(2),
+  "valorNf"           DECIMAL(12, 2),
+  "pesoKg"            DECIMAL(8, 2),
+  "volumes"           INTEGER,
+  "status"            "status_nf" NOT NULL DEFAULT 'pendente',
+  "dataCanhoto"       TIMESTAMP,
+  "dataEntrega"       TIMESTAMP,
+  "recebidoPor"       VARCHAR(255),
+  "motivoDevolucao"   TEXT,
+  "observacoes"       TEXT,
+  "ordemEntrega"      INTEGER,
+  "createdAt"         TIMESTAMP NOT NULL DEFAULT NOW(),
+  "updatedAt"         TIMESTAMP NOT NULL DEFAULT NOW(),
+  "deletedAt"         TIMESTAMP
+)`,
+  `CREATE INDEX IF NOT EXISTS "idx_nfv_viagem" ON "notas_fiscais_viagem" ("viagemId")`,
+  `CREATE INDEX IF NOT EXISTS "idx_nfv_empresa" ON "notas_fiscais_viagem" ("empresaId")`,
+  `CREATE INDEX IF NOT EXISTS "idx_nfv_numero" ON "notas_fiscais_viagem" ("numeroNf")`,
+  `ALTER TABLE empresas ADD COLUMN matrizId INTEGER`,
+  `CREATE TYPE "status_pneu" AS ENUM('novo', 'em_uso', 'recapado', 'sucata', 'estoque')`,
+  `CREATE TABLE IF NOT EXISTS "pneus" (
+"id" serial PRIMARY KEY NOT NULL,
+"empresaId" integer NOT NULL,
+"numeroSerie" varchar(50) NOT NULL,
+"marca" varchar(100),
+"modelo" varchar(100),
+"medida" varchar(50),
+"kmInicial" integer DEFAULT 0,
+"kmAtual" integer DEFAULT 0,
+"status" "status_pneu" DEFAULT 'novo' NOT NULL,
+"veiculoId" integer,
+"posicao" varchar(50),
+"dataAquisicao" date,
+"valorAquisicao" numeric(10, 2),
+"observacoes" text,
+"createdAt" timestamp DEFAULT now() NOT NULL,
+"updatedAt" timestamp DEFAULT now() NOT NULL,
+"deletedAt" timestamp,
+"deletedBy" integer,
+"deleteReason" text
+)`,
+  `CREATE TABLE IF NOT EXISTS "historico_pneus" (
+"id" serial PRIMARY KEY NOT NULL,
+"empresaId" integer NOT NULL,
+"pneuId" integer NOT NULL,
+"data" timestamp DEFAULT now() NOT NULL,
+"tipo" varchar(50) NOT NULL,
+"veiculoId" integer,
+"posicao" varchar(50),
+"kmVeiculo" integer,
+"kmPneu" integer,
+"custo" numeric(10, 2),
+"observacoes" text,
+"createdAt" timestamp DEFAULT now() NOT NULL
+)`,
+  `CREATE TYPE "tipo_documento" AS ENUM('cnh', 'crlv', 'aso', 'mopp', 'nota_fiscais', 'seguro', 'licenciamento', 'contrato', 'outro')`,
+  `CREATE TABLE IF NOT EXISTS "documentos" (
+"id" serial PRIMARY KEY NOT NULL,
+"empresaId" integer NOT NULL,
+"tipo" "tipo_documento" NOT NULL,
+"nome" varchar(255) NOT NULL,
+"url" text NOT NULL,
+"extensao" varchar(10),
+"tamanho" integer,
+"veiculoId" integer,
+"funcionarioId" integer,
+"viagemId" integer,
+"manutencaoId" integer,
+"dataVencimento" date,
+"observacoes" text,
+"createdAt" timestamp DEFAULT now() NOT NULL,
+"updatedAt" timestamp DEFAULT now() NOT NULL,
+"deletedAt" timestamp,
+"deletedBy" integer
+)`,
+  `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "phone" varchar(20)`,
+  `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "empresaId" integer`,
+  `END IF`,
+  `END$$`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "ciclo_cobranca" AS ENUM ('mensal','trimestral','semestral','anual')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "forma_pagamento_saas" AS ENUM ('cartao_credito','boleto','pix','transferencia')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "ia_agente_setor" AS ENUM ('master','financeiro','frota','motorista','manutencao','juridico','recepcao','wms','rh','ti','comercial','marketing')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "plano_cod" AS ENUM ('starter','professional','enterprise','custom')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "prioridade_sac" AS ENUM ('baixa','media','alta','urgente')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "prioridade_ticket_ti" AS ENUM ('baixa','media','alta','critica')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "status_acerto_carga" AS ENUM ('pendente','em_analise','aprovado','rejeitado','cancelado')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "status_carregamento" AS ENUM ('planejado','em_carregamento','carregado','em_transito','entregue','cancelado')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "status_cobranca" AS ENUM ('pendente','pago','atrasado','cancelado','estornado')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "status_conferencia" AS ENUM ('saida_registrada','em_viagem','retorno_registrado','em_conferencia','aguardando_motorista','confirmado_motorista','finalizado')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "status_integracao" AS ENUM ('ativa','inativa','erro','configurando')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "status_item_recebimento" AS ENUM ('pendente','conferido','divergente','recusado')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "status_lead" AS ENUM ('novo','contatado','qualificado','proposta','negociacao','ganho','perdido','inativo')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "status_licenca" AS ENUM ('ativa','suspensa','cancelada','trial','expirada')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "status_licenca_log" AS ENUM ('ativada','suspensa','cancelada','reativada','atualizada','expirada')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "status_pedido" AS ENUM ('rascunho','enviado','aprovado','em_separacao','expedido','entregue','cancelado')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "status_proposta" AS ENUM ('rascunho','enviada','em_analise','aprovada','rejeitada','expirada')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "status_recebimento" AS ENUM ('agendado','em_andamento','concluido','divergente','cancelado')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "status_sac" AS ENUM ('aberto','em_andamento','aguardando_cliente','resolvido','fechado','reaberto')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "status_ticket_ti" AS ENUM ('aberto','em_andamento','aguardando','resolvido','fechado')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "status_visitante" AS ENUM ('aguardando','em_visita','finalizado','cancelado')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "tipo_empresa" AS ENUM ('matriz','filial','grupo','franquia','parceiro')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "tipo_evento_auditoria" AS ENUM ('login','logout','create','update','delete','restore','export','import','permission_change','config_change','access_denied','password_change','role_change')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "tipo_movimentacao_estoque" AS ENUM ('entrada','saida','transferencia','ajuste','inventario','devolucao','perda')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "tipo_ponto" AS ENUM ('entrada','saida','inicio_intervalo','fim_intervalo')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `DO $$ BEGIN
+  CREATE TYPE "tipo_recebimento" AS ENUM ('compra','devolucao','transferencia','bonificacao')`,
+  `EXCEPTION WHEN duplicate_object THEN NULL`,
+  `END $$`,
+  `CREATE TABLE IF NOT EXISTS "grupo_empresas" (
+  "id" SERIAL PRIMARY KEY,
+  "grupoId" INTEGER NOT NULL,
+  "empresaId" INTEGER NOT NULL,
+  "papel" VARCHAR(20) NOT NULL DEFAULT 'filial',
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "licencas" (
+  "id" SERIAL PRIMARY KEY,
+  "empresaId" INTEGER NOT NULL,
+  "planoId" INTEGER,
+  "status" "status_licenca" NOT NULL DEFAULT 'trial',
+  "dataInicio" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "dataFim" TIMESTAMP,
+  "trialAte" TIMESTAMP,
+  "usuariosAtivos" INTEGER DEFAULT 0,
+  "limiteUsuarios" INTEGER DEFAULT 5,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "cobrancas" (
+  "id" SERIAL PRIMARY KEY,
+  "empresaId" INTEGER NOT NULL,
+  "licencaId" INTEGER,
+  "valor" VARCHAR(20) NOT NULL,
+  "status" "status_cobranca" NOT NULL DEFAULT 'pendente',
+  "formaPagamento" "forma_pagamento_saas",
+  "vencimento" TIMESTAMP,
+  "pago" BOOLEAN NOT NULL DEFAULT FALSE,
+  "dataPagamento" TIMESTAMP,
+  "referencia" VARCHAR(100),
+  "linkPagamento" TEXT,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "licencas_regulatorias" (
+  "id" SERIAL PRIMARY KEY,
+  "empresaId" INTEGER NOT NULL,
+  "tipo" VARCHAR(100) NOT NULL,
+  "numero" VARCHAR(100),
+  "orgaoEmissor" VARCHAR(100),
+  "dataEmissao" TIMESTAMP,
+  "dataVencimento" TIMESTAMP,
+  "status" "status_licenca" NOT NULL DEFAULT 'ativa',
+  "arquivo" TEXT,
+  "observacoes" TEXT,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "user_permissoes" (
+  "id" SERIAL PRIMARY KEY,
+  "userId" INTEGER NOT NULL,
+  "empresaId" INTEGER NOT NULL,
+  "modulo" VARCHAR(100) NOT NULL,
+  "podeVer" BOOLEAN NOT NULL DEFAULT FALSE,
+  "podeCriar" BOOLEAN NOT NULL DEFAULT FALSE,
+  "podeEditar" BOOLEAN NOT NULL DEFAULT FALSE,
+  "podeDeletar" BOOLEAN NOT NULL DEFAULT FALSE,
+  "podeExportar" BOOLEAN NOT NULL DEFAULT FALSE,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "etapas_funil" (
+  "id" SERIAL PRIMARY KEY,
+  "funilId" INTEGER NOT NULL,
+  "empresaId" INTEGER NOT NULL,
+  "nome" VARCHAR(255) NOT NULL,
+  "cor" VARCHAR(20) DEFAULT '#3b82f6',
+  "posicao" INTEGER NOT NULL DEFAULT 0,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "negociacoes" (
+  "id" SERIAL PRIMARY KEY,
+  "empresaId" INTEGER NOT NULL,
+  "funilId" INTEGER NOT NULL,
+  "etapaId" INTEGER NOT NULL,
+  "clienteId" INTEGER,
+  "leadId" INTEGER,
+  "titulo" VARCHAR(255) NOT NULL,
+  "valor" VARCHAR(20) DEFAULT '0',
+  "responsavelId" INTEGER,
+  "probabilidade" INTEGER DEFAULT 50,
+  "previsaoFechamento" TIMESTAMP,
+  "motivoPerda" TEXT,
+  "ganho" BOOLEAN,
+  "observacoes" TEXT,
+  "createdBy" INTEGER,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "deletedAt" TIMESTAMP
+)`,
+  `CREATE TABLE IF NOT EXISTS "atividades_funil" (
+  "id" SERIAL PRIMARY KEY,
+  "empresaId" INTEGER NOT NULL,
+  "negociacaoId" INTEGER NOT NULL,
+  "tipo" VARCHAR(50) NOT NULL,
+  "titulo" VARCHAR(255) NOT NULL,
+  "descricao" TEXT,
+  "dataAgendada" TIMESTAMP,
+  "concluida" BOOLEAN NOT NULL DEFAULT FALSE,
+  "userId" INTEGER,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "itens_pedido" (
+  "id" SERIAL PRIMARY KEY,
+  "pedidoId" INTEGER NOT NULL,
+  "produtoId" INTEGER,
+  "descricao" VARCHAR(255) NOT NULL,
+  "quantidade" VARCHAR(20) NOT NULL,
+  "valorUnitario" VARCHAR(20) NOT NULL,
+  "valorTotal" VARCHAR(20) NOT NULL,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "propostas" (
+  "id" SERIAL PRIMARY KEY,
+  "empresaId" INTEGER NOT NULL,
+  "clienteId" INTEGER,
+  "leadId" INTEGER,
+  "numero" VARCHAR(30) NOT NULL,
+  "titulo" VARCHAR(255) NOT NULL,
+  "status" "status_proposta" NOT NULL DEFAULT 'rascunho',
+  "valorTotal" VARCHAR(20) DEFAULT '0',
+  "validade" TIMESTAMP,
+  "descricao" TEXT,
+  "condicoes" TEXT,
+  "vendedorId" INTEGER,
+  "createdBy" INTEGER,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "deletedAt" TIMESTAMP
+)`,
+  `CREATE TABLE IF NOT EXISTS "comissoes" (
+  "id" SERIAL PRIMARY KEY,
+  "empresaId" INTEGER NOT NULL,
+  "vendedorId" INTEGER NOT NULL,
+  "pedidoId" INTEGER,
+  "percentual" VARCHAR(10) NOT NULL,
+  "valorBase" VARCHAR(20) NOT NULL,
+  "valorComissao" VARCHAR(20) NOT NULL,
+  "pago" BOOLEAN NOT NULL DEFAULT FALSE,
+  "dataPagamento" TIMESTAMP,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "docas" (
+  "id" SERIAL PRIMARY KEY,
+  "armazemId" INTEGER NOT NULL,
+  "empresaId" INTEGER NOT NULL,
+  "nome" VARCHAR(100) NOT NULL,
+  "tipo" VARCHAR(50) DEFAULT 'recebimento',
+  "status" VARCHAR(50) DEFAULT 'livre',
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "produtos" (
+  "id" SERIAL PRIMARY KEY,
+  "empresaId" INTEGER NOT NULL,
+  "codigo" VARCHAR(100) NOT NULL,
+  "codigoBarras" VARCHAR(100),
+  "nome" VARCHAR(255) NOT NULL,
+  "descricao" TEXT,
+  "categoria" VARCHAR(100),
+  "unidade" VARCHAR(20) DEFAULT 'UN',
+  "pesoKg" VARCHAR(20),
+  "volumeM3" VARCHAR(20),
+  "valorCusto" VARCHAR(20),
+  "valorVenda" VARCHAR(20),
+  "estoqueMinimo" INTEGER DEFAULT 0,
+  "estoqueMaximo" INTEGER,
+  "ativo" BOOLEAN NOT NULL DEFAULT TRUE,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "deletedAt" TIMESTAMP
+)`,
+  `CREATE TABLE IF NOT EXISTS "estoque" (
+  "id" SERIAL PRIMARY KEY,
+  "empresaId" INTEGER NOT NULL,
+  "armazemId" INTEGER NOT NULL,
+  "produtoId" INTEGER NOT NULL,
+  "quantidade" INTEGER NOT NULL DEFAULT 0,
+  "quantidadeReservada" INTEGER NOT NULL DEFAULT 0,
+  "localizacao" VARCHAR(100),
+  "lote" VARCHAR(100),
+  "dataValidade" TIMESTAMP,
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "movimentacoes_estoque" (
+  "id" SERIAL PRIMARY KEY,
+  "empresaId" INTEGER NOT NULL,
+  "armazemId" INTEGER NOT NULL,
+  "produtoId" INTEGER NOT NULL,
+  "tipo" "tipo_movimentacao_estoque" NOT NULL,
+  "quantidade" INTEGER NOT NULL,
+  "quantidadeAntes" INTEGER NOT NULL DEFAULT 0,
+  "quantidadeDepois" INTEGER NOT NULL DEFAULT 0,
+  "motivo" TEXT,
+  "documentoRef" VARCHAR(100),
+  "userId" INTEGER,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "localizacoes" (
+  "id" SERIAL PRIMARY KEY,
+  "armazemId" INTEGER NOT NULL,
+  "empresaId" INTEGER NOT NULL,
+  "rua" VARCHAR(20),
+  "bloco" VARCHAR(20),
+  "nivel" VARCHAR(20),
+  "posicao" VARCHAR(20),
+  "codigo" VARCHAR(50) NOT NULL,
+  "tipo" VARCHAR(50) DEFAULT 'padrao',
+  "capacidade" INTEGER,
+  "ocupado" BOOLEAN NOT NULL DEFAULT FALSE,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "recebimentos" (
+  "id" SERIAL PRIMARY KEY,
+  "empresaId" INTEGER NOT NULL,
+  "armazemId" INTEGER NOT NULL,
+  "docaId" INTEGER,
+  "tipo" "tipo_recebimento" NOT NULL DEFAULT 'compra',
+  "status" "status_recebimento" NOT NULL DEFAULT 'agendado',
+  "fornecedor" VARCHAR(255),
+  "notaFiscal" VARCHAR(100),
+  "dataAgendada" TIMESTAMP,
+  "dataInicio" TIMESTAMP,
+  "dataConclusao" TIMESTAMP,
+  "responsavelId" INTEGER,
+  "observacoes" TEXT,
+  "createdBy" INTEGER,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "itens_recebimento" (
+  "id" SERIAL PRIMARY KEY,
+  "recebimentoId" INTEGER NOT NULL,
+  "produtoId" INTEGER,
+  "descricao" VARCHAR(255) NOT NULL,
+  "quantidadeEsperada" INTEGER NOT NULL,
+  "quantidadeRecebida" INTEGER DEFAULT 0,
+  "status" "status_item_recebimento" NOT NULL DEFAULT 'pendente',
+  "observacoes" TEXT,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "carregamentos" (
+  "id" SERIAL PRIMARY KEY,
+  "empresaId" INTEGER NOT NULL,
+  "armazemId" INTEGER NOT NULL,
+  "docaId" INTEGER,
+  "status" "status_carregamento" NOT NULL DEFAULT 'planejado',
+  "veiculoId" INTEGER,
+  "motoristaId" INTEGER,
+  "dataAgendada" TIMESTAMP,
+  "dataInicio" TIMESTAMP,
+  "dataConclusao" TIMESTAMP,
+  "responsavelId" INTEGER,
+  "observacoes" TEXT,
+  "createdBy" INTEGER,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "itens_carregamento" (
+  "id" SERIAL PRIMARY KEY,
+  "carregamentoId" INTEGER NOT NULL,
+  "produtoId" INTEGER,
+  "descricao" VARCHAR(255) NOT NULL,
+  "quantidade" INTEGER NOT NULL,
+  "quantidadeCarregada" INTEGER DEFAULT 0,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "acertos_carga" (
+  "id" SERIAL PRIMARY KEY,
+  "empresaId" INTEGER NOT NULL,
+  "carregamentoId" INTEGER,
+  "motoristaId" INTEGER,
+  "status" "status_acerto_carga" NOT NULL DEFAULT 'pendente',
+  "valorAdiantado" VARCHAR(20),
+  "valorDespesas" VARCHAR(20),
+  "comprovantes" TEXT,
+  "observacoes" TEXT,
+  "aprovadoPor" INTEGER,
+  "createdBy" INTEGER,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "ativos_ti" (
+  "id" SERIAL PRIMARY KEY,
+  "empresaId" INTEGER NOT NULL,
+  "tipo" VARCHAR(100) NOT NULL,
+  "marca" VARCHAR(100),
+  "modelo" VARCHAR(100),
+  "patrimonio" VARCHAR(50),
+  "serial" VARCHAR(100),
+  "responsavelId" INTEGER,
+  "setor" VARCHAR(100),
+  "status" VARCHAR(50) NOT NULL DEFAULT 'ativo',
+  "dataAquisicao" TIMESTAMP,
+  "garantiaAte" TIMESTAMP,
+  "observacoes" TEXT,
+  "anydesk" VARCHAR(50),
+  "sistemaOperacional" VARCHAR(100),
+  "processador" VARCHAR(100),
+  "memoriaRam" VARCHAR(50),
+  "armazenamento" VARCHAR(100),
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "deletedAt" TIMESTAMP
+)`,
+  `CREATE TABLE IF NOT EXISTS "bi_widgets" (
+  "id" SERIAL PRIMARY KEY,
+  "dashboardId" INTEGER NOT NULL,
+  "empresaId" INTEGER NOT NULL,
+  "titulo" VARCHAR(255) NOT NULL,
+  "tipo" VARCHAR(50) NOT NULL,
+  "fonte" VARCHAR(100) NOT NULL,
+  "metrica" VARCHAR(100) NOT NULL,
+  "filtros" TEXT,
+  "posicao" INTEGER DEFAULT 0,
+  "largura" INTEGER DEFAULT 6,
+  "altura" INTEGER DEFAULT 4,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "ia_sessoes" (
+  "id" SERIAL PRIMARY KEY,
+  "empresaId" INTEGER NOT NULL,
+  "userId" INTEGER NOT NULL,
+  "agenteId" INTEGER,
+  "titulo" VARCHAR(255),
+  "ativa" BOOLEAN NOT NULL DEFAULT TRUE,
+  "totalMensagens" INTEGER NOT NULL DEFAULT 0,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "ia_mensagens" (
+  "id" SERIAL PRIMARY KEY,
+  "sessaoId" INTEGER NOT NULL,
+  "empresaId" INTEGER NOT NULL,
+  "role" VARCHAR(20) NOT NULL DEFAULT 'user',
+  "content" TEXT NOT NULL,
+  "tokens" INTEGER,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "ia_conhecimento" (
+  "id" SERIAL PRIMARY KEY,
+  "empresaId" INTEGER NOT NULL,
+  "titulo" VARCHAR(255) NOT NULL,
+  "conteudo" TEXT NOT NULL,
+  "categoria" VARCHAR(100),
+  "tags" TEXT,
+  "ativo" BOOLEAN NOT NULL DEFAULT TRUE,
+  "createdBy" INTEGER,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "log_integracoes" (
+  "id" BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "integracaoId" INTEGER NOT NULL,
+  "empresaId" INTEGER NOT NULL,
+  "direcao" VARCHAR(10) NOT NULL,
+  "endpoint" VARCHAR(500),
+  "payload" TEXT,
+  "resposta" TEXT,
+  "statusCode" INTEGER,
+  "sucesso" BOOLEAN NOT NULL DEFAULT TRUE,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "winthor_sync" (
+  "id" SERIAL PRIMARY KEY,
+  "empresaId" INTEGER NOT NULL,
+  "integracaoId" INTEGER NOT NULL,
+  "tabelaOrigem" VARCHAR(100) NOT NULL,
+  "tabelaDestino" VARCHAR(100) NOT NULL,
+  "ultimoId" INTEGER DEFAULT 0,
+  "ultimaSincronizacao" TIMESTAMP,
+  "registrosSincronizados" INTEGER DEFAULT 0,
+  "ativo" BOOLEAN NOT NULL DEFAULT TRUE,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "visitas" (
+  "id" SERIAL PRIMARY KEY,
+  "visitanteId" INTEGER NOT NULL,
+  "empresaId" INTEGER NOT NULL,
+  "entrada" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "saida" TIMESTAMP,
+  "observacoes" TEXT,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "chamados_sac" (
+  "id" SERIAL PRIMARY KEY,
+  "empresaId" INTEGER NOT NULL,
+  "protocolo" VARCHAR(20) NOT NULL,
+  "clienteId" INTEGER,
+  "clienteNome" VARCHAR(255),
+  "canal" VARCHAR(50) DEFAULT 'telefone',
+  "assunto" VARCHAR(255) NOT NULL,
+  "descricao" TEXT NOT NULL,
+  "status" "status_sac" NOT NULL DEFAULT 'aberto',
+  "prioridade" "prioridade_sac" NOT NULL DEFAULT 'media',
+  "responsavelId" INTEGER,
+  "resolucao" TEXT,
+  "resolvidoEm" TIMESTAMP,
+  "nps" INTEGER,
+  "createdBy" INTEGER,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "interacoes_sac" (
+  "id" SERIAL PRIMARY KEY,
+  "chamadoId" INTEGER NOT NULL,
+  "userId" INTEGER NOT NULL,
+  "mensagem" TEXT NOT NULL,
+  "interno" BOOLEAN NOT NULL DEFAULT FALSE,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "banco_horas" (
+  "id" SERIAL PRIMARY KEY,
+  "empresaId" INTEGER NOT NULL,
+  "funcionarioId" INTEGER NOT NULL,
+  "data" DATE NOT NULL,
+  "horasTrabalhadas" VARCHAR(10),
+  "horasExtras" VARCHAR(10),
+  "horasDevidas" VARCHAR(10),
+  "saldo" VARCHAR(10),
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "fotos_conferencia" (
+  "id" SERIAL PRIMARY KEY,
+  "conferenciaId" INTEGER NOT NULL,
+  "empresaId" INTEGER NOT NULL,
+  "tipo" VARCHAR(50) NOT NULL,
+  "descricao" VARCHAR(255),
+  "url" TEXT NOT NULL,
+  "momento" VARCHAR(20) NOT NULL,
+  "uploadedBy" INTEGER,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE TABLE IF NOT EXISTS "itens_conferencia" (
+  "id" SERIAL PRIMARY KEY,
+  "conferenciaId" INTEGER NOT NULL,
+  "item" VARCHAR(255) NOT NULL,
+  "conforme" BOOLEAN,
+  "observacao" TEXT,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+)`,
+  `CREATE INDEX IF NOT EXISTS idx_leads_empresa ON "leads"("empresaId")`,
+  `CREATE INDEX IF NOT EXISTS idx_leads_status ON "leads"("status")`,
+  `CREATE INDEX IF NOT EXISTS idx_negociacoes_empresa ON "negociacoes"("empresaId")`,
+  `CREATE INDEX IF NOT EXISTS idx_negociacoes_funil ON "negociacoes"("funilId")`,
+  `CREATE INDEX IF NOT EXISTS idx_pedidos_empresa ON "pedidos"("empresaId")`,
+  `CREATE INDEX IF NOT EXISTS idx_estoque_empresa ON "estoque"("empresaId")`,
+  `CREATE INDEX IF NOT EXISTS idx_estoque_produto ON "estoque"("produtoId")`,
+  `CREATE INDEX IF NOT EXISTS idx_tickets_ti_empresa ON "tickets_ti"("empresaId")`,
+  `CREATE INDEX IF NOT EXISTS idx_tickets_ti_status ON "tickets_ti"("status")`,
+  `CREATE INDEX IF NOT EXISTS idx_ativos_ti_empresa ON "ativos_ti"("empresaId")`,
+  `CREATE INDEX IF NOT EXISTS idx_ia_sessoes_empresa ON "ia_sessoes"("empresaId")`,
+  `CREATE INDEX IF NOT EXISTS idx_ia_mensagens_sessao ON "ia_mensagens"("sessaoId")`,
+  `CREATE INDEX IF NOT EXISTS idx_auditoria_empresa ON "auditoria_detalhada"("empresaId")`,
+  `CREATE INDEX IF NOT EXISTS idx_auditoria_user ON "auditoria_detalhada"("userId")`,
+  `CREATE INDEX IF NOT EXISTS idx_registros_ponto_empresa ON "registros_ponto"("empresaId")`,
+  `CREATE INDEX IF NOT EXISTS idx_registros_ponto_funcionario ON "registros_ponto"("funcionarioId")`,
+  `CREATE INDEX IF NOT EXISTS idx_integracoes_empresa ON "integracoes"("empresaId")`,
+  `CREATE INDEX IF NOT EXISTS idx_chamados_sac_empresa ON "chamados_sac"("empresaId")`,
+  `CREATE INDEX IF NOT EXISTS idx_visitantes_empresa ON "visitantes"("empresaId")`,
+  `CREATE INDEX IF NOT EXISTS idx_conferencia_empresa ON "conferencia_veiculos"("empresaId")`,
+  `CREATE INDEX IF NOT EXISTS idx_bi_dashboards_empresa ON "bi_dashboards"("empresaId")`,
+  // ─── TI EXPANDIDO ─────────────────────────────────────────────────────────
+  `CREATE TABLE IF NOT EXISTS "ticket_mensagens" (
+    "id" serial PRIMARY KEY NOT NULL,
+    "ticketId" integer NOT NULL,
+    "empresaId" integer NOT NULL,
+    "autorId" integer NOT NULL,
+    "conteudo" text,
+    "tipo" varchar(20) DEFAULT 'texto' NOT NULL,
+    "fileUrl" text,
+    "fileName" varchar(255),
+    "fileType" varchar(100),
+    "interno" boolean DEFAULT false NOT NULL,
+    "createdAt" timestamp DEFAULT now() NOT NULL
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_ticket_mensagens_ticket ON "ticket_mensagens"("ticketId")`,
+  `CREATE INDEX IF NOT EXISTS idx_ticket_mensagens_empresa ON "ticket_mensagens"("empresaId")`,
+  `CREATE TABLE IF NOT EXISTS "licencas_ti" (
+    "id" serial PRIMARY KEY NOT NULL,
+    "empresaId" integer NOT NULL,
+    "software" varchar(200) NOT NULL,
+    "fabricante" varchar(200),
+    "tipo" varchar(50) DEFAULT 'assinatura' NOT NULL,
+    "totalLicencas" integer DEFAULT 1 NOT NULL,
+    "licencasUsadas" integer DEFAULT 0 NOT NULL,
+    "chave" text,
+    "dataCompra" date,
+    "dataExpiracao" date,
+    "custoMensal" numeric(10,2) DEFAULT 0,
+    "custoAnual" numeric(10,2) DEFAULT 0,
+    "fornecedor" varchar(200),
+    "observacoes" text,
+    "ativo" boolean DEFAULT true NOT NULL,
+    "createdAt" timestamp DEFAULT now() NOT NULL,
+    "updatedAt" timestamp DEFAULT now() NOT NULL,
+    "deletedAt" timestamp
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_licencas_ti_empresa ON "licencas_ti"("empresaId")`,
+  `CREATE TABLE IF NOT EXISTS "servidores_ti" (
+    "id" serial PRIMARY KEY NOT NULL,
+    "empresaId" integer NOT NULL,
+    "nome" varchar(200) NOT NULL,
+    "tipo" varchar(50) DEFAULT 'fisico' NOT NULL,
+    "ip" varchar(50),
+    "so" varchar(100),
+    "cpu" varchar(100),
+    "ramGb" integer,
+    "discoGb" integer,
+    "localizacao" varchar(200),
+    "funcao" varchar(200),
+    "status" varchar(50) DEFAULT 'online' NOT NULL,
+    "cpuUso" integer DEFAULT 0,
+    "ramUso" integer DEFAULT 0,
+    "discoUso" integer DEFAULT 0,
+    "temperatura" integer DEFAULT 0,
+    "ultimoPing" timestamp,
+    "observacoes" text,
+    "ativo" boolean DEFAULT true NOT NULL,
+    "createdAt" timestamp DEFAULT now() NOT NULL,
+    "updatedAt" timestamp DEFAULT now() NOT NULL,
+    "deletedAt" timestamp
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_servidores_ti_empresa ON "servidores_ti"("empresaId")`,
+  `CREATE TABLE IF NOT EXISTS "acessos_remotos_ti" (
+    "id" serial PRIMARY KEY NOT NULL,
+    "empresaId" integer NOT NULL,
+    "maquina" varchar(200) NOT NULL,
+    "setor" varchar(100),
+    "responsavelId" integer,
+    "anydesk" varchar(50),
+    "teamviewer" varchar(50),
+    "rdp" varchar(100),
+    "vpn" varchar(100),
+    "ultimaSessao" timestamp,
+    "observacoes" text,
+    "ativo" boolean DEFAULT true NOT NULL,
+    "createdAt" timestamp DEFAULT now() NOT NULL,
+    "updatedAt" timestamp DEFAULT now() NOT NULL,
+    "deletedAt" timestamp
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_acessos_remotos_empresa ON "acessos_remotos_ti"("empresaId")`,
+  `CREATE TABLE IF NOT EXISTS "compras_ti" (
+    "id" serial PRIMARY KEY NOT NULL,
+    "empresaId" integer NOT NULL,
+    "solicitanteId" integer NOT NULL,
+    "titulo" varchar(255) NOT NULL,
+    "descricao" text,
+    "categoria" varchar(100) DEFAULT 'hardware',
+    "quantidade" integer DEFAULT 1 NOT NULL,
+    "valorUnitario" numeric(10,2),
+    "valorTotal" numeric(10,2),
+    "fornecedor" varchar(200),
+    "status" varchar(50) DEFAULT 'solicitado' NOT NULL,
+    "prioridade" varchar(20) DEFAULT 'media' NOT NULL,
+    "aprovadoPor" integer,
+    "aprovadoEm" timestamp,
+    "observacoes" text,
+    "createdAt" timestamp DEFAULT now() NOT NULL,
+    "updatedAt" timestamp DEFAULT now() NOT NULL,
+    "deletedAt" timestamp
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_compras_ti_empresa ON "compras_ti"("empresaId")`,
+  `CREATE TABLE IF NOT EXISTS "cmdb_ti" (
+    "id" serial PRIMARY KEY NOT NULL,
+    "empresaId" integer NOT NULL,
+    "nome" varchar(200) NOT NULL,
+    "tipo" varchar(100) NOT NULL,
+    "categoria" varchar(100),
+    "fabricante" varchar(200),
+    "modelo" varchar(200),
+    "versao" varchar(100),
+    "ip" varchar(50),
+    "mac" varchar(50),
+    "localizacao" varchar(200),
+    "responsavelId" integer,
+    "dependencias" text,
+    "status" varchar(50) DEFAULT 'ativo' NOT NULL,
+    "criticidade" varchar(20) DEFAULT 'media' NOT NULL,
+    "observacoes" text,
+    "ativo" boolean DEFAULT true NOT NULL,
+    "createdAt" timestamp DEFAULT now() NOT NULL,
+    "updatedAt" timestamp DEFAULT now() NOT NULL,
+    "deletedAt" timestamp
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_cmdb_ti_empresa ON "cmdb_ti"("empresaId")`,
+  `CREATE TABLE IF NOT EXISTS "manutencoes_ti" (
+    "id" serial PRIMARY KEY NOT NULL,
+    "empresaId" integer NOT NULL,
+    "ativoId" integer,
+    "servidorId" integer,
+    "tipo" varchar(50) DEFAULT 'corretiva' NOT NULL,
+    "titulo" varchar(255) NOT NULL,
+    "descricao" text,
+    "tecnicoId" integer,
+    "status" varchar(50) DEFAULT 'agendada' NOT NULL,
+    "prioridade" varchar(20) DEFAULT 'media' NOT NULL,
+    "agendadoPara" timestamp,
+    "iniciadoEm" timestamp,
+    "concluidoEm" timestamp,
+    "pecasUtilizadas" text,
+    "custo" numeric(10,2) DEFAULT 0,
+    "resolucao" text,
+    "ticketId" integer,
+    "createdAt" timestamp DEFAULT now() NOT NULL,
+    "updatedAt" timestamp DEFAULT now() NOT NULL,
+    "deletedAt" timestamp
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_manutencoes_ti_empresa ON "manutencoes_ti"("empresaId")`,
+  // Colunas extras em ativos_ti
+  `ALTER TABLE "ativos_ti" ADD COLUMN IF NOT EXISTS "hostname" varchar(100)`,
+  `ALTER TABLE "ativos_ti" ADD COLUMN IF NOT EXISTS "so" varchar(100)`,
+  `ALTER TABLE "ativos_ti" ADD COLUMN IF NOT EXISTS "anydesk" varchar(50)`,
+  `ALTER TABLE "ativos_ti" ADD COLUMN IF NOT EXISTS "teamviewer" varchar(50)`,
+  `ALTER TABLE "ativos_ti" ADD COLUMN IF NOT EXISTS "ip" varchar(50)`,
+  `ALTER TABLE "ativos_ti" ADD COLUMN IF NOT EXISTS "cpuUso" integer DEFAULT 0`,
+  `ALTER TABLE "ativos_ti" ADD COLUMN IF NOT EXISTS "ramUso" integer DEFAULT 0`,
+  `ALTER TABLE "ativos_ti" ADD COLUMN IF NOT EXISTS "discoSaude" integer DEFAULT 100`,
+  `ALTER TABLE "ativos_ti" ADD COLUMN IF NOT EXISTS "temperatura" integer DEFAULT 0`,
+  `ALTER TABLE "ativos_ti" ADD COLUMN IF NOT EXISTS "ultimoPing" timestamp`,
+  `ALTER TABLE "ativos_ti" ADD COLUMN IF NOT EXISTS "dataAquisicao" date`,
+  `ALTER TABLE "ativos_ti" ADD COLUMN IF NOT EXISTS "valorAquisicao" numeric(10,2)`,
+  // Colunas extras em tickets_ti
+  `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "anexoUrl" text`,
+  `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "anexoNome" varchar(255)`,
+  `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "ativoId" integer`,
+  `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "tempoResolucaoMin" integer`,
+  `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "numeroOS" varchar(30)`,
+  `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "prazoAtendimento" timestamp`,
+  `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "slaHoras" integer DEFAULT 24`,
+  `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "tecnicoId" integer`,
+  `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "setor" varchar(100)`,
+  `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "impacto" varchar(50) DEFAULT 'medio'`,
+  `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "resolvidoEm" timestamp`,
+  // ─── BLOCO DE NOTAS ────────────────────────────────────────────────────────
+  `CREATE TABLE IF NOT EXISTS "notas" (
+    "id" serial PRIMARY KEY NOT NULL,
+    "empresaId" integer NOT NULL,
+    "userId" integer NOT NULL,
+    "titulo" varchar(500) NOT NULL DEFAULT 'Sem t\xEDtulo',
+    "conteudo" text DEFAULT '' NOT NULL,
+    "pasta" varchar(100) DEFAULT 'Geral',
+    "tags" text DEFAULT '',
+    "cor" varchar(20) DEFAULT 'default',
+    "fixada" boolean DEFAULT false NOT NULL,
+    "arquivada" boolean DEFAULT false NOT NULL,
+    "compartilhada" boolean DEFAULT false NOT NULL,
+    "createdAt" timestamp DEFAULT now() NOT NULL,
+    "updatedAt" timestamp DEFAULT now() NOT NULL,
+    "deletedAt" timestamp
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_notas_user ON "notas"("userId")`,
+  `CREATE INDEX IF NOT EXISTS idx_notas_empresa ON "notas"("empresaId")`,
+  // ─── MONITORAMENTO REAL DE PCs ──────────────────────────────────────────────
+  `CREATE TABLE IF NOT EXISTS "monitor_agentes" (
+    "id" serial PRIMARY KEY NOT NULL,
+    "empresaId" integer NOT NULL,
+    "ativoId" integer,
+    "hostname" varchar(200) NOT NULL,
+    "ip" varchar(50),
+    "mac" varchar(50),
+    "so" varchar(100),
+    "versaoAgente" varchar(20),
+    "token" varchar(100) NOT NULL,
+    "ultimoContato" timestamp,
+    "online" boolean DEFAULT false NOT NULL,
+    "ativo" boolean DEFAULT true NOT NULL,
+    "createdAt" timestamp DEFAULT now() NOT NULL,
+    "updatedAt" timestamp DEFAULT now() NOT NULL
+  )`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_monitor_agentes_token ON "monitor_agentes"("token")`,
+  `CREATE INDEX IF NOT EXISTS idx_monitor_agentes_empresa ON "monitor_agentes"("empresaId")`,
+  `CREATE TABLE IF NOT EXISTS "monitor_metricas" (
+    "id" bigserial PRIMARY KEY NOT NULL,
+    "agenteId" integer NOT NULL,
+    "empresaId" integer NOT NULL,
+    "coletadoEm" timestamp NOT NULL DEFAULT now(),
+    "cpuUso" numeric(5,2),
+    "cpuTemp" numeric(5,1),
+    "cpuFreqMhz" integer,
+    "ramTotalMb" integer,
+    "ramUsadaMb" integer,
+    "ramUsoPct" numeric(5,2),
+    "discoTotalGb" numeric(8,2),
+    "discoUsadoGb" numeric(8,2),
+    "discoUsoPct" numeric(5,2),
+    "redeEnviadoKb" numeric(12,2),
+    "redeRecebidoKb" numeric(12,2),
+    "latenciaMs" integer,
+    "processos" integer,
+    "usuarioLogado" varchar(100),
+    "uptime" integer
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_monitor_metricas_agente ON "monitor_metricas"("agenteId")`,
+  `CREATE INDEX IF NOT EXISTS idx_monitor_metricas_empresa ON "monitor_metricas"("empresaId")`,
+  `CREATE INDEX IF NOT EXISTS idx_monitor_metricas_coletado ON "monitor_metricas"("coletadoEm" DESC)`,
+  `CREATE TABLE IF NOT EXISTS "monitor_eventos" (
+    "id" bigserial PRIMARY KEY NOT NULL,
+    "agenteId" integer NOT NULL,
+    "empresaId" integer NOT NULL,
+    "tipo" varchar(50) NOT NULL,
+    "descricao" text,
+    "severidade" varchar(20) DEFAULT 'info' NOT NULL,
+    "valor" numeric(10,2),
+    "ocorridoEm" timestamp NOT NULL DEFAULT now()
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_monitor_eventos_agente ON "monitor_eventos"("agenteId")`,
+  `CREATE INDEX IF NOT EXISTS idx_monitor_eventos_empresa ON "monitor_eventos"("empresaId")`,
+  `CREATE INDEX IF NOT EXISTS idx_monitor_eventos_ocorrido ON "monitor_eventos"("ocorridoEm" DESC)`,
+  // ── Tabela de códigos de pareamento PC↔Synapse ──────────────────────────
+  `CREATE TABLE IF NOT EXISTS "agent_pairing_codes" (
+    "id" serial PRIMARY KEY NOT NULL,
+    "empresaId" integer NOT NULL,
+    "codigo" varchar(20) NOT NULL UNIQUE,
+    "descricao" varchar(255),
+    "ativoId" integer,
+    "usado" boolean DEFAULT false NOT NULL,
+    "agenteId" integer,
+    "criadoPor" integer NOT NULL,
+    "expiresAt" timestamp NOT NULL,
+    "usadoEm" timestamp,
+    "createdAt" timestamp DEFAULT now() NOT NULL
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_pairing_empresa ON "agent_pairing_codes"("empresaId")`,
+  `CREATE INDEX IF NOT EXISTS idx_pairing_codigo ON "agent_pairing_codes"("codigo")`,
+  // Colunas extras para monitor_agentes
+  `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "anydeskId" varchar(50)`,
+  `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "status" varchar(20) DEFAULT 'offline'`,
+  `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "deletedAt" timestamp`,
+  `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "pairingCode" varchar(20)`,
+  `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "fingerprint" varchar(200)`,
+  `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "ultimaVersao" varchar(20)`,
+  `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "setor" varchar(100)`,
+  // Colunas extras para monitor_metricas
+  `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "anydeskId" varchar(50)`,
+  `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "topProcessos" jsonb`,
+  // Adicionar agentToken à tabela de empresas para identificação do tenant
+  `ALTER TABLE empresas ADD COLUMN IF NOT EXISTS "agentToken" varchar(64) UNIQUE`,
+  `ALTER TABLE empresas ADD COLUMN IF NOT EXISTS "codigoConvite" varchar(50) UNIQUE`,
+  // Particionamento por tempo: view agregada por hora
+  `CREATE OR REPLACE VIEW monitor_metricas_hora AS
+    SELECT
+      "agenteId", "empresaId",
+      date_trunc('hour', "coletadoEm") as hora,
+      round(avg("cpuUso")::numeric, 1) as cpu_medio,
+      round(max("cpuUso")::numeric, 1) as cpu_pico,
+      round(avg("ramUsoPct")::numeric, 1) as ram_medio,
+      round(max("ramUsoPct")::numeric, 1) as ram_pico,
+      round(avg("discoUsoPct")::numeric, 1) as disco_medio,
+      round(avg("latenciaMs")::numeric, 0) as latencia_media,
+      count(*) as amostras
+    FROM monitor_metricas
+    GROUP BY "agenteId", "empresaId", date_trunc('hour', "coletadoEm")`
+];
+async function runInlineMigrations() {
+  const client = await getRawClient();
+  if (!client) {
+    console.warn("[Migration] Cliente postgres n\xE3o encontrado para migra\xE7\xF5es inline");
+    return;
+  }
+  let applied = 0;
+  let errors = 0;
+  for (const sql5 of MIGRATION_STATEMENTS) {
+    try {
+      await client.unsafe(sql5);
+      applied++;
+    } catch (err) {
+      const msg = err?.message || "";
+      if (!msg.includes("already exists") && !msg.includes("duplicate") && !msg.includes("42P07") && !msg.includes("42710")) {
+        console.warn(`[Migration] Aviso em statement: ${msg.substring(0, 100)}`);
+        errors++;
+      }
+    }
+  }
+  console.log(`[Migration] Inline: ${applied} statements aplicados, ${errors} erros ignorados`);
+}
+
 // index.ts
 if (typeof globalThis.crypto === "undefined") {
   globalThis.crypto = import_crypto4.webcrypto;
@@ -77642,18 +83663,21 @@ var isOriginAllowed = (origin2) => {
   if (origin2.startsWith("http://localhost")) return true;
   return false;
 };
-async function runMigrations() {
-  const db = await getDb();
-  if (!db) {
-    console.warn("[Migration] DB indispon\xEDvel, pulando migra\xE7\xF5es");
-    return;
-  }
-  try {
-    const rawDb = db.$client ?? db.session ?? db;
-    console.log("[Migration] Migra\xE7\xF5es aplicadas com sucesso");
-  } catch (err) {
-    console.error("[Migration] Erro ao aplicar migra\xE7\xF5es:", err);
-  }
+function runMigrationsInBackground() {
+  const MIGRATION_TIMEOUT_MS = 6e4;
+  const migrationPromise = runInlineMigrations().then(() => {
+    console.log("[Migration] \u2705 Todas as tabelas verificadas/criadas com sucesso");
+  }).catch((err) => {
+    console.error("[Migration] \u274C Erro:", err?.message ?? err);
+  });
+  const timeoutPromise = new Promise((resolve) => {
+    setTimeout(() => {
+      console.warn("[Migration] \u26A0\uFE0F  Timeout de 60s atingido \u2014 continuando sem aguardar migra\xE7\xF5es");
+      resolve();
+    }, MIGRATION_TIMEOUT_MS);
+  });
+  Promise.race([migrationPromise, timeoutPromise]).catch(() => {
+  });
 }
 var app = (0, import_express.default)();
 var port = Number(process.env.PORT) || 8080;
@@ -77685,17 +83709,11 @@ app.use(
   })
 );
 app.get("/health", (req, res) => {
-  res.json({ status: "ok" });
+  res.json({ status: "ok", timestamp: (/* @__PURE__ */ new Date()).toISOString() });
 });
-runMigrations().then(() => {
-  app.listen(port, () => {
-    console.log(`[Server] Synapse Backend running on port ${port}`);
-  });
-}).catch((err) => {
-  console.error("[Server] Falha nas migra\xE7\xF5es, iniciando mesmo assim:", err);
-  app.listen(port, () => {
-    console.log(`[Server] Synapse Backend running on port ${port}`);
-  });
+app.listen(port, () => {
+  console.log(`[Server] \u2705 Synapse Backend running on port ${port}`);
+  runMigrationsInBackground();
 });
 /*! Bundled license information:
 
@@ -77978,7 +83996,6 @@ accepts/index.js:
    * MIT Licensed
    *)
 
-cookie/index.js:
 cookie/index.js:
   (*!
    * cookie

@@ -208,16 +208,13 @@ export default function Chat() {
 
   const sendMutation = trpc.chat.sendMessage.useMutation({
     onSuccess: () => {
-      setMessage("");
-      setAttachments([]);
+      // Estado já limpo em handleSendMessage — apenas refetch
       refetchMsgs();
       refetchConvs();
-      // ← Restaura o foco no campo de texto após envio
-      setTimeout(() => inputRef.current?.focus(), 0);
     },
     onError: (err) => {
       toast.error(err.message || "Erro ao enviar mensagem");
-      setTimeout(() => inputRef.current?.focus(), 0);
+      requestAnimationFrame(() => inputRef.current?.focus());
     },
   });
 
@@ -274,16 +271,19 @@ export default function Chat() {
     addFiles(files);
   }, []);
 
-  // Paste (Ctrl+V para colar prints)
+  // Paste (Ctrl+V para colar prints) — sem toast intrusivo
   useEffect(() => {
     const handlePaste = (e: ClipboardEvent) => {
       if (!selectedConvId) return;
+      // Se o foco está em outro input (ex: busca), não interceptar
+      const active = document.activeElement;
+      if (active && active !== inputRef.current && (active.tagName === "INPUT" || active.tagName === "TEXTAREA")) return;
       const items = Array.from(e.clipboardData?.items ?? []);
       const imageItems = items.filter((item) => item.type.startsWith("image/"));
       if (imageItems.length > 0) {
         const files = imageItems.map((item) => item.getAsFile()).filter(Boolean) as File[];
         addFiles(files);
-        toast.info("Imagem colada! Pressione Enter ou clique em Enviar.");
+        // Sem toast — o preview visual já é feedback suficiente
       }
     };
     window.addEventListener("paste", handlePaste);
@@ -311,9 +311,16 @@ export default function Chat() {
   const handleSendMessage = (e?: React.FormEvent) => {
     e?.preventDefault();
     if ((!message.trim() && attachments.length === 0) || !selectedConvId) return;
+    const content = message.trim();
+    // Limpar imediatamente para melhor UX (não esperar onSuccess)
+    setMessage("");
+    setAttachments([]);
+    // Restaurar foco imediatamente
+    requestAnimationFrame(() => inputRef.current?.focus());
     sendMutation.mutate({
       conversationId: selectedConvId,
-      content: message.trim() || (attachments.length > 0 ? "📎 Arquivo" : ""),
+      // Se não há texto mas há anexo, envia string vazia (o backend trata)
+      content: content,
     });
   };
 

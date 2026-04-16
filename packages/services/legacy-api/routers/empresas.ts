@@ -1,4 +1,4 @@
-import { masterAdminProcedure, protectedProcedure, router } from "../_core/trpc";
+import { masterAdminProcedure, protectedProcedure, publicProcedure, router } from "../_core/trpc";
 import { z } from "zod";
 import { getDb } from "../db";
 import { empresas, users } from "../drizzle/schema";
@@ -17,6 +17,18 @@ function gerarCodigoConvite(): string {
 }
 
 export const empresasRouter = router({
+  // ─── LISTAR EMPRESAS PÚBLICO (dropdown no cadastro) ──────────────────────────────
+  // Retorna id, nome e código de convite de todas as empresas ativas
+  listPublic: publicProcedure.query(async () => {
+    const db = await getDb();
+    if (!db) return [];
+    return await db
+      .select({ id: empresas.id, nome: empresas.nome, codigoConvite: empresas.codigoConvite })
+      .from(empresas)
+      .where(and(isNull(empresas.deletedAt), eq(empresas.ativo, true)))
+      .orderBy(empresas.nome);
+  }),
+
   list: masterAdminProcedure.query(async () => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });

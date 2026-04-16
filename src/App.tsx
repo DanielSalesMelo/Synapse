@@ -64,6 +64,7 @@ import Recepcionista from "./pages/Recepcionista";
 import Logistica from "./pages/Logistica";
 import RH from "./pages/RH";
 import Tarefas from "./pages/Tarefas";
+import Notas from "./pages/Notas";
 
 function DashboardRoutes() {
   return (
@@ -227,6 +228,9 @@ function DashboardRoutes() {
         <Route path="/tarefas/kanban" component={Tarefas} />
         <Route path="/tarefas/sprint" component={Tarefas} />
         <Route path="/tarefas/lista" component={Tarefas} />
+
+        {/* Notas */}
+        <Route path="/notas" component={Notas} />
 
         {/* Qualidade */}
         <Route path="/qualidade/nao-conformidades" component={Auditoria} />

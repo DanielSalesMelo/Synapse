@@ -57,6 +57,7 @@ const getMenuGroups = (t: any): MenuGroup[] => [
       { icon: Bell, label: "Alertas", path: "/gestao/alertas" },
       { icon: Calendar, label: "Calendário", path: "/gestao/calendario" },
       { icon: CheckCircle, label: "Tarefas & Projetos", path: "/tarefas" },
+      { icon: BookOpen, label: "Bloco de Notas", path: "/notas" },
     ],
   },
 
