@@ -399,17 +399,28 @@ function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: ()
 }
 
 // ─── Componente Principal ─────────────────────────────────────────────────────
-export default function TI() {
+export default function TI({ params }: { params?: { tab?: string } }) {
   const { user } = useAuth();
   const empresaId = user?.empresaId ?? 0;
 
   const [location, setLocation] = useLocation();
-  const [tab, setTab] = useState(location.split("/")[2] || "dashboard");
+  // Prioriza o parâmetro da rota (params.tab), depois tenta extrair da URL, fallback para dashboard
+  const getInitialTab = () => {
+    if (params?.tab) return params.tab;
+    const parts = location.split("/");
+    const tiIndex = parts.indexOf("ti");
+    if (tiIndex !== -1 && parts[tiIndex + 1]) {
+      return parts[tiIndex + 1];
+    }
+    return "dashboard";
+  };
+
+  const [tab, setTab] = useState(getInitialTab());
 
   useEffect(() => {
-    const currentTab = location.split("/")[2] || "dashboard";
+    const currentTab = getInitialTab();
     if (currentTab !== tab) setTab(currentTab);
-  }, [location]);
+  }, [location, params?.tab]);
 
   const handleTabChange = (newTab: string) => {
     setTab(newTab);

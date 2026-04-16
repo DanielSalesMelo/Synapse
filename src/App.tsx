@@ -162,18 +162,7 @@ function DashboardRoutes() {
         <Route path="/bi" component={BI} />
 
         {/* TI - ITSM & ITAM */}
-        <Route path="/ti" component={TI} />
-        <Route path="/ti/dashboard" component={TI} />
-        <Route path="/ti/inventario" component={TI} />
-        <Route path="/ti/tickets" component={TI} />
-        <Route path="/ti/monitoramento" component={TI} />
-        <Route path="/ti/acessos" component={TI} />
-        <Route path="/ti/licencas" component={TI} />
-        <Route path="/ti/compras" component={TI} />
-        <Route path="/ti/manutencao" component={TI} />
-        <Route path="/ti/agentes" component={TI} />
-        <Route path="/ti/certificados" component={TI} />
-        <Route path="/ti/alertas" component={TI} />
+        <Route path="/ti/:tab?">{(params) => <TI params={params} />}</Route>
 
         {/* Marketing */}
         <Route path="/marketing/campanhas" component={Marketing} />
