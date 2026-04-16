@@ -439,6 +439,7 @@ export default function TI() {
   // ── Mutations ──
   const createTicket = trpc.ti.createTicket.useMutation({
     onSuccess: () => { ticketsQ.refetch(); dashboard.refetch(); setShowNew(false); toast.success("Chamado aberto!"); },
+    onError: (err) => toast.error("Erro ao abrir chamado: " + (err.message || "tente novamente")),
   });
   const updateStatus = trpc.ti.updateTicketStatus.useMutation({
     onSuccess: () => { ticketsQ.refetch(); dashboard.refetch(); },
@@ -460,6 +461,7 @@ export default function TI() {
   });
   const gerarCodigo = trpc.ti.gerarCodigoPareamento.useMutation({
     onSuccess: () => { codigosQ.refetch(); toast.success("Código gerado!"); },
+    onError: (err) => toast.error("Erro ao gerar código: " + (err.message || "tente novamente")),
   });
   const revogarCodigo = trpc.ti.revogarCodigoPareamento.useMutation({
     onSuccess: () => { codigosQ.refetch(); toast.success("Código revogado!"); },

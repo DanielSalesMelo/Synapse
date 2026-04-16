@@ -522,6 +522,10 @@ const MIGRATION_STATEMENTS: string[] = [
   EXCEPTION WHEN duplicate_object THEN NULL;
   END $$`,
   `DO $$ BEGIN
+  CREATE TYPE "categoria_ticket_ti" AS ENUM ('hardware','software','rede','acesso','email','impressora','outro');
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END $$`,
+  `DO $$ BEGIN
   CREATE TYPE "prioridade_ticket_ti" AS ENUM ('baixa','media','alta','critica');
   EXCEPTION WHEN duplicate_object THEN NULL;
   END $$`,
@@ -1065,12 +1069,20 @@ const MIGRATION_STATEMENTS: string[] = [
     "solicitanteId" integer NOT NULL,
     "titulo" varchar(255) NOT NULL,
     "descricao" text NOT NULL,
-    "categoria" varchar(50) NOT NULL DEFAULT 'outro',
-    "prioridade" varchar(20) NOT NULL DEFAULT 'media',
-    "status" varchar(30) NOT NULL DEFAULT 'aberto',
+    "categoria" "categoria_ticket_ti" NOT NULL DEFAULT 'outro',
+    "prioridade" "prioridade_ticket_ti" NOT NULL DEFAULT 'media',
+    "status" "status_ticket_ti" NOT NULL DEFAULT 'aberto',
     "responsavelId" integer,
+    "tecnicoId" integer,
     "resolucao" text,
     "resolvidoEm" timestamp,
+    "slaHoras" integer DEFAULT 24,
+    "prazoAtendimento" timestamp,
+    "tempoResolucaoMin" integer,
+    "ativoId" integer,
+    "setor" varchar(100),
+    "impacto" varchar(50) DEFAULT 'medio',
+    "numeroOS" varchar(30),
     "createdAt" timestamp NOT NULL DEFAULT NOW(),
     "updatedAt" timestamp NOT NULL DEFAULT NOW(),
     "deletedAt" timestamp
