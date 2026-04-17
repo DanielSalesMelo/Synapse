@@ -426,6 +426,62 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     setTab(newTab);
     setLocation(`/ti/${newTab}`);
   };
+
+  // Handlers para modais de dispositivos
+  const handleAssociateClick = (agente: any) => {
+    setSelectedAgenteForAssociate(agente);
+    setAssociateForm({ userId: "", departmentId: "" });
+    setShowAssociateModal(true);
+  };
+
+  const handleAssociateSubmit = async () => {
+    if (!associateForm.userId) {
+      toast.error("Selecione um usuário");
+      return;
+    }
+    try {
+      await associateAgente.mutateAsync({
+        agentId: selectedAgenteForAssociate.id,
+        userId: associateForm.userId,
+        departmentId: associateForm.departmentId,
+      });
+      toast.success("Agente associado com sucesso!");
+      setShowAssociateModal(false);
+      // Recarregar agentes
+      const token = localStorage.getItem("synapse-auth-token") ?? "";
+      const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : "";
+      const res = await fetch(`${baseUrl}/api/agents`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) setAgentes(await res.json());
+    } catch (err) {
+      toast.error("Erro ao associar agente: " + (err as any).message);
+    }
+  };
+
+  const handleGenerateCodeSubmit = async () => {
+    if (!generateCodeForm.userId || !generateCodeForm.departmentId) {
+      toast.error("Preencha todos os campos");
+      return;
+    }
+    try {
+      const result = await generatePairingCode.mutateAsync({
+        userId: generateCodeForm.userId,
+        departmentId: generateCodeForm.departmentId,
+      });
+      setGeneratedCode({ code: result.code, expiresAt: result.expiresAt });
+      toast.success("Código gerado com sucesso!");
+    } catch (err) {
+      toast.error("Erro ao gerar código: " + (err as any).message);
+    }
+  };
+
+  const handleCopyCode = () => {
+    if (generatedCode?.code) {
+      navigator.clipboard.writeText(generatedCode.code);
+      toast.success("Código copiado!");
+    }
+  };
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("todos");
   const [showNew, setShowNew] = useState(false);
@@ -439,6 +495,18 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const [selectedAgente, setSelectedAgente] = useState<any>(null);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<string | null>(null);
+  // Estados para gerenciamento de dispositivos
+  const [agentes, setAgentes] = useState<any[]>([]);
+  const [agentesLoading, setAgentesLoading] = useState(false);
+  const [showAssociateModal, setShowAssociateModal] = useState(false);
+  const [showGenerateCodeModal, setShowGenerateCodeModal] = useState(false);
+  const [selectedAgenteForAssociate, setSelectedAgenteForAssociate] = useState<any>(null);
+  const [associateForm, setAssociateForm] = useState({ userId: "", departmentId: "" });
+  const [generateCodeForm, setGenerateCodeForm] = useState({ userId: "", departmentId: "" });
+  const [generatedCode, setGeneratedCode] = useState<{ code: string; expiresAt: string } | null>(null);
+  const [showOnlyUnassociated, setShowOnlyUnassociated] = useState(false);
+  const [usuarios, setUsuarios] = useState<any[]>([]);
+  const [usuariosLoading, setUsuariosLoading] = useState(false);
 
   // ── Queries ──
   const dashboard = trpc.ti.dashboard.useQuery(undefined, { refetchInterval: 30000 });
@@ -497,6 +565,78 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const revogarCodigo = trpc.ti.revogarCodigoPareamento.useMutation({
     onSuccess: () => { codigosQ.refetch(); toast.success("Código revogado!"); },
   });
+  
+  // Funções para associar agente e gerar código
+  const associateAgente = {
+    mutateAsync: async (data: { agentId: number; userId: string; departmentId?: string }) => {
+      const token = localStorage.getItem("synapse-auth-token") ?? "";
+      const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : "";
+      const res = await fetch(`${baseUrl}/api/agents/${data.agentId}/associate`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ userId: data.userId, departmentId: data.departmentId || null }),
+      });
+      if (!res.ok) throw new Error("Erro ao associar agente");
+      return res.json();
+    }
+  };
+  
+  const generatePairingCode = {
+    mutateAsync: async (data: { userId: string; departmentId: string }) => {
+      const token = localStorage.getItem("synapse-auth-token") ?? "";
+      const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : "";
+      const res = await fetch(`${baseUrl}/api/agents/generate-pairing-code`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ userId: data.userId, departmentId: data.departmentId, empresaId }),
+      });
+      if (!res.ok) throw new Error("Erro ao gerar código");
+      return res.json();
+    }
+  };
+
+  // Buscar agentes via REST API
+  useEffect(() => {
+    const fetchAgentes = async () => {
+      setAgentesLoading(true);
+      try {
+        const token = localStorage.getItem("synapse-auth-token") ?? "";
+        const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : "";
+        const res = await fetch(`${baseUrl}/api/agents`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setAgentes(data);
+        }
+      } catch (err) {
+        console.error("Erro ao buscar agentes:", err);
+      } finally {
+        setAgentesLoading(false);
+      }
+    };
+    if (tab === "dispositivos") {
+      fetchAgentes();
+    }
+  }, [tab]);
+
+  // Buscar usuários
+  useEffect(() => {
+    const fetchUsuarios = async () => {
+      setUsuariosLoading(true);
+      try {
+        const data = await trpc.users.listAll.query();
+        setUsuarios(data);
+      } catch (err) {
+        console.error("Erro ao buscar usuários:", err);
+      } finally {
+        setUsuariosLoading(false);
+      }
+    };
+    if (showAssociateModal || showGenerateCodeModal) {
+      fetchUsuarios();
+    }
+  }, [showAssociateModal, showGenerateCodeModal]);
 
   // ── Notificações na aba do navegador ──
   useEffect(() => {
@@ -710,6 +850,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
           <TabsTrigger value="compras"><ShoppingCart className="h-4 w-4 mr-1" />Compras</TabsTrigger>
           <TabsTrigger value="manutencao"><Wrench className="h-4 w-4 mr-1" />Manutenção</TabsTrigger>
           <TabsTrigger value="agentes"><Network className="h-4 w-4 mr-1" />Agentes</TabsTrigger>
+          <TabsTrigger value="dispositivos"><Monitor className="h-4 w-4 mr-1" />Dispositivos</TabsTrigger>
           <TabsTrigger value="certificados"><Shield className="h-4 w-4 mr-1" />Certificados</TabsTrigger>
           <TabsTrigger value="alertas" className="relative">
             <Bell className="h-4 w-4 mr-1" />Alertas
@@ -1609,6 +1750,134 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                 </TableBody>
               </Table>
             </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* ══ DISPOSITIVOS ══ */}
+        <TabsContent value="dispositivos" className="space-y-4 mt-4">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <p className="text-sm text-muted-foreground">Gerenciar e vincular dispositivos (agentes) aos usuários</p>
+              <Badge variant="secondary" className="text-xs">{agentes.length}</Badge>
+            </div>
+            <div className="flex gap-2">
+              <Dialog open={showGenerateCodeModal} onOpenChange={setShowGenerateCodeModal}>
+                <DialogTrigger asChild>
+                  <Button size="sm" variant="outline"><QrCode className="h-4 w-4 mr-2" />Gerar Código</Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-sm">
+                  <DialogHeader><DialogTitle>Gerar Código de Pareamento</DialogTitle></DialogHeader>
+                  {!generatedCode ? (
+                    <form onSubmit={(e) => { e.preventDefault(); handleGenerateCodeSubmit(); }} className="space-y-4">
+                      <div>
+                        <Label>Usuário *</Label>
+                        <Select value={generateCodeForm.userId} onValueChange={(v) => setGenerateCodeForm((p) => ({ ...p, userId: v }))}>
+                          <SelectTrigger><SelectValue placeholder="Selecione um usuário..." /></SelectTrigger>
+                          <SelectContent>
+                            {usuarios.map((u: any) => (
+                              <SelectItem key={u.id} value={u.id.toString()}>{u.name} {u.lastName}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label>Departamento (opcional)</Label>
+                        <Input value={generateCodeForm.departmentId} onChange={(e) => setGenerateCodeForm((p) => ({ ...p, departmentId: e.target.value }))} placeholder="Ex: TI, RH" />
+                      </div>
+                      <Button type="submit" className="w-full" disabled={generatePairingCode.mutateAsync === undefined}>Gerar</Button>
+                    </form>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="bg-muted p-4 rounded-lg text-center">
+                        <p className="text-xs text-muted-foreground mb-2">Código de Pareamento</p>
+                        <p className="text-2xl font-mono font-bold text-primary">{generatedCode.code}</p>
+                        <p className="text-xs text-muted-foreground mt-2">Expira em: {new Date(generatedCode.expiresAt).toLocaleString("pt-BR")}</p>
+                      </div>
+                      <Button onClick={handleCopyCode} className="w-full" variant="outline"><Copy className="h-4 w-4 mr-2" />Copiar Código</Button>
+                      <Button onClick={() => { setGeneratedCode(null); setShowGenerateCodeModal(false); }} className="w-full" variant="secondary">Fechar</Button>
+                    </div>
+                  )}
+                </DialogContent>
+              </Dialog>
+              <Button size="sm" variant="outline" onClick={() => { const token = localStorage.getItem("synapse-auth-token") ?? ""; const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : ""; fetch(`${baseUrl}/api/agents`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()).then(setAgentes); }}><RefreshCw className="h-4 w-4 mr-2" />Atualizar</Button>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Input placeholder="Buscar por hostname..." className="max-w-xs" />
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" checked={showOnlyUnassociated} onChange={(e) => setShowOnlyUnassociated(e.target.checked)} className="rounded" />
+              <span className="text-sm text-muted-foreground">Apenas não vinculados</span>
+            </label>
+          </div>
+          <Card>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Hostname</TableHead>
+                  <TableHead>IP</TableHead>
+                  <TableHead>SO</TableHead>
+                  <TableHead>Usuário Vinculado</TableHead>
+                  <TableHead>Departamento</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Última Coleta</TableHead>
+                  <TableHead>Ações</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {agentesLoading ? (
+                  <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">Carregando...</TableCell></TableRow>
+                ) : (agentes ?? []).length === 0 ? (
+                  <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">Nenhum agente registrado</TableCell></TableRow>
+                ) : (agentes ?? []).map((a: any) => (
+                  <TableRow key={a.id}>
+                    <TableCell className="font-mono text-sm font-medium">{a.hostname}</TableCell>
+                    <TableCell className="font-mono text-xs">{a.ip}</TableCell>
+                    <TableCell className="text-xs">{a.so}</TableCell>
+                    <TableCell className="text-sm">{a.userName ? `${a.userName} ${a.userLastName}` : <span className="text-muted-foreground">—</span>}</TableCell>
+                    <TableCell className="text-sm">{a.department_id || <span className="text-muted-foreground">—</span>}</TableCell>
+                    <TableCell>
+                      <div className={`flex items-center gap-1.5 text-xs ${a.status === "online" ? "text-green-600" : "text-gray-500"}`}>
+                        <div className={`h-2 w-2 rounded-full ${a.status === "online" ? "bg-green-500 animate-pulse" : "bg-gray-400"}`} />
+                        {a.status ?? "offline"}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-xs text-muted-foreground">
+                      {a.updatedAt ? new Date(a.updatedAt).toLocaleString("pt-BR") : "—"}
+                    </TableCell>
+                    <TableCell>
+                      <Dialog open={showAssociateModal && selectedAgenteForAssociate?.id === a.id} onOpenChange={(open) => { if (!open) setShowAssociateModal(false); }}>
+                        <DialogTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => handleAssociateClick(a)}>
+                            <Edit className="h-3 w-3 mr-1" />Vincular
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-sm">
+                          <DialogHeader><DialogTitle>Vincular Agente</DialogTitle></DialogHeader>
+                          <form onSubmit={(e) => { e.preventDefault(); handleAssociateSubmit(); }} className="space-y-4">
+                            <div>
+                              <Label>Usuário *</Label>
+                              <Select value={associateForm.userId} onValueChange={(v) => setAssociateForm((p) => ({ ...p, userId: v }))}>
+                                <SelectTrigger><SelectValue placeholder="Selecione um usuário..." /></SelectTrigger>
+                                <SelectContent>
+                                  {usuarios.map((u: any) => (
+                                    <SelectItem key={u.id} value={u.id.toString()}>{u.name} {u.lastName}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div>
+                              <Label>Departamento (opcional)</Label>
+                              <Input value={associateForm.departmentId} onChange={(e) => setAssociateForm((p) => ({ ...p, departmentId: e.target.value }))} placeholder="Ex: TI, RH" />
+                            </div>
+                            <Button type="submit" className="w-full">Vincular</Button>
+                          </form>
+                        </DialogContent>
+                      </Dialog>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </Card>
         </TabsContent>
 

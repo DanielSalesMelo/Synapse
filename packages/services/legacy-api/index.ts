@@ -327,6 +327,42 @@ app.post("/api/agents/generate-pairing-code", async (req: any, res: any) => {
   }
 });
 
+// Listar todos os agentes
+app.get("/api/agents", async (req: any, res: any) => {
+  try {
+    // Verificar autenticação
+    try {
+      await sdk.authenticateRequest(req);
+    } catch {
+      return res.status(401).json({ error: "Não autenticado. Faça login novamente." });
+    }
+
+    const db = getRawClient ? await getRawClient() : null;
+    if (!db) return res.status(503).json({ error: "DB indisponível" });
+
+    // Buscar agentes com dados do usuário associado
+    // Como estamos usando raw client (postgres.js), fazemos um LEFT JOIN
+    const agentes = await db`
+      SELECT 
+        a.*,
+        u.name as "userName",
+        u."lastName" as "userLastName"
+      FROM monitor_agentes a
+      LEFT JOIN users u ON a.user_id = CAST(u.id AS varchar)
+      WHERE a."empresaId" = ${req.user?.empresaId || 0}
+      ORDER BY a."updatedAt" DESC
+    `.catch((err) => {
+      console.error('[List Agents Error]', err);
+      return [];
+    }) as any[];
+
+    return res.json(agentes);
+  } catch (err: any) {
+    console.error('[List Agents]', err);
+    return res.status(500).json({ error: err?.message || "Erro interno" });
+  }
+});
+
 // Associar agente a um usuário (vinculação manual)
 app.put("/api/agents/:agentId/associate", async (req: any, res: any) => {
   try {
