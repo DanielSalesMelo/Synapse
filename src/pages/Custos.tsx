@@ -22,13 +22,14 @@ export default function Custos() {
   const [periodo, setPeriodo] = useState<string>("12");
   const [precoKm, setPrecoKm] = useState<string>("0.85");
 
-  const { data: veiculos } = trpc.veiculos.list.useQuery({ empresaId: 1 });
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
+  const { data: veiculos } = trpc.veiculos.list.useQuery({ empresaId: EMPRESA_ID });
   const { data: abastecimentos } = trpc.frota.abastecimentos.list.useQuery({
-    empresaId: 1,
+    empresaId: EMPRESA_ID,
     veiculoId: veiculoId !== "todos" ? parseInt(veiculoId) : undefined,
   });
   const { data: manutencoes } = trpc.frota.manutencoes.list.useQuery({
-    empresaId: 1,
+    empresaId: EMPRESA_ID,
     veiculoId: veiculoId !== "todos" ? parseInt(veiculoId) : undefined,
   });
 
@@ -41,7 +42,7 @@ export default function Custos() {
     const mans = (manutencoes ?? []).filter((m: any) => !m.deletedAt && new Date(m.data).getTime() > cutoff);
 
     const totalCombustivel = abs.reduce((s: number, a: any) => s + Number(a.valorTotal ?? 0), 0);
-    const totalLitros = abs.reduce((s: number, a: any) => s + Number(a.litros ?? 0), 0);
+    const totalLitros = abs.reduce((s: number, a: any) => s + Number(a.quantidade ?? 0), 0);
     const totalManutencao = mans.reduce((s: number, m: any) => s + Number(m.valor ?? 0), 0);
     const totalKmRodado = abs.reduce((s: number, a: any) => s + Number(a.kmRodado ?? 0), 0);
 
@@ -61,7 +62,7 @@ export default function Custos() {
       const mansV = mans.filter((m: any) => m.veiculoId === v.id);
       const combV = absV.reduce((s: number, a: any) => s + Number(a.valorTotal ?? 0), 0);
       const manV = mansV.reduce((s: number, m: any) => s + Number(m.valor ?? 0), 0);
-      const litrosV = absV.reduce((s: number, a: any) => s + Number(a.litros ?? 0), 0);
+      const litrosV = absV.reduce((s: number, a: any) => s + Number(a.quantidade ?? 0), 0);
       const kmV = absV.reduce((s: number, a: any) => s + Number(a.kmRodado ?? 0), 0);
       return {
         ...v,

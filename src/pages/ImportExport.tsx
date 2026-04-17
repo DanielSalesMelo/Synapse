@@ -51,7 +51,7 @@ export default function ImportExport() {
       descricao: "Importar registros de abastecimento",
       icon: Fuel,
       gerador: gerarTemplateAbastecimentos,
-      campos: ["data", "placa", "tipo", "litros", "valor", "km", "local"],
+      campos: ["data", "placa", "tipo", "quantidade", "valor", "km", "local"],
     },
     {
       id: "notas-fiscais",
