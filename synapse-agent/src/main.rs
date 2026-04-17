@@ -6,6 +6,7 @@ use std::path::PathBuf;
 use std::env;
 use std::fs;
 use std::time::Duration;
+use tauri::{SystemTray, SystemTrayMenu, CustomMenuItem, SystemTrayEvent, Manager};
 
 #[derive(Debug, Deserialize)]
 struct AgentConfig {
@@ -32,11 +33,69 @@ struct MetricsPayload {
     agent_id: String,
     cpu_usage: f32,
     ram_usage_mb: u64,
-    // Adicione outros campos de métricas conforme necessário
 }
 
-#[tokio::main]
-async fn main() {
+#[derive(Debug, Deserialize)]
+struct TicketPayload {
+    title: String,
+    description: String,
+    image_base64: Option<String>,
+}
+
+#[tauri::command]
+async fn submit_ticket(payload: TicketPayload) -> Result<String, String> {
+    println!("Recebido chamado: {}", payload.title);
+    
+    let client = reqwest::Client::new();
+    let res = client.post("http://localhost:3001/api/tickets") // URL da API de tickets
+        .json(&payload)
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    if res.status().is_success() {
+        Ok("Chamado enviado com sucesso!".to_string())
+    } else {
+        Err(format!("Erro na API: {}", res.status()))
+    }
+}
+
+fn main() {
+    let tray_menu = SystemTrayMenu::new()
+        .add_item(CustomMenuItem::new("open_support".to_string(), "Abrir um Chamado de TI"))
+        .add_item(CustomMenuItem::new("quit".to_string(), "Sair"));
+
+    let system_tray = SystemTray::new().with_menu(tray_menu);
+
+    tauri::Builder::default()
+        .system_tray(system_tray)
+        .on_system_tray_event(|app, event| match event {
+            SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
+                "quit" => {
+                    std::process::exit(0);
+                }
+                "open_support" => {
+                    let window = app.get_window("main").unwrap();
+                    window.show().unwrap();
+                    window.set_focus().unwrap();
+                }
+                _ => {}
+            },
+            _ => {}
+        })
+        .invoke_handler(tauri::generate_handler![submit_ticket])
+        .setup(|app| {
+            let app_handle = app.handle();
+            tauri::async_runtime::spawn(async move {
+                run_agent_logic(app_handle).await;
+            });
+            Ok(())
+        })
+        .run(tauri::generate_context!())
+        .expect("Erro ao rodar aplicação Tauri");
+}
+
+async fn run_agent_logic(_app_handle: tauri::AppHandle) {
     // Determinar o caminho do executável
     let current_exe = env::current_exe().expect("Falha ao obter o caminho do executável");
     let current_dir = current_exe.parent().expect("Falha ao obter o diretório do executável");
@@ -62,7 +121,7 @@ async fn main() {
     // Tentar ler o arquivo de configuração
     if config_path.exists() {
         println!("Arquivo de configuração encontrado: {:?}", config_path);
-        let config_content = std::fs::read_to_string(&config_path)
+        let config_content = fs::read_to_string(&config_path)
             .expect("Falha ao ler synapse_config.json");
         let config: AgentConfig = serde_json::from_str(&config_content)
             .expect("Falha ao deserializar synapse_config.json");
@@ -88,7 +147,6 @@ async fn main() {
     let hostname = System::host_name().unwrap_or_else(|| "Unknown".to_string());
     
     // Coletar modelo do processador (CPU)
-    // Pegamos o nome do primeiro processador encontrado
     let cpu_model = sys.cpus()
         .first()
         .map(|cpu| cpu.brand().to_string())
@@ -119,7 +177,7 @@ async fn main() {
     
     if agent_id.is_none() {
         println!("Registrando agente pela primeira vez...");
-        let res = client.post("http://localhost:3001/api/agent/pair") // TODO: Configurar URL da API
+        let res = client.post("http://localhost:3001/api/agent/pair")
             .json(&payload)
             .send()
             .await;
@@ -140,7 +198,6 @@ async fn main() {
                     }
                 } else {
                     eprintln!("Erro ao registrar agente na API: Status {}", response.status());
-                    eprintln!("Corpo da resposta: {:?}", response.text().await);
                 }
             },
             Err(e) => {
@@ -155,11 +212,11 @@ async fn main() {
     if let Some(id) = agent_id {
         let mut sys = System::new_all();
         loop {
-            sys.refresh_cpu(); // Atualiza informações da CPU
-            sys.refresh_memory(); // Atualiza informações da memória
+            sys.refresh_cpu();
+            sys.refresh_memory();
 
             let cpu_usage = sys.global_cpu_info().cpu_usage();
-            let ram_usage_mb = sys.used_memory() / 1024 / 1024; // RAM usada em MB
+            let ram_usage_mb = sys.used_memory() / 1024 / 1024;
 
             println!("Coletando métricas: CPU {:.2}% | RAM {} MB", cpu_usage, ram_usage_mb);
 
@@ -169,28 +226,12 @@ async fn main() {
                 ram_usage_mb,
             };
 
-            let res = client.post("http://localhost:3001/api/agent/metrics") // TODO: Configurar URL da API
+            let _ = client.post("http://localhost:3001/api/agent/metrics")
                 .json(&metrics_payload)
                 .send()
                 .await;
 
-            match res {
-                Ok(response) => {
-                    if response.status().is_success() {
-                        println!("Métricas enviadas com sucesso para a API!");
-                    } else {
-                        eprintln!("Erro ao enviar métricas para a API: Status {}", response.status());
-                        eprintln!("Corpo da resposta: {:?}", response.text().await);
-                    }
-                },
-                Err(e) => {
-                    eprintln!("Erro de rede ao enviar métricas para a API: {}", e);
-                }
-            }
-
             tokio::time::sleep(Duration::from_secs(60)).await;
         }
-    } else {
-        eprintln!("Não foi possível iniciar o monitoramento: Agent ID não disponível.");
     }
 }
