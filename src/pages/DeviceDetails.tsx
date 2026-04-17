@@ -15,7 +15,7 @@ import {
 import { toast } from "sonner";
 
 export default function DeviceDetails() {
-  const { agentId } = useParams();
+  const { agentId } = useParams() as any;
   const [, setLocation] = useLocation();
   const [period, setPeriod] = useState("24h");
   const [agente, setAgente] = useState<any>(null);

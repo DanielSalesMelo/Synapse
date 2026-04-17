@@ -72,7 +72,7 @@ function TicketChat({ ticketId, empresaId }: { ticketId: number; empresaId: numb
   const fileRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const mensagensQ = trpc.ti.listMensagens.useQuery({ ticketId }, { refetchInterval: 5000 });
+  const mensagensQ = trpc.ti.listMensagens.useQuery({ ticketId }, { refetchInterval: 5000 }) as any;
   const sendMsg = trpc.ti.sendMensagem.useMutation({
     onSuccess: () => {
       mensagensQ.refetch();
@@ -241,14 +241,14 @@ function TicketChat({ ticketId, empresaId }: { ticketId: number; empresaId: numb
 
 // ─── Componente de Detalhe do Chamado ─────────────────────────────────────────
 function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: () => void; empresaId: number }) {
-  const [, navigate] = useLocation();
+  const [, navigate] = useLocation() as any;
   const updateTicket = trpc.ti.updateTicket.useMutation({
     onSuccess: () => toast.success("Chamado atualizado!"),
   });
   const updateStatus = trpc.ti.updateTicketStatus.useMutation({
     onSuccess: () => toast.success("Status atualizado!"),
   });
-  const tecnicos = trpc.ti.listTecnicos.useQuery();
+  const tecnicos = trpc.ti.listTecnicos.useQuery() as any;
 
   const slaPercent = ticket.slaHoras && ticket.createdAt
     ? Math.min(100, Math.round(((Date.now() - new Date(ticket.createdAt).getTime()) / (1000 * 60 * 60 * ticket.slaHoras)) * 100))
@@ -403,7 +403,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const { user } = useAuth();
   const empresaId = user?.empresaId ?? 0;
 
-  const [location, setLocation] = useLocation();
+  const [location, setLocation] = useLocation() as any;
   // Prioriza o parâmetro da rota (params.tab), depois tenta extrair da URL, fallback para dashboard
   const getInitialTab = () => {
     if (params?.tab) return params.tab;
@@ -509,24 +509,24 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const [usuariosLoading, setUsuariosLoading] = useState(false);
 
   // ── Queries ──
-  const dashboard = trpc.ti.dashboard.useQuery(undefined, { refetchInterval: 30000 });
+  const dashboard = trpc.ti.dashboard.useQuery(undefined, { refetchInterval: 30000 }) as any;
   const ticketsQ = trpc.ti.listTickets.useQuery(
     { search, status: statusFilter === "todos" ? undefined : statusFilter },
     { refetchInterval: 15000 }
-  );
-  const ativosQ = trpc.ti.listAtivos.useQuery({ search }, { refetchInterval: 30000 });
-  const licencasQ = trpc.ti.listLicencas.useQuery({ search }, { refetchInterval: 60000 });
-  const comprasQ = trpc.ti.listCompras.useQuery(undefined, { refetchInterval: 60000 });
-  const acessosQ = trpc.ti.listAcessos.useQuery(undefined, { refetchInterval: 60000 });
-  const agentesQ = trpc.ti.listAgentes.useQuery(undefined, { refetchInterval: 20000 });
-  const alertasQ = trpc.ti.listAlertas.useQuery({ limit: 20 }, { refetchInterval: 15000 });
-  const manutencoesQ = trpc.ti.listManutencoes.useQuery(undefined, { refetchInterval: 60000 });
-  const codigosQ = trpc.ti.listCodigosPareamento.useQuery(undefined, { refetchInterval: 30000 });
-  const certificadosQ = trpc.ti.listCertificados.useQuery({ search }, { refetchInterval: 60000 });
+  ) as any;
+  const ativosQ = trpc.ti.listAtivos.useQuery({ search }, { refetchInterval: 30000 }) as any;
+  const licencasQ = trpc.ti.listLicencas.useQuery({ search }, { refetchInterval: 60000 }) as any;
+  const comprasQ = trpc.ti.listCompras.useQuery(undefined, { refetchInterval: 60000 }) as any;
+  const acessosQ = trpc.ti.listAcessos.useQuery(undefined, { refetchInterval: 60000 }) as any;
+  const agentesQ = trpc.ti.listAgentes.useQuery(undefined, { refetchInterval: 20000 }) as any;
+  const alertasQ = trpc.ti.listAlertas.useQuery({ limit: 20 }, { refetchInterval: 15000 }) as any;
+  const manutencoesQ = trpc.ti.listManutencoes.useQuery(undefined, { refetchInterval: 60000 }) as any;
+  const codigosQ = trpc.ti.listCodigosPareamento.useQuery(undefined, { refetchInterval: 30000 }) as any;
+  const certificadosQ = trpc.ti.listCertificados.useQuery({ search }, { refetchInterval: 60000 }) as any;
   const agenteMetricas = trpc.ti.getAgenteMetricas.useQuery(
     { agenteId: selectedAgente?.id, periodo: "24h" },
     { enabled: !!selectedAgente?.id, refetchInterval: 30000 }
-  );
+  ) as any;
 
   // ── Mutations ──
   const createTicket = trpc.ti.createTicket.useMutation({
