@@ -64,6 +64,13 @@
       "when": 1774629370934,
       "tag": "0008_all_missing_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1776437123996,
+      "tag": "0009_small_hannibal_king",
+      "breakpoints": true
     }
   ]
 }

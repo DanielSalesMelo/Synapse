@@ -10,6 +10,7 @@ import {
   text,
   timestamp,
   varchar,
+  jsonb,
 } from "drizzle-orm/pg-core";
 
 // ─── ENUMS ────────────────────────────────────────────────────────────────────
@@ -1831,3 +1832,83 @@ export const itensConferencia = pgTable("itens_conferencia", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 export type ItemConferencia = typeof itensConferencia.$inferSelect;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MÓDULO: MONITORAMENTO DE AGENTES (PCs)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export const monitorAgentes = pgTable("monitor_agentes", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  ativoId: integer("ativoId"),
+  hostname: varchar("hostname", { length: 200 }).notNull(),
+  ip: varchar("ip", { length: 50 }),
+  mac: varchar("mac", { length: 50 }),
+  so: varchar("so", { length: 100 }),
+  versaoAgente: varchar("versaoAgente", { length: 20 }),
+  token: varchar("token", { length: 100 }).notNull(),
+  ultimoContato: timestamp("ultimoContato"),
+  online: boolean("online").default(false).notNull(),
+  ativo: boolean("ativo").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  // Novos campos para monitoramento avançado
+  os: varchar("os", { length: 256 }),
+  osVersion: varchar("os_version", { length: 256 }),
+  motherboard: varchar("motherboard", { length: 256 }),
+  cpu: varchar("cpu", { length: 256 }),
+  totalRam: bigint("total_ram", { mode: "number" }),
+  anydeskId: varchar("anydeskId", { length: 50 }),
+  ipAddress: varchar("ip_address", { length: 50 }),
+  macAddress: varchar("mac_address", { length: 50 }),
+  status: varchar("status", { length: 20 }).default("offline"),
+  pairingCode: varchar("pairingCode", { length: 20 }),
+  fingerprint: varchar("fingerprint", { length: 200 }),
+  ultimaVersao: varchar("ultimaVersao", { length: 20 }),
+  setor: varchar("setor", { length: 100 }),
+  deletedAt: timestamp("deletedAt"),
+});
+
+export type MonitorAgente = typeof monitorAgentes.$inferSelect;
+
+export const monitorMetricas = pgTable("monitor_metricas", {
+  id: serial("id").primaryKey(),
+  agenteId: integer("agenteId").notNull(),
+  empresaId: integer("empresaId").notNull(),
+  coletadoEm: timestamp("coletadoEm").defaultNow().notNull(),
+  cpuUso: decimal("cpuUso", { precision: 5, scale: 2 }),
+  cpuTemp: decimal("cpuTemp", { precision: 5, scale: 1 }),
+  cpuFreqMhz: integer("cpuFreqMhz"),
+  ramTotalMb: integer("ramTotalMb"),
+  ramUsadaMb: integer("ramUsadaMb"),
+  ramUsoPct: decimal("ramUsoPct", { precision: 5, scale: 2 }),
+  discoTotalGb: decimal("discoTotalGb", { precision: 8, scale: 2 }),
+  discoUsadoGb: decimal("discoUsadoGb", { precision: 8, scale: 2 }),
+  discoUsoPct: decimal("discoUsoPct", { precision: 5, scale: 2 }),
+  redeEnviadoKb: decimal("redeEnviadoKb", { precision: 12, scale: 2 }),
+  redeRecebidoKb: decimal("redeRecebidoKb", { precision: 12, scale: 2 }),
+  latenciaMs: integer("latenciaMs"),
+  processos: integer("processos"),
+  usuarioLogado: varchar("usuarioLogado", { length: 100 }),
+  uptime: integer("uptime"),
+  anydeskId: varchar("anydeskId", { length: 50 }),
+  topProcessos: jsonb("topProcessos"),
+});
+
+export type MonitorMetrica = typeof monitorMetricas.$inferSelect;
+
+export const agentPairingCodes = pgTable("agent_pairing_codes", {
+  id: serial("id").primaryKey(),
+  empresaId: integer("empresaId").notNull(),
+  codigo: varchar("codigo", { length: 20 }).notNull().unique(),
+  descricao: varchar("descricao", { length: 255 }),
+  ativoId: integer("ativoId"),
+  usado: boolean("usado").default(false).notNull(),
+  agenteId: integer("agenteId"),
+  criadoPor: integer("criadoPor").notNull(),
+  expiresAt: timestamp("expiresAt").notNull(),
+  usadoEm: timestamp("usadoEm"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type AgentPairingCode = typeof agentPairingCodes.$inferSelect;

@@ -165,49 +165,91 @@ app.use("/uploads", express.static(UPLOADS_DIR));
 // Pareamento: o agente Python chama este endpoint com o código gerado no frontend
 app.post("/api/agent/pair", async (req: any, res: any) => {
   try {
-    const { pairCode, hostname, ip, so, mac, fingerprint, anydesk_id, versao_agente } = req.body;
+    const {
+      pairCode, hostname, ip, so, mac, fingerprint, anydesk_id, versao_agente,
+      os, osVersion, motherboard, cpu, totalRam, ipAddress, macAddress
+    } = req.body;
+
     if (!pairCode) return res.status(400).json({ error: "pairCode obrigatório" });
 
     const db = getRawClient ? await getRawClient() : null;
     if (!db) return res.status(503).json({ error: "DB indisponível" });
 
-    // Verificar código de pareamento na tabela correta
-    const codes = await db`
-      SELECT * FROM agent_pairing_codes
-      WHERE codigo = ${pairCode} AND usado = false AND "expiresAt" > now()
-    `.catch(() => []) as any[];
+    // Identificador único principal: MAC Address (se fornecido) ou o par (pairCode, hostname)
+    const effectiveMac = macAddress || mac;
 
-    if (!codes || codes.length === 0) {
-      return res.status(404).json({ error: "Código inválido, expirado ou já utilizado" });
+    // Verificar se o agente já existe por MAC
+    let existingAgente = null;
+    if (effectiveMac) {
+      const rows = await db`
+        SELECT * FROM monitor_agentes
+        WHERE (mac = ${effectiveMac} OR mac_address = ${effectiveMac}) AND "empresaId" = (
+          SELECT "empresaId" FROM agent_pairing_codes WHERE codigo = ${pairCode}
+        )
+      `.catch(() => []) as any[];
+      if (rows.length > 0) existingAgente = rows[0];
     }
 
-    const pairRecord = codes[0];
-    const token = `agt_${require('crypto').randomBytes(24).toString('hex')}`;
+    const token = existingAgente?.token || `agt_${require('crypto').randomBytes(24).toString('hex')}`;
 
-    // Registrar agente na tabela monitor_agentes
+    let pairRecord = null;
+    if (!existingAgente) {
+      // Verificar código de pareamento apenas para novos agentes
+      const codes = await db`
+        SELECT * FROM agent_pairing_codes
+        WHERE codigo = ${pairCode} AND usado = false AND "expiresAt" > now()
+      `.catch(() => []) as any[];
+
+      if (!codes || codes.length === 0) {
+        return res.status(404).json({ error: "Código inválido, expirado ou já utilizado" });
+      }
+      pairRecord = codes[0];
+    }
+
+    // Registrar ou Atualizar agente na tabela monitor_agentes
     const agentes = await db`
       INSERT INTO monitor_agentes (
         "empresaId", hostname, ip, so, mac, fingerprint, "anydeskId",
-        "ultimaVersao", token, status, "pairingCode", "createdAt", "updatedAt"
+        "ultimaVersao", token, status, "pairingCode", "createdAt", "updatedAt",
+        os, os_version, motherboard, cpu, total_ram, ip_address, mac_address
       ) VALUES (
-        ${pairRecord.empresaId}, ${hostname || 'unknown'}, ${ip || null},
-        ${so || null}, ${mac || null}, ${fingerprint || null}, ${anydesk_id || null},
-        ${versao_agente || '1.0.0'}, ${token}, 'online', ${pairCode}, now(), now()
+        ${existingAgente?.empresaId || pairRecord.empresaId}, ${hostname || 'unknown'}, ${ip || null},
+        ${so || null}, ${effectiveMac || null}, ${fingerprint || null}, ${anydesk_id || null},
+        ${versao_agente || '1.0.0'}, ${token}, 'online', ${pairCode}, now(), now(),
+        ${os || null}, ${osVersion || null}, ${motherboard || null}, ${cpu || null}, ${totalRam || null},
+        ${ipAddress || null}, ${effectiveMac || null}
       )
-      ON CONFLICT (token) DO UPDATE SET hostname = ${hostname || 'unknown'}, "updatedAt" = now()
+      ON CONFLICT (token) DO UPDATE SET
+        hostname = EXCLUDED.hostname,
+        "updatedAt" = now(),
+        status = 'online',
+        os = EXCLUDED.os,
+        os_version = EXCLUDED.os_version,
+        motherboard = EXCLUDED.motherboard,
+        cpu = EXCLUDED.cpu,
+        total_ram = EXCLUDED.total_ram,
+        ip_address = EXCLUDED.ip_address,
+        mac_address = EXCLUDED.mac_address
       RETURNING id
-    `.catch(() => []) as any[];
+    `.catch((err) => {
+      console.error('[Agent Pair DB Error]', err);
+      return [];
+    }) as any[];
 
-    // Marcar código como usado e vincular ao agente
-    if (agentes && agentes[0]) {
+    // Marcar código como usado e vincular ao agente (apenas se for novo)
+    if (agentes && agentes[0] && pairRecord) {
       await db`
         UPDATE agent_pairing_codes
-        SET usado = true, "usadoEm" = now(), "hostnameVinculado" = ${hostname || null}, "agenteId" = ${agentes[0].id}
+        SET usado = true, "usadoEm" = now(), "agenteId" = ${agentes[0].id}
         WHERE id = ${pairRecord.id}
       `.catch(() => {});
     }
 
-    return res.json({ token, empresaId: pairRecord.empresaId, agenteId: agentes?.[0]?.id });
+    return res.json({
+      token,
+      empresaId: existingAgente?.empresaId || pairRecord?.empresaId,
+      agenteId: agentes?.[0]?.id || existingAgente?.id
+    });
   } catch (err: any) {
     console.error('[Agent Pair]', err);
     return res.status(500).json({ error: err?.message || 'Erro interno' });
