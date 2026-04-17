@@ -1552,7 +1552,7 @@ const MIGRATION_STATEMENTS: string[] = [
   `ALTER TABLE agent_pairing_codes ADD COLUMN IF NOT EXISTS "user_id" varchar(255)`,
   `ALTER TABLE agent_pairing_codes ADD COLUMN IF NOT EXISTS "department_id" varchar(255)`,
   `ALTER TABLE agent_pairing_codes ADD COLUMN IF NOT EXISTS "is_used" boolean DEFAULT false`,
-]; // --- TICKETS_TI: Correção de colunas faltantes ---
+  // --- TICKETS_TI: Correção de colunas faltantes ---
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "status" varchar(30) NOT NULL DEFAULT 'aberto'`,
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "prioridade" varchar(20) NOT NULL DEFAULT 'media'`,
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "categoria" varchar(50) NOT NULL DEFAULT 'outro'`,
