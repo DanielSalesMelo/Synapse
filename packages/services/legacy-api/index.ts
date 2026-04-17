@@ -207,17 +207,27 @@ app.post("/api/agent/pair", async (req: any, res: any) => {
     }
 
     // Registrar ou Atualizar agente na tabela monitor_agentes
+    // Se houver pairingCode, obter userId e departmentId do código
+    let userId = null;
+    let departmentId = null;
+    if (pairRecord) {
+      userId = pairRecord.user_id;
+      departmentId = pairRecord.department_id;
+    }
+
     const agentes = await db`
       INSERT INTO monitor_agentes (
         "empresaId", hostname, ip, so, mac, fingerprint, "anydeskId",
         "ultimaVersao", token, status, "pairingCode", "createdAt", "updatedAt",
-        os, os_version, motherboard, cpu, total_ram, ip_address, mac_address
+        os, os_version, motherboard, cpu, total_ram, ip_address, mac_address,
+        user_id, department_id
       ) VALUES (
         ${existingAgente?.empresaId || pairRecord.empresaId}, ${hostname || 'unknown'}, ${ip || null},
         ${so || null}, ${effectiveMac || null}, ${fingerprint || null}, ${anydesk_id || null},
         ${versao_agente || '1.0.0'}, ${token}, 'online', ${pairCode}, now(), now(),
         ${os || null}, ${osVersion || null}, ${motherboard || null}, ${cpu || null}, ${totalRam || null},
-        ${ipAddress || null}, ${effectiveMac || null}
+        ${ipAddress || null}, ${effectiveMac || null},
+        ${userId || null}, ${departmentId || null}
       )
       ON CONFLICT (token) DO UPDATE SET
         hostname = EXCLUDED.hostname,
@@ -229,7 +239,9 @@ app.post("/api/agent/pair", async (req: any, res: any) => {
         cpu = EXCLUDED.cpu,
         total_ram = EXCLUDED.total_ram,
         ip_address = EXCLUDED.ip_address,
-        mac_address = EXCLUDED.mac_address
+        mac_address = EXCLUDED.mac_address,
+        user_id = EXCLUDED.user_id,
+        department_id = EXCLUDED.department_id
       RETURNING id
     `.catch((err) => {
       console.error('[Agent Pair DB Error]', err);
@@ -240,7 +252,7 @@ app.post("/api/agent/pair", async (req: any, res: any) => {
     if (agentes && agentes[0] && pairRecord) {
       await db`
         UPDATE agent_pairing_codes
-        SET usado = true, "usadoEm" = now(), "agenteId" = ${agentes[0].id}
+        SET usado = true, "usadoEm" = now(), "agenteId" = ${agentes[0].id}, "is_used" = true
         WHERE id = ${pairRecord.id}
       `.catch(() => {});
     }
@@ -253,6 +265,113 @@ app.post("/api/agent/pair", async (req: any, res: any) => {
   } catch (err: any) {
     console.error('[Agent Pair]', err);
     return res.status(500).json({ error: err?.message || 'Erro interno' });
+  }
+});
+
+// Gerar código de pareamento
+app.post("/api/agents/generate-pairing-code", async (req: any, res: any) => {
+  try {
+    // Verificar autenticação
+    try {
+      await sdk.authenticateRequest(req);
+    } catch {
+      return res.status(401).json({ error: "Não autenticado. Faça login novamente." });
+    }
+
+    const { userId, departmentId, empresaId } = req.body;
+    if (!userId || !departmentId || !empresaId) {
+      return res.status(400).json({ error: "userId, departmentId e empresaId são obrigatórios" });
+    }
+
+    const db = getRawClient ? await getRawClient() : null;
+    if (!db) return res.status(503).json({ error: "DB indisponível" });
+
+    // Gerar código único (formato: XXXX-XXXX)
+    const generateCode = () => {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let code = '';
+      for (let i = 0; i < 8; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return `${code.slice(0, 4)}-${code.slice(4)}`;
+    };
+
+    const code = generateCode();
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 horas
+
+    // Inserir código de pareamento
+    const result = await db`
+      INSERT INTO agent_pairing_codes (
+        "empresaId", codigo, "user_id", "department_id", "expiresAt", "criadoPor", "createdAt"
+      ) VALUES (
+        ${empresaId}, ${code}, ${userId}, ${departmentId}, ${expiresAt}, ${(req as any).user?.id || 0}, now()
+      )
+      RETURNING id, codigo, "expiresAt"
+    `.catch((err) => {
+      console.error('[Generate Pairing Code Error]', err);
+      return [];
+    }) as any[];
+
+    if (!result || result.length === 0) {
+      return res.status(500).json({ error: "Erro ao gerar código de pareamento" });
+    }
+
+    return res.json({
+      code: result[0].codigo,
+      expiresAt: result[0].expiresAt,
+      message: "Código de pareamento gerado com sucesso"
+    });
+  } catch (err: any) {
+    console.error('[Generate Pairing Code]', err);
+    return res.status(500).json({ error: err?.message || "Erro interno" });
+  }
+});
+
+// Associar agente a um usuário (vinculação manual)
+app.put("/api/agents/:agentId/associate", async (req: any, res: any) => {
+  try {
+    // Verificar autenticação
+    try {
+      await sdk.authenticateRequest(req);
+    } catch {
+      return res.status(401).json({ error: "Não autenticado. Faça login novamente." });
+    }
+
+    const { agentId } = req.params;
+    const { userId, departmentId } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ error: "userId é obrigatório" });
+    }
+
+    const db = getRawClient ? await getRawClient() : null;
+    if (!db) return res.status(503).json({ error: "DB indisponível" });
+
+    // Atualizar agente com userId e departmentId
+    const result = await db`
+      UPDATE monitor_agentes
+      SET "user_id" = ${userId}, "department_id" = ${departmentId || null}, "updatedAt" = now()
+      WHERE id = ${parseInt(agentId)}
+      RETURNING id, hostname, "user_id", "department_id"
+    `.catch((err) => {
+      console.error('[Associate Agent Error]', err);
+      return [];
+    }) as any[];
+
+    if (!result || result.length === 0) {
+      return res.status(404).json({ error: "Agente não encontrado" });
+    }
+
+    return res.json({
+      agentId: result[0].id,
+      hostname: result[0].hostname,
+      userId: result[0].user_id,
+      departmentId: result[0].department_id,
+      message: "Agente associado com sucesso"
+    });
+  } catch (err: any) {
+    console.error('[Associate Agent]', err);
+    return res.status(500).json({ error: err?.message || "Erro interno" });
   }
 });
 

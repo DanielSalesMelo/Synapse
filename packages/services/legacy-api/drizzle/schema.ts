@@ -1866,6 +1866,8 @@ export const monitorAgentes = pgTable("monitor_agentes", {
   fingerprint: varchar("fingerprint", { length: 200 }),
   ultimaVersao: varchar("ultimaVersao", { length: 20 }),
   setor: varchar("setor", { length: 100 }),
+  userId: varchar("user_id"),
+  departmentId: varchar("department_id"),
   deletedAt: timestamp("deletedAt"),
 });
 
@@ -1909,6 +1911,9 @@ export const agentPairingCodes = pgTable("agent_pairing_codes", {
   expiresAt: timestamp("expiresAt").notNull(),
   usadoEm: timestamp("usadoEm"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
+  userId: varchar("user_id").notNull(),
+  departmentId: varchar("department_id").notNull(),
+  isUsed: boolean("is_used").default(false),
 });
 
 export type AgentPairingCode = typeof agentPairingCodes.$inferSelect;
