@@ -1,4 +1,4 @@
-{
+﻿{
   "compilerOptions": {
     "composite": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
@@ -8,9 +8,10 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
+    "noEmit": false,
     "jsx": "react-jsx",
     "types": ["node"]
   },
   "include": ["vite.config.ts"]
 }
+
