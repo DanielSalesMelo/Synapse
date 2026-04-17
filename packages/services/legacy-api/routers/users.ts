@@ -78,12 +78,30 @@ export const usersRouter = router({
 
   // ── Listar todos os usuários ──────────────────────────────────────────────
   listAll: protectedProcedure.query(async ({ ctx }) => {
+    // --- INÍCIO DOS LOGS DE DEPURAÇÃO ---
+    console.log('[DEBUG] Endpoint listAll foi chamado.');
+    console.log(`[DEBUG] ID do usuário logado (ctx.user.id): ${ctx.user.id}`);
+    console.log(`[DEBUG] ID da empresa do usuário (ctx.user.empresaId): ${(ctx.user as any).empresaId}`);
+    // --- FIM DOS LOGS DE DEPURAÇÃO ---
+
+    if (!(ctx.user as any).empresaId && ctx.user.role !== "master_admin") {
+      // --- LOG DE ERRO ---
+      console.error('[ERROR] Usuário não tem empresaId na sessão e não é master_admin. Retornando lista vazia.');
+      return [];
+    }
+
     try {
       const allUsers = await getAllUsers();
+      
       // Admin só vê usuários da sua empresa; master_admin vê todos
       const filtered = ctx.user.role === "master_admin"
         ? allUsers
         : allUsers.filter(u => (u as any).empresaId === (ctx.user as any).empresaId);
+
+      // --- LOG DE SUCESSO ---
+      console.log(`[DEBUG] Consulta ao banco de dados retornou ${filtered.length} usuários filtrados.`);
+      console.log('[DEBUG] Usuários encontrados:', JSON.stringify(filtered.map(u => ({ id: u.id, name: u.name, email: u.email })), null, 2));
+
       return filtered.map(user => ({
         id: user.id,
         name: user.name || "",
@@ -97,7 +115,8 @@ export const usersRouter = router({
         updatedAt: user.updatedAt,
       }));
     } catch (error) {
-      console.error("Erro ao listar usuários:", error);
+      // --- LOG DE FALHA NO BANCO DE DADOS ---
+      console.error('[FATAL] Ocorreu um erro ao consultar o banco de dados:', error);
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao listar usuários" });
     }
   }),
