@@ -18,36 +18,13 @@ import {
   Calendar, FileText, CheckCircle2, XCircle,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
 // ─── Mock data ───────────────────────────────────────────────────────────────
-const MOCK_FUNCIONARIOS = [
-  { id: 1, nome: "João Silva", cargo: "Motorista", depto: "Logística", contrato: "clt", salario: 3200, admissao: "2022-03-15", status: "ativo", avaliacao: 4.2, cnhVence: "2026-08-01", asoVence: "2025-09-01" },
-  { id: 2, nome: "Maria Costa", cargo: "Analista de RH", depto: "RH", contrato: "clt", salario: 4500, admissao: "2021-07-20", status: "ativo", avaliacao: 4.8, cnhVence: null, asoVence: "2025-11-15" },
-  { id: 3, nome: "Carlos Lima", cargo: "Despachante", depto: "Operações", contrato: "clt", salario: 2800, admissao: "2023-01-10", status: "ativo", avaliacao: 3.9, cnhVence: "2025-05-20", asoVence: "2026-01-10" },
-  { id: 4, nome: "Ana Souza", cargo: "Gerente Financeiro", depto: "Financeiro", contrato: "clt", salario: 8500, admissao: "2020-11-05", status: "ativo", avaliacao: 4.6, cnhVence: null, asoVence: "2026-03-05" },
-  { id: 5, nome: "Pedro Alves", cargo: "Ajudante", depto: "Logística", contrato: "freelancer", salario: 1800, admissao: "2024-02-01", status: "afastado", avaliacao: 3.5, cnhVence: null, asoVence: "2025-06-01" },
-];
-
-const MOCK_TREINAMENTOS = [
-  { id: 1, titulo: "NR-35 — Trabalho em Altura", tipo: "Segurança", status: "concluido", participantes: 12, data: "2025-03-20", carga: 8 },
-  { id: 2, titulo: "Direção Defensiva", tipo: "Operacional", status: "em_andamento", participantes: 8, data: "2025-04-22", carga: 16 },
-  { id: 3, titulo: "Excel Avançado", tipo: "Capacitação", status: "agendado", participantes: 5, data: "2025-05-10", carga: 12 },
-  { id: 4, titulo: "LGPD para Colaboradores", tipo: "Compliance", status: "concluido", participantes: 45, data: "2025-02-15", carga: 4 },
-];
-
-const MOCK_FOLHA = [
-  { id: 1, mes: "Abril/2025", status: "em_processamento", total: 48200, funcionarios: 18, encargos: 12050 },
-  { id: 2, mes: "Março/2025", status: "pago", total: 47800, funcionarios: 18, encargos: 11950 },
-  { id: 3, mes: "Fevereiro/2025", status: "pago", total: 46500, funcionarios: 17, encargos: 11625 },
-];
-
-const CLIMA_RESPOSTAS = [
-  { pergunta: "Satisfação geral com a empresa", positivo: 78, neutro: 14, negativo: 8 },
-  { pergunta: "Relacionamento com a liderança", positivo: 72, neutro: 18, negativo: 10 },
-  { pergunta: "Oportunidades de crescimento", positivo: 55, neutro: 25, negativo: 20 },
-  { pergunta: "Ambiente de trabalho", positivo: 85, neutro: 10, negativo: 5 },
-  { pergunta: "Remuneração e benefícios", positivo: 60, neutro: 22, negativo: 18 },
-];
+const MOCK_FUNCIONARIOS = [];
+const MOCK_TREINAMENTOS = [];
+const MOCK_FOLHA = [];
+const CLIMA_RESPOSTAS = [];
 
 const CONTRATO_COLORS: Record<string, string> = {
   clt: "bg-green-100 text-green-700",
@@ -82,8 +59,9 @@ export default function RH() {
   const [showNovoFunc, setShowNovoFunc] = useState(false);
 
   // TRPC
-  const { data: funcionarios = [] } = trpc.funcionarios.list.useQuery({ empresaId: 1 });
-  const funcData = (funcionarios as any[]).length > 0 ? funcionarios : MOCK_FUNCIONARIOS;
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
+  const { data: funcionarios = [] } = trpc.funcionarios.list.useQuery({ empresaId: EMPRESA_ID });
+  const funcData = funcionarios;
 
   const ativos = funcData.filter((f: any) => f.status === "ativo").length;
   const afastados = funcData.filter((f: any) => f.status === "afastado").length;
@@ -93,7 +71,7 @@ export default function RH() {
     return (cnh !== null && cnh <= 30) || (aso !== null && aso <= 30);
   }).length;
 
-  const folhaTotal = MOCK_FOLHA[0]?.total ?? 0;
+  const folhaTotal = 0; // TODO: Implementar query real para folha de pagamento
 
   const funcFiltrados = funcData.filter((f: any) =>
     f.nome.toLowerCase().includes(search.toLowerCase()) ||

@@ -223,257 +223,208 @@ function ContaReceberForm({ onSave, onClose }: { onSave: (d: any) => void; onClo
 }
 
 // ─── Mock data para Fluxo de Caixa ─────────────────────────────────────────
-const MOCK_FLUXO = [
-  { data: "2025-04-01", descricao: "Recebimento Frete ABC", tipo: "entrada", valor: 12500, saldo: 45200 },
-  { data: "2025-04-02", descricao: "Combustível Posto BR", tipo: "saida", valor: 3200, saldo: 42000 },
-  { data: "2025-04-03", descricao: "Manutenção Veículo KJH-1234", tipo: "saida", valor: 1800, saldo: 40200 },
-  { data: "2025-04-04", descricao: "Recebimento CTE-00892", tipo: "entrada", valor: 8700, saldo: 48900 },
-  { data: "2025-04-05", descricao: "Salários Motoristas", tipo: "saida", valor: 15600, saldo: 33300 },
-  { data: "2025-04-07", descricao: "Recebimento Frete XYZ", tipo: "entrada", valor: 22000, saldo: 55300 },
-  { data: "2025-04-08", descricao: "Pedágio Mensal", tipo: "saida", valor: 2100, saldo: 53200 },
-];
-
-const MOCK_CONCILIACAO = [
-  { id: 1, data: "2025-04-15", descricao: "Dep. Transportes ABC", valorBanco: 12500, valorSistema: 12500, status: "conciliado" },
-  { id: 2, data: "2025-04-14", descricao: "Deb. Posto Ipiranga", valorBanco: -3200, valorSistema: -3200, status: "conciliado" },
-  { id: 3, data: "2025-04-13", descricao: "Dep. Logística Sul", valorBanco: 8700, valorSistema: null, status: "pendente" },
-  { id: 4, data: "2025-04-12", descricao: "Deb. Manutenção", valorBanco: -1850, valorSistema: -1800, status: "divergente" },
-  { id: 5, data: "2025-04-11", descricao: "Dep. Frete Nacional", valorBanco: 22000, valorSistema: 22000, status: "conciliado" },
-];
-
-const MOCK_DRE = [
-  { categoria: "Receita Bruta de Fretes", valor: 185000, tipo: "receita" },
-  { categoria: "Deduções (Impostos s/ Serviço)", valor: -9250, tipo: "deducao" },
-  { categoria: "Receita Líquida", valor: 175750, tipo: "subtotal" },
-  { categoria: "Combustível", valor: -42000, tipo: "custo" },
-  { categoria: "Manutenção", valor: -18500, tipo: "custo" },
-  { categoria: "Pneus", valor: -8200, tipo: "custo" },
-  { categoria: "Pedágios", valor: -12400, tipo: "custo" },
-  { categoria: "Lucro Bruto", valor: 94650, tipo: "subtotal" },
-  { categoria: "Salários e Encargos", valor: -48200, tipo: "despesa" },
-  { categoria: "Despesas Administrativas", valor: -8500, tipo: "despesa" },
-  { categoria: "Depreciação de Frota", valor: -12000, tipo: "despesa" },
-  { categoria: "EBITDA", valor: 25950, tipo: "resultado" },
-];
-
-const CONCIL_COLORS: Record<string, string> = {
-  conciliado: "bg-green-100 text-green-700",
-  pendente: "bg-yellow-100 text-yellow-700",
-  divergente: "bg-red-100 text-red-700",
-};
+const MOCK_FLUXO: any[] = [];
+const MOCK_CONCILIACAO: any[] = [];
+const MOCK_DRE: any[] = [];
 
 export default function Financeiro() {
   const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
-  const { t } = useTranslation();
-  const [location] = useLocation();
-  const activeTab = location.includes("receber") ? "receber" : location.includes("adiantamentos") ? "adiantamentos" : location.includes("fluxo") ? "fluxo" : location.includes("conciliacao") ? "conciliacao" : location.includes("dre") ? "dre" : "pagar";
-  const [openPagar, setOpenPagar] = useState(false);
-  const [openReceber, setOpenReceber] = useState(false);
-  const utils = trpc.useUtils();
+  const [tab, setTab] = useState("visao-geral");
+  const [showNovoPagar, setShowNovoPagar] = useState(false);
+  const [showNovoReceber, setShowNovoReceber] = useState(false);
 
-  const { data: contasPagar = [], isLoading: loadingPagar } = trpc.financeiro.pagar.list.useQuery({ empresaId: EMPRESA_ID });
-  const { data: contasReceber = [], isLoading: loadingReceber } = trpc.financeiro.receber.list.useQuery({ empresaId: EMPRESA_ID });
-  const { data: resumoPagar } = trpc.financeiro.pagar.resumo.useQuery({ empresaId: EMPRESA_ID });
-  const { data: resumoReceber } = trpc.financeiro.receber.resumo.useQuery({ empresaId: EMPRESA_ID });
+  // TRPC
+  const { data: resumo } = trpc.financeiro.pagar.resumo.useQuery({ empresaId: EMPRESA_ID });
+  const { data: pagar = [] } = trpc.financeiro.pagar.list.useQuery({ empresaId: EMPRESA_ID });
+  const { data: receber = [] } = trpc.financeiro.receber.list.useQuery({ empresaId: EMPRESA_ID });
   const { data: veiculos = [] } = trpc.veiculos.list.useQuery({ empresaId: EMPRESA_ID });
   const { data: funcionarios = [] } = trpc.funcionarios.list.useQuery({ empresaId: EMPRESA_ID });
 
-  const createPagarMut = trpc.financeiro.pagar.create.useMutation({
-    onSuccess: () => { utils.financeiro.pagar.list.invalidate(); setOpenPagar(false); toast.success("Conta registrada!"); },
-    onError: (e) => toast.error(e.message),
+  const utils = trpc.useContext();
+  const createPagar = trpc.financeiro.pagar.create.useMutation({
+    onSuccess: () => {
+      toast.success("Conta a pagar registrada!");
+      setShowNovoPagar(false);
+      utils.financeiro.pagar.list.invalidate();
+      utils.financeiro.pagar.resumo.invalidate();
+    }
   });
-  const createReceberMut = trpc.financeiro.receber.create.useMutation({
-    onSuccess: () => { utils.financeiro.receber.list.invalidate(); setOpenReceber(false); toast.success("Conta registrada!"); },
-    onError: (e) => toast.error(e.message),
-  });
-  const marcarPagoMut = trpc.financeiro.pagar.update.useMutation({
-    onSuccess: () => { utils.financeiro.pagar.list.invalidate(); toast.success("Marcado como pago!"); },
-    onError: (e) => toast.error(e.message),
+  const createReceber = trpc.financeiro.receber.create.useMutation({
+    onSuccess: () => {
+      toast.success("Conta a receber registrada!");
+      setShowNovoReceber(false);
+      utils.financeiro.receber.list.invalidate();
+    }
   });
 
   return (
-<div className="space-y-5">
-        <div className="flex items-center justify-between flex-wrap gap-3">
-          <div>
-            <h1 className="text-2xl font-bold flex items-center gap-2"><DollarSign className="h-6 w-6 text-primary" />Financeiro</h1>
-            <p className="text-muted-foreground text-sm">Contas · Fluxo de Caixa · Conciliação Bancária · DRE · Adiantamentos</p>
-          </div>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <Wallet className="h-6 w-6 text-primary" />
+            Financeiro
+          </h1>
+          <p className="text-muted-foreground text-sm">Contas a Pagar · Receber · Fluxo de Caixa · DRE</p>
         </div>
-
-        {/* KPIs */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-1">
-                <TrendingDown className="h-4 w-4 text-red-500" />
-                <p className="text-xs text-muted-foreground">A Pagar</p>
-              </div>
-              <p className="text-xl font-bold">{formatCurrency(resumoPagar?.pendente)}</p>
-              {(resumoPagar?.vencido ?? 0) > 0 && (
-                <p className="text-xs text-red-500 mt-1">+ {formatCurrency(resumoPagar?.vencido)} vencido</p>
-              )}
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-1">
-                <TrendingUp className="h-4 w-4 text-green-500" />
-                <p className="text-xs text-muted-foreground">A Receber</p>
-              </div>
-              <p className="text-xl font-bold">{formatCurrency(resumoReceber?.pendente)}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-1">
-                <CheckCircle2 className="h-4 w-4 text-blue-500" />
-                <p className="text-xs text-muted-foreground">Pago no mês</p>
-              </div>
-              <p className="text-xl font-bold">{formatCurrency(resumoPagar?.pagoMes)}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-1">
-                <Wallet className="h-4 w-4 text-purple-500" />
-                <p className="text-xs text-muted-foreground">Saldo projetado</p>
-              </div>
-              <p className={`text-xl font-bold ${((resumoReceber?.pendente ?? 0) - (resumoPagar?.pendente ?? 0)) >= 0 ? "text-green-600" : "text-red-600"}`}>
-                {formatCurrency((resumoReceber?.pendente ?? 0) - (resumoPagar?.pendente ?? 0))}
-              </p>
-            </CardContent>
-          </Card>
+        <div className="flex gap-2">
+          <Dialog open={showNovoPagar} onOpenChange={setShowNovoPagar}>
+            <DialogTrigger asChild><Button variant="outline" size="sm"><Plus className="h-4 w-4 mr-2" />Conta a Pagar</Button></DialogTrigger>
+            <DialogContent><DialogHeader><DialogTitle>Nova Conta a Pagar</DialogTitle></DialogHeader>
+              <ContaPagarForm veiculos={veiculos} funcionarios={funcionarios} onSave={d => createPagar.mutate(d)} onClose={() => setShowNovoPagar(false)} />
+            </DialogContent>
+          </Dialog>
+          <Dialog open={showNovoReceber} onOpenChange={setShowNovoReceber}>
+            <DialogTrigger asChild><Button size="sm"><Plus className="h-4 w-4 mr-2" />Conta a Receber</Button></DialogTrigger>
+            <DialogContent><DialogHeader><DialogTitle>Nova Conta a Receber</DialogTitle></DialogHeader>
+              <ContaReceberForm onSave={d => createReceber.mutate(d)} onClose={() => setShowNovoReceber(false)} />
+            </DialogContent>
+          </Dialog>
         </div>
+      </div>
 
-        {/* Tabs */}
-        <Tabs value={activeTab}>
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <TabsList className="flex-wrap h-auto gap-1">
-              <TabsTrigger value="pagar"><TrendingDown className="h-3.5 w-3.5 mr-1" />A Pagar</TabsTrigger>
-              <TabsTrigger value="receber"><TrendingUp className="h-3.5 w-3.5 mr-1" />A Receber</TabsTrigger>
-              <TabsTrigger value="fluxo"><Banknote className="h-3.5 w-3.5 mr-1" />Fluxo de Caixa</TabsTrigger>
-              <TabsTrigger value="conciliacao"><Receipt className="h-3.5 w-3.5 mr-1" />Conciliação</TabsTrigger>
-              <TabsTrigger value="dre"><PieChart className="h-3.5 w-3.5 mr-1" />DRE</TabsTrigger>
-            </TabsList>
-            <div className="flex gap-2">
-              <Dialog open={openPagar} onOpenChange={setOpenPagar}>
-                <DialogTrigger asChild>
-                  <Button size="sm" variant="outline"><Plus className="h-4 w-4 mr-1" />A Pagar</Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-                  <DialogHeader><DialogTitle>Nova Conta a Pagar</DialogTitle></DialogHeader>
-                  <ContaPagarForm veiculos={veiculos} funcionarios={funcionarios} onSave={d => createPagarMut.mutate(d)} onClose={() => setOpenPagar(false)} />
-                </DialogContent>
-              </Dialog>
-              <Dialog open={openReceber} onOpenChange={setOpenReceber}>
-                <DialogTrigger asChild>
-                  <Button size="sm"><Plus className="h-4 w-4 mr-1" />A Receber</Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-                  <DialogHeader><DialogTitle>Nova Conta a Receber</DialogTitle></DialogHeader>
-                  <ContaReceberForm onSave={d => createReceberMut.mutate(d)} onClose={() => setOpenReceber(false)} />
-                </DialogContent>
-              </Dialog>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="border-l-4 border-l-yellow-500">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-1">
+              <p className="text-xs text-muted-foreground font-medium">Total Pendente</p>
+              <AlertCircle className="h-4 w-4 text-yellow-500" />
             </div>
+            <p className="text-2xl font-bold">{formatCurrency(resumo?.pendente)}</p>
+          </CardContent>
+        </Card>
+        <Card className="border-l-4 border-l-red-500">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-1">
+              <p className="text-xs text-muted-foreground font-medium">Total Vencido</p>
+              <TrendingDown className="h-4 w-4 text-red-500" />
+            </div>
+            <p className="text-2xl font-bold text-red-600">{formatCurrency(resumo?.vencido)}</p>
+          </CardContent>
+        </Card>
+        <Card className="border-l-4 border-l-green-500">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-1">
+              <p className="text-xs text-muted-foreground font-medium">Pago no Mês</p>
+              <CheckCircle2 className="h-4 w-4 text-green-500" />
+            </div>
+            <p className="text-2xl font-bold text-green-600">{formatCurrency(resumo?.pagoMes)}</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Tabs value={tab} onValueChange={setTab}>
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 h-auto gap-1">
+          <TabsTrigger value="visao-geral">Visão Geral</TabsTrigger>
+          <TabsTrigger value="pagar">Contas a Pagar</TabsTrigger>
+          <TabsTrigger value="receber">Contas a Receber</TabsTrigger>
+          <TabsTrigger value="fluxo">Fluxo de Caixa</TabsTrigger>
+          <TabsTrigger value="dre">DRE</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="visao-geral" className="space-y-4 mt-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader><CardTitle className="text-sm">Próximos Vencimentos</CardTitle></CardHeader>
+              <CardContent>
+                <Table>
+                  <TableBody>
+                    {pagar.slice(0, 5).map(p => (
+                      <TableRow key={p.id}>
+                        <TableCell className="py-2">
+                          <p className="text-sm font-medium">{p.descricao}</p>
+                          <p className="text-xs text-muted-foreground">{new Date(p.dataVencimento).toLocaleDateString()}</p>
+                        </TableCell>
+                        <TableCell className="text-right py-2 font-bold">{formatCurrency(p.valor)}</TableCell>
+                        <TableCell className="text-right py-2"><Badge className={STATUS_PAGAR_COLORS[p.status]}>{p.status}</Badge></TableCell>
+                      </TableRow>
+                    ))}
+                    {pagar.length === 0 && <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground py-4">Nenhuma conta pendente</TableCell></TableRow>}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle className="text-sm">Contas a Receber</CardTitle></CardHeader>
+              <CardContent>
+                <Table>
+                  <TableBody>
+                    {receber.slice(0, 5).map(r => (
+                      <TableRow key={r.id}>
+                        <TableCell className="py-2">
+                          <p className="text-sm font-medium">{r.descricao}</p>
+                          <p className="text-xs text-muted-foreground">{new Date(r.dataVencimento).toLocaleDateString()}</p>
+                        </TableCell>
+                        <TableCell className="text-right py-2 font-bold">{formatCurrency(r.valor)}</TableCell>
+                        <TableCell className="text-right py-2"><Badge className={STATUS_RECEBER_COLORS[r.status]}>{r.status}</Badge></TableCell>
+                      </TableRow>
+                    ))}
+                    {receber.length === 0 && <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground py-4">Nenhum recebimento pendente</TableCell></TableRow>}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
           </div>
+        </TabsContent>
 
-          <TabsContent value="pagar">
-            <Card>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Descrição</TableHead>
-                        <TableHead>Categoria</TableHead>
-                        <TableHead>Fornecedor</TableHead>
-                        <TableHead>Vencimento</TableHead>
-                        <TableHead className="text-right">Valor</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead></TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {loadingPagar ? (
-                        <TableRow><TableCell colSpan={7} className="text-center py-8 text-muted-foreground">Carregando...</TableCell></TableRow>
-                      ) : contasPagar.length === 0 ? (
-                        <TableRow><TableCell colSpan={7} className="text-center py-8 text-muted-foreground">Nenhuma conta registrada</TableCell></TableRow>
-                      ) : contasPagar.map(c => (
-                        <TableRow key={c.id}>
-                          <TableCell className="font-medium text-sm">{c.descricao}</TableCell>
-                          <TableCell className="text-sm text-muted-foreground">{c.categoria}</TableCell>
-                          <TableCell className="text-sm">{c.fornecedor ?? "—"}</TableCell>
-                          <TableCell className="text-sm">{new Date(c.dataVencimento).toLocaleDateString("pt-BR")}</TableCell>
-                          <TableCell className="text-right font-medium text-sm">{formatCurrency(c.valor)}</TableCell>
-                          <TableCell>
-                            <Badge className={`text-xs ${STATUS_PAGAR_COLORS[c.status] ?? ""}`}>{c.status}</Badge>
-                          </TableCell>
-                          <TableCell>
-                            {c.status === "pendente" && (
-                              <Button size="sm" variant="outline" className="h-7 text-xs"
-                                onClick={() => marcarPagoMut.mutate({
-                                  id: c.id,
-                                  status: "pago",
-                                  dataPagamento: new Date().toISOString().split("T")[0],
-                                })}>
-                                Pagar
-                              </Button>
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+        <TabsContent value="pagar" className="mt-4">
+          <Card>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Vencimento</TableHead>
+                  <TableHead>Descrição</TableHead>
+                  <TableHead>Categoria</TableHead>
+                  <TableHead>Valor</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {pagar.map(p => (
+                  <TableRow key={p.id}>
+                    <TableCell>{new Date(p.dataVencimento).toLocaleDateString()}</TableCell>
+                    <TableCell className="font-medium">{p.descricao}</TableCell>
+                    <TableCell className="capitalize">{p.categoria}</TableCell>
+                    <TableCell className="font-bold">{formatCurrency(p.valor)}</TableCell>
+                    <TableCell><Badge className={STATUS_PAGAR_COLORS[p.status]}>{p.status}</Badge></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Card>
+        </TabsContent>
 
-          <TabsContent value="receber">
-            <Card>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Descrição</TableHead>
-                        <TableHead>Categoria</TableHead>
-                        <TableHead>Cliente</TableHead>
-                        <TableHead>CTE</TableHead>
-                        <TableHead>Vencimento</TableHead>
-                        <TableHead className="text-right">Valor</TableHead>
-                        <TableHead>Status</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {loadingReceber ? (
-                        <TableRow><TableCell colSpan={7} className="text-center py-8 text-muted-foreground">Carregando...</TableCell></TableRow>
-                      ) : contasReceber.length === 0 ? (
-                        <TableRow><TableCell colSpan={7} className="text-center py-8 text-muted-foreground">Nenhuma conta registrada</TableCell></TableRow>
-                      ) : contasReceber.map(c => (
-                        <TableRow key={c.id}>
-                          <TableCell className="font-medium text-sm">{c.descricao}</TableCell>
-                          <TableCell className="text-sm text-muted-foreground">{c.categoria}</TableCell>
-                          <TableCell className="text-sm">{c.cliente ?? "—"}</TableCell>
-                          <TableCell className="text-sm">{c.cteNumero ?? "—"}</TableCell>
-                          <TableCell className="text-sm">{new Date(c.dataVencimento).toLocaleDateString("pt-BR")}</TableCell>
-                          <TableCell className="text-right font-medium text-sm">{formatCurrency(c.valor)}</TableCell>
-                          <TableCell>
-                            <Badge className={`text-xs ${STATUS_RECEBER_COLORS[c.status] ?? ""}`}>{c.status}</Badge>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+        <TabsContent value="receber" className="mt-4">
+          <Card>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Vencimento</TableHead>
+                  <TableHead>Descrição</TableHead>
+                  <TableHead>Cliente</TableHead>
+                  <TableHead>Valor</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {receber.map(r => (
+                  <TableRow key={r.id}>
+                    <TableCell>{new Date(r.dataVencimento).toLocaleDateString()}</TableCell>
+                    <TableCell className="font-medium">{r.descricao}</TableCell>
+                    <TableCell>{r.cliente || "—"}</TableCell>
+                    <TableCell className="font-bold">{formatCurrency(r.valor)}</TableCell>
+                    <TableCell><Badge className={STATUS_RECEBER_COLORS[r.status]}>{r.status}</Badge></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Card>
+        </TabsContent>
 
-          {/* ── FLUXO DE CAIXA ── */}
-          <TabsContent value="fluxo" className="mt-4">
-            <Card>
-              <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Banknote className="h-4 w-4" />Fluxo de Caixa — Abril/2025</CardTitle></CardHeader>
+        <TabsContent value="fluxo" className="mt-4">
+          <Card>
+            <CardHeader><CardTitle>Fluxo de Caixa Realizado</CardTitle></CardHeader>
+            <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -481,102 +432,44 @@ export default function Financeiro() {
                     <TableHead>Descrição</TableHead>
                     <TableHead>Tipo</TableHead>
                     <TableHead className="text-right">Valor</TableHead>
-                    <TableHead className="text-right">Saldo Acumulado</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {MOCK_FLUXO.map((f, i) => (
                     <TableRow key={i}>
-                      <TableCell className="text-xs text-muted-foreground">{new Date(f.data).toLocaleDateString("pt-BR")}</TableCell>
-                      <TableCell className="font-medium text-sm">{f.descricao}</TableCell>
-                      <TableCell><Badge className={`text-xs ${f.tipo === "entrada" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>{f.tipo}</Badge></TableCell>
-                      <TableCell className={`text-right font-bold text-sm ${f.tipo === "entrada" ? "text-green-600" : "text-red-600"}`}>
-                        {f.tipo === "entrada" ? "+" : "-"}{formatCurrency(f.valor)}
-                      </TableCell>
-                      <TableCell className="text-right font-mono text-sm">{formatCurrency(f.saldo)}</TableCell>
+                      <TableCell>{new Date(f.data).toLocaleDateString()}</TableCell>
+                      <TableCell>{f.descricao}</TableCell>
+                      <TableCell><Badge variant={f.tipo === "entrada" ? "default" : "destructive"}>{f.tipo}</Badge></TableCell>
+                      <TableCell className={`text-right font-bold ${f.tipo === "entrada" ? "text-green-600" : "text-red-600"}`}>{formatCurrency(f.valor)}</TableCell>
                     </TableRow>
                   ))}
+                  {MOCK_FLUXO.length === 0 && <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-8">Nenhum dado de fluxo de caixa disponível</TableCell></TableRow>}
                 </TableBody>
               </Table>
-            </Card>
-          </TabsContent>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-          {/* ── CONCILIAÇÃO BANCÁRIA ── */}
-          <TabsContent value="conciliacao" className="mt-4">
-            <div className="flex justify-between items-center mb-3">
-              <p className="text-sm text-muted-foreground">Conciliação automática entre extrato bancário e lançamentos do sistema.</p>
-              <Button size="sm" variant="outline"><RefreshCw className="h-4 w-4 mr-2" />Importar Extrato OFX</Button>
-            </div>
-            <Card>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Data</TableHead>
-                    <TableHead>Descrição</TableHead>
-                    <TableHead className="text-right">Banco</TableHead>
-                    <TableHead className="text-right">Sistema</TableHead>
-                    <TableHead>Diferença</TableHead>
-                    <TableHead>Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {MOCK_CONCILIACAO.map(c => (
-                    <TableRow key={c.id}>
-                      <TableCell className="text-xs text-muted-foreground">{new Date(c.data).toLocaleDateString("pt-BR")}</TableCell>
-                      <TableCell className="font-medium text-sm">{c.descricao}</TableCell>
-                      <TableCell className={`text-right font-mono text-sm ${(c.valorBanco ?? 0) >= 0 ? "text-green-600" : "text-red-600"}`}>{formatCurrency(c.valorBanco)}</TableCell>
-                      <TableCell className={`text-right font-mono text-sm ${c.valorSistema === null ? "text-muted-foreground" : (c.valorSistema ?? 0) >= 0 ? "text-green-600" : "text-red-600"}`}>{c.valorSistema !== null ? formatCurrency(c.valorSistema) : "—"}</TableCell>
-                      <TableCell className="text-sm">
-                        {c.valorSistema !== null ? (
-                          <span className={Math.abs(c.valorBanco - (c.valorSistema ?? 0)) > 0 ? "text-red-600 font-bold" : "text-green-600"}>
-                            {formatCurrency(c.valorBanco - (c.valorSistema ?? 0))}
-                          </span>
-                        ) : "—"}
-                      </TableCell>
-                      <TableCell><Badge className={`text-xs ${CONCIL_COLORS[c.status]}`}>{c.status}</Badge></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Card>
-          </TabsContent>
-
-          {/* ── DRE ── */}
-          <TabsContent value="dre" className="mt-4">
-            <div className="flex justify-between items-center mb-3">
-              <p className="text-sm text-muted-foreground">Demonstrativo de Resultado do Exercício — Abril/2025</p>
-              <Button size="sm" variant="outline"><FileSpreadsheet className="h-4 w-4 mr-2" />Exportar Excel</Button>
-            </div>
-            <Card>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Categoria</TableHead>
-                    <TableHead className="text-right">Valor (R$)</TableHead>
-                    <TableHead className="text-right">% Receita</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {MOCK_DRE.map((d, i) => (
-                    <TableRow key={i} className={d.tipo === "subtotal" || d.tipo === "resultado" ? "font-bold bg-muted/30" : ""}>
-                      <TableCell className={`text-sm ${d.tipo === "resultado" ? "text-primary" : d.tipo === "subtotal" ? "font-semibold" : ""}`}>
-                        {d.tipo === "custo" || d.tipo === "despesa" || d.tipo === "deducao" ? (
-                          <span className="pl-4">{d.categoria}</span>
-                        ) : d.categoria}
-                      </TableCell>
-                      <TableCell className={`text-right font-mono text-sm ${d.valor >= 0 ? "text-green-600" : "text-red-600"}`}>
-                        {formatCurrency(Math.abs(d.valor))}
-                      </TableCell>
-                      <TableCell className="text-right text-xs text-muted-foreground">
-                        {Math.abs(Math.round((d.valor / 185000) * 100))}%
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
-);
+        <TabsContent value="dre" className="mt-4">
+          <Card>
+            <CardHeader><CardTitle>DRE — Demonstrativo de Resultados</CardTitle></CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {MOCK_DRE.map((d, i) => (
+                  <div key={i} className={`flex justify-between p-2 rounded ${d.valor < 0 ? "bg-red-50" : "bg-green-50"}`}>
+                    <span className="font-medium">{d.categoria}</span>
+                    <div className="text-right">
+                      <p className="font-bold">{formatCurrency(d.valor)}</p>
+                      <p className="text-xs text-muted-foreground">{d.percentual}%</p>
+                    </div>
+                  </div>
+                ))}
+                {MOCK_DRE.length === 0 && <div className="text-center text-muted-foreground py-8">Nenhum dado de DRE disponível</div>}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
 }
