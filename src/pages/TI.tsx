@@ -1717,7 +1717,14 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                 <TableBody>
                   {(agentesQ.data ?? []).map((a: any) => (
                     <TableRow key={a.id}>
-                      <TableCell className="font-mono text-sm font-medium">{a.hostname}</TableCell>
+                      <TableCell className="font-mono text-sm font-medium">
+                      <button 
+                        onClick={() => setLocation(`/ti/dispositivos/${a.id}`)}
+                        className="text-primary hover:underline text-left"
+                      >
+                        {a.hostname}
+                      </button>
+                    </TableCell>
                       <TableCell className="font-mono text-xs">{a.ip}</TableCell>
                       <TableCell className="text-xs">{a.so}</TableCell>
                       <TableCell>
@@ -1830,7 +1837,14 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">Nenhum agente registrado</TableCell></TableRow>
                 ) : (agentes ?? []).map((a: any) => (
                   <TableRow key={a.id}>
-                    <TableCell className="font-mono text-sm font-medium">{a.hostname}</TableCell>
+                    <TableCell className="font-mono text-sm font-medium">
+                      <button 
+                        onClick={() => setLocation(`/ti/dispositivos/${a.id}`)}
+                        className="text-primary hover:underline text-left"
+                      >
+                        {a.hostname}
+                      </button>
+                    </TableCell>
                     <TableCell className="font-mono text-xs">{a.ip}</TableCell>
                     <TableCell className="text-xs">{a.so}</TableCell>
                     <TableCell className="text-sm">{a.userName ? `${a.userName} ${a.userLastName}` : <span className="text-muted-foreground">—</span>}</TableCell>

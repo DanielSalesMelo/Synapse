@@ -58,6 +58,7 @@ import Vendas from "./pages/Vendas";
 import Auditoria from "./pages/Auditoria";
 import BI from "./pages/BI";
 import TI from "./pages/TI";
+import DeviceDetails from "./pages/DeviceDetails";
 import Ponto from "./pages/Ponto";
 import ConferenciaVeiculos from "./pages/ConferenciaVeiculos";
 import Recepcionista from "./pages/Recepcionista";
@@ -162,6 +163,7 @@ function DashboardRoutes() {
         <Route path="/bi" component={BI} />
 
         {/* TI - ITSM & ITAM */}
+        <Route path="/ti/dispositivos/:agentId" component={DeviceDetails} />
         <Route path="/ti/:tab?">{(params) => <TI params={params} />}</Route>
 
         {/* Marketing */}

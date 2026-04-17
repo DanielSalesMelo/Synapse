@@ -411,6 +411,49 @@ app.put("/api/agents/:agentId/associate", async (req: any, res: any) => {
   }
 });
 
+// Obter métricas históricas de um agente
+app.get("/api/agents/:agentId/metrics", async (req: any, res: any) => {
+  try {
+    // Verificar autenticação
+    try {
+      await sdk.authenticateRequest(req);
+    } catch {
+      return res.status(401).json({ error: "Não autenticado. Faça login novamente." });
+    }
+
+    const { agentId } = req.params;
+    const { period } = req.query; // 24h, 7d, 30d
+
+    const db = getRawClient ? await getRawClient() : null;
+    if (!db) return res.status(503).json({ error: "DB indisponível" });
+
+    let interval = '24 hours';
+    if (period === '7d') interval = '7 days';
+    if (period === '30d') interval = '30 days';
+
+    // Buscar métricas históricas
+    const metrics = await db`
+      SELECT 
+        "coletadoEm" as timestamp,
+        "cpuPercent" as cpuUsage,
+        "ramPercent" as ramUsage,
+        "ramUsadoGb" as ramUsedGb
+      FROM monitor_metricas
+      WHERE "agenteId" = ${parseInt(agentId)}
+        AND "coletadoEm" >= now() - ${interval}::interval
+      ORDER BY "coletadoEm" ASC
+    `.catch((err) => {
+      console.error('[Get Metrics Error]', err);
+      return [];
+    }) as any[];
+
+    return res.json(metrics);
+  } catch (err: any) {
+    console.error('[Get Metrics]', err);
+    return res.status(500).json({ error: err?.message || "Erro interno" });
+  }
+});
+
 // Receber métricas do agente
 app.post("/api/agent/metrics", async (req: any, res: any) => {
   try {
