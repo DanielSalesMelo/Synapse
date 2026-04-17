@@ -37,13 +37,13 @@ function getPersistedUser() {
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // Dados ficam "frescos" por 5 minutos — evita refetch desnecessário após deploy
-      staleTime: 5 * 60 * 1000,
-      // Mantém dados em cache por 10 minutos após ficarem inativos
-      gcTime: 10 * 60 * 1000,
+      // Dados ficam "frescos" por 30 segundos — garante que a UI se mantenha atualizada
+      staleTime: 30 * 1000,
+      // Mantém dados em cache por 5 minutos após ficarem inativos
+      gcTime: 5 * 60 * 1000,
       retry: 1,
       retryDelay: 1000,
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: true,
     },
   },
 });

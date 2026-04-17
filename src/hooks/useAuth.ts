@@ -30,8 +30,8 @@ export function useAuth(options?: UseAuthOptions) {
   const meQuery = trpc.auth.me.useQuery(undefined, {
     retry: 1,
     retryDelay: 1000,
-    // Usa dados do cache por 5 minutos antes de refazer a requisição
-    staleTime: 5 * 60 * 1000,
+    // Usa dados do cache por 1 minuto antes de refazer a requisição
+    staleTime: 1 * 60 * 1000,
     // Mantém dados anteriores enquanto recarrega (evita flash de logout)
     placeholderData: cachedUser,
     refetchOnWindowFocus: false,
@@ -43,6 +43,7 @@ export function useAuth(options?: UseAuthOptions) {
       localStorage.removeItem("app-user-info");
       localStorage.removeItem("synapse-auth-token");
       utils.auth.me.setData(undefined, null);
+      window.location.href = redirectPath;
     },
   });
 
@@ -62,8 +63,9 @@ export function useAuth(options?: UseAuthOptions) {
       localStorage.removeItem("synapse-auth-token");
       utils.auth.me.setData(undefined, null);
       await utils.auth.me.invalidate();
+      window.location.href = redirectPath;
     }
-  }, [logoutMutation, utils]);
+  }, [logoutMutation, utils, redirectPath]);
 
   const state = useMemo(() => {
     // Salva dados do usuário no localStorage para persistência entre reloads

@@ -20,7 +20,11 @@ export function useAuth(options?: UseAuthOptions) {
 
   const logoutMutation = trpc.auth.logout.useMutation({
     onSuccess: () => {
+      localStorage.removeItem("app-user-info");
+      localStorage.removeItem("synapse-auth-token");
+      localStorage.removeItem("manus-runtime-user-info");
       utils.auth.me.setData(undefined, null);
+      window.location.href = redirectPath;
     },
   });
 
@@ -36,10 +40,14 @@ export function useAuth(options?: UseAuthOptions) {
       }
       throw error;
     } finally {
+      localStorage.removeItem("app-user-info");
+      localStorage.removeItem("synapse-auth-token");
+      localStorage.removeItem("manus-runtime-user-info");
       utils.auth.me.setData(undefined, null);
       await utils.auth.me.invalidate();
+      window.location.href = redirectPath;
     }
-  }, [logoutMutation, utils]);
+  }, [logoutMutation, utils, redirectPath]);
 
   const state = useMemo(() => {
     localStorage.setItem(
