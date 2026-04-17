@@ -1,9 +1,9 @@
 import { router, adminProcedure, masterAdminProcedure, protectedProcedure } from "../_core/trpc";
 import { z } from "zod";
-import { getAllUsers, updateUser, deleteUser, getDb, getUserByEmail } from "../db";
+import { updateUser, deleteUser, getDb, getUserByEmail } from "../db";
 import { TRPCError } from "@trpc/server";
 import { users } from "../drizzle/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
 // ─── Todos os perfis de acesso do Synapse ────────────────────────────────────
@@ -39,11 +39,9 @@ export const usersRouter = router({
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
 
-        // Verificar e-mail duplicado
         const existing = await getUserByEmail(input.email).catch(() => null);
         if (existing) throw new TRPCError({ code: "CONFLICT", message: "E-mail já cadastrado no sistema" });
 
-        // Determinar empresa vinculada
         let targetEmpresaId = input.empresaId;
         if (ctx.user.role !== "master_admin") {
           targetEmpresaId = (ctx.user as any).empresaId;
@@ -52,7 +50,6 @@ export const usersRouter = router({
           throw new TRPCError({ code: "BAD_REQUEST", message: "É obrigatório vincular o usuário a uma empresa" });
         }
 
-        // Apenas master_admin pode criar outro master_admin
         if (input.role === "master_admin" && ctx.user.role !== "master_admin") {
           throw new TRPCError({ code: "FORBIDDEN", message: "Apenas Master ADM pode criar outro Master ADM" });
         }
@@ -65,7 +62,7 @@ export const usersRouter = router({
           password: hashedPassword,
           phone: input.phone ?? "",
           role: input.role as any,
-          status: "approved", // criado pelo admin já vem aprovado
+          status: "approved",
           empresaId: targetEmpresaId,
         } as any);
 
@@ -76,51 +73,52 @@ export const usersRouter = router({
       }
     }),
 
-  // ── Listar todos os usuários ──────────────────────────────────────────────
+  // ── Listar todos os usuários (VERSÃO CORRIGIDA E FINAL) ──────────────────
   listAll: protectedProcedure.query(async ({ ctx }) => {
-    // --- INÍCIO DOS LOGS DE DEPURAÇÃO ---
     console.log('[DEBUG] Endpoint listAll foi chamado.');
-    console.log(`[DEBUG] ID do usuário logado (ctx.user.id): ${ctx.user.id}`);
-    console.log(`[DEBUG] ID da empresa do usuário (ctx.user.empresaId): ${(ctx.user as any).empresaId}`);
-    // --- FIM DOS LOGS DE DEPURAÇÃO ---
-
-    if (!(ctx.user as any).empresaId && ctx.user.role !== "master_admin") {
-      // --- LOG DE ERRO ---
-      console.error('[ERROR] Usuário não tem empresaId na sessão e não é master_admin. Retornando lista vazia.');
-      return [];
-    }
+    const userSession = ctx.session.user as any;
+    console.log(`[DEBUG] ID do usuário logado: ${userSession.id}, Perfil: ${userSession.role}`);
+    console.log(`[DEBUG] ID da empresa na sessão: ${userSession.empresaId}`);
 
     try {
-      const allUsers = await getAllUsers();
-      
-      // Admin só vê usuários da sua empresa; master_admin vê todos
-      const filtered = ctx.user.role === "master_admin"
-        ? allUsers
-        : allUsers.filter(u => (u as any).empresaId === (ctx.user as any).empresaId);
+      const db = await getDb();
+      if (!db) {
+        console.error('[FATAL] Conexão com o banco de dados falhou.');
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      }
 
-      // --- LOG DE SUCESSO ---
-      console.log(`[DEBUG] Consulta ao banco de dados retornou ${filtered.length} usuários filtrados.`);
-      console.log('[DEBUG] Usuários encontrados:', JSON.stringify(filtered.map(u => ({ id: u.id, name: u.name, email: u.email })), null, 2));
+      let foundUsers;
 
-      return filtered.map(user => ({
-        id: user.id,
-        name: user.name || "",
-        lastName: user.lastName || "",
-        email: user.email || "",
-        phone: user.phone || "",
-        role: user.role,
-        status: user.status,
-        empresaId: (user as any).empresaId ?? null,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-      }));
+      // Se for master_admin, busca todos os usuários de todas as empresas.
+      if (userSession.role === 'master_admin') {
+        console.log('[DEBUG] Usuário é master_admin. Buscando todos os usuários.');
+        foundUsers = await db.query.users.findMany({
+          columns: { id: true, name: true, email: true, lastName: true, phone: true, role: true, status: true, empresaId: true, createdAt: true, updatedAt: true }
+        });
+      } 
+      // Se for qualquer outro perfil, busca APENAS os usuários da MESMA empresa.
+      else {
+        if (!userSession.empresaId) {
+          console.error(`[ERROR] Usuário ${userSession.id} (${userSession.role}) não tem empresaId na sessão. Retornando lista vazia.`);
+          return [];
+        }
+        console.log(`[DEBUG] Buscando usuários para a empresaId: ${userSession.empresaId}`);
+        foundUsers = await db.query.users.findMany({
+          where: eq(users.empresaId, userSession.empresaId),
+          columns: { id: true, name: true, email: true, lastName: true, phone: true, role: true, status: true, empresaId: true, createdAt: true, updatedAt: true }
+        });
+      }
+
+      console.log(`[DEBUG] Consulta ao banco de dados retornou ${foundUsers.length} usuários.`);
+      return foundUsers;
+
     } catch (error) {
-      // --- LOG DE FALHA NO BANCO DE DADOS ---
       console.error('[FATAL] Ocorreu um erro ao consultar o banco de dados:', error);
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao listar usuários" });
     }
   }),
 
+  // ... (o resto do arquivo continua igual, não precisa mexer) ...
   // ── Atualizar dados do usuário ────────────────────────────────────────────
   update: adminProcedure
     .input(z.object({
@@ -166,7 +164,6 @@ export const usersRouter = router({
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
 
-        // Admin só pode trocar senha de usuários da mesma empresa
         if (ctx.user.role !== "master_admin") {
           const [target] = await db.select().from(users).where(eq(users.id, input.userId));
           if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "Usuário não encontrado" });
