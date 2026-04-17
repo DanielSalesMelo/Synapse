@@ -460,8 +460,8 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   };
 
   const handleGenerateCodeSubmit = async () => {
-    if (!generateCodeForm.userId || !generateCodeForm.departmentId) {
-      toast.error("Preencha todos os campos");
+    if (!generateCodeForm.userId) {
+      toast.error("Selecione um usuário");
       return;
     }
     try {

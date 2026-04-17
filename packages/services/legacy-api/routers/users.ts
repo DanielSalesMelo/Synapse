@@ -77,7 +77,7 @@ export const usersRouter = router({
     }),
 
   // ── Listar todos os usuários ──────────────────────────────────────────────
-  listAll: adminProcedure.query(async ({ ctx }) => {
+  listAll: protectedProcedure.query(async ({ ctx }) => {
     try {
       const allUsers = await getAllUsers();
       // Admin só vê usuários da sua empresa; master_admin vê todos

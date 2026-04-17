@@ -279,8 +279,8 @@ app.post("/api/agents/generate-pairing-code", async (req: any, res: any) => {
     }
 
     const { userId, departmentId, empresaId } = req.body;
-    if (!userId || !departmentId || !empresaId) {
-      return res.status(400).json({ error: "userId, departmentId e empresaId são obrigatórios" });
+    if (!userId || !empresaId) {
+      return res.status(400).json({ error: "userId e empresaId são obrigatórios" });
     }
 
     const db = getRawClient ? await getRawClient() : null;
@@ -304,7 +304,7 @@ app.post("/api/agents/generate-pairing-code", async (req: any, res: any) => {
       INSERT INTO agent_pairing_codes (
         "empresaId", codigo, "user_id", "department_id", "expiresAt", "criadoPor", "createdAt"
       ) VALUES (
-        ${empresaId}, ${code}, ${userId}, ${departmentId}, ${expiresAt}, ${(req as any).user?.id || 0}, now()
+        ${empresaId}, ${code}, ${userId}, ${departmentId || null}, ${expiresAt}, ${(req as any).user?.id || 0}, now()
       )
       RETURNING id, codigo, "expiresAt"
     `.catch((err) => {
