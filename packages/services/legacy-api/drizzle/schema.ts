@@ -6,6 +6,7 @@ import {
   integer,
   pgEnum,
   pgTable,
+  primaryKey,
   serial,
   text,
   timestamp,
@@ -76,6 +77,7 @@ export const empresas = pgTable("empresas", {
   // Hierarquia de grupo
   tipoEmpresa: tipoEmpresaEnum("tipoEmpresa").default("independente").notNull(),
   matrizId: integer("matrizId"),  // ID da empresa matriz (se for filial)
+  parentId: integer('parent_id').references(() => empresas.id, { onDelete: 'set null' }),
   grupoId: integer("grupoId"),    // ID do grupo empresarial (empresas do mesmo dono, CNPJs diferentes)
   ativo: boolean("ativo").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -1917,3 +1919,40 @@ export const agentPairingCodes = pgTable("agent_pairing_codes", {
 });
 
 export type AgentPairingCode = typeof agentPairingCodes.$inferSelect;
+
+// --- INICIO DO BLOCO RBAC ---
+
+// Tabela de Funcoes (Ex: 'Admin', 'Financeiro', 'RH')
+export const roles = pgTable('roles', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull().unique(),
+});
+
+// Tabela de Permissoes (Ex: 'read:users', 'write:invoices')
+export const permissions = pgTable('permissions', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull().unique(),
+});
+
+// Tabela de Juncao: Quais permissoes cada funcao tem (Muitos-para-Muitos)
+export const rolePermissions = pgTable('role_permissions', {
+    roleId: integer('role_id').notNull().references(() => roles.id, { onDelete: 'cascade' }),
+    permissionId: integer('permission_id').notNull().references(() => permissions.id, { onDelete: 'cascade' }),
+  },
+  (t) => ({
+    pk: primaryKey(t.roleId, t.permissionId),
+  })
+);
+
+// Tabela de Juncao: Qual funcao um usuario tem em uma empresa especifica
+export const userTenantRoles = pgTable('user_tenant_roles', {
+    userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    tenantId: integer('tenant_id').notNull().references(() => empresas.id, { onDelete: 'cascade' }),
+    roleId: integer('role_id').notNull().references(() => roles.id, { onDelete: 'cascade' }),
+  },
+  (t) => ({
+    pk: primaryKey(t.userId, t.tenantId, t.roleId),
+  })
+);
+
+// --- FIM DO BLOCO RBAC ---

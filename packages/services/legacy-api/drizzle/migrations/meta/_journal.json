@@ -71,6 +71,13 @@
       "when": 1776437123996,
       "tag": "0009_small_hannibal_king",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1776687519764,
+      "tag": "0010_brown_alice",
+      "breakpoints": true
     }
   ]
 }
