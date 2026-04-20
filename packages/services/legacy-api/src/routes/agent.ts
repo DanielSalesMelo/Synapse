@@ -169,4 +169,81 @@ router.get("/assets/:id", async (req, res) => {
   }
 });
 
+// POST /api/tickets - Receber chamado do agente
+router.post("/tickets", async (req: any, res: any) => {
+  try {
+    const { assetId, description, screenshots } = req.body;
+
+    if (!assetId || !description) {
+      return res.status(400).json({ error: "assetId e description são obrigatórios" });
+    }
+
+    const db = await getRawClient();
+    if (!db) {
+      return res.status(503).json({ error: "Banco de dados indisponível" });
+    }
+
+    // Buscar o ativo para obter a empresaId
+    const assets = await db`
+      SELECT "empresaId", hostname FROM assets WHERE id = ${assetId}
+    `.catch(() => []) as any[];
+
+    if (!assets || assets.length === 0) {
+      return res.status(404).json({ error: "Ativo não encontrado" });
+    }
+
+    const { empresaId, hostname } = assets[0];
+    const protocolo = `TI-${Date.now().toString(36).toUpperCase()}`;
+
+    // Criar o ticket na tabela tickets_ti
+    // Como não temos um usuário logado (é o agente), usaremos um solicitanteId padrão ou nulo se permitido.
+    // Pelo schema, solicitanteId é NOT NULL. Vamos buscar um admin da empresa ou usar o ID 1 como fallback.
+    const users = await db`
+      SELECT id FROM users WHERE "empresaId" = ${empresaId} AND role = 'admin' LIMIT 1
+    `.catch(() => []) as any[];
+    
+    const solicitanteId = users[0]?.id || 1;
+
+    const newTickets = await db`
+      INSERT INTO tickets_ti (
+        "empresaId", protocolo, "solicitanteId", titulo, descricao,
+        categoria, prioridade, status, "createdAt", "updatedAt"
+      ) VALUES (
+        ${empresaId}, ${protocolo}, ${solicitanteId}, 
+        ${`Chamado automático: ${hostname}`}, ${description},
+        'outro', 'media', 'aberto', NOW(), NOW()
+      ) RETURNING id
+    `.catch((err) => {
+      console.error("Erro ao criar ticket_ti:", err);
+      throw err;
+    }) as any[];
+
+    const ticketId = newTickets[0]?.id;
+
+    // Salvar screenshots como mensagens/anexos se houver
+    if (ticketId && screenshots && Array.isArray(screenshots)) {
+      for (const base64 of screenshots) {
+        // No mundo real, salvaríamos o arquivo em disco/S3. 
+        // Aqui, para simplificar e seguir o requisito de Base64, vamos registrar na ticket_mensagens.
+        await db`
+          INSERT INTO ticket_mensagens (
+            "ticketId", "empresaId", "autorId", conteudo, tipo, "fileUrl", "fileType", "createdAt"
+          ) VALUES (
+            ${ticketId}, ${empresaId}, ${solicitanteId}, '', 'anexo', ${base64}, 'image/png', NOW()
+          )
+        `.catch((err) => console.error("Erro ao salvar screenshot:", err));
+      }
+    }
+
+    return res.status(201).json({ 
+      message: "Chamado criado com sucesso", 
+      id: ticketId,
+      protocolo 
+    });
+  } catch (err: any) {
+    console.error("[Agent Create Ticket Error]", err);
+    return res.status(500).json({ error: err.message || "Erro interno" });
+  }
+});
+
 export default router;

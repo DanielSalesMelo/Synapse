@@ -1,121 +1,120 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState, useEffect, useCallback } from 'react';
+import { invoke } from '@tauri_apps/api/tauri';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+interface TicketPayload {
+  assetId: string;
+  description: string;
+  screenshots: string[];
 }
 
-export default App
+function App() {
+  const [description, setDescription] = useState('');
+  const [screenshots, setScreenshots] = useState<string[]>([]);
+  const [status, setStatus] = useState('Conectado');
+  const [hostname, setHostname] = useState('Carregando...');
+  const [assetId, setAssetId] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    // No mundo real, buscaríamos essas informações do backend Tauri
+    // Para este protótipo, vamos simular ou buscar via invoke se implementado
+    setHostname(window.location.hostname || 'Desktop-Client');
+    // Simulando um assetId que viria da configuração do agente
+    setAssetId('1'); 
+  }, []);
+
+  const handlePaste = useCallback((e: React.ClipboardEvent) => {
+    const items = e.clipboardData.items;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.indexOf('image') !== -1) {
+        const blob = items[i].getAsFile();
+        if (blob) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const base64 = event.target?.result as string;
+            setScreenshots((prev) => [...prev, base64]);
+          };
+          reader.readAsDataURL(blob);
+        }
+      }
+    }
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!description) return;
+
+    setIsSubmitting(true);
+    setMessage('');
+
+    try {
+      const payload: TicketPayload = {
+        assetId,
+        description,
+        screenshots,
+      };
+
+      const result = await invoke<string>('submit_ticket', { payload });
+      setMessage(result);
+      setDescription('');
+      setScreenshots([]);
+    } catch (error) {
+      setMessage(`Erro: ${error}`);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const removeScreenshot = (index: number) => {
+    setScreenshots((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div className="container">
+      <header>
+        <div className="status-bar">
+          <span className={`status-indicator ${status === 'Conectado' ? 'online' : 'offline'}`}></span>
+          {status} | {hostname}
+        </div>
+        <h1>Synapse Agent</h1>
+      </header>
+
+      <main>
+        <section className="support-section">
+          <h2>Precisa de Ajuda?</h2>
+          <p>Descreva seu problema abaixo e anexe capturas de tela se necessário.</p>
+          
+          <form onSubmit={handleSubmit}>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              onPaste={handlePaste}
+              placeholder="Descreva o problema aqui... (Dica: Você pode colar imagens com Ctrl+V)"
+              required
+              rows={5}
+            />
+
+            <div className="screenshots-preview">
+              {screenshots.map((src, index) => (
+                <div key={index} className="screenshot-item">
+                  <img src={src} alt={`Anexo ${index + 1}`} />
+                  <button type="button" onClick={() => removeScreenshot(index)} className="remove-btn">×</button>
+                </div>
+              ))}
+            </div>
+
+            <button type="submit" disabled={isSubmitting || !description} className="submit-btn">
+              {isSubmitting ? 'Enviando...' : 'Abrir um Chamado'}
+            </button>
+          </form>
+
+          {message && <div className={`message ${message.includes('Erro') ? 'error' : 'success'}`}>{message}</div>}
+        </section>
+      </main>
+    </div>
+  );
+}
+
+export default App;

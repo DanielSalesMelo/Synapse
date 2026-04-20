@@ -35,19 +35,19 @@ struct MetricsPayload {
     ram_usage_mb: u64,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct TicketPayload {
-    title: String,
+    assetId: String,
     description: String,
-    image_base64: Option<String>,
+    screenshots: Vec<String>,
 }
 
 #[tauri::command]
 async fn submit_ticket(payload: TicketPayload) -> Result<String, String> {
-    println!("Recebido chamado: {}", payload.title);
+    println!("Recebido chamado para o ativo: {}", payload.assetId);
     
     let client = reqwest::Client::new();
-    let res = client.post("http://localhost:3001/api/tickets") // URL da API de tickets
+    let res = client.post("http://localhost:8080/agent/tickets") // URL correta da API de tickets
         .json(&payload)
         .send()
         .await
