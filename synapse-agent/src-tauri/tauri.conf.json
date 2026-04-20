@@ -1,13 +1,13 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Tauri App",
+  "productName": "Synapse Agent",
   "version": "0.1.0",
   "identifier": "com.synapse.agent",
   "build": {
-    "frontendDist": "../ui/dist",
-    "devUrl": "http://localhost:1420",
-    "beforeDevCommand": "npm run dev",
-    "beforeBuildCommand": "npm run build"
+    "beforeDevCommand": "pnpm --filter ui dev",
+    "devUrl": "http://localhost:5173",
+    "beforeBuildCommand": "pnpm --filter ui build",
+    "frontendDist": "../ui/dist"
   },
   "app": {
     "windows": [

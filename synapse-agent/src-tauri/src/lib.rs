@@ -16,7 +16,7 @@ struct AgentConfig {
     pairing_code: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 struct AgentIdentity {
     agent_id: String,
 }
@@ -259,6 +259,6 @@ pub fn run() {
 
             Ok(())
         })
-        .run(tauri::generate_context!())
+        .run(tauri::generate_context!("tauri.conf.json"))
         .expect("error while running tauri application");
 }
