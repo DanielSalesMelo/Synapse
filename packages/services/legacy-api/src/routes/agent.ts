@@ -53,4 +53,26 @@ router.post("/register", async (req, res) => {
   }
 });
 
+// GET /agent/assets
+router.get("/assets", async (req, res) => {
+  try {
+    const db = await getRawClient();
+    if (!db) {
+      return res.status(503).json({ error: "Banco de dados indisponível" });
+    }
+
+    const allAssets = await db`
+      SELECT * FROM assets ORDER BY "createdAt" DESC
+    `.catch((err) => {
+      console.error("Erro ao buscar assets:", err);
+      throw err;
+    }) as any[];
+
+    return res.status(200).json(allAssets);
+  } catch (err: any) {
+    console.error("[Agent List Assets Error]", err);
+    return res.status(500).json({ error: err.message || "Erro interno" });
+  }
+});
+
 export default router;
