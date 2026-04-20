@@ -75,4 +75,41 @@ router.get("/assets", async (req, res) => {
   }
 });
 
+// POST /agent/heartbeat
+router.post("/heartbeat", async (req, res) => {
+  try {
+    const { assetId, hostname, cpuUsage, freeMemory } = req.body;
+
+    if (!assetId && !hostname) {
+      return res.status(400).json({ error: "assetId ou hostname é obrigatório" });
+    }
+
+    const db = await getRawClient();
+    if (!db) {
+      return res.status(503).json({ error: "Banco de dados indisponível" });
+    }
+
+    // Atualizar lastSeen
+    const result = await db`
+      UPDATE assets 
+      SET last_seen = now(), "updatedAt" = now()
+      WHERE ${assetId ? db`id = ${assetId}` : db`hostname = ${hostname}`}
+      RETURNING id
+    `.catch((err) => {
+      console.error("Erro ao atualizar heartbeat:", err);
+      throw err;
+    }) as any[];
+
+    if (result && result.length > 0) {
+      // Opcional: Log de performance pode ser adicionado aqui no futuro
+      return res.status(200).json({ ok: true, message: "Heartbeat recebido" });
+    }
+
+    return res.status(404).json({ error: "Ativo não encontrado" });
+  } catch (err: any) {
+    console.error("[Agent Heartbeat Error]", err);
+    return res.status(500).json({ error: err.message || "Erro interno" });
+  }
+});
+
 export default router;

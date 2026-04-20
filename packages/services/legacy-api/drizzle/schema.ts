@@ -1963,6 +1963,7 @@ export const assets = pgTable("assets", {
   hostname: varchar("hostname", { length: 255 }).notNull().unique(),
   osType: varchar("osType", { length: 100 }),
   totalMemory: bigint("totalMemory", { mode: "number" }),
+  lastSeen: timestamp('last_seen'),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
