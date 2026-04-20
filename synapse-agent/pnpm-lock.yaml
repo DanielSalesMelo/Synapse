@@ -14,6 +14,9 @@ importers:
       os-utils:
         specifier: ^0.0.14
         version: 0.0.14
+      systeminformation:
+        specifier: ^5.31.5
+        version: 5.31.5
 
 packages:
 
@@ -114,6 +117,12 @@ packages:
     resolution: {integrity: sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==}
     engines: {node: '>=10'}
 
+  systeminformation@5.31.5:
+    resolution: {integrity: sha512-5SyLdip4/3alxD4Kh+63bUQTJmu7YMfYQTC+koZy7X73HgNqZSD2P4wOZQWtUncvPvcEmnfIjCoygN4MRoEejQ==}
+    engines: {node: '>=8.0.0'}
+    os: [darwin, linux, win32, freebsd, openbsd, netbsd, sunos, android]
+    hasBin: true
+
 snapshots:
 
   asynckit@0.4.0: {}
@@ -211,3 +220,5 @@ snapshots:
   os-utils@0.0.14: {}
 
   proxy-from-env@2.1.0: {}
+
+  systeminformation@5.31.5: {}

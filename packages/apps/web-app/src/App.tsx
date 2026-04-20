@@ -4,6 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import AssetsPage from './pages/AssetsPage';
+import AssetDetailPage from './pages/AssetDetailPage';
 import { Loader2 } from 'lucide-react';
 
 // Componente para proteger rotas
@@ -44,6 +45,10 @@ function App() {
 
       <Route path="/dashboard/assets">
         <ProtectedRoute component={AssetsPage} />
+      </Route>
+
+      <Route path="/dashboard/assets/:id">
+        <ProtectedRoute component={AssetDetailPage} />
       </Route>
 
       <Route path="/">

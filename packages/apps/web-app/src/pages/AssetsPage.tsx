@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'wouter';
 import MainLayout from '../components/layout/MainLayout';
 import { Monitor, Loader2, RefreshCw, Circle } from 'lucide-react';
 
@@ -134,7 +135,11 @@ const AssetsPage = () => {
                           {status.label}
                         </span>
                       </td>
-                      <td className="px-8 py-4 font-medium text-gray-900">{asset.hostname}</td>
+                      <td className="px-8 py-4 font-medium text-gray-900">
+                        <Link href={`/dashboard/assets/${asset.id}`} className="text-indigo-600 hover:underline">
+                          {asset.hostname}
+                        </Link>
+                      </td>
                       <td className="px-8 py-4 text-gray-600">
                         <span className="px-2 py-1 bg-gray-100 rounded text-xs font-medium">
                           {asset.osType || 'Desconhecido'}

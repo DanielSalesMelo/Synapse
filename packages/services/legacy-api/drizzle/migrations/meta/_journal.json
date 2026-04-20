@@ -85,6 +85,13 @@
       "when": 1776688290221,
       "tag": "0011_lyrical_terror",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1776688555430,
+      "tag": "0012_closed_stellaris",
+      "breakpoints": true
     }
   ]
 }
