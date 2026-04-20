@@ -8,6 +8,7 @@ import express from "express";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { appRouter } from "./routers";
 import { createContext } from "./_core/context";
+import agentRoutes from "./src/routes/agent";
 import cors from "cors";
 import helmet from "helmet";
 import { runInlineMigrations } from "./inline_migrations";
@@ -531,6 +532,9 @@ app.get('/api/agent/download/agent', (_req: any, res: any) => {
   if (!fs.existsSync(file)) return res.status(404).json({ error: 'Arquivo não encontrado' });
   res.download(file, 'synapse_agent.py');
 });
+
+// Rotas do Agente
+app.use("/agent", agentRoutes);
 
 // 4. Middleware do tRPC
 app.use(

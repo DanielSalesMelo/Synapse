@@ -1956,3 +1956,14 @@ export const userTenantRoles = pgTable('user_tenant_roles', {
 );
 
 // --- FIM DO BLOCO RBAC ---
+
+// ─── ASSETS (Computadores/Ativos) ────────────────────────────────────────────
+export const assets = pgTable("assets", {
+  id: serial("id").primaryKey(),
+  hostname: varchar("hostname", { length: 255 }).notNull().unique(),
+  osType: varchar("osType", { length: 100 }),
+  totalMemory: bigint("totalMemory", { mode: "number" }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+export type Asset = typeof assets.$inferSelect;
