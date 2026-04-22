@@ -76,9 +76,9 @@ export const usersRouter = router({
   // ── Listar todos os usuários (VERSÃO CORRIGIDA E FINAL) ──────────────────
   listAll: protectedProcedure.query(async ({ ctx }) => {
     console.log('[DEBUG] Endpoint listAll foi chamado.');
-    const userSession = ctx.session.user as any;
-    console.log(`[DEBUG] ID do usuário logado: ${userSession.id}, Perfil: ${userSession.role}`);
-    console.log(`[DEBUG] ID da empresa na sessão: ${userSession.empresaId}`);
+    const user = ctx.user as any;
+    console.log(`[DEBUG] ID do usuário logado: ${user.id}, Perfil: ${user.role}`);
+    console.log(`[DEBUG] ID da empresa: ${user.empresaId}`);
 
     try {
       const db = await getDb();
@@ -90,23 +90,18 @@ export const usersRouter = router({
       let foundUsers;
 
       // Se for master_admin, busca todos os usuários de todas as empresas.
-      if (userSession.role === 'master_admin') {
+      if (user.role === 'master_admin') {
         console.log('[DEBUG] Usuário é master_admin. Buscando todos os usuários.');
-        foundUsers = await db.query.users.findMany({
-          columns: { id: true, name: true, email: true, lastName: true, phone: true, role: true, status: true, empresaId: true, createdAt: true, updatedAt: true }
-        });
+        foundUsers = await db.select().from(users);
       } 
       // Se for qualquer outro perfil, busca APENAS os usuários da MESMA empresa.
       else {
-        if (!userSession.empresaId) {
-          console.error(`[ERROR] Usuário ${userSession.id} (${userSession.role}) não tem empresaId na sessão. Retornando lista vazia.`);
+        if (!user.empresaId) {
+          console.error(`[ERROR] Usuário ${user.id} (${user.role}) não tem empresaId. Retornando lista vazia.`);
           return [];
         }
-        console.log(`[DEBUG] Buscando usuários para a empresaId: ${userSession.empresaId}`);
-        foundUsers = await db.query.users.findMany({
-          where: eq(users.empresaId, userSession.empresaId),
-          columns: { id: true, name: true, email: true, lastName: true, phone: true, role: true, status: true, empresaId: true, createdAt: true, updatedAt: true }
-        });
+        console.log(`[DEBUG] Buscando usuários para a empresaId: ${user.empresaId}`);
+        foundUsers = await db.select().from(users).where(eq(users.empresaId, user.empresaId));
       }
 
       console.log(`[DEBUG] Consulta ao banco de dados retornou ${foundUsers.length} usuários.`);
