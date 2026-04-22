@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import AssetsPage from './pages/AssetsPage';
 import AssetDetailPage from './pages/AssetDetailPage';
+import MapsExamplePage from './pages/MapsExamplePage';
 import { Loader2 } from 'lucide-react';
 import IdleTimeout from './components/auth/IdleTimeout';
 
@@ -52,6 +53,10 @@ function App() {
 
       <Route path="/dashboard/assets/:id">
         <ProtectedRoute component={AssetDetailPage} />
+      </Route>
+
+      <Route path="/dashboard/maps">
+        <ProtectedRoute component={MapsExamplePage} />
       </Route>
 
       <Route path="/">
