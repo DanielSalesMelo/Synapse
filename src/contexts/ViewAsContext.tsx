@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useState, useCallback, ReactNode } from "react";
 import { trpc } from "@/lib/trpc";
 
@@ -41,15 +42,29 @@ export function ViewAsProvider({ children }: { children: ReactNode }) {
     setViewAs({ mode: "master", empresaId: null, empresaNome: null });
   }, []);
 
+  const token = typeof window !== "undefined" ? localStorage.getItem("synapse-auth-token") : null;
+  const isEmergency = token === "local-master-token";
+
   // Pega o empresaId real do usuário logado
   const { data: me } = trpc.auth.me.useQuery(undefined, {
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
+    enabled: !isEmergency, // Desabilita se for emergencial
   });
 
   const isSimulating = viewAs.mode === "admin";
-  // Usa o empresaId do usuário logado como padrão (não hardcoded 1)
-  const userEmpresaId = (me as any)?.empresaId ?? 1;
+  
+  // Se for emergencial, tenta pegar do localStorage ou usa 1
+  const getEmergencyEmpresaId = () => {
+    try {
+      const raw = localStorage.getItem("app-user-info");
+      if (raw) return JSON.parse(raw).empresaId ?? 1;
+    } catch {}
+    return 1;
+  };
+
+  const userEmpresaId = isEmergency ? getEmergencyEmpresaId() : ((me as any)?.empresaId ?? 1);
+  
   const effectiveEmpresaId = isSimulating
     ? (viewAs.empresaId ?? userEmpresaId)
     : userEmpresaId;

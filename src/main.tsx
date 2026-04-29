@@ -22,10 +22,16 @@ import { Toaster } from "sonner";
 import "./index.css";
 import "./lib/i18n";
 
+// ─── Constantes de Autenticação ──────────────────────────────────────────────
+const AUTH_TOKEN_KEY = "synapse-auth-token";
+const USER_INFO_KEY = "app-user-info";
+const EMERGENCY_TOKEN = "local-master-token";
+const UNAUTHED_ERR_MSG = 'Please login (10001)';
+
 // ─── Recupera usuário do localStorage para pré-popular o cache ────────────────
 function getPersistedUser() {
   try {
-    const raw = localStorage.getItem("app-user-info");
+    const raw = localStorage.getItem(USER_INFO_KEY);
     if (!raw || raw === "null" || raw === "undefined") return undefined;
     return JSON.parse(raw);
   } catch {
@@ -37,11 +43,15 @@ function getPersistedUser() {
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // Dados ficam "frescos" por 30 segundos — garante que a UI se mantenha atualizada
       staleTime: 30 * 1000,
-      // Mantém dados em cache por 5 minutos após ficarem inativos
       gcTime: 5 * 60 * 1000,
-      retry: 1,
+      retry: (failureCount, error) => {
+        // Não tenta novamente se for erro de autenticação ou se for o token emergencial
+        if (error instanceof TRPCClientError && error.message === UNAUTHED_ERR_MSG) return false;
+        const token = localStorage.getItem(AUTH_TOKEN_KEY);
+        if (token === EMERGENCY_TOKEN) return false;
+        return failureCount < 1;
+      },
       retryDelay: 1000,
       refetchOnWindowFocus: true,
     },
@@ -49,24 +59,30 @@ const queryClient = new QueryClient({
 });
 
 // Pré-popula o cache com o usuário do localStorage ANTES do primeiro render
-// Isso evita o flash de redirecionamento para /login após deploys do Railway
 const persistedUser = getPersistedUser();
 if (persistedUser) {
-  // tRPC v11 usa [splitPath] como query key, onde splitPath = ["auth", "me"]
   queryClient.setQueryData([["auth", "me"]], persistedUser);
 }
-
-const UNAUTHED_ERR_MSG = 'Please login (10001)';
 
 // Função para redirecionar ao login se o usuário não estiver autenticado
 const redirectToLoginIfUnauthorized = (error: unknown) => {
   if (!(error instanceof TRPCClientError)) return;
   if (typeof window === "undefined") return;
+  
   const isUnauthorized = error.message === UNAUTHED_ERR_MSG;
   if (!isUnauthorized) return;
+
+  // Se estiver usando o token emergencial, NÃO redireciona e NÃO limpa o storage
+  const token = localStorage.getItem(AUTH_TOKEN_KEY);
+  if (token === EMERGENCY_TOKEN) {
+    console.warn("[Auth] Ignorando erro de backend devido ao login emergencial.");
+    return;
+  }
+
   // Limpa o cache do usuário antes de redirecionar
-  localStorage.removeItem("app-user-info");
-  localStorage.removeItem("synapse-auth-token");
+  localStorage.removeItem(USER_INFO_KEY);
+  localStorage.removeItem(AUTH_TOKEN_KEY);
+  localStorage.removeItem("synapse-user"); // Limpa chave antiga se existir
   window.location.href = "/login";
 };
 
@@ -79,7 +95,7 @@ queryClient.getQueryCache().subscribe(event => {
   }
 });
 
-// Monitoramento de erros em Mutations (Login/Cadastro)
+// Monitoramento de erros em Mutations
 queryClient.getMutationCache().subscribe(event => {
   if (event.type === "updated" && event.action.type === "error") {
     const error = event.mutation.state.error;
@@ -88,17 +104,14 @@ queryClient.getMutationCache().subscribe(event => {
   }
 });
 
-// CONFIGURAÇÃO INTELIGENTE DA URL DO SERVIDOR
+// CONFIGURAÇÃO DA URL DO SERVIDOR
 const getBaseUrl = () => {
   if (typeof window !== "undefined") {
-    // Se estiver no PC (localhost), fala com a porta 3000.
     if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
       return "http://localhost:3000";
     }
-    // Na Vercel ou em produção, usa o backend Railway
     return import.meta.env.VITE_API_URL || "https://synapse-producion.up.railway.app";
   }
-  // Fallback para requisições relativas
   return "";
 };
 
@@ -108,7 +121,7 @@ const trpcClient = trpc.createClient({
       url: `${getBaseUrl()}/api/trpc`,
       transformer: superjson,
       headers() {
-        const token = localStorage.getItem("synapse-auth-token");
+        const token = localStorage.getItem(AUTH_TOKEN_KEY);
         return {
           Authorization: token ? `Bearer ${token}` : undefined,
         };
@@ -123,7 +136,6 @@ const trpcClient = trpc.createClient({
   ],
 });
 
-// Renderização Principal do App
 createRoot(document.getElementById("root")!).render(
   <trpc.Provider client={trpcClient} queryClient={queryClient}>
     <QueryClientProvider client={queryClient}>
