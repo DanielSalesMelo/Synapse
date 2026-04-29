@@ -25,7 +25,6 @@ import "./lib/i18n";
 // ─── Constantes de Autenticação ──────────────────────────────────────────────
 const AUTH_TOKEN_KEY = "synapse-auth-token";
 const USER_INFO_KEY = "app-user-info";
-const EMERGENCY_TOKEN = "local-master-token";
 const UNAUTHED_ERR_MSG = 'Please login (10001)';
 
 // ─── Recupera usuário do localStorage para pré-popular o cache ────────────────
@@ -46,10 +45,8 @@ const queryClient = new QueryClient({
       staleTime: 30 * 1000,
       gcTime: 5 * 60 * 1000,
       retry: (failureCount, error) => {
-        // Não tenta novamente se for erro de autenticação ou se for o token emergencial
+        // Não tenta novamente se for erro de autenticação
         if (error instanceof TRPCClientError && error.message === UNAUTHED_ERR_MSG) return false;
-        const token = localStorage.getItem(AUTH_TOKEN_KEY);
-        if (token === EMERGENCY_TOKEN) return false;
         return failureCount < 1;
       },
       retryDelay: 1000,
@@ -72,17 +69,10 @@ const redirectToLoginIfUnauthorized = (error: unknown) => {
   const isUnauthorized = error.message === UNAUTHED_ERR_MSG;
   if (!isUnauthorized) return;
 
-  // Se estiver usando o token emergencial, NÃO redireciona e NÃO limpa o storage
-  const token = localStorage.getItem(AUTH_TOKEN_KEY);
-  if (token === EMERGENCY_TOKEN) {
-    console.warn("[Auth] Ignorando erro de backend devido ao login emergencial.");
-    return;
-  }
-
   // Limpa o cache do usuário antes de redirecionar
   localStorage.removeItem(USER_INFO_KEY);
   localStorage.removeItem(AUTH_TOKEN_KEY);
-  localStorage.removeItem("synapse-user"); // Limpa chave antiga se existir
+  localStorage.removeItem("synapse-user");
   window.location.href = "/login";
 };
 
@@ -108,7 +98,7 @@ queryClient.getMutationCache().subscribe(event => {
 const getBaseUrl = () => {
   if (typeof window !== "undefined") {
     if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-      return "http://localhost:3000";
+      return "http://localhost:8080";
     }
     return import.meta.env.VITE_API_URL || "https://synapse-producion.up.railway.app";
   }
