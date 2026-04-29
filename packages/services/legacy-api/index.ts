@@ -12,35 +12,13 @@ import { createContext } from "./_core/context";
 import cors from "cors";
 import helmet from "helmet";
 import { runInlineMigrations } from "./inline_migrations";
-import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { sdk } from "./_core/sdk";
-
-// ─── Origens permitidas (CORS) ─────────────────────────────────────────────
-const ALLOWED_ORIGINS = [
-  "http://localhost:5173",
-  "http://localhost:3000",
-  "http://localhost:4173",
-  "https://synapse-seven-nu.vercel.app",
-  "https://synapse-v8.vercel.app",
-  ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
-];
-
-const ANY_VERCEL_REGEX = /^https:\/\/.*\.vercel\.app$/;
-
-const isOriginAllowed = (origin: string | undefined): boolean => {
-  if (!origin) return true;
-  if (ALLOWED_ORIGINS.includes(origin)) return true;
-  if (ANY_VERCEL_REGEX.test(origin)) return true;
-  if (origin.startsWith("http://localhost")) return true;
-  return false;
-};
 
 const app = express();
 const port = Number(process.env.PORT) || 8080;
 
-// 1. Helmet
+// 1. Helmet (Configurado para não interferir com o CORS)
 app.use(
   helmet({
     crossOriginEmbedderPolicy: false,
@@ -48,19 +26,43 @@ app.use(
   })
 );
 
-// 2. CORS
+// 2. Configuração Robusta de CORS
+const ALLOWED_ORIGINS = [
+  "https://synapse-seven-nu.vercel.app",
+  "https://synapse-v8.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "http://localhost:4173",
+];
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (isOriginAllowed(origin)) {
+      // Permitir requisições sem origin (como mobile apps ou curl)
+      if (!origin) return callback(null, true);
+      
+      const isAllowed = ALLOWED_ORIGINS.some(allowed => origin === allowed) || 
+                       origin.endsWith(".vercel.app") || 
+                       origin.startsWith("http://localhost");
+                       
+      if (isAllowed) {
         callback(null, true);
       } else {
+        console.warn(`[CORS] Bloqueado: ${origin}`);
         callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
+    exposedHeaders: ["Access-Control-Allow-Origin"],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   })
 );
+
+// Responder explicitamente a requisições OPTIONS (Preflight)
+app.options("*", cors());
 
 app.use(express.json({ limit: "10mb" }));
 
@@ -75,6 +77,7 @@ app.use(
 
 // Health check imediato para evitar que o deploy falhe
 app.get("/health", (_req, res) => res.status(200).send("OK"));
+app.get("/", (_req, res) => res.status(200).json({ status: "online", message: "Synapse API" }));
 
 // Servir arquivos estáticos
 const UPLOADS_DIR = path.join(process.cwd(), "uploads");
