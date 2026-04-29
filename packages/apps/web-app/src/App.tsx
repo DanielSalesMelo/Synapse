@@ -5,7 +5,9 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import AssetsPage from './pages/AssetsPage';
 import AssetDetailPage from './pages/AssetDetailPage';
+import MapsExamplePage from './pages/MapsExamplePage';
 import { Loader2 } from 'lucide-react';
+import IdleTimeout from './components/auth/IdleTimeout';
 
 // Componente para proteger rotas
 const ProtectedRoute = ({ component: Component, ...rest }: any) => {
@@ -34,7 +36,9 @@ function App() {
   }
 
   return (
-    <Switch>
+    <>
+      <IdleTimeout timeoutInMinutes={15} />
+      <Switch>
       <Route path="/login">
         {isAuthenticated ? <Redirect to="/dashboard" /> : <Login />}
       </Route>
@@ -51,6 +55,10 @@ function App() {
         <ProtectedRoute component={AssetDetailPage} />
       </Route>
 
+      <Route path="/dashboard/maps">
+        <ProtectedRoute component={MapsExamplePage} />
+      </Route>
+
       <Route path="/">
         <Redirect to={isAuthenticated ? "/dashboard" : "/login"} />
       </Route>
@@ -64,7 +72,8 @@ function App() {
           </div>
         </div>
       </Route>
-    </Switch>
+      </Switch>
+    </>
   );
 }
 

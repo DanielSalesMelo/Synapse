@@ -22,6 +22,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const menuItems = [
     { name: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" />, href: '/dashboard' },
     { name: 'Ativos', icon: <Monitor className="w-5 h-5" />, href: '/dashboard/assets' },
+    { name: 'Mapas', icon: <Monitor className="w-5 h-5" />, href: '/dashboard/maps' },
     { name: 'Vendas', icon: <ShoppingCart className="w-5 h-5" />, href: '#' },
     { name: 'Financeiro', icon: <DollarSign className="w-5 h-5" />, href: '#' },
   ];
