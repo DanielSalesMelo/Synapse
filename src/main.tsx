@@ -22,13 +22,10 @@ import { Toaster } from "sonner";
 import "./index.css";
 import "./lib/i18n";
 
-// ─── Constantes de Autenticação ──────────────────────────────────────────────
 const AUTH_TOKEN_KEY = "synapse-auth-token";
 const USER_INFO_KEY = "app-user-info";
-const EMERGENCY_TOKEN = "local-master-token";
 const UNAUTHED_ERR_MSG = 'Please login (10001)';
 
-// ─── Recupera usuário do localStorage para pré-popular o cache ────────────────
 function getPersistedUser() {
   try {
     const raw = localStorage.getItem(USER_INFO_KEY);
@@ -39,77 +36,48 @@ function getPersistedUser() {
   }
 }
 
-// ─── QueryClient com staleTime global e cache pré-populado ───────────────────
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 30 * 1000,
-      gcTime: 5 * 60 * 1000,
+      staleTime: 1000 * 60 * 5, // 5 minutos de cache para evitar requisições excessivas
+      gcTime: 1000 * 60 * 30,
       retry: (failureCount, error) => {
-        // Não tenta novamente se for erro de autenticação ou se for o token emergencial
         if (error instanceof TRPCClientError && error.message === UNAUTHED_ERR_MSG) return false;
-        const token = localStorage.getItem(AUTH_TOKEN_KEY);
-        if (token === EMERGENCY_TOKEN) return false;
-        return failureCount < 1;
+        return failureCount < 2; // Tenta 2 vezes antes de falhar
       },
-      retryDelay: 1000,
-      refetchOnWindowFocus: true,
+      retryDelay: attempt => Math.min(1000 * 2 ** attempt, 30000),
+      refetchOnWindowFocus: false, // Desabilitado para evitar "piscar" na tela ao trocar de aba
     },
   },
 });
 
-// Pré-popula o cache com o usuário do localStorage ANTES do primeiro render
 const persistedUser = getPersistedUser();
 if (persistedUser) {
   queryClient.setQueryData([["auth", "me"]], persistedUser);
 }
 
-// Função para redirecionar ao login se o usuário não estiver autenticado
-const redirectToLoginIfUnauthorized = (error: unknown) => {
+const handleUnauthorized = (error: unknown) => {
   if (!(error instanceof TRPCClientError)) return;
-  if (typeof window === "undefined") return;
-  
-  const isUnauthorized = error.message === UNAUTHED_ERR_MSG;
-  if (!isUnauthorized) return;
-
-  // Se estiver usando o token emergencial, NÃO redireciona e NÃO limpa o storage
-  const token = localStorage.getItem(AUTH_TOKEN_KEY);
-  if (token === EMERGENCY_TOKEN) {
-    console.warn("[Auth] Ignorando erro de backend devido ao login emergencial.");
-    return;
+  if (error.message === UNAUTHED_ERR_MSG) {
+    localStorage.removeItem(USER_INFO_KEY);
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    // Redireciona apenas se não estiver na página de login
+    if (window.location.pathname !== "/login") {
+      window.location.href = "/login";
+    }
   }
-
-  // Limpa o cache do usuário antes de redirecionar
-  localStorage.removeItem(USER_INFO_KEY);
-  localStorage.removeItem(AUTH_TOKEN_KEY);
-  localStorage.removeItem("synapse-user"); // Limpa chave antiga se existir
-  window.location.href = "/login";
 };
 
-// Monitoramento de erros em Queries
 queryClient.getQueryCache().subscribe(event => {
   if (event.type === "updated" && event.action.type === "error") {
-    const error = event.query.state.error;
-    redirectToLoginIfUnauthorized(error);
-    console.error("[API Query Error]", error);
+    handleUnauthorized(event.query.state.error);
   }
 });
 
-// Monitoramento de erros em Mutations
-queryClient.getMutationCache().subscribe(event => {
-  if (event.type === "updated" && event.action.type === "error") {
-    const error = event.mutation.state.error;
-    redirectToLoginIfUnauthorized(error);
-    console.error("[API Mutation Error]", error);
-  }
-});
-
-// CONFIGURAÇÃO DA URL DO SERVIDOR
 const getBaseUrl = () => {
   if (typeof window !== "undefined") {
-    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-      return "http://localhost:3000";
-    }
+    const host = window.location.hostname;
+    if (host === "localhost" || host === "127.0.0.1") return "http://localhost:8080";
     return import.meta.env.VITE_API_URL || "https://synapse-producion.up.railway.app";
   }
   return "";
@@ -125,12 +93,6 @@ const trpcClient = trpc.createClient({
         return {
           Authorization: token ? `Bearer ${token}` : undefined,
         };
-      },
-      fetch(input, init) {
-        return globalThis.fetch(input, {
-          ...(init ?? {}),
-          credentials: "include",
-        });
       },
     }),
   ],

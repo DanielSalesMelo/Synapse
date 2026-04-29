@@ -1,10 +1,11 @@
 
 import { getLoginUrl } from "@/const";
-import { useCallback, useMemo } from "react";
+import { trpc } from "@/lib/trpc";
+import { TRPCClientError } from "@trpc/client";
+import { useCallback, useEffect, useMemo } from "react";
 
 const AUTH_TOKEN_KEY = "synapse-auth-token";
 const USER_INFO_KEY = "app-user-info";
-const EMERGENCY_TOKEN = "local-master-token";
 
 type UseAuthOptions = {
   redirectOnUnauthenticated?: boolean;
@@ -12,48 +13,79 @@ type UseAuthOptions = {
 };
 
 export function useAuth(options?: UseAuthOptions) {
-  const { redirectPath = getLoginUrl() } = options ?? {};
+  const { redirectOnUnauthenticated = false, redirectPath = getLoginUrl() } =
+    options ?? {};
+  const utils = trpc.useUtils();
 
   const token = typeof window !== "undefined" ? localStorage.getItem(AUTH_TOKEN_KEY) : null;
-  const isEmergency = token === EMERGENCY_TOKEN;
+
+  const meQuery = trpc.auth.me.useQuery(undefined, {
+    retry: false,
+    refetchOnWindowFocus: false,
+    enabled: !!token,
+  });
+
+  const logoutMutation = trpc.auth.logout.useMutation({
+    onSuccess: () => {
+      localStorage.removeItem(USER_INFO_KEY);
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+      localStorage.removeItem("manus-runtime-user-info");
+      localStorage.removeItem("synapse-user");
+      utils.auth.me.setData(undefined, null);
+      window.location.href = redirectPath;
+    },
+  });
 
   const logout = useCallback(async () => {
-    localStorage.removeItem(USER_INFO_KEY);
-    localStorage.removeItem(AUTH_TOKEN_KEY);
-    localStorage.removeItem("manus-runtime-user-info");
-    localStorage.removeItem("synapse-user");
-    window.location.href = redirectPath;
-  }, [redirectPath]);
+    try {
+      await logoutMutation.mutateAsync();
+    } catch (error: unknown) {
+      if (
+        error instanceof TRPCClientError &&
+        error.data?.code === "UNAUTHORIZED"
+      ) {
+        return;
+      }
+      throw error;
+    } finally {
+      localStorage.removeItem(USER_INFO_KEY);
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+      localStorage.removeItem("manus-runtime-user-info");
+      localStorage.removeItem("synapse-user");
+      utils.auth.me.setData(undefined, null);
+      await utils.auth.me.invalidate();
+      window.location.href = redirectPath;
+    }
+  }, [logoutMutation, utils, redirectPath]);
 
   const state = useMemo(() => {
-    if (isEmergency) {
-      const raw = localStorage.getItem(USER_INFO_KEY);
-      const cachedUser = raw ? JSON.parse(raw) : { 
-        id: "admin-local",
-        email: "admin@local",
-        name: "Daniel Sales",
-        role: "MASTER",
-        isMasterAdmin: true
-      };
-      return {
-        user: cachedUser,
-        loading: false,
-        error: null,
-        isAuthenticated: true,
-      };
+    if (meQuery.data) {
+      localStorage.setItem(USER_INFO_KEY, JSON.stringify(meQuery.data));
     }
 
     return {
-      user: null,
-      loading: false,
-      error: null,
-      isAuthenticated: false,
+      user: meQuery.data ?? null,
+      loading: meQuery.isLoading || logoutMutation.isPending,
+      error: meQuery.error ?? logoutMutation.error ?? null,
+      isAuthenticated: Boolean(meQuery.data),
     };
-  }, [isEmergency]);
+  }, [
+    meQuery.data,
+    meQuery.error,
+    meQuery.isLoading,
+    logoutMutation.error,
+    logoutMutation.isPending,
+  ]);
+
+  useEffect(() => {
+    if (redirectOnUnauthenticated && !state.isAuthenticated && !meQuery.isLoading && !token) {
+      window.location.href = redirectPath;
+    }
+  }, [redirectOnUnauthenticated, state.isAuthenticated, meQuery.isLoading, token, redirectPath]);
 
   return {
     ...state,
-    refresh: () => {},
+    refresh: () => meQuery.refetch(),
     logout,
   };
 }
