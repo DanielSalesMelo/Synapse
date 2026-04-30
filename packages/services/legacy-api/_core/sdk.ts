@@ -285,6 +285,10 @@ class SDKServer {
       throw ForbiddenError("User not found");
     }
 
+    if ((user as any).deletedAt) {
+      throw ForbiddenError("User disabled");
+    }
+
     await db.upsertUser({
       openId: user.openId,
       name: user.name || user.email || "Usuário",

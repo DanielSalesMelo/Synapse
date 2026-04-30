@@ -2,9 +2,10 @@ import { masterAdminProcedure, protectedProcedure, publicProcedure, router } fro
 import { z } from "zod";
 import { getDb } from "../db";
 import { empresas, users } from "../drizzle/schema";
-import { eq, and, isNull, or } from "drizzle-orm";
+import { eq, and, inArray, isNull, or } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { randomBytes } from "crypto";
+import { listAccessibleCompanyIds, resolveAccessibleEmpresaId } from "../_core/access";
 
 function gerarCodigoConvite(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -40,9 +41,7 @@ export const empresasRouter = router({
     .query(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
-      if (ctx.user.role !== "master_admin" && (ctx.user as any).empresaId !== input.id) {
-        throw new TRPCError({ code: "FORBIDDEN", message: "Acesso negado" });
-      }
+      await resolveAccessibleEmpresaId(ctx, input.id);
       const [empresa] = await db.select().from(empresas).where(and(eq(empresas.id, input.id), isNull(empresas.deletedAt))).limit(1);
       if (!empresa) throw new TRPCError({ code: "NOT_FOUND", message: "Empresa não encontrada" });
       return empresa;
@@ -91,11 +90,41 @@ export const empresasRouter = router({
     .query(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
-      if (ctx.user.role !== "master_admin" && (ctx.user as any).empresaId !== input.empresaId) {
-        throw new TRPCError({ code: "FORBIDDEN", message: "Acesso negado" });
-      }
-      return await db.select({ id: users.id, name: users.name, email: users.email, role: users.role, status: users.status, empresaId: users.empresaId, createdAt: users.createdAt }).from(users).where(eq(users.empresaId, input.empresaId));
+      const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
+      return await db
+        .select({
+          id: users.id,
+          name: users.name,
+          email: users.email,
+          role: users.role,
+          status: users.status,
+          empresaId: users.empresaId,
+          createdAt: users.createdAt,
+        })
+        .from(users)
+        .where(and(eq(users.empresaId, empresaId), isNull(users.deletedAt)));
     }),
+
+  listAcessiveis: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    const accessibleIds = await listAccessibleCompanyIds(ctx.user);
+    if (accessibleIds.length === 0) return [];
+    return db
+      .select({
+        id: empresas.id,
+        nome: empresas.nome,
+        cnpj: empresas.cnpj,
+        cidade: empresas.cidade,
+        estado: empresas.estado,
+        ativo: empresas.ativo,
+        grupoId: empresas.grupoId,
+        matrizId: empresas.matrizId,
+      })
+      .from(empresas)
+      .where(and(inArray(empresas.id, accessibleIds), isNull(empresas.deletedAt)))
+      .orderBy(empresas.nome);
+  }),
 
   // ─── CRIAR EMPRESA ───────────────────────────────────────────────────────
   criar: masterAdminProcedure

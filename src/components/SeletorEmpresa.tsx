@@ -1,13 +1,6 @@
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -20,106 +13,81 @@ import {
 import { Building2, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 
+type AccessibleCompany = {
+  empresaId: number;
+  empresaNome?: string | null;
+  roleCode?: string;
+  canViewGroup?: boolean;
+  isDefault?: boolean;
+};
+
 export function SeletorEmpresa() {
-  const { user } = useAuth();
-  const [empresaAtiva, setEmpresaAtiva] = useState<number | null>(null);
-  const [hierarquia, setHierarquia] = useState<any>(null);
+  const { user, refresh } = useAuth();
+  const utils = trpc.useUtils();
+  const setEmpresaAtiva = trpc.grupos.setEmpresaAtiva.useMutation({
+    onSuccess: async () => {
+      await utils.auth.me.invalidate();
+      await refresh();
+      toast.success("Empresa ativa alterada com sucesso.");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Não foi possível trocar a empresa ativa.");
+    },
+  });
 
-  // Buscar hierarquia de empresas
-  const { data: hier } = trpc.grupos.getHierarquia.useQuery(
-    { empresaId: user?.empresaId || 1 },
-    { enabled: !!user?.empresaId }
-  );
+  const empresas = useMemo(() => {
+    const list = ((user as any)?.accessibleCompanies ?? []) as AccessibleCompany[];
+    return [...list].sort((a, b) => {
+      if (a.empresaId === (user as any)?.empresaId) return -1;
+      if (b.empresaId === (user as any)?.empresaId) return 1;
+      return (a.empresaNome || "").localeCompare(b.empresaNome || "");
+    });
+  }, [user]);
 
-  useEffect(() => {
-    if (hier) {
-      setHierarquia(hier);
-      setEmpresaAtiva(hier.atual?.id || user?.empresaId);
-    }
-  }, [hier, user?.empresaId]);
-
-  const handleChangeEmpresa = (id: number) => {
-    setEmpresaAtiva(id);
-    // Aqui você poderia fazer um reload da página ou atualizar o contexto
-    // Por enquanto, apenas muda localmente
-    toast.success("Empresa alterada. Recarregando dados...");
-    window.location.reload();
-  };
-
-  if (!hierarquia) return null;
-
-  // Se não há filiais, não mostra o seletor
-  if (!hierarquia.filiais || hierarquia.filiais.length === 0) {
+  if (empresas.length <= 1) {
     return null;
   }
 
-  const todasEmpresas = [
-    hierarquia.matriz,
-    ...hierarquia.filiais,
-  ].filter(Boolean);
-
-  const empresaAtualNome = todasEmpresas.find((e: any) => e.id === empresaAtiva)?.nome;
+  const empresaAtual = empresas.find(item => item.empresaId === (user as any)?.empresaId) ?? empresas[0];
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="gap-2 h-8 text-xs"
-        >
+        <Button variant="outline" size="sm" className="gap-2 h-8 text-xs">
           <Building2 className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline max-w-[120px] truncate">{empresaAtualNome}</span>
+          <span className="hidden sm:inline max-w-[160px] truncate">
+            {empresaAtual?.empresaNome || "Selecionar empresa"}
+          </span>
           <ChevronDown className="w-3.5 h-3.5 opacity-50" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent align="end" className="w-64">
         <DropdownMenuLabel className="text-xs uppercase text-muted-foreground">
-          Grupo de Empresas
+          Empresas autorizadas
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
 
-        {/* Matriz */}
-        <DropdownMenuItem
-          onClick={() => handleChangeEmpresa(hierarquia.matriz.id)}
-          className={`cursor-pointer ${empresaAtiva === hierarquia.matriz.id ? "bg-blue-500/10 text-blue-400" : ""}`}
-        >
-          <div className="flex items-center gap-2 w-full">
-            <div className="w-2 h-2 rounded-full bg-blue-400" />
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium truncate">{hierarquia.matriz.nome}</div>
-              <div className="text-xs text-muted-foreground">Matriz</div>
-            </div>
-            {empresaAtiva === hierarquia.matriz.id && (
-              <div className="w-2 h-2 rounded-full bg-blue-400" />
-            )}
-          </div>
-        </DropdownMenuItem>
-
-        {/* Filiais */}
-        {hierarquia.filiais && hierarquia.filiais.length > 0 && (
-          <>
-            <DropdownMenuSeparator />
-            {hierarquia.filiais.map((filial: any) => (
-              <DropdownMenuItem
-                key={filial.id}
-                onClick={() => handleChangeEmpresa(filial.id)}
-                className={`cursor-pointer ${empresaAtiva === filial.id ? "bg-purple-500/10 text-purple-400" : ""}`}
-              >
-                <div className="flex items-center gap-2 w-full">
-                  <div className="w-2 h-2 rounded-full bg-purple-400" />
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium truncate">{filial.nome}</div>
-                    <div className="text-xs text-muted-foreground">Filial</div>
+        {empresas.map((empresa) => {
+          const isActive = empresa.empresaId === (user as any)?.empresaId;
+          return (
+            <DropdownMenuItem
+              key={empresa.empresaId}
+              onClick={() => setEmpresaAtiva.mutate({ empresaId: empresa.empresaId })}
+              disabled={isActive || setEmpresaAtiva.isPending}
+              className={`cursor-pointer ${isActive ? "bg-blue-500/10 text-blue-400" : ""}`}
+            >
+              <div className="flex items-center gap-2 w-full">
+                <div className={`w-2 h-2 rounded-full ${isActive ? "bg-blue-400" : "bg-slate-400"}`} />
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium truncate">{empresa.empresaNome || `Empresa ${empresa.empresaId}`}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {(empresa.roleCode || "acesso").replaceAll("_", " ")}
                   </div>
-                  {empresaAtiva === filial.id && (
-                    <div className="w-2 h-2 rounded-full bg-purple-400" />
-                  )}
                 </div>
-              </DropdownMenuItem>
-            ))}
-          </>
-        )}
+              </div>
+            </DropdownMenuItem>
+          );
+        })}
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -6,6 +6,7 @@ import { z } from "zod";
 import { safeDb, requireDb } from "../helpers/errorHandler";
 import { TRPCError } from "@trpc/server";
 import { createAuditLog } from "../_core/audit";
+import { resolveAccessibleEmpresaId } from "../_core/access";
 
 function parseDate(d: string | null | undefined): string | null {
   if (!d) return null;
@@ -23,12 +24,13 @@ export const financeiroRouter = router({
         status: z.enum(["pendente", "pago", "vencido", "cancelado"]).optional(),
         limit: z.number().default(50),
       }))
-      .query(async ({ input }) => {
+      .query(async ({ input, ctx }) => {
         return safeDb(async () => {
           const db = requireDb(await getDb(), "financeiro.pagar.list");
+          const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
           return db.select().from(contasPagar)
             .where(and(
-              eq(contasPagar.empresaId, input.empresaId),
+              eq(contasPagar.empresaId, empresaId),
               isNull(contasPagar.deletedAt),
               input.status ? eq(contasPagar.status, input.status) : undefined,
             ))
@@ -56,7 +58,7 @@ export const financeiroRouter = router({
       .mutation(async ({ input, ctx }) => {
         return safeDb(async () => {
           const db = requireDb(await getDb(), "financeiro.pagar.create");
-          const empresaId = ctx.user.role !== "master_admin" ? ctx.user.empresaId! : input.empresaId;
+          const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
           const [result] = await db.insert(contasPagar).values({
             ...input,
             empresaId,
@@ -120,20 +122,25 @@ export const financeiroRouter = router({
       .mutation(async ({ input, ctx }) => {
         return safeDb(async () => {
           const db = requireDb(await getDb(), "financeiro.pagar.softDelete");
+          const whereClause = [eq(contasPagar.id, input.id)];
+          if (ctx.user.role !== "master_admin") {
+            whereClause.push(eq(contasPagar.empresaId, ctx.user.empresaId!));
+          }
           await db.update(contasPagar).set({
             deletedAt: new Date(),
             deletedBy: ctx.user!.id,
             deleteReason: input.reason,
-          }).where(eq(contasPagar.id, input.id));
+          }).where(and(...whereClause));
           return { success: true };
         }, "financeiro.pagar.softDelete");
       }),
 
     resumo: protectedProcedure
       .input(z.object({ empresaId: z.number() }))
-      .query(async ({ input }) => {
+      .query(async ({ input, ctx }) => {
         return safeDb(async () => {
           const db = requireDb(await getDb(), "financeiro.pagar.resumo");
+          const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
           const hoje = new Date();
           const inicioMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
           const inicioMesStr = inicioMes.toISOString();
@@ -142,7 +149,7 @@ export const financeiroRouter = router({
             total: sql<number>`SUM(${contasPagar.valor})`,
           })
             .from(contasPagar)
-            .where(and(eq(contasPagar.empresaId, input.empresaId), isNull(contasPagar.deletedAt)))
+            .where(and(eq(contasPagar.empresaId, empresaId), isNull(contasPagar.deletedAt)))
             .groupBy(contasPagar.status);
           const result = { pendente: 0, vencido: 0, pagoMes: 0 };
           rows.forEach(r => {
@@ -152,7 +159,7 @@ export const financeiroRouter = router({
           const pagoRows = await db.select({ total: sql<number>`SUM(${contasPagar.valor})` })
             .from(contasPagar)
             .where(and(
-              eq(contasPagar.empresaId, input.empresaId),
+              eq(contasPagar.empresaId, empresaId),
               eq(contasPagar.status, "pago"),
               gte(contasPagar.dataPagamento, sql`${inicioMesStr}::timestamp`),
               isNull(contasPagar.deletedAt),
@@ -171,12 +178,13 @@ export const financeiroRouter = router({
         status: z.enum(["pendente", "recebido", "vencido", "cancelado"]).optional(),
         limit: z.number().default(50),
       }))
-      .query(async ({ input }) => {
+      .query(async ({ input, ctx }) => {
         return safeDb(async () => {
           const db = requireDb(await getDb(), "financeiro.receber.list");
+          const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
           return db.select().from(contasReceber)
             .where(and(
-              eq(contasReceber.empresaId, input.empresaId),
+              eq(contasReceber.empresaId, empresaId),
               isNull(contasReceber.deletedAt),
               input.status ? eq(contasReceber.status, input.status) : undefined,
             ))
@@ -200,11 +208,13 @@ export const financeiroRouter = router({
         viagemId: z.number().nullable().optional(),
         observacoes: z.string().optional(),
       }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ input, ctx }) => {
         return safeDb(async () => {
           const db = requireDb(await getDb(), "financeiro.receber.create");
+          const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
           const [result] = await db.insert(contasReceber).values({
             ...input,
+            empresaId,
             dataVencimento: input.dataVencimento,
             dataRecebimento: input.dataRecebimento || null,
           }).returning({ id: contasReceber.id });
@@ -222,16 +232,20 @@ export const financeiroRouter = router({
         status: z.enum(["pendente", "recebido", "vencido", "cancelado"]).optional(),
         observacoes: z.string().optional(),
       }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ input, ctx }) => {
         return safeDb(async () => {
           const db = requireDb(await getDb(), "financeiro.receber.update");
           const { id, dataVencimento, dataRecebimento, ...rest } = input;
+          const whereClause = [eq(contasReceber.id, id)];
+          if (ctx.user.role !== "master_admin") {
+            whereClause.push(eq(contasReceber.empresaId, ctx.user.empresaId!));
+          }
           await db.update(contasReceber).set({
             ...rest,
             ...(dataVencimento ? { dataVencimento: dataVencimento } : {}),
             ...(dataRecebimento !== undefined ? { dataRecebimento: dataRecebimento || null } : {}),
             updatedAt: new Date(),
-          }).where(eq(contasReceber.id, id));
+          }).where(and(...whereClause));
           return { success: true };
         }, "financeiro.receber.update");
       }),
@@ -241,20 +255,25 @@ export const financeiroRouter = router({
       .mutation(async ({ input, ctx }) => {
         return safeDb(async () => {
           const db = requireDb(await getDb(), "financeiro.receber.softDelete");
+          const whereClause = [eq(contasReceber.id, input.id)];
+          if (ctx.user.role !== "master_admin") {
+            whereClause.push(eq(contasReceber.empresaId, ctx.user.empresaId!));
+          }
           await db.update(contasReceber).set({
             deletedAt: new Date(),
             deletedBy: ctx.user!.id,
             deleteReason: input.reason,
-          }).where(eq(contasReceber.id, input.id));
+          }).where(and(...whereClause));
           return { success: true };
         }, "financeiro.receber.softDelete");
       }),
 
     resumo: protectedProcedure
       .input(z.object({ empresaId: z.number() }))
-      .query(async ({ input }) => {
+      .query(async ({ input, ctx }) => {
         return safeDb(async () => {
           const db = requireDb(await getDb(), "financeiro.receber.resumo");
+          const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
           const hoje = new Date();
           const inicioMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
           const inicioMesStr = inicioMes.toISOString();
@@ -263,7 +282,7 @@ export const financeiroRouter = router({
             total: sql<number>`SUM(${contasReceber.valor})`,
           })
             .from(contasReceber)
-            .where(and(eq(contasReceber.empresaId, input.empresaId), isNull(contasReceber.deletedAt)))
+            .where(and(eq(contasReceber.empresaId, empresaId), isNull(contasReceber.deletedAt)))
             .groupBy(contasReceber.status);
           const result = { pendente: 0, vencido: 0, recebidoMes: 0 };
           rows.forEach(r => {
@@ -273,7 +292,7 @@ export const financeiroRouter = router({
           const recRows = await db.select({ total: sql<number>`SUM(${contasReceber.valor})` })
             .from(contasReceber)
             .where(and(
-              eq(contasReceber.empresaId, input.empresaId),
+              eq(contasReceber.empresaId, empresaId),
               eq(contasReceber.status, "recebido"),
               gte(contasReceber.dataRecebimento, sql`${inicioMesStr}::timestamp`),
               isNull(contasReceber.deletedAt),
@@ -293,12 +312,13 @@ export const financeiroRouter = router({
         status: z.enum(["pendente", "acertado", "cancelado"]).optional(),
         limit: z.number().default(50),
       }))
-      .query(async ({ input }) => {
+      .query(async ({ input, ctx }) => {
         return safeDb(async () => {
           const db = requireDb(await getDb(), "financeiro.adiantamentos.list");
+          const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
           return db.select().from(adiantamentos)
             .where(and(
-              eq(adiantamentos.empresaId, input.empresaId),
+              eq(adiantamentos.empresaId, empresaId),
               isNull(adiantamentos.deletedAt),
               input.funcionarioId ? eq(adiantamentos.funcionarioId, input.funcionarioId) : undefined,
               input.status ? eq(adiantamentos.status, input.status) : undefined,
@@ -318,11 +338,13 @@ export const financeiroRouter = router({
         data: z.string(),
         observacoes: z.string().optional(),
       }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ input, ctx }) => {
         return safeDb(async () => {
           const db = requireDb(await getDb(), "financeiro.adiantamentos.create");
+          const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
           const [result] = await db.insert(adiantamentos).values({
             ...input,
+            empresaId,
             data: parseDate(input.data) ?? new Date().toISOString().split("T")[0],
           }).returning({ id: adiantamentos.id });
           return { id: result.id };
@@ -336,11 +358,14 @@ export const financeiroRouter = router({
         dataAcerto: z.string(),
         observacoes: z.string().optional(),
       }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ input, ctx }) => {
         return safeDb(async () => {
           const db = requireDb(await getDb(), "financeiro.adiantamentos.acertar");
           const rows = await db.select().from(adiantamentos)
-            .where(eq(adiantamentos.id, input.id)).limit(1);
+            .where(and(
+              eq(adiantamentos.id, input.id),
+              ctx.user.role !== "master_admin" ? eq(adiantamentos.empresaId, ctx.user.empresaId!) : undefined,
+            )).limit(1);
           const adiant = rows[0];
           if (!adiant) {
             throw new TRPCError({ code: "NOT_FOUND", message: "Adiantamento não encontrado." });
@@ -363,11 +388,15 @@ export const financeiroRouter = router({
       .mutation(async ({ input, ctx }) => {
         return safeDb(async () => {
           const db = requireDb(await getDb(), "financeiro.adiantamentos.softDelete");
+          const whereClause = [eq(adiantamentos.id, input.id)];
+          if (ctx.user.role !== "master_admin") {
+            whereClause.push(eq(adiantamentos.empresaId, ctx.user.empresaId!));
+          }
           await db.update(adiantamentos).set({
             deletedAt: new Date(),
             deletedBy: ctx.user!.id,
             deleteReason: input.reason,
-          }).where(eq(adiantamentos.id, input.id));
+          }).where(and(...whereClause));
           return { success: true };
         }, "financeiro.adiantamentos.softDelete");
       }),
@@ -376,9 +405,10 @@ export const financeiroRouter = router({
   // ─── DASHBOARD FINANCEIRO COMPLETO ────────────────────────────────────────
   dashboard: protectedProcedure
     .input(z.object({ empresaId: z.number() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "financeiro.dashboard");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         const hoje = new Date();
         const inicioMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
         const fimMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
@@ -392,7 +422,7 @@ export const financeiroRouter = router({
           count: sql<number>`COUNT(*)`,
         })
           .from(contasPagar)
-          .where(and(eq(contasPagar.empresaId, input.empresaId), isNull(contasPagar.deletedAt)))
+          .where(and(eq(contasPagar.empresaId, empresaId), isNull(contasPagar.deletedAt)))
           .groupBy(contasPagar.status);
 
         // Contas a receber por status
@@ -402,7 +432,7 @@ export const financeiroRouter = router({
           count: sql<number>`COUNT(*)`,
         })
           .from(contasReceber)
-          .where(and(eq(contasReceber.empresaId, input.empresaId), isNull(contasReceber.deletedAt)))
+          .where(and(eq(contasReceber.empresaId, empresaId), isNull(contasReceber.deletedAt)))
           .groupBy(contasReceber.status);
 
         // Adiantamentos pendentes
@@ -412,7 +442,7 @@ export const financeiroRouter = router({
         })
           .from(adiantamentos)
           .where(and(
-            eq(adiantamentos.empresaId, input.empresaId),
+            eq(adiantamentos.empresaId, empresaId),
             eq(adiantamentos.status, "pendente"),
             isNull(adiantamentos.deletedAt),
           ));
@@ -426,7 +456,7 @@ export const financeiroRouter = router({
         })
           .from(viagens)
           .where(and(
-            eq(viagens.empresaId, input.empresaId),
+            eq(viagens.empresaId, empresaId),
             eq(viagens.status, "concluida"),
             gte(viagens.dataChegada, inicioMes),
             isNull(viagens.deletedAt),
@@ -472,9 +502,10 @@ export const financeiroRouter = router({
       dataInicio: z.string().optional(),
       dataFim: z.string().optional(),
     }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "financeiro.drePorPlaca");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         
         // 1. Buscar Receitas (Contas a Receber vinculadas a viagens do veículo)
         const veiculoFiltroReceita = input.veiculoId ? sql` AND v."veiculoId" = ${input.veiculoId}` : sql``;
@@ -484,7 +515,7 @@ export const financeiroRouter = router({
           SELECT v."veiculoId", SUM(cr.valor) as total_receita
           FROM contas_receber cr
           JOIN viagens v ON cr."viagemId" = v.id
-          WHERE cr."empresaId" = ${input.empresaId}
+          WHERE cr."empresaId" = ${empresaId}
             AND cr."deletedAt" IS NULL
             AND cr.status = 'recebido'
             ${veiculoFiltroReceita}
@@ -500,7 +531,7 @@ export const financeiroRouter = router({
         const despesas = await db.execute(sql`
           SELECT "veiculoId", categoria, SUM(valor) as total_despesa
           FROM contas_pagar
-          WHERE "empresaId" = ${input.empresaId}
+          WHERE "empresaId" = ${empresaId}
             AND "deletedAt" IS NULL
             AND status = 'pago'
             AND "veiculoId" IS NOT NULL
@@ -517,7 +548,7 @@ export const financeiroRouter = router({
         const kmRodado = await db.execute(sql`
           SELECT "veiculoId", SUM(COALESCE("kmChegada", 0) - COALESCE("kmSaida", 0)) as total_km
           FROM viagens
-          WHERE "empresaId" = ${input.empresaId}
+          WHERE "empresaId" = ${empresaId}
             AND "deletedAt" IS NULL
             AND status = 'concluida'
             ${veiculoFiltroKm}

@@ -59,6 +59,9 @@ export const users = pgTable("users", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().$onUpdateFn(() => new Date()).notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+  deletedBy: integer("deletedBy"),
+  deleteReason: text("deleteReason"),
 });
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
@@ -1398,7 +1401,7 @@ export type Comissao = typeof comissoes.$inferSelect;
 export const moduloPermissoes = pgTable("modulo_permissoes", {
   id: serial("id").primaryKey(),
   empresaId: integer("empresaId").notNull(),
-  role: userRoleEnum("role").notNull(),
+  roleCode: varchar("roleCode", { length: 50 }).notNull(),
   modulo: varchar("modulo", { length: 100 }).notNull(),
   podeVer: boolean("podeVer").default(false).notNull(),
   podeCriar: boolean("podeCriar").default(false).notNull(),
@@ -1576,6 +1579,9 @@ export const gruposEmpresariais = pgTable("grupos_empresariais", {
   ativo: boolean("ativo").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+  deletedBy: integer("deletedBy"),
+  deleteReason: text("deleteReason"),
 });
 export type GrupoEmpresarial = typeof gruposEmpresariais.$inferSelect;
 
@@ -1587,6 +1593,23 @@ export const grupoEmpresas = pgTable("grupo_empresas", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 export type GrupoEmpresa = typeof grupoEmpresas.$inferSelect;
+
+export const userCompanyAccess = pgTable("user_company_access", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  empresaId: integer("empresaId").notNull(),
+  roleCode: varchar("roleCode", { length: 50 }).notNull(),
+  canViewGroup: boolean("canViewGroup").default(false).notNull(),
+  isDefault: boolean("isDefault").default(false).notNull(),
+  ativo: boolean("ativo").default(true).notNull(),
+  createdBy: integer("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+  deletedBy: integer("deletedBy"),
+  deleteReason: text("deleteReason"),
+});
+export type UserCompanyAccess = typeof userCompanyAccess.$inferSelect;
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // MÓDULO: SESSÕES DE SEGURANÇA

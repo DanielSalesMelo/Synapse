@@ -336,9 +336,17 @@ app.get("/health", (_req, res) => res.status(200).send("OK"));
 app.get("/", (_req, res) => res.status(200).json({ status: "online", message: "Synapse API" }));
 app.use("/uploads", express.static(UPLOADS_DIR));
 
+const shouldRunInlineMigrations =
+  process.env.RUN_INLINE_MIGRATIONS === "true" ||
+  (process.env.NODE_ENV !== "production" && process.env.RUN_INLINE_MIGRATIONS !== "false");
+
 app.listen(port, () => {
   console.log(`[Server] Rodando na porta ${port}`);
-  runInlineMigrations()
-    .then(() => console.log("[Migration] ✅ Tabelas verificadas"))
-    .catch((err) => console.error("[Migration] ❌ Erro:", err));
+  if (shouldRunInlineMigrations) {
+    runInlineMigrations()
+      .then(() => console.log("[Migration] ✅ Tabelas verificadas"))
+      .catch((err) => console.error("[Migration] ❌ Erro:", err));
+  } else {
+    console.log("[Migration] Inline migrations desativadas neste ambiente.");
+  }
 });
