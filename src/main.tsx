@@ -78,7 +78,7 @@ const getBaseUrl = () => {
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
     if (host === "localhost" || host === "127.0.0.1") return "http://localhost:8080";
-    return import.meta.env.VITE_API_URL || "https://synapse-producion.up.railway.app";
+    return import.meta.env.VITE_API_URL || "https://synapse-backend.railway.app";
   }
   return "";
 };
