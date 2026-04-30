@@ -20,6 +20,12 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
+const AZURE_BACKEND_URL = "https://synapse-backend-ds2026.azurewebsites.net";
+const INVALID_BACKEND_HOSTS = [
+  "https://synapse-producion.up.railway.app",
+  "https://synapse-backend.railway.app",
+];
+
 // ─── Tipos ──────────────────────────────────────────────────────────────────
 type AttachmentPreview = {
   file: File;
@@ -333,8 +339,12 @@ export default function Chat() {
     const getApiBase = () => {
       if (typeof window === "undefined") return "";
       if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
-        return "http://localhost:3000";
-      return (import.meta.env.VITE_API_URL as string) || "https://synapse-backend.railway.app";
+        return "http://localhost:3001";
+      const configuredUrl = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "");
+      if (configuredUrl && !INVALID_BACKEND_HOSTS.includes(configuredUrl)) {
+        return configuredUrl;
+      }
+      return AZURE_BACKEND_URL;
     };
 
     if (currentAttachments.length > 0) {

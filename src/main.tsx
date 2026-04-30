@@ -25,6 +25,11 @@ import "./lib/i18n";
 const AUTH_TOKEN_KEY = "synapse-auth-token";
 const USER_INFO_KEY = "app-user-info";
 const UNAUTHED_ERR_MSG = 'Please login (10001)';
+const AZURE_BACKEND_URL = "https://synapse-backend-ds2026.azurewebsites.net";
+const INVALID_BACKEND_HOSTS = [
+  "https://synapse-producion.up.railway.app",
+  "https://synapse-backend.railway.app",
+];
 
 function getPersistedUser() {
   try {
@@ -77,8 +82,12 @@ queryClient.getQueryCache().subscribe(event => {
 const getBaseUrl = () => {
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
-    if (host === "localhost" || host === "127.0.0.1") return "http://localhost:8080";
-    return import.meta.env.VITE_API_URL || "https://synapse-backend.railway.app";
+    if (host === "localhost" || host === "127.0.0.1") return "http://localhost:3001";
+    const configuredUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, "");
+    if (configuredUrl && !INVALID_BACKEND_HOSTS.includes(configuredUrl)) {
+      return configuredUrl;
+    }
+    return AZURE_BACKEND_URL;
   }
   return "";
 };
