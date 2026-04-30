@@ -405,15 +405,23 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const { user } = useAuth();
   const empresaId = user?.empresaId ?? 0;
   const backendBaseUrl = getBackendBaseUrl();
+  const TAB_ALIASES: Record<string, string> = {
+    agente: "agentes",
+    agentes: "agentes",
+    dispositivo: "dispositivos",
+    dispositivos: "dispositivos",
+    chamado: "tickets",
+    chamados: "tickets",
+  };
 
   const [location, setLocation] = useLocation() as any;
   // Prioriza o parâmetro da rota (params.tab), depois tenta extrair da URL, fallback para dashboard
   const getInitialTab = () => {
-    if (params?.tab) return params.tab;
+    if (params?.tab) return TAB_ALIASES[params.tab] ?? params.tab;
     const parts = location.split("/");
     const tiIndex = parts.indexOf("ti");
     if (tiIndex !== -1 && parts[tiIndex + 1]) {
-      return parts[tiIndex + 1];
+      return TAB_ALIASES[parts[tiIndex + 1]] ?? parts[tiIndex + 1];
     }
     return "dashboard";
   };

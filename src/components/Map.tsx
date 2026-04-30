@@ -128,13 +128,15 @@ interface MapViewProps {
   initialCenter?: google.maps.LatLngLiteral;
   initialZoom?: number;
   onMapReady?: (map: google.maps.Map) => void;
+  onLoadError?: (error: Error) => void;
 }
 
 export function MapView({
   className,
-  initialCenter = { lat: 37.7749, lng: -122.4194 },
+  initialCenter = { lat: -15.793889, lng: -47.882778 },
   initialZoom = 12,
   onMapReady,
+  onLoadError,
 }: MapViewProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<google.maps.Map | null>(null);
@@ -144,6 +146,7 @@ export function MapView({
       await loadMapScript();
     } catch (error) {
       console.error(error);
+      onLoadError?.(error instanceof Error ? error : new Error("Falha ao carregar Google Maps"));
       return;
     }
     if (!mapContainer.current) {
@@ -157,7 +160,6 @@ export function MapView({
       fullscreenControl: true,
       zoomControl: true,
       streetViewControl: true,
-      mapId: "DEMO_MAP_ID",
     });
     if (onMapReady) {
       onMapReady(map.current);

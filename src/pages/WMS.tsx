@@ -20,30 +20,6 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-// ─── Mock data para demonstração ────────────────────────────────────────────
-const MOCK_ESTOQUE = [
-  { id: 1, codigo: "PRD-001", descricao: "Parafuso M8 Inox", categoria: "Fixadores", unidade: "UN", qtd: 4500, minimo: 500, localizacao: "A-01-01", lote: "L2025-04", validade: null, status: "ok" },
-  { id: 2, codigo: "PRD-002", descricao: "Óleo Motor 5W30 1L", categoria: "Lubrificantes", unidade: "LT", qtd: 48, minimo: 100, localizacao: "B-03-02", lote: "L2025-03", validade: "2027-01-01", status: "critico" },
-  { id: 3, codigo: "PRD-003", descricao: "Filtro de Ar Universal", categoria: "Filtros", unidade: "UN", qtd: 320, minimo: 50, localizacao: "C-02-04", lote: "L2025-02", validade: null, status: "ok" },
-  { id: 4, codigo: "PRD-004", descricao: "Pneu 295/80R22.5", categoria: "Pneus", unidade: "UN", qtd: 12, minimo: 20, localizacao: "D-01-01", lote: "L2025-01", validade: null, status: "alerta" },
-  { id: 5, codigo: "PRD-005", descricao: "Fluido de Freio DOT4", categoria: "Fluidos", unidade: "LT", qtd: 85, minimo: 30, localizacao: "B-04-01", lote: "L2025-04", validade: "2026-06-01", status: "ok" },
-];
-
-const MOCK_MOVIMENTACOES = [
-  { id: 1, tipo: "entrada", produto: "Parafuso M8 Inox", qtd: 1000, usuario: "João Silva", data: "2025-04-15 14:32", nf: "NF-001234", armazem: "Principal" },
-  { id: 2, tipo: "saida", produto: "Óleo Motor 5W30 1L", qtd: 12, usuario: "Maria Costa", data: "2025-04-15 11:20", nf: "REQ-0089", armazem: "Principal" },
-  { id: 3, tipo: "transferencia", produto: "Filtro de Ar Universal", qtd: 50, usuario: "Carlos Lima", data: "2025-04-14 16:45", nf: "TRF-0012", armazem: "Filial SP" },
-  { id: 4, tipo: "entrada", produto: "Pneu 295/80R22.5", qtd: 4, usuario: "Ana Souza", data: "2025-04-14 09:10", nf: "NF-001198", armazem: "Principal" },
-  { id: 5, tipo: "saida", produto: "Fluido de Freio DOT4", qtd: 5, usuario: "Pedro Alves", data: "2025-04-13 15:00", nf: "REQ-0088", armazem: "Principal" },
-];
-
-const MOCK_PICKING = [
-  { id: 1, pedido: "PED-2025-0841", cliente: "Transportes ABC", itens: 5, status: "pendente", prioridade: "alta", separador: null },
-  { id: 2, pedido: "PED-2025-0840", cliente: "Logística XYZ", itens: 3, status: "em_separacao", prioridade: "normal", separador: "João Silva" },
-  { id: 3, pedido: "PED-2025-0839", cliente: "Distribuidora Sul", itens: 8, status: "concluido", prioridade: "normal", separador: "Maria Costa" },
-  { id: 4, pedido: "PED-2025-0838", cliente: "Frota Nacional", itens: 2, status: "expedido", prioridade: "urgente", separador: "Carlos Lima" },
-];
-
 const STATUS_COLORS: Record<string, string> = {
   ok: "bg-green-100 text-green-700",
   alerta: "bg-yellow-100 text-yellow-700",
@@ -68,6 +44,19 @@ const PICK_PRIORIDADE: Record<string, string> = {
   alta: "bg-orange-100 text-orange-700",
   normal: "bg-gray-100 text-gray-600",
 };
+
+function EmptyTableRow({ colSpan, title, description }: { colSpan: number; title: string; description: string }) {
+  return (
+    <TableRow>
+      <TableCell colSpan={colSpan} className="py-10 text-center">
+        <div className="space-y-1 text-sm">
+          <p className="font-medium text-foreground">{title}</p>
+          <p className="text-muted-foreground">{description}</p>
+        </div>
+      </TableCell>
+    </TableRow>
+  );
+}
 
 export default function WMS() {
   const [location] = useLocation();
@@ -101,10 +90,21 @@ export default function WMS() {
     onError: (e) => toast.error(e.message),
   });
 
-  // Dados reais ou mock
-  const estoqueData = estoque.length > 0 ? estoque : MOCK_ESTOQUE;
-  const movData = (movimentacoes as any[]).length > 0 ? movimentacoes : MOCK_MOVIMENTACOES;
+  const estoqueData = estoque as any[];
+  const movData = movimentacoes as any[];
   const itensAbaixoMinimo = estoqueData.filter((i: any) => i.status === "critico" || i.status === "alerta" || (i.qtd !== undefined && i.estoqueMinimo !== undefined && i.qtd < i.estoqueMinimo)).length;
+  const movimentacoesHoje = movData.filter((m: any) => {
+    const data = m.data ?? m.createdAt;
+    if (!data) return false;
+    const date = new Date(data);
+    const now = new Date();
+    return (
+      date.getDate() === now.getDate() &&
+      date.getMonth() === now.getMonth() &&
+      date.getFullYear() === now.getFullYear()
+    );
+  }).length;
+  const pickingDisponivel = false;
 
   return (
     <TooltipProvider>
@@ -194,10 +194,10 @@ export default function WMS() {
           {[
             { label: "Itens em Estoque", value: estoqueData.length, icon: Package, color: "text-blue-600 bg-blue-50", trend: null },
             { label: "Abaixo do Mínimo", value: itensAbaixoMinimo, icon: AlertTriangle, color: itensAbaixoMinimo > 0 ? "text-red-600 bg-red-50" : "text-green-600 bg-green-50", trend: null },
-            { label: "Armazéns Ativos", value: armazens.length || 3, icon: Warehouse, color: "text-purple-600 bg-purple-50", trend: null },
-            { label: "Movimentações Hoje", value: 24, icon: ArrowLeftRight, color: "text-orange-600 bg-orange-50", trend: "+8%" },
-            { label: "Pedidos em Picking", value: MOCK_PICKING.filter(p => p.status === "em_separacao").length, icon: ScanLine, color: "text-cyan-600 bg-cyan-50", trend: null },
-            { label: "Acuracidade", value: "98.4%", icon: Target, color: "text-green-600 bg-green-50", trend: "+0.3%" },
+            { label: "Armazéns Ativos", value: armazens.length, icon: Warehouse, color: "text-purple-600 bg-purple-50", trend: null },
+            { label: "Movimentações Hoje", value: movimentacoesHoje, icon: ArrowLeftRight, color: "text-orange-600 bg-orange-50", trend: null },
+            { label: "Pedidos em Picking", value: pickingDisponivel ? 0 : "Em implantação", icon: ScanLine, color: "text-cyan-600 bg-cyan-50", trend: null },
+            { label: "Acuracidade", value: "Sem dados", icon: Target, color: "text-green-600 bg-green-50", trend: null },
           ].map((kpi, i) => (
             <Card key={i} className="hover:shadow-md transition-shadow">
               <CardContent className="p-4">
@@ -280,23 +280,19 @@ export default function WMS() {
                       </div>
                     </div>
                   ))}
+                  {movData.length === 0 && (
+                    <p className="text-sm text-muted-foreground py-2">Nenhuma movimentação registrada.</p>
+                  )}
                 </CardContent>
               </Card>
             </div>
             <Card>
               <CardHeader><CardTitle className="text-sm">Pedidos em Picking</CardTitle></CardHeader>
               <CardContent>
-                <div className="grid grid-cols-4 gap-3">
-                  {["pendente", "em_separacao", "concluido", "expedido"].map(status => {
-                    const count = MOCK_PICKING.filter(p => p.status === status).length;
-                    const labels: Record<string, string> = { pendente: "Pendentes", em_separacao: "Em Separação", concluido: "Concluídos", expedido: "Expedidos" };
-                    return (
-                      <div key={status} className="text-center p-3 rounded-lg bg-muted/50">
-                        <p className="text-2xl font-bold">{count}</p>
-                        <p className="text-xs text-muted-foreground mt-1">{labels[status]}</p>
-                      </div>
-                    );
-                  })}
+                <div className="rounded-lg border border-dashed p-6 text-center">
+                  <Badge variant="outline">Em implantação</Badge>
+                  <p className="mt-3 text-sm font-medium">O fluxo de picking ainda não está habilitado para uso real.</p>
+                  <p className="text-sm text-muted-foreground mt-1">Quando estiver persistido no banco, os pedidos aparecerão aqui.</p>
                 </div>
               </CardContent>
             </Card>
@@ -329,6 +325,13 @@ export default function WMS() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
+                  {estoqueData.length === 0 && (
+                    <EmptyTableRow
+                      colSpan={9}
+                      title="Nenhum item cadastrado."
+                      description="Cadastre o primeiro item ou importe o estoque para começar."
+                    />
+                  )}
                   {estoqueData.map((item: any) => {
                     const qtd = item.qtd ?? item.quantidade ?? 0;
                     const min = item.minimo ?? item.estoqueMinimo ?? 0;
@@ -388,7 +391,14 @@ export default function WMS() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {(produtos.length > 0 ? produtos : MOCK_ESTOQUE).map((p: any) => (
+                  {produtos.length === 0 && (
+                    <EmptyTableRow
+                      colSpan={6}
+                      title="Nenhum produto cadastrado."
+                      description="Cadastre o primeiro produto para montar o estoque."
+                    />
+                  )}
+                  {produtos.map((p: any) => (
                     <TableRow key={p.id}>
                       <TableCell className="font-mono text-xs">{p.codigo}</TableCell>
                       <TableCell className="font-medium">{p.descricao}</TableCell>
@@ -419,6 +429,13 @@ export default function WMS() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
+                  {movData.length === 0 && (
+                    <EmptyTableRow
+                      colSpan={7}
+                      title="Nenhuma movimentação registrada."
+                      description="As entradas, saídas e transferências aparecerão aqui."
+                    />
+                  )}
                   {(movData as any[]).map((m: any, i: number) => (
                     <TableRow key={i}>
                       <TableCell><Badge className={`text-xs ${MOV_COLORS[m.tipo] ?? "bg-gray-100 text-gray-600"}`}>{m.tipo}</Badge></TableCell>
@@ -439,51 +456,14 @@ export default function WMS() {
           <TabsContent value="picking" className="space-y-4 mt-4">
             <div className="flex justify-between items-center">
               <p className="text-sm text-muted-foreground">Separação de pedidos por ordem de prioridade.</p>
-              <Button size="sm"><Plus className="h-4 w-4 mr-2" />Nova Ordem</Button>
+              <Badge variant="outline">Em implantação</Badge>
             </div>
             <Card>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Pedido</TableHead>
-                    <TableHead>Cliente</TableHead>
-                    <TableHead>Itens</TableHead>
-                    <TableHead>Prioridade</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Separador</TableHead>
-                    <TableHead>Ações</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {MOCK_PICKING.map(p => (
-                    <TableRow key={p.id}>
-                      <TableCell className="font-mono text-xs font-bold">{p.pedido}</TableCell>
-                      <TableCell className="font-medium">{p.cliente}</TableCell>
-                      <TableCell>{p.itens} itens</TableCell>
-                      <TableCell><Badge className={`text-xs ${PICK_PRIORIDADE[p.prioridade]}`}>{p.prioridade}</Badge></TableCell>
-                      <TableCell><Badge className={`text-xs ${PICK_STATUS[p.status]}`}>{p.status.replace("_", " ")}</Badge></TableCell>
-                      <TableCell className="text-sm">{p.separador ?? <span className="text-muted-foreground">—</span>}</TableCell>
-                      <TableCell>
-                        {p.status === "pendente" && (
-                          <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => toast.success(`Picking iniciado para ${p.pedido}`)}>
-                            <ScanLine className="h-3 w-3 mr-1" />Iniciar
-                          </Button>
-                        )}
-                        {p.status === "em_separacao" && (
-                          <Button size="sm" className="h-7 text-xs" onClick={() => toast.success(`Picking concluído para ${p.pedido}`)}>
-                            <CheckSquare className="h-3 w-3 mr-1" />Concluir
-                          </Button>
-                        )}
-                        {(p.status === "concluido" || p.status === "expedido") && (
-                          <Button size="sm" variant="ghost" className="h-7 text-xs">
-                            <Eye className="h-3 w-3 mr-1" />Ver
-                          </Button>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <CardContent className="py-10 text-center">
+                <ClipboardList className="h-12 w-12 mx-auto mb-3 opacity-30 text-muted-foreground" />
+                <p className="font-medium">Módulo de picking em implantação.</p>
+                <p className="text-sm text-muted-foreground mt-1">Ele será liberado quando o fluxo estiver persistido e integrado ao estoque real.</p>
+              </CardContent>
             </Card>
           </TabsContent>
 
@@ -499,7 +479,6 @@ export default function WMS() {
                   <ClipboardList className="h-12 w-12 mx-auto mb-3 opacity-30" />
                   <p className="font-medium">Nenhum inventário em andamento</p>
                   <p className="text-sm mt-1">Crie um novo inventário para iniciar a contagem cíclica ou geral.</p>
-                  <Button className="mt-4" size="sm"><Plus className="h-4 w-4 mr-2" />Iniciar Inventário</Button>
                 </div>
               </CardContent>
             </Card>
@@ -507,45 +486,11 @@ export default function WMS() {
 
           {/* ── ACURACIDADE ── */}
           <TabsContent value="acuracidade" className="space-y-4 mt-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card>
-                <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Target className="h-4 w-4" />Acuracidade Geral</CardTitle></CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-green-600">98.4%</div>
-                  <Progress value={98.4} className="mt-2 h-2 [&>div]:bg-green-500" />
-                  <p className="text-xs text-muted-foreground mt-1">Meta: 99% | +0.3% vs. mês anterior</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Box className="h-4 w-4" />Divergências no Mês</CardTitle></CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-yellow-600">7</div>
-                  <p className="text-xs text-muted-foreground mt-2">Itens com divergência entre físico e sistema</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Zap className="h-4 w-4" />Giro de Estoque</CardTitle></CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold">4.2x</div>
-                  <p className="text-xs text-muted-foreground mt-2">Rotatividade média mensal</p>
-                </CardContent>
-              </Card>
-            </div>
             <Card>
-              <CardHeader><CardTitle className="text-sm">Histórico de Acuracidade</CardTitle></CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {["Abril/2025", "Março/2025", "Fevereiro/2025", "Janeiro/2025"].map((mes, i) => {
-                    const vals = [98.4, 98.1, 97.8, 97.5];
-                    return (
-                      <div key={mes} className="flex items-center gap-3">
-                        <span className="text-sm w-28 shrink-0">{mes}</span>
-                        <Progress value={vals[i]} className="flex-1 h-2" />
-                        <span className="text-sm font-bold w-14 text-right">{vals[i]}%</span>
-                      </div>
-                    );
-                  })}
-                </div>
+              <CardContent className="py-10 text-center">
+                <Target className="h-12 w-12 mx-auto mb-3 opacity-30 text-muted-foreground" />
+                <p className="font-medium">Sem dados suficientes para gerar gráfico.</p>
+                <p className="text-sm text-muted-foreground mt-1">A acuracidade será exibida quando houver inventários concluídos e divergências registradas.</p>
               </CardContent>
             </Card>
           </TabsContent>

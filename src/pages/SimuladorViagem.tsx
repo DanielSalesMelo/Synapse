@@ -74,6 +74,7 @@ export default function SimuladorViagem() {
   const [valorFrete, setValorFrete] = useState("");
   
   const [mapReady, setMapReady] = useState(false);
+  const [mapError, setMapError] = useState<string | null>(null);
 
   // Data from TRPC
   const { data: veiculos = [] } = trpc.veiculos.list.useQuery({ empresaId: EMPRESA_ID });
@@ -93,6 +94,7 @@ export default function SimuladorViagem() {
     mapRef.current = map;
     directionsServiceRef.current = new google.maps.DirectionsService();
     setMapReady(true);
+    setMapError(null);
   }, []);
 
   // Setup autocomplete
@@ -213,7 +215,6 @@ export default function SimuladorViagem() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] flex flex-col">
-      {/* Sidebar Mock - Representada pelo layout do Dashboard mas focando no conteúdo */}
       <div className="p-6 space-y-6 max-w-[1600px] mx-auto w-full">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -227,9 +228,9 @@ export default function SimuladorViagem() {
             <Button variant="outline" onClick={limpar} className="bg-white border-gray-200 text-gray-600 hover:bg-gray-50">
               <RotateCcw className="w-4 h-4 mr-2" /> Reiniciar
             </Button>
-            <Button variant="outline" className="bg-white border-gray-200 text-gray-600 hover:bg-gray-50">
-              <History className="w-4 h-4 mr-2" /> Histórico
-            </Button>
+            <Badge variant="outline" className="bg-white border-gray-200 text-gray-600 px-3">
+              <History className="w-4 h-4 mr-2" /> Histórico em implantação
+            </Badge>
           </div>
         </div>
 
@@ -336,7 +337,7 @@ export default function SimuladorViagem() {
                       type="number" 
                       value={pedagioManual} 
                       onChange={e => setPedagioManual(e.target.value)}
-                      placeholder="Mock API real"
+                      placeholder="Informe manualmente"
                       className="border-gray-200"
                     />
                   </div>
@@ -399,8 +400,25 @@ export default function SimuladorViagem() {
 
             <Card className="overflow-hidden border-gray-200 shadow-md">
               <div className="relative h-[450px] bg-gray-100">
-                <MapView onMapReady={handleMapReady} className="h-full w-full" />
-                {!rotas.length && (
+                <MapView
+                  onMapReady={handleMapReady}
+                  onLoadError={(error) => {
+                    setMapError(error.message);
+                    setMapReady(false);
+                  }}
+                  className="h-full w-full"
+                />
+                {mapError ? (
+                  <div className="absolute inset-0 flex items-center justify-center bg-gray-900/10 backdrop-blur-[2px] z-10 p-6">
+                    <div className="bg-white p-5 rounded-xl shadow-xl max-w-lg text-center space-y-2">
+                      <AlertTriangle className="w-6 h-6 text-amber-600 mx-auto" />
+                      <p className="text-gray-900 font-semibold">Serviço de mapas não disponível</p>
+                      <p className="text-sm text-gray-600">
+                        {mapError}. Você ainda pode preencher os custos manualmente sem quebrar a tela.
+                      </p>
+                    </div>
+                  </div>
+                ) : !rotas.length && (
                   <div className="absolute inset-0 flex items-center justify-center bg-gray-900/10 backdrop-blur-[2px] z-10">
                     <div className="bg-white p-4 rounded-xl shadow-xl flex items-center gap-3">
                       <Info className="w-5 h-5 text-blue-600" />
