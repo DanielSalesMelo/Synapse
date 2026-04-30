@@ -22,7 +22,7 @@ import { useViewAs } from "@/contexts/ViewAsContext";
 import { useEffect } from "react";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
-type Aba = "visao-geral" | "empresas" | "licencas" | "cobrancas" | "planos" | "config";
+type Aba = "workspace" | "visao-geral" | "empresas" | "licencas" | "cobrancas" | "planos" | "config";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 const PLANO_CORES: Record<string, string> = {
@@ -444,7 +444,7 @@ export default function PainelMaster() {
   const { user, loading } = useAuth();
   const { enterAdminView } = useViewAs();
   const [, navigate] = useLocation();
-  const [abaAtiva, setAbaAtiva] = useState<Aba>("visao-geral");
+  const [abaAtiva, setAbaAtiva] = useState<Aba>("workspace");
   const [modalLicenca, setModalLicenca] = useState(false);
   const [modalCobranca, setModalCobranca] = useState(false);
   const [modalEmpresa, setModalEmpresa] = useState(false);
@@ -466,6 +466,18 @@ export default function PainelMaster() {
     trpc.licenciamento.listarPlanos.useQuery(undefined, { enabled: isMaster });
   const { data: dashboard } =
     trpc.licenciamento.dashboardLicencas.useQuery(undefined, { enabled: isMaster });
+  const { data: masterDashboard, refetch: refetchMasterDashboard } =
+    trpc.master.dashboard.useQuery(undefined, { enabled: isMaster });
+  const { data: masterClients = [], refetch: refetchMasterClients } =
+    trpc.master.listClients.useQuery(undefined, { enabled: isMaster });
+  const { data: masterTasks = [], refetch: refetchMasterTasks } =
+    trpc.master.listTasks.useQuery(undefined, { enabled: isMaster });
+  const { data: masterFinancial = [], refetch: refetchMasterFinancial } =
+    trpc.master.listFinancial.useQuery(undefined, { enabled: isMaster });
+  const { data: masterEvents = [], refetch: refetchMasterEvents } =
+    trpc.master.listEvents.useQuery(undefined, { enabled: isMaster });
+  const { data: masterReminders = [], refetch: refetchMasterReminders } =
+    trpc.master.listReminders.useQuery(undefined, { enabled: isMaster });
 
   const criarEmpresaMut = trpc.empresas.criar.useMutation({
         onSuccess: (d) => { toast.success(d.mensagem || "Empresa criada!"); setModalEmpresa(false); setFormEmpresa({ nome: "", cnpj: "", email: "", telefone: "", cidade: "", estado: "", tipoEmpresa: "independente", matrizId: "", grupoId: "" }); refetchEmpresas(); },
@@ -491,8 +503,61 @@ export default function PainelMaster() {
     onSuccess: (d) => { toast.success(d.mensagem); },
     onError: (e) => toast.error(e.message),
   });
+  const createMasterClientMut = trpc.master.createClient.useMutation({
+    onSuccess: () => {
+      toast.success("Cliente salvo na Central do Daniel.");
+      setFormClienteMaster({ nome: "", empresa: "", contato: "", whatsapp: "", email: "", servicos: "", valorMensal: "", status: "lead", proximaAcao: "", observacoes: "" });
+      refetchMasterClients(); refetchMasterDashboard();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterTaskMut = trpc.master.createTask.useMutation({
+    onSuccess: () => {
+      toast.success("Tarefa criada.");
+      setFormTaskMaster({ titulo: "", descricao: "", area: "synapse", prioridade: "alta", periodo: "manha", dataLimite: "", clientId: "" });
+      refetchMasterTasks(); refetchMasterDashboard();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const updateMasterTaskStatusMut = trpc.master.updateTaskStatus.useMutation({
+    onSuccess: () => { refetchMasterTasks(); refetchMasterDashboard(); },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterFinancialMut = trpc.master.createFinancial.useMutation({
+    onSuccess: () => {
+      toast.success("Lançamento salvo.");
+      setFormFinanceMaster({ tipo: "receita", descricao: "", valor: "", categoria: "", status: "pendente", vencimento: "", clientId: "", observacoes: "" });
+      refetchMasterFinancial(); refetchMasterDashboard();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const markMasterFinancialPaidMut = trpc.master.markFinancialPaid.useMutation({
+    onSuccess: () => { refetchMasterFinancial(); refetchMasterDashboard(); },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterEventMut = trpc.master.createEvent.useMutation({
+    onSuccess: () => {
+      toast.success("Compromisso salvo.");
+      setFormEventMaster({ titulo: "", area: "vida", inicio: "", fim: "", local: "", clientId: "" });
+      refetchMasterEvents(); refetchMasterDashboard();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterReminderMut = trpc.master.createReminder.useMutation({
+    onSuccess: () => {
+      toast.success("Lembrete criado.");
+      setFormReminderMaster({ titulo: "", lembrarEm: "", descricao: "" });
+      refetchMasterReminders(); refetchMasterDashboard();
+    },
+    onError: (e) => toast.error(e.message),
+  });
 
   const [formEmpresa, setFormEmpresa] = useState({ nome: "", cnpj: "", email: "", telefone: "", cidade: "", estado: "", tipoEmpresa: "independente" as any, matrizId: "", grupoId: "" });
+  const [formClienteMaster, setFormClienteMaster] = useState({ nome: "", empresa: "", contato: "", whatsapp: "", email: "", servicos: "", valorMensal: "", status: "lead", proximaAcao: "", observacoes: "" });
+  const [formTaskMaster, setFormTaskMaster] = useState({ titulo: "", descricao: "", area: "synapse", prioridade: "alta", periodo: "manha", dataLimite: "", clientId: "" });
+  const [formFinanceMaster, setFormFinanceMaster] = useState({ tipo: "receita", descricao: "", valor: "", categoria: "", status: "pendente", vencimento: "", clientId: "", observacoes: "" });
+  const [formEventMaster, setFormEventMaster] = useState({ titulo: "", area: "vida", inicio: "", fim: "", local: "", clientId: "" });
+  const [formReminderMaster, setFormReminderMaster] = useState({ titulo: "", lembrarEm: "", descricao: "" });
 
   useEffect(() => {
     if (!loading && user && (user as any).role !== "master_admin") navigate("/dashboard");
@@ -523,6 +588,7 @@ export default function PainelMaster() {
       {/* Abas */}
       <div className="flex gap-0 border-b flex-wrap">
         {([
+          { key: "workspace",   label: "Central do Daniel", icon: <Crown className="w-4 h-4" /> },
           { key: "visao-geral", label: "Visão Geral",   icon: <Activity className="w-4 h-4" /> },
           { key: "empresas",    label: "Empresas",      icon: <Building2 className="w-4 h-4" /> },
           { key: "licencas",    label: "Licenças",      icon: <Package className="w-4 h-4" /> },
@@ -539,6 +605,354 @@ export default function PainelMaster() {
           </button>
         ))}
       </div>
+
+      {/* ═══ CENTRAL DO DANIEL ════════════════════════════════════════════════ */}
+      {abaAtiva === "workspace" && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { label: "Foco do dia", value: String((masterDashboard as any)?.focoHoje?.length ?? 0), sub: "tarefas prioritárias", cor: "text-blue-600", bg: "border-blue-200 bg-blue-50/30", icon: <Check className="w-9 h-9 text-blue-200" /> },
+              { label: "A receber", value: fmtMoeda((masterDashboard as any)?.stats?.financeiro?.receberpendente ?? 0), sub: `${(masterDashboard as any)?.stats?.financeiro?.atrasados ?? 0} atrasados`, cor: "text-green-600", bg: "border-green-200 bg-green-50/30", icon: <DollarSign className="w-9 h-9 text-green-200" /> },
+              { label: "Clientes", value: String((masterDashboard as any)?.stats?.clientes?.ativos ?? 0), sub: `${(masterDashboard as any)?.stats?.clientes?.leads ?? 0} leads`, cor: "text-purple-600", bg: "border-purple-200 bg-purple-50/30", icon: <Users className="w-9 h-9 text-purple-200" /> },
+              { label: "Agenda", value: String((masterDashboard as any)?.agenda?.length ?? 0), sub: `${(masterDashboard as any)?.stats?.lembretes?.hoje ?? 0} lembretes hoje`, cor: "text-orange-600", bg: "border-orange-200 bg-orange-50/30", icon: <Calendar className="w-9 h-9 text-orange-200" /> },
+            ].map((k, i) => (
+              <Card key={i} className={k.bg}>
+                <CardContent className="pt-4 pb-3">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="text-xs text-muted-foreground uppercase tracking-wide">{k.label}</p>
+                      <p className={`text-2xl font-bold mt-1 ${k.cor}`}>{k.value}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{k.sub}</p>
+                    </div>
+                    {k.icon}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <Card className="xl:col-span-2">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">O que fazer agora</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {!(masterDashboard as any)?.focoHoje?.length ? (
+                  <p className="text-sm text-muted-foreground">Nenhuma tarefa priorizada ainda. Cadastre a primeira tarefa abaixo.</p>
+                ) : (
+                  (masterDashboard as any).focoHoje.map((task: any) => (
+                    <div key={task.id} className="flex items-start justify-between gap-3 rounded-xl border p-3">
+                      <div>
+                        <p className="font-medium">{task.titulo}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {task.area} · {task.prioridade} · {task.periodo}
+                          {task.dataLimite ? ` · prazo ${fmtData(task.dataLimite)}` : ""}
+                        </p>
+                        {task.descricao && <p className="text-sm text-muted-foreground mt-2">{task.descricao}</p>}
+                      </div>
+                      <Button
+                        size="sm"
+                        variant={task.status === "concluida" ? "outline" : "default"}
+                        onClick={() => updateMasterTaskStatusMut.mutate({ id: task.id, status: task.status === "concluida" ? "a_fazer" : "concluida" })}
+                      >
+                        {task.status === "concluida" ? "Reabrir" : "Concluir"}
+                      </Button>
+                    </div>
+                  ))
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Agenda e lembretes</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {!(masterDashboard as any)?.agenda?.length && !(masterReminders as any[])?.length ? (
+                  <p className="text-sm text-muted-foreground">Nenhum compromisso ou lembrete cadastrado.</p>
+                ) : (
+                  <>
+                    {((masterDashboard as any)?.agenda ?? []).map((event: any) => (
+                      <div key={`event-${event.id}`} className="rounded-lg bg-muted/40 p-3">
+                        <p className="font-medium text-sm">{event.titulo}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{fmtData(event.inicio)} {new Date(event.inicio).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</p>
+                        {event.local && <p className="text-xs text-muted-foreground">{event.local}</p>}
+                      </div>
+                    ))}
+                    {(masterReminders as any[]).slice(0, 4).map((reminder: any) => (
+                      <div key={`reminder-${reminder.id}`} className="rounded-lg border p-3">
+                        <p className="font-medium text-sm">{reminder.titulo}</p>
+                        <p className="text-xs text-muted-foreground mt-1">Lembrar em {fmtData(reminder.lembrarEm)}</p>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Cadastro rápido de cliente</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><Label>Nome *</Label><Input value={formClienteMaster.nome} onChange={e => setFormClienteMaster(f => ({ ...f, nome: e.target.value }))} /></div>
+                  <div><Label>Empresa</Label><Input value={formClienteMaster.empresa} onChange={e => setFormClienteMaster(f => ({ ...f, empresa: e.target.value }))} /></div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><Label>Contato</Label><Input value={formClienteMaster.contato} onChange={e => setFormClienteMaster(f => ({ ...f, contato: e.target.value }))} /></div>
+                  <div><Label>WhatsApp</Label><Input value={formClienteMaster.whatsapp} onChange={e => setFormClienteMaster(f => ({ ...f, whatsapp: e.target.value }))} /></div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="md:col-span-2"><Label>E-mail</Label><Input type="email" value={formClienteMaster.email} onChange={e => setFormClienteMaster(f => ({ ...f, email: e.target.value }))} /></div>
+                  <div><Label>Valor mensal</Label><Input placeholder="0.00" value={formClienteMaster.valorMensal} onChange={e => setFormClienteMaster(f => ({ ...f, valorMensal: e.target.value }))} /></div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><Label>Serviços</Label><Input placeholder="Tráfego, landing page..." value={formClienteMaster.servicos} onChange={e => setFormClienteMaster(f => ({ ...f, servicos: e.target.value }))} /></div>
+                  <div>
+                    <Label>Status</Label>
+                    <Select value={formClienteMaster.status} onValueChange={v => setFormClienteMaster(f => ({ ...f, status: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="lead">Lead</SelectItem>
+                        <SelectItem value="proposta_enviada">Proposta enviada</SelectItem>
+                        <SelectItem value="ativo">Ativo</SelectItem>
+                        <SelectItem value="pausado">Pausado</SelectItem>
+                        <SelectItem value="saindo">Saindo</SelectItem>
+                        <SelectItem value="encerrado">Encerrado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div><Label>Próxima ação</Label><Input placeholder="Cobrar proposta, revisar campanha..." value={formClienteMaster.proximaAcao} onChange={e => setFormClienteMaster(f => ({ ...f, proximaAcao: e.target.value }))} /></div>
+                <div><Label>Observações</Label><Textarea rows={3} value={formClienteMaster.observacoes} onChange={e => setFormClienteMaster(f => ({ ...f, observacoes: e.target.value }))} /></div>
+                <div className="flex justify-end">
+                  <Button onClick={() => createMasterClientMut.mutate(formClienteMaster as any)} disabled={createMasterClientMut.isPending}>
+                    {createMasterClientMut.isPending ? "Salvando..." : "Salvar cliente"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Tarefa rápida</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div><Label>Título *</Label><Input value={formTaskMaster.titulo} onChange={e => setFormTaskMaster(f => ({ ...f, titulo: e.target.value }))} /></div>
+                <div><Label>Descrição</Label><Textarea rows={3} value={formTaskMaster.descricao} onChange={e => setFormTaskMaster(f => ({ ...f, descricao: e.target.value }))} /></div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div>
+                    <Label>Área</Label>
+                    <Select value={formTaskMaster.area} onValueChange={v => setFormTaskMaster(f => ({ ...f, area: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="vida">Vida</SelectItem>
+                        <SelectItem value="clientes">Clientes</SelectItem>
+                        <SelectItem value="synapse">Synapse</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Prioridade</Label>
+                    <Select value={formTaskMaster.prioridade} onValueChange={v => setFormTaskMaster(f => ({ ...f, prioridade: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="alta">Alta</SelectItem>
+                        <SelectItem value="media">Média</SelectItem>
+                        <SelectItem value="baixa">Baixa</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Período</Label>
+                    <Select value={formTaskMaster.periodo} onValueChange={v => setFormTaskMaster(f => ({ ...f, periodo: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="manha">Manhã</SelectItem>
+                        <SelectItem value="tarde">Tarde</SelectItem>
+                        <SelectItem value="noite">Noite</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div><Label>Prazo</Label><Input type="date" value={formTaskMaster.dataLimite} onChange={e => setFormTaskMaster(f => ({ ...f, dataLimite: e.target.value }))} /></div>
+                </div>
+                <div>
+                  <Label>Cliente vinculado</Label>
+                  <Select value={formTaskMaster.clientId || "none"} onValueChange={v => setFormTaskMaster(f => ({ ...f, clientId: v === "none" ? "" : v }))}>
+                    <SelectTrigger><SelectValue placeholder="Opcional" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Nenhum</SelectItem>
+                      {(masterClients as any[]).map((client: any) => <SelectItem key={client.id} value={String(client.id)}>{client.nome}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex justify-end">
+                  <Button onClick={() => createMasterTaskMut.mutate({ ...formTaskMaster, clientId: formTaskMaster.clientId ? Number(formTaskMaster.clientId) : undefined } as any)} disabled={createMasterTaskMut.isPending}>
+                    {createMasterTaskMut.isPending ? "Criando..." : "Criar tarefa"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <Card className="xl:col-span-2">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Financeiro do Daniel</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  <div>
+                    <Label>Tipo</Label>
+                    <Select value={formFinanceMaster.tipo} onValueChange={v => setFormFinanceMaster(f => ({ ...f, tipo: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="receita">Receita</SelectItem>
+                        <SelectItem value="despesa">Despesa</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="md:col-span-2"><Label>Descrição *</Label><Input value={formFinanceMaster.descricao} onChange={e => setFormFinanceMaster(f => ({ ...f, descricao: e.target.value }))} /></div>
+                  <div><Label>Valor *</Label><Input placeholder="0.00" value={formFinanceMaster.valor} onChange={e => setFormFinanceMaster(f => ({ ...f, valor: e.target.value }))} /></div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  <div><Label>Categoria</Label><Input value={formFinanceMaster.categoria} onChange={e => setFormFinanceMaster(f => ({ ...f, categoria: e.target.value }))} /></div>
+                  <div><Label>Vencimento</Label><Input type="date" value={formFinanceMaster.vencimento} onChange={e => setFormFinanceMaster(f => ({ ...f, vencimento: e.target.value }))} /></div>
+                  <div>
+                    <Label>Status</Label>
+                    <Select value={formFinanceMaster.status} onValueChange={v => setFormFinanceMaster(f => ({ ...f, status: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pendente">Pendente</SelectItem>
+                        <SelectItem value="pago">Pago</SelectItem>
+                        <SelectItem value="atrasado">Atrasado</SelectItem>
+                        <SelectItem value="cancelado">Cancelado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Cliente</Label>
+                    <Select value={formFinanceMaster.clientId || "none"} onValueChange={v => setFormFinanceMaster(f => ({ ...f, clientId: v === "none" ? "" : v }))}>
+                      <SelectTrigger><SelectValue placeholder="Opcional" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Nenhum</SelectItem>
+                        {(masterClients as any[]).map((client: any) => <SelectItem key={client.id} value={String(client.id)}>{client.nome}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="flex justify-end">
+                  <Button onClick={() => createMasterFinancialMut.mutate({ ...formFinanceMaster, clientId: formFinanceMaster.clientId ? Number(formFinanceMaster.clientId) : undefined } as any)} disabled={createMasterFinancialMut.isPending}>
+                    {createMasterFinancialMut.isPending ? "Salvando..." : "Salvar lançamento"}
+                  </Button>
+                </div>
+
+                <div className="space-y-2 pt-3">
+                  {(masterDashboard as any)?.recebimentos?.length ? (
+                    (masterDashboard as any).recebimentos.map((item: any) => (
+                      <div key={item.id} className="flex items-center justify-between rounded-lg border p-3">
+                        <div>
+                          <p className="font-medium text-sm">{item.descricao}</p>
+                          <p className="text-xs text-muted-foreground">{item.clienteNome ?? "Sem cliente"} · vence {fmtData(item.vencimento)}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold">{fmtMoeda(item.valor)}</span>
+                          <Button size="sm" variant="outline" onClick={() => markMasterFinancialPaidMut.mutate({ id: item.id, status: "pago" })}>Marcar pago</Button>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-muted-foreground">Nenhum recebimento ou pagamento pendente.</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Agenda rápida</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div><Label>Título *</Label><Input value={formEventMaster.titulo} onChange={e => setFormEventMaster(f => ({ ...f, titulo: e.target.value }))} /></div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label>Área</Label>
+                    <Select value={formEventMaster.area} onValueChange={v => setFormEventMaster(f => ({ ...f, area: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="vida">Vida</SelectItem>
+                        <SelectItem value="clientes">Clientes</SelectItem>
+                        <SelectItem value="synapse">Synapse</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div><Label>Local</Label><Input value={formEventMaster.local} onChange={e => setFormEventMaster(f => ({ ...f, local: e.target.value }))} /></div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div><Label>Início *</Label><Input type="datetime-local" value={formEventMaster.inicio} onChange={e => setFormEventMaster(f => ({ ...f, inicio: e.target.value }))} /></div>
+                  <div><Label>Fim</Label><Input type="datetime-local" value={formEventMaster.fim} onChange={e => setFormEventMaster(f => ({ ...f, fim: e.target.value }))} /></div>
+                </div>
+                <div><Label>Lembrete rápido</Label><Input type="datetime-local" value={formReminderMaster.lembrarEm} onChange={e => setFormReminderMaster(f => ({ ...f, lembrarEm: e.target.value }))} /></div>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button variant="outline" onClick={() => createMasterReminderMut.mutate(formReminderMaster)} disabled={createMasterReminderMut.isPending}>
+                    {createMasterReminderMut.isPending ? "Salvando..." : "Criar lembrete"}
+                  </Button>
+                  <Button onClick={() => createMasterEventMut.mutate({ ...formEventMaster, clientId: formEventMaster.clientId ? Number(formEventMaster.clientId) : undefined } as any)} disabled={createMasterEventMut.isPending}>
+                    {createMasterEventMut.isPending ? "Salvando..." : "Salvar agenda"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Clientes críticos e follow-up</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {!(masterDashboard as any)?.clientesCriticos?.length ? (
+                  <p className="text-sm text-muted-foreground">Nenhum cliente cadastrado ainda.</p>
+                ) : (
+                  (masterDashboard as any).clientesCriticos.map((client: any) => (
+                    <div key={client.id} className="rounded-lg border p-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <p className="font-medium">{client.nome}</p>
+                          <p className="text-xs text-muted-foreground">{client.empresa ?? "Sem empresa"} · {client.status}</p>
+                        </div>
+                        {client.valorMensal && <span className="font-semibold">{fmtMoeda(client.valorMensal)}</span>}
+                      </div>
+                      {client.proximaAcao && <p className="text-sm text-muted-foreground mt-2">{client.proximaAcao}</p>}
+                    </div>
+                  ))
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Notas recentes do Daniel</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {!(masterDashboard as any)?.notasRecentes?.length ? (
+                  <p className="text-sm text-muted-foreground">Nenhuma nota recente.</p>
+                ) : (
+                  (masterDashboard as any).notasRecentes.map((note: any) => (
+                    <div key={note.id} className="rounded-lg bg-muted/40 p-3">
+                      <p className="font-medium text-sm">{note.titulo}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{note.pasta ?? "Geral"} · atualizada em {fmtData(note.updatedAt)}</p>
+                    </div>
+                  ))
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      )}
 
       {/* ═══ VISÃO GERAL ═══════════════════════════════════════════════════════ */}
       {abaAtiva === "visao-geral" && (

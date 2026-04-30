@@ -83,6 +83,7 @@
     "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.17",
     "postcss": "^8.4.35",
+    "prisma": "^7.8.0",
     "tailwindcss": "^4.2.2",
     "typescript": "^5.3.3",
     "vite": "^5.4.21",
