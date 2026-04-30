@@ -1,137 +1,67 @@
 #!/bin/bash
-# Instalador do Agente de Monitoramento Synapse - Linux
-
 set -e
 
-CYAN='\033[0;36m'
-GREEN='\033[0;32m'
-RED='\033[0;31m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
-
-echo ""
-echo -e "${CYAN}====================================================="
-echo "  SYNAPSE - Agente de Monitoramento - Linux"
-echo -e "=====================================================${NC}"
-echo ""
-
-# Verifica root
-if [ "$EUID" -ne 0 ]; then
-    echo -e "${YELLOW}[AVISO] Execute como root para instalação completa (sudo bash install_linux.sh)${NC}"
-fi
-
-# Verifica Python
-if ! command -v python3 &> /dev/null; then
-    echo -e "${YELLOW}Python3 não encontrado. Instalando...${NC}"
-    if command -v apt-get &> /dev/null; then
-        apt-get update -qq && apt-get install -y python3 python3-pip
-    elif command -v yum &> /dev/null; then
-        yum install -y python3 python3-pip
-    elif command -v dnf &> /dev/null; then
-        dnf install -y python3 python3-pip
-    else
-        echo -e "${RED}[ERRO] Gerenciador de pacotes não reconhecido. Instale Python3 manualmente.${NC}"
-        exit 1
-    fi
-fi
-echo -e "${GREEN}[OK] Python3 encontrado: $(python3 --version)${NC}"
-
-# Instala dependências
-echo "Instalando dependências (psutil, requests)..."
-pip3 install psutil requests --quiet 2>/dev/null || python3 -m pip install psutil requests --quiet
-echo -e "${GREEN}[OK] Dependências instaladas.${NC}"
-echo ""
-
-# Pergunta o código de pareamento
-read -p "Digite o código de pareamento gerado no Synapse (ex: SYNC-XXXX-XXXX): " PAIR_CODE
-if [ -z "$PAIR_CODE" ]; then
-    echo -e "${RED}[ERRO] Código de pareamento não pode ser vazio.${NC}"
-    exit 1
-fi
-
-# Pergunta a URL do servidor
-read -p "URL do servidor Synapse (ex: https://seu-servidor.com): " SERVER_URL
-if [ -z "$SERVER_URL" ]; then
-    echo -e "${RED}[ERRO] URL do servidor não pode ser vazia.${NC}"
-    exit 1
-fi
-
-# Cria pasta de instalação
+DEFAULT_SERVER="https://synapse-backend-ds2026.azurewebsites.net"
 INSTALL_DIR="/opt/synapse-agent"
-mkdir -p "$INSTALL_DIR"
 
-# Copia o agente
-echo "Copiando arquivos..."
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cp "$SCRIPT_DIR/synapse_agent.py" "$INSTALL_DIR/synapse_agent.py"
-chmod +x "$INSTALL_DIR/synapse_agent.py"
+echo ""
+echo "====================================================="
+echo " SYNAPSE - Instalador do Agente"
+echo "====================================================="
+echo ""
 
-# Cria arquivo de configuração
-cat > "$INSTALL_DIR/synapse_agent.conf" << EOF
-SERVER_URL=$SERVER_URL
-PAIR_CODE=$PAIR_CODE
-EOF
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "[ERRO] Python3 nao encontrado. Instale python3 e pip antes de continuar."
+  exit 1
+fi
 
-echo -e "${GREEN}[OK] Arquivos copiados para $INSTALL_DIR${NC}"
+python3 -m pip install --quiet psutil requests || pip3 install --quiet psutil requests
 
-# Cria serviço systemd (se disponível)
-if command -v systemctl &> /dev/null && [ "$EUID" -eq 0 ]; then
-    echo "Criando serviço systemd..."
-    cat > /etc/systemd/system/synapse-agent.service << EOF
+read -r -p "Digite o codigo de pareamento (SYNC-XXXX-XXXX): " PAIR_CODE
+if [ -z "$PAIR_CODE" ]; then
+  echo "[ERRO] Codigo invalido."
+  exit 1
+fi
+
+read -r -p "URL do servidor Synapse [$DEFAULT_SERVER]: " SERVER_URL
+if [ -z "$SERVER_URL" ]; then
+  SERVER_URL="$DEFAULT_SERVER"
+fi
+
+sudo mkdir -p "$INSTALL_DIR"
+sudo curl -fsSL "$SERVER_URL/api/agent/download/agent" -o "$INSTALL_DIR/synapse_agent.py"
+sudo chmod +x "$INSTALL_DIR/synapse_agent.py"
+
+python3 "$INSTALL_DIR/synapse_agent.py" --pair "$PAIR_CODE" --server "$SERVER_URL"
+
+if command -v systemctl >/dev/null 2>&1; then
+  sudo tee /etc/systemd/system/synapse-agent.service >/dev/null <<EOF
 [Unit]
 Description=Synapse Monitoring Agent
 After=network.target
-Wants=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 $INSTALL_DIR/synapse_agent.py --config $INSTALL_DIR/synapse_agent.conf
+ExecStart=/usr/bin/python3 $INSTALL_DIR/synapse_agent.py
 Restart=always
 RestartSec=30
-StandardOutput=journal
-StandardError=journal
 
 [Install]
 WantedBy=multi-user.target
 EOF
-
-    systemctl daemon-reload
-    systemctl enable synapse-agent
-    echo -e "${GREEN}[OK] Serviço systemd criado e habilitado.${NC}"
+  sudo systemctl daemon-reload
+  sudo systemctl enable synapse-agent
+  sudo systemctl restart synapse-agent
+  echo "[OK] Servico systemd configurado."
 else
-    # Cria script de inicialização via cron
-    echo "Registrando inicialização via cron..."
-    CRON_CMD="@reboot python3 $INSTALL_DIR/synapse_agent.py --config $INSTALL_DIR/synapse_agent.conf >> /var/log/synapse-agent.log 2>&1"
-    (crontab -l 2>/dev/null | grep -v synapse_agent; echo "$CRON_CMD") | crontab -
-    echo -e "${GREEN}[OK] Agente registrado no cron para iniciar no boot.${NC}"
-fi
-
-# Realiza o pareamento inicial
-echo ""
-echo "Realizando pareamento com o servidor Synapse..."
-python3 "$INSTALL_DIR/synapse_agent.py" --config "$INSTALL_DIR/synapse_agent.conf" --pair-only && \
-    echo -e "${GREEN}[OK] Pareamento realizado com sucesso!${NC}" || \
-    echo -e "${YELLOW}[AVISO] Pareamento não concluído. O agente tentará novamente ao iniciar.${NC}"
-
-# Inicia o agente
-if command -v systemctl &> /dev/null && [ "$EUID" -eq 0 ]; then
-    echo "Iniciando o agente..."
-    systemctl start synapse-agent
-    sleep 2
-    if systemctl is-active --quiet synapse-agent; then
-        echo -e "${GREEN}[OK] Agente iniciado com sucesso!${NC}"
-    else
-        echo -e "${YELLOW}[AVISO] Agente não iniciou. Verifique: journalctl -u synapse-agent${NC}"
-    fi
+  (crontab -l 2>/dev/null; echo "@reboot /usr/bin/python3 $INSTALL_DIR/synapse_agent.py >> /tmp/synapse-agent.log 2>&1") | crontab -
+  nohup python3 "$INSTALL_DIR/synapse_agent.py" >/tmp/synapse-agent.log 2>&1 &
+  echo "[OK] Agente iniciado via cron/nohup."
 fi
 
 echo ""
-echo -e "${CYAN}====================================================="
-echo "  Instalação concluída!"
-echo ""
-echo "  Para verificar o status: systemctl status synapse-agent"
-echo "  Para ver os logs: journalctl -u synapse-agent -f"
-echo "  Para iniciar manualmente:"
-echo "    python3 $INSTALL_DIR/synapse_agent.py --config $INSTALL_DIR/synapse_agent.conf"
-echo -e "=====================================================${NC}"
-echo ""
+echo "====================================================="
+echo " Instalacao concluida"
+echo " Pasta: $INSTALL_DIR"
+echo " Servidor: $SERVER_URL"
+echo "====================================================="

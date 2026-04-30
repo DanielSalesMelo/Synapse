@@ -250,11 +250,13 @@ function Sidebar({
     items.some((item) => isActive(item.path));
 
   // Badges de notificação por rota — dados reais do backend
-  const chatUnreadQ = trpc.chat.listConversas.useQuery(undefined, { refetchInterval: 15000 });
-  const tiDashQ = trpc.ti.dashboard.useQuery(undefined, { refetchInterval: 30000 });
-  const chatUnread = (chatUnreadQ.data ?? []).reduce((acc: number, c: any) => acc + (c.unreadCount ?? 0), 0);
-  const tiOpen = (tiDashQ.data as any)?.abertos ?? 0;
-  const totalNotifs = chatUnread + tiOpen;
+  const conversationsQ = trpc.chat.listConversations.useQuery(undefined, { refetchInterval: 15000 });
+  const tiUnreadQ = trpc.ti.getUnreadCount.useQuery(undefined, { refetchInterval: 30000 });
+  const tiAlertsQ = trpc.ti.listAlertas.useQuery({ limit: 10 }, { refetchInterval: 30000 });
+  const chatUnread = (conversationsQ.data ?? []).length;
+  const tiOpen = Number(tiUnreadQ.data?.tickets ?? 0);
+  const tiCritical = (tiAlertsQ.data ?? []).filter((a: any) => a.severidade === "critico").length;
+  const totalNotifs = chatUnread + tiOpen + tiCritical;
 
   // Atualiza título da aba com contador de notificações
   useEffect(() => {
@@ -264,7 +266,7 @@ function Sidebar({
 
   const BADGES: Record<string, number> = {
     "/chat": chatUnread,
-    "/ti": tiOpen,
+    "/ti": tiOpen + tiCritical,
   };
 
   const initials = user?.name
@@ -317,21 +319,17 @@ function Sidebar({
 
   // Mapa de acesso por grupo: quais roles podem ver cada grupo
   const GROUP_ACCESS: Record<string, string[]> = {
-    "INÍCIO":               [...FULL_ACCESS_ROLES, "financeiro", "comercial", "dispatcher", "motorista", "wms_operator", "rh", "ti", "monitor", "user"],
-    "FROTA & OPERAÇÕES":   [...FULL_ACCESS_ROLES, "dispatcher", "motorista"],
-    "CRM & VENDAS":         [...FULL_ACCESS_ROLES, "comercial"],
-    "MARKETING":            [...FULL_ACCESS_ROLES, "comercial"],
-    "WMS / ARMÁZEM":       [...FULL_ACCESS_ROLES, "wms_operator"],
-    "LOGÍSTICA":            [...FULL_ACCESS_ROLES, "wms_operator", "dispatcher"],
-    "FINANCEIRO":           [...FULL_ACCESS_ROLES, "financeiro"],
-    "RH / PESSOAS":         [...FULL_ACCESS_ROLES, "rh"],
-    "TI / INFRAESTRUTURA":  [...FULL_ACCESS_ROLES, "ti"],
-    "RECEPÇÃO":            [...FULL_ACCESS_ROLES, "user"],
-    "QUALIDADE (QMS)":      [...FULL_ACCESS_ROLES],
-    "BI & RELATÓRIOS":     [...FULL_ACCESS_ROLES, "financeiro", "monitor"],
-    "SISTEMA":              [...FULL_ACCESS_ROLES, "ti"],
-    "INTEGRAÇÕES":         [...FULL_ACCESS_ROLES, "ti"],
-    "MASTER ADMIN":         ["master_admin", "ti_master"],
+    "Início": [...FULL_ACCESS_ROLES, "financeiro", "comercial", "dispatcher", "motorista", "wms_operator", "rh", "ti", "monitor", "user"],
+    "Frota & Operações": [...FULL_ACCESS_ROLES, "dispatcher", "motorista"],
+    "Despachante": [...FULL_ACCESS_ROLES, "dispatcher"],
+    "Comercial": [...FULL_ACCESS_ROLES, "comercial"],
+    "Estoque & Logística": [...FULL_ACCESS_ROLES, "wms_operator", "dispatcher"],
+    "Financeiro": [...FULL_ACCESS_ROLES, "financeiro"],
+    "Pessoas": [...FULL_ACCESS_ROLES, "rh"],
+    "TI": [...FULL_ACCESS_ROLES, "ti"],
+    "Relatórios & BI": [...FULL_ACCESS_ROLES, "financeiro", "monitor"],
+    "Sistema": [...FULL_ACCESS_ROLES, "ti"],
+    "Master Admin": ["master_admin", "ti_master"],
   };
 
   const canSeeGroup = (groupLabel: string): boolean => {
@@ -635,20 +633,49 @@ type Notification = {
 };
 
 function NotificationBell() {
+  const [, navigate] = useLocation();
   const [open, setOpen] = useState(false);
-  const [notifs, setNotifs] = useState<Notification[]>([
-    { id: 1, tipo: "mensagem", titulo: "Nova mensagem", descricao: "Carlos enviou uma mensagem no chat", lido: false, createdAt: new Date(Date.now() - 2 * 60000) },
-    { id: 2, tipo: "chamado", titulo: "Chamado SAC #0042", descricao: "Cliente BSB Transportes aguardando resposta", lido: false, createdAt: new Date(Date.now() - 15 * 60000) },
-    { id: 3, tipo: "ti", titulo: "Ticket TI #0018", descricao: "Impressora do setor fiscal sem papel", lido: false, createdAt: new Date(Date.now() - 30 * 60000) },
-    { id: 4, tipo: "alerta", titulo: "Estoque crítico", descricao: "Produto DIESEL S10 abaixo do mínimo", lido: true, createdAt: new Date(Date.now() - 60 * 60000) },
-    { id: 5, tipo: "sistema", titulo: "Backup concluído", descricao: "Backup automático realizado com sucesso", lido: true, createdAt: new Date(Date.now() - 120 * 60000) },
-  ]);
+  const [dismissedIds, setDismissedIds] = useState<number[]>([]);
+  const [readIds, setReadIds] = useState<number[]>([]);
+  const conversationsQ = trpc.chat.listConversations.useQuery(undefined, { refetchInterval: 15000 });
+  const ticketsQ = trpc.ti.listTickets.useQuery({ status: "aberto" }, { refetchInterval: 15000 });
+  const alertasQ = trpc.ti.listAlertas.useQuery({ limit: 10 }, { refetchInterval: 15000 });
+
+  const notifs: Notification[] = [
+    ...(alertasQ.data ?? []).map((alerta: any) => ({
+      id: Number(`1${alerta.id}`),
+      tipo: alerta.severidade === "critico" ? "alerta" : "ti",
+      titulo: alerta.hostname ? `Alerta em ${alerta.hostname}` : "Alerta de monitoramento",
+      descricao: alerta.descricao || alerta.mensagem || alerta.tipo || "Evento registrado no monitoramento",
+      lido: readIds.includes(Number(`1${alerta.id}`)),
+      createdAt: new Date(alerta.ocorridoEm || alerta.criadoEm || Date.now()),
+    })),
+    ...(ticketsQ.data ?? []).slice(0, 5).map((ticket: any) => ({
+      id: Number(`2${ticket.id}`),
+      tipo: "chamado",
+      titulo: ticket.protocolo ? `Chamado ${ticket.protocolo}` : `Chamado #${ticket.id}`,
+      descricao: ticket.titulo || ticket.descricao || "Chamado em aberto",
+      lido: readIds.includes(Number(`2${ticket.id}`)),
+      createdAt: new Date(ticket.updatedAt || ticket.createdAt || Date.now()),
+    })),
+    ...(conversationsQ.data ?? []).slice(0, 5).map((conv: any) => ({
+      id: Number(`3${conv.id}`),
+      tipo: "mensagem",
+      titulo: conv.displayName || "Conversa recente",
+      descricao: conv.isGroup ? "Grupo com atividade recente" : "Conversa disponível no chat",
+      lido: readIds.includes(Number(`3${conv.id}`)),
+      createdAt: new Date(conv.lastMessageAt || Date.now()),
+    })),
+  ]
+    .filter((notif) => !dismissedIds.includes(notif.id))
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    .slice(0, 12);
 
   const unread = notifs.filter((n) => !n.lido).length;
 
-  const markAllRead = () => setNotifs((prev) => prev.map((n) => ({ ...n, lido: true })));
-  const markRead = (id: number) => setNotifs((prev) => prev.map((n) => n.id === id ? { ...n, lido: true } : n));
-  const removeNotif = (id: number) => setNotifs((prev) => prev.filter((n) => n.id !== id));
+  const markAllRead = () => setReadIds(notifs.map((notif) => notif.id));
+  const markRead = (id: number) => setReadIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
+  const removeNotif = (id: number) => setDismissedIds((prev) => [...prev, id]);
 
   const iconMap = {
     mensagem: <MessageSquare className="h-4 w-4 text-blue-500" />,
@@ -716,7 +743,12 @@ function NotificationBell() {
                 notifs.map((n) => (
                   <div
                     key={n.id}
-                    onClick={() => markRead(n.id)}
+                    onClick={() => {
+                      markRead(n.id);
+                      if (n.tipo === "mensagem") navigate("/chat");
+                      if (n.tipo === "chamado" || n.tipo === "ti" || n.tipo === "alerta") navigate("/ti/dashboard");
+                      setOpen(false);
+                    }}
                     className={`flex items-start gap-3 px-4 py-3 border-b border-border/50 cursor-pointer transition-colors hover:bg-accent/50 ${
                       !n.lido ? "bg-primary/5" : ""
                     }`}

@@ -19,6 +19,8 @@ import platform
 import argparse
 import threading
 import logging
+import subprocess
+import getpass
 from datetime import datetime
 from pathlib import Path
 
@@ -43,7 +45,7 @@ CONFIG_FILE = Path.home() / ".synapse_agent" / "config.json"
 BUFFER_FILE = Path.home() / ".synapse_agent" / "buffer.jsonl"
 LOG_FILE    = Path.home() / ".synapse_agent" / "agent.log"
 
-DEFAULT_SERVER  = "https://synapse-backend.railway.app"
+DEFAULT_SERVER  = "https://synapse-backend-ds2026.azurewebsites.net"
 SEND_INTERVAL   = 30   # segundos entre envios
 COLLECT_INTERVAL = 10  # segundos entre coletas
 MAX_BUFFER_LINES = 1000  # máximo de métricas no buffer offline
@@ -128,6 +130,40 @@ def get_platform_info() -> dict:
         "python_version": platform.python_version(),
     }
 
+def get_logged_user() -> str:
+    try:
+        return getpass.getuser()
+    except Exception:
+        return os.environ.get("USERNAME") or os.environ.get("USER") or ""
+
+def get_hardware_inventory() -> dict:
+    inventory = {
+        "hostname": get_hostname(),
+        "platform": get_platform_info(),
+        "user": get_logged_user(),
+    }
+
+    if platform.system().lower() == "windows":
+        try:
+            board = subprocess.check_output(
+                ["wmic", "baseboard", "get", "Manufacturer,Product,SerialNumber", "/format:list"],
+                text=True,
+                stderr=subprocess.DEVNULL,
+            )
+            inventory["motherboard"] = board.strip()
+        except Exception:
+            pass
+        try:
+            bios = subprocess.check_output(
+                ["wmic", "bios", "get", "SMBIOSBIOSVersion,SerialNumber", "/format:list"],
+                text=True,
+                stderr=subprocess.DEVNULL,
+            )
+            inventory["bios"] = bios.strip()
+        except Exception:
+            pass
+    return inventory
+
 def collect_metrics() -> dict:
     """Coleta todas as métricas do sistema."""
     if not HAS_PSUTIL:
@@ -137,6 +173,8 @@ def collect_metrics() -> dict:
         "timestamp": datetime.utcnow().isoformat() + "Z",
         "hostname": get_hostname(),
         "platform": get_platform_info(),
+        "logged_user": get_logged_user(),
+        "hardware": get_hardware_inventory(),
     }
 
     # CPU
@@ -259,6 +297,7 @@ def pair_device(pair_code: str, server_url: str):
                 "hostname": get_hostname(),
                 "platform": get_platform_info(),
                 "agentVersion": VERSION,
+                "hardware": get_hardware_inventory(),
             },
             timeout=15,
         )

@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
+import { getBackendBaseUrl } from "@/lib/backend";
 
 // ─── Helpers de cor ──────────────────────────────────────────────────────────
 const STATUS_COLORS: Record<string, string> = {
@@ -64,6 +65,7 @@ function Lightbox({ src, onClose }: { src: string; onClose: () => void }) {
 // ─── Componente de Chat do Chamado ────────────────────────────────────────────
 function TicketChat({ ticketId, empresaId }: { ticketId: number; empresaId: number }) {
   const { user } = useAuth();
+  const backendBaseUrl = getBackendBaseUrl();
   const [msg, setMsg] = useState("");
   const [lightbox, setLightbox] = useState<string | null>(null);
   const [preview, setPreview] = useState<{ url: string; nome: string } | null>(null);
@@ -89,7 +91,7 @@ function TicketChat({ ticketId, empresaId }: { ticketId: number; empresaId: numb
   const uploadFile = async (file: File) => {
     setUploading(true);
     const token = localStorage.getItem("synapse-auth-token") ?? "";
-    const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : "";
+    const baseUrl = backendBaseUrl;
     const fd = new FormData();
     fd.append("file", file);
     try {
@@ -402,6 +404,7 @@ function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: ()
 export default function TI({ params }: { params?: { tab?: string } }) {
   const { user } = useAuth();
   const empresaId = user?.empresaId ?? 0;
+  const backendBaseUrl = getBackendBaseUrl();
 
   const [location, setLocation] = useLocation() as any;
   // Prioriza o parâmetro da rota (params.tab), depois tenta extrair da URL, fallback para dashboard
@@ -448,12 +451,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
       toast.success("Agente associado com sucesso!");
       setShowAssociateModal(false);
       // Recarregar agentes
-      const token = localStorage.getItem("synapse-auth-token") ?? "";
-      const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : "";
-      const res = await fetch(`${baseUrl}/api/agents`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) setAgentes(await res.json());
+      await agentesQ.refetch();
     } catch (err) {
       toast.error("Erro ao associar agente: " + (err as any).message);
     }
@@ -570,7 +568,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const associateAgente = {
     mutateAsync: async (data: { agentId: number; userId: string; departmentId?: string }) => {
       const token = localStorage.getItem("synapse-auth-token") ?? "";
-      const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : "";
+      const baseUrl = backendBaseUrl;
       const res = await fetch(`${baseUrl}/api/agents/${data.agentId}/associate`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -584,7 +582,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const generatePairingCode = {
     mutateAsync: async (data: { userId: string; departmentId: string }) => {
       const token = localStorage.getItem("synapse-auth-token") ?? "";
-      const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : "";
+      const baseUrl = backendBaseUrl;
       const res = await fetch(`${baseUrl}/api/agents/generate-pairing-code`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -595,30 +593,10 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     }
   };
 
-  // Buscar agentes via REST API
   useEffect(() => {
-    const fetchAgentes = async () => {
-      setAgentesLoading(true);
-      try {
-        const token = localStorage.getItem("synapse-auth-token") ?? "";
-        const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : "";
-        const res = await fetch(`${baseUrl}/api/agents`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setAgentes(data);
-        }
-      } catch (err) {
-        console.error("Erro ao buscar agentes:", err);
-      } finally {
-        setAgentesLoading(false);
-      }
-    };
-    if (tab === "dispositivos") {
-      fetchAgentes();
-    }
-  }, [tab]);
+    setAgentes(agentesQ.data ?? []);
+    setAgentesLoading(agentesQ.isLoading);
+  }, [agentesQ.data, agentesQ.isLoading]);
 
   // Buscar usuários
   useEffect(() => {
@@ -663,7 +641,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     const files = Array.from(e.target.files ?? []);
     if (!files.length) return;
     const token = localStorage.getItem("synapse-auth-token") ?? "";
-    const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : "";
+    const baseUrl = backendBaseUrl;
     for (const file of files) {
       const fd = new FormData();
       fd.append("file", file);
@@ -1626,18 +1604,18 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                 </div>
                 <div className="flex flex-col gap-2">
                   <Button size="sm" className="w-full" asChild>
-                    <a href="https://synapse-backend.railway.app/api/agent/download/windows" download="instalar_agente.bat">
+                    <a href={`${backendBaseUrl}/api/agent/download/windows`} download="instalar_agente.bat">
                       <Download className="h-4 w-4 mr-2" />Baixar Instalador (Windows .bat)
                     </a>
                   </Button>
                   <div className="flex gap-2">
                     <Button size="sm" variant="outline" className="flex-1" asChild>
-                      <a href="https://synapse-backend.railway.app/api/agent/download/agent" download="synapse_agent.py">
+                      <a href={`${backendBaseUrl}/api/agent/download/agent`} download="synapse_agent.py">
                         <FileText className="h-4 w-4 mr-2" />Script Python
                       </a>
                     </Button>
                     <Button size="sm" variant="outline" className="flex-1" asChild>
-                      <a href="https://synapse-backend.railway.app/api/agent/download/linux" download="install_linux.sh">
+                      <a href={`${backendBaseUrl}/api/agent/download/linux`} download="install_linux.sh">
                         <Download className="h-4 w-4 mr-2" />Linux (.sh)
                       </a>
                     </Button>
@@ -1806,7 +1784,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   )}
                 </DialogContent>
               </Dialog>
-              <Button size="sm" variant="outline" onClick={() => { const token = localStorage.getItem("synapse-auth-token") ?? ""; const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : ""; fetch(`${baseUrl}/api/agents`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()).then(setAgentes); }}><RefreshCw className="h-4 w-4 mr-2" />Atualizar</Button>
+              <Button size="sm" variant="outline" onClick={() => agentesQ.refetch()}><RefreshCw className="h-4 w-4 mr-2" />Atualizar</Button>
             </div>
           </div>
           <div className="flex gap-2">

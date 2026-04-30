@@ -21,11 +21,11 @@ import App from "./App";
 import { Toaster } from "sonner";
 import "./index.css";
 import "./lib/i18n";
+import { getBackendBaseUrl } from "@/lib/backend";
 
 const AUTH_TOKEN_KEY = "synapse-auth-token";
 const USER_INFO_KEY = "app-user-info";
 const UNAUTHED_ERR_MSG = 'Please login (10001)';
-
 function getPersistedUser() {
   try {
     const raw = localStorage.getItem(USER_INFO_KEY);
@@ -74,19 +74,10 @@ queryClient.getQueryCache().subscribe(event => {
   }
 });
 
-const getBaseUrl = () => {
-  if (typeof window !== "undefined") {
-    const host = window.location.hostname;
-    if (host === "localhost" || host === "127.0.0.1") return "http://localhost:8080";
-    return import.meta.env.VITE_API_URL || "https://synapse-producion.up.railway.app";
-  }
-  return "";
-};
-
 const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
-      url: `${getBaseUrl()}/api/trpc`,
+      url: `${getBackendBaseUrl()}/api/trpc`,
       transformer: superjson,
       headers() {
         const token = localStorage.getItem(AUTH_TOKEN_KEY);

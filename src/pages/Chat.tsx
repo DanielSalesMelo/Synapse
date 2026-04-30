@@ -19,6 +19,7 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { getBackendBaseUrl } from "@/lib/backend";
 
 // ─── Tipos ──────────────────────────────────────────────────────────────────
 type AttachmentPreview = {
@@ -38,6 +39,10 @@ function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function getChatBaseUrl() {
+  return getBackendBaseUrl();
 }
 
 // ─── Lightbox ───────────────────────────────────────────────────────────────
@@ -330,20 +335,13 @@ export default function Chat() {
     setAttachments([]);
     requestAnimationFrame(() => inputRef.current?.focus());
 
-    const getApiBase = () => {
-      if (typeof window === "undefined") return "";
-      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
-        return "http://localhost:3000";
-      return (import.meta.env.VITE_API_URL as string) || "https://synapse-producion.up.railway.app";
-    };
-
     if (currentAttachments.length > 0) {
       for (const attachment of currentAttachments) {
         try {
           const formData = new FormData();
           formData.append("file", attachment.file);
           const authToken = localStorage.getItem("synapse-auth-token");
-          const resp = await fetch(`${getApiBase()}/api/upload`, {
+          const resp = await fetch(`${getChatBaseUrl()}/api/upload`, {
             method: "POST",
             body: formData,
             headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},

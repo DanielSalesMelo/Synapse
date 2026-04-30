@@ -1,103 +1,82 @@
 @echo off
-title Instalador do Agente Synapse
+setlocal
+title Synapse Agent Installer
 color 0A
+
+set "DEFAULT_SERVER=https://synapse-backend-ds2026.azurewebsites.net"
+set "INSTALL_DIR=%ProgramFiles%\SynapseAgent"
+
 echo.
-echo  =====================================================
-echo   SYNAPSE - Agente de Monitoramento - Instalador
-echo  =====================================================
+echo =====================================================
+echo  SYNAPSE - Instalador do Agente de Monitoramento
+echo =====================================================
 echo.
 
-:: Verifica se Python esta instalado
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo [ERRO] Python nao encontrado. Instalando Python...
-    echo Baixando Python 3.11...
-    powershell -Command "Invoke-WebRequest -Uri 'https://www.python.org/ftp/python/3.11.9/python-3.11.9-amd64.exe' -OutFile '%TEMP%\python_installer.exe'"
-    echo Instalando Python silenciosamente...
-    %TEMP%\python_installer.exe /quiet InstallAllUsers=1 PrependPath=1
-    echo Python instalado com sucesso!
-    echo Por favor, reinicie este script apos a instalacao do Python.
-    pause
-    exit /b
+  echo [ERRO] Python nao encontrado. Instale o Python 3 e rode novamente.
+  echo Link sugerido: https://www.python.org/downloads/windows/
+  pause
+  exit /b 1
 )
 
 echo [OK] Python encontrado.
-echo.
-
-:: Instala dependencias
-echo Instalando dependencias (psutil, requests)...
-pip install psutil requests --quiet
+echo Instalando dependencias...
+python -m pip install --quiet psutil requests
 if errorlevel 1 (
-    echo [ERRO] Falha ao instalar dependencias. Verifique sua conexao com a internet.
-    pause
-    exit /b
+  echo [ERRO] Nao foi possivel instalar psutil/requests.
+  pause
+  exit /b 1
 )
-echo [OK] Dependencias instaladas.
-echo.
 
-:: Pergunta o codigo de pareamento
-set /p PAIR_CODE="Digite o codigo de pareamento gerado no Synapse (ex: SYNC-XXXX-XXXX): "
+set /p PAIR_CODE=Digite o codigo de pareamento (SYNC-XXXX-XXXX):
 if "%PAIR_CODE%"=="" (
-    echo [ERRO] Codigo de pareamento nao pode ser vazio.
-    pause
-    exit /b
+  echo [ERRO] Codigo invalido.
+  pause
+  exit /b 1
 )
 
-:: Pergunta a URL do servidor
-set /p SERVER_URL="URL do servidor Synapse (ex: https://seu-servidor.com): "
-if "%SERVER_URL%"=="" (
-    echo [ERRO] URL do servidor nao pode ser vazia.
-    pause
-    exit /b
-)
+set /p SERVER_URL=URL do servidor Synapse [%DEFAULT_SERVER%]:
+if "%SERVER_URL%"=="" set "SERVER_URL=%DEFAULT_SERVER%"
 
-:: Cria pasta de instalacao
-set INSTALL_DIR=%ProgramFiles%\SynapseAgent
 if not exist "%INSTALL_DIR%" mkdir "%INSTALL_DIR%"
 
-:: Copia o agente
-echo Copiando arquivos...
-copy /Y "%~dp0synapse_agent.py" "%INSTALL_DIR%\synapse_agent.py" >nul
+echo Baixando agente...
+powershell -Command "Invoke-WebRequest -Uri '%SERVER_URL%/api/agent/download/agent' -OutFile '%INSTALL_DIR%\synapse_agent.py'"
+if errorlevel 1 (
+  echo [ERRO] Falha ao baixar o agente.
+  pause
+  exit /b 1
+)
 
-:: Cria arquivo de configuracao
-echo Criando configuracao...
-(
-echo SERVER_URL=%SERVER_URL%
-echo PAIR_CODE=%PAIR_CODE%
-) > "%INSTALL_DIR%\synapse_agent.conf"
+echo Pareando dispositivo...
+python "%INSTALL_DIR%\synapse_agent.py" --pair "%PAIR_CODE%" --server "%SERVER_URL%"
+if errorlevel 1 (
+  echo [ERRO] Falha no pareamento.
+  pause
+  exit /b 1
+)
 
-:: Cria o script de inicializacao
 (
 echo @echo off
-echo python "%INSTALL_DIR%\synapse_agent.py" --config "%INSTALL_DIR%\synapse_agent.conf"
+echo python "%INSTALL_DIR%\synapse_agent.py"
 ) > "%INSTALL_DIR%\start_agent.bat"
 
-:: Registra como servico de inicializacao automatica via Task Scheduler
 echo Registrando inicializacao automatica...
 schtasks /create /tn "SynapseAgent" /tr "\"%INSTALL_DIR%\start_agent.bat\"" /sc onlogon /ru "%USERNAME%" /f >nul 2>&1
 if errorlevel 1 (
-    echo [AVISO] Nao foi possivel registrar inicializacao automatica. Execute manualmente.
+  echo [AVISO] Nao foi possivel criar a tarefa automatica. Inicie manualmente por %INSTALL_DIR%\start_agent.bat
 ) else (
-    echo [OK] Agente registrado para iniciar automaticamente.
+  echo [OK] Tarefa automatica criada.
 )
 
-:: Executa o pareamento inicial
-echo.
-echo Realizando pareamento com o servidor Synapse...
-python "%INSTALL_DIR%\synapse_agent.py" --config "%INSTALL_DIR%\synapse_agent.conf" --pair-only
-if errorlevel 1 (
-    echo [AVISO] Pareamento nao foi concluido. O agente tentara novamente ao iniciar.
-) else (
-    echo [OK] Pareamento realizado com sucesso!
-)
+start "" "%INSTALL_DIR%\start_agent.bat"
 
 echo.
-echo  =====================================================
-echo   Instalacao concluida!
-echo   O agente sera iniciado automaticamente no proximo
-echo   login do Windows.
-echo.
-echo   Para iniciar agora: %INSTALL_DIR%\start_agent.bat
-echo  =====================================================
+echo =====================================================
+echo  Instalacao concluida
+echo  Pasta: %INSTALL_DIR%
+echo  Servidor: %SERVER_URL%
+echo =====================================================
 echo.
 pause
