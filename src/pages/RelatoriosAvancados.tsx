@@ -1,25 +1,25 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import {
-  BarChart3, TrendingUp, TrendingDown, DollarSign, Truck,
-  Users, Fuel, AlertTriangle, Calendar, Download, Filter,
-} from "lucide-react";
+import { BarChart3, TrendingUp, TrendingDown, DollarSign, Truck, Users, AlertTriangle, Download, Filter, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useViewAs } from "@/contexts/ViewAsContext";
+import { trpc } from "@/lib/trpc";
 
+function formatCurrency(value: unknown) {
+  return Number(value || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
 
 function KpiCard({
-  titulo, valor, subtitulo, icon: Icon, cor = "blue", tendencia,
+  titulo, valor, subtitulo, icon: Icon, cor = "blue",
 }: {
   titulo: string;
   valor: string | number;
   subtitulo?: string;
   icon: React.ElementType;
   cor?: "blue" | "green" | "red" | "yellow" | "purple";
-  tendencia?: { valor: number; tipo: "up" | "down" };
 }) {
   const cores = {
     blue: "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400",
@@ -42,87 +42,64 @@ function KpiCard({
             <Icon className="h-6 w-6" />
           </div>
         </div>
-        {tendencia && (
-          <div className="flex items-center gap-1">
-            {tendencia.tipo === "up" ? (
-              <TrendingUp className="h-4 w-4 text-green-500" />
-            ) : (
-              <TrendingDown className="h-4 w-4 text-red-500" />
-            )}
-            <span className={`text-xs font-medium ${tendencia.tipo === "up" ? "text-green-600" : "text-red-600"}`}>
-              {tendencia.tipo === "up" ? "+" : ""}{tendencia.valor}% vs mês anterior
-            </span>
-          </div>
-        )}
       </CardContent>
     </Card>
   );
 }
 
+function EmptyState({ text }: { text: string }) {
+  return <div className="text-center py-8 text-muted-foreground">{text}</div>;
+}
+
 export default function RelatoriosAvancados() {
   const { t } = useTranslation();
+  const { effectiveEmpresaId } = useViewAs();
   const [periodo, setPeriodo] = useState("mes");
 
-  // Dados simulados para demonstração - ZERADOS
-  const dadosOperacionais = {
-    viagensTotal: 0,
-    viagensCompletas: 0,
-    viagensAtraso: 0,
-    kmTotal: 0,
-    kmMedia: 0,
-    combustivelGasto: 0,
-    custoCombustivel: 0,
-  };
+  const metricas = trpc.bi.metricas.useQuery({ empresaId: effectiveEmpresaId });
+  const tendencias = trpc.bi.tendencias.useQuery({ empresaId: effectiveEmpresaId });
+  const financeiro = trpc.financeiro.dashboard.useQuery({ empresaId: effectiveEmpresaId });
+  const rh = trpc.funcionarios.dashboard.useQuery({ empresaId: effectiveEmpresaId });
+  const folha = trpc.funcionarios.folhaResumo.useQuery({ empresaId: effectiveEmpresaId, limit: 6 });
+  const ti = trpc.ti.dashboard.useQuery();
 
-  const dadosFinanceiros = {
-    receita: 0,
-    despesas: 0,
-    lucro: 0,
-    margemLucro: 0,
-    conasVencendo: 0,
-    contasVencidas: 0,
-  };
+  const isLoading = metricas.isLoading || tendencias.isLoading || financeiro.isLoading || rh.isLoading || ti.isLoading;
 
-  const dadosRH = {
-    motoristasAtivos: 0,
-    motoristasAfastados: 0,
-    motoristasNovos: 0,
-    rotatividade: 0,
-    custoRH: 0,
-    mediaIdade: 0,
-  };
+  const metricasData = metricas.data;
+  const financeiroData = financeiro.data;
+  const rhData = rh.data;
+  const tiData = ti.data as any;
 
-  const dadosRisco = {
-    acidentes: 0,
-    multas: 0,
-    manutencoesPendentes: 0,
-    documentosVencendo: 0,
-    alertasSeguranca: 0,
-  };
+  const viagensPorDia = useMemo(() => (tendencias.data?.viagensPorDia ?? []) as any[], [tendencias.data]);
+  const receitaPorDia = useMemo(() => (tendencias.data?.receitaPorDia ?? []) as any[], [tendencias.data]);
+
+  const hasOperacional = Number(metricasData?.viagens?.total ?? 0) > 0;
+  const hasFinanceiro = Number(financeiroData?.totalPagar ?? 0) > 0 || Number(financeiroData?.totalReceber ?? 0) > 0;
+  const hasRh = Number(rhData?.total ?? 0) > 0;
+  const hasTi = Number(tiData?.tickets?.total ?? 0) > 0 || Number(tiData?.ativos?.total ?? 0) > 0 || Number(tiData?.certificados?.total ?? 0) > 0;
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-3xl font-bold">{t("pages.relatorios") || "Relatórios Avançados"}</h1>
           <p className="text-muted-foreground mt-2">
-            Análise gerencial completa da operação, finanças e recursos humanos
+            Visão gerencial consolidada com dados reais da empresa selecionada.
           </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" className="gap-2">
             <Filter className="h-4 w-4" />
-            Filtrar
+            Empresa ativa
           </Button>
-          <Button size="sm" className="gap-2">
+          <Button variant="outline" size="sm" className="gap-2" disabled>
             <Download className="h-4 w-4" />
-            Exportar
+            Exportação em implantação
           </Button>
         </div>
       </div>
 
-      {/* Período */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         {["semana", "mes", "trimestre", "ano"].map((p) => (
           <Button
             key={p}
@@ -136,170 +113,184 @@ export default function RelatoriosAvancados() {
         ))}
       </div>
 
-      <Tabs defaultValue="operacional" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="operacional">Operacional</TabsTrigger>
-          <TabsTrigger value="financeiro">Financeiro</TabsTrigger>
-          <TabsTrigger value="rh">RH</TabsTrigger>
-          <TabsTrigger value="risco">Risco</TabsTrigger>
-        </TabsList>
+      {isLoading ? (
+        <div className="flex items-center justify-center py-20 text-muted-foreground">
+          <Loader2 className="h-5 w-5 animate-spin mr-2" />
+          Carregando relatórios...
+        </div>
+      ) : (
+        <Tabs defaultValue="operacional" className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="operacional">Operacional</TabsTrigger>
+            <TabsTrigger value="financeiro">Financeiro</TabsTrigger>
+            <TabsTrigger value="rh">RH</TabsTrigger>
+            <TabsTrigger value="ti">TI</TabsTrigger>
+          </TabsList>
 
-        {/* Operacional */}
-        <TabsContent value="operacional" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <KpiCard
-              titulo="Viagens Realizadas"
-              valor={dadosOperacionais.viagensTotal}
-              subtitulo={`${dadosOperacionais.viagensCompletas} completas, ${dadosOperacionais.viagensAtraso} com atraso`}
-              icon={Truck}
-              cor="blue"
-            />
-            <KpiCard
-              titulo="KM Total Rodado"
-              valor={`${(dadosOperacionais.kmTotal / 1000).toFixed(1)}k`}
-              subtitulo={`Média: ${dadosOperacionais.kmMedia} km/viagem`}
-              icon={TrendingUp}
-              cor="green"
-            />
-            <KpiCard
-              titulo="Combustível Gasto"
-              valor={`${dadosOperacionais.combustivelGasto}L`}
-              subtitulo={`Custo: R$ ${(dadosOperacionais.custoCombustivel / 1000).toFixed(1)}k`}
-              icon={Fuel}
-              cor="yellow"
-            />
-            <KpiCard
-              titulo="Taxa de Atraso"
-              valor={`${dadosOperacionais.viagensTotal > 0 ? ((dadosOperacionais.viagensAtraso / dadosOperacionais.viagensTotal) * 100).toFixed(1) : 0}%`}
-              subtitulo={`${dadosOperacionais.viagensAtraso} viagens atrasadas`}
-              icon={AlertTriangle}
-              cor="red"
-            />
-          </div>
+          <TabsContent value="operacional" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <KpiCard titulo="Viagens Registradas" valor={metricasData?.viagens?.total ?? 0} subtitulo={`${metricasData?.viagens?.concluidas ?? 0} concluídas`} icon={Truck} cor="blue" />
+              <KpiCard titulo="Em Andamento" valor={metricasData?.viagens?.emAndamento ?? 0} subtitulo="Operação ativa no período" icon={TrendingUp} cor="green" />
+              <KpiCard titulo="Receita de Viagens" valor={formatCurrency(financeiroData?.totalFreteMes)} subtitulo="Fretes concluídos no período" icon={DollarSign} cor="yellow" />
+              <KpiCard titulo="Lucro Operacional" valor={formatCurrency(financeiroData?.lucroMes)} subtitulo={`Margem ${Number(financeiroData?.margemMes ?? 0).toFixed(1)}%`} icon={BarChart3} cor="purple" />
+            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Tendência Operacional</CardTitle>
+                <CardDescription>Últimos registros de viagens e receita.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {!hasOperacional && receitaPorDia.length === 0 ? (
+                  <EmptyState text="Sem dados suficientes para gerar relatório operacional." />
+                ) : (
+                  <>
+                    <div className="flex flex-wrap gap-2">
+                      {viagensPorDia.slice(-8).map((item: any, index) => (
+                        <Badge key={`viagem-${index}`} variant="outline">
+                          {String(item.dia).slice(0, 10)} · {item.total} viagem(ns)
+                        </Badge>
+                      ))}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {receitaPorDia.slice(-8).map((item: any, index) => (
+                        <Badge key={`receita-${index}`} variant="secondary">
+                          {String(item.dia).slice(0, 10)} · {formatCurrency(item.total)}
+                        </Badge>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Desempenho por Motorista</CardTitle>
-              <CardDescription>Top 5 motoristas por viagens realizadas</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8 text-muted-foreground">Nenhum dado disponível para o período selecionado</div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+          <TabsContent value="financeiro" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <KpiCard titulo="A Receber" valor={formatCurrency(financeiroData?.totalReceber)} subtitulo="Contas abertas" icon={TrendingUp} cor="green" />
+              <KpiCard titulo="A Pagar" valor={formatCurrency(financeiroData?.totalPagar)} subtitulo="Obrigações abertas" icon={TrendingDown} cor="red" />
+              <KpiCard titulo="Saldo Projetado" valor={formatCurrency(financeiroData?.saldoProjetado)} subtitulo="Receber menos pagar" icon={DollarSign} cor="blue" />
+              <KpiCard titulo="Contas Vencidas" valor={financeiroData?.alertas?.contasVencidas ?? 0} subtitulo={`${financeiroData?.alertas?.contasReceberVencidas ?? 0} a receber vencidas`} icon={AlertTriangle} cor="red" />
+            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Resumo Financeiro</CardTitle>
+                <CardDescription>Caixa, pendências e desempenho por empresa ativa.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {!hasFinanceiro ? (
+                  <EmptyState text="Nenhum dado financeiro cadastrado para a empresa selecionada." />
+                ) : (
+                  <>
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      <div className="rounded-lg border p-3">
+                        <p className="text-xs text-muted-foreground">Adiantamentos pendentes</p>
+                        <p className="text-lg font-semibold">{formatCurrency(financeiroData?.totalAdiantamentos)}</p>
+                      </div>
+                      <div className="rounded-lg border p-3">
+                        <p className="text-xs text-muted-foreground">Viagens concluídas</p>
+                        <p className="text-lg font-semibold">{financeiroData?.viagensConcluidas ?? 0}</p>
+                      </div>
+                      <div className="rounded-lg border p-3">
+                        <p className="text-xs text-muted-foreground">Despesas de viagens</p>
+                        <p className="text-lg font-semibold">{formatCurrency(financeiroData?.totalDespesasMes)}</p>
+                      </div>
+                      <div className="rounded-lg border p-3">
+                        <p className="text-xs text-muted-foreground">Fretes do período</p>
+                        <p className="text-lg font-semibold">{formatCurrency(financeiroData?.totalFreteMes)}</p>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-        {/* Financeiro */}
-        <TabsContent value="financeiro" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <KpiCard
-              titulo="Receita Total"
-              valor={`R$ ${(dadosFinanceiros.receita / 1000).toFixed(1)}k`}
-              subtitulo="Faturamento do período"
-              icon={DollarSign}
-              cor="green"
-            />
-            <KpiCard
-              titulo="Despesas Totais"
-              valor={`R$ ${(dadosFinanceiros.despesas / 1000).toFixed(1)}k`}
-              subtitulo="Custos operacionais"
-              icon={TrendingDown}
-              cor="red"
-            />
-            <KpiCard
-              titulo="Lucro Líquido"
-              valor={`R$ ${(dadosFinanceiros.lucro / 1000).toFixed(1)}k`}
-              subtitulo={`Margem: ${dadosFinanceiros.margemLucro}%`}
-              icon={TrendingUp}
-              cor="blue"
-            />
-            <KpiCard
-              titulo="Contas Vencidas"
-              valor={dadosFinanceiros.contasVencidas}
-              subtitulo={`${dadosFinanceiros.conasVencendo} vencendo em 7 dias`}
-              icon={AlertTriangle}
-              cor="red"
-            />
-          </div>
+          <TabsContent value="rh" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <KpiCard titulo="Colaboradores" valor={rhData?.total ?? 0} subtitulo={`${rhData?.ativos ?? 0} ativos`} icon={Users} cor="blue" />
+              <KpiCard titulo="Motoristas" valor={rhData?.motoristas ?? 0} subtitulo={`${rhData?.ajudantes ?? 0} ajudantes`} icon={Truck} cor="green" />
+              <KpiCard titulo="Folha Ativa" valor={formatCurrency(rhData?.folhaAtiva)} subtitulo="Salários ativos cadastrados" icon={DollarSign} cor="red" />
+              <KpiCard titulo="Alertas Documentais" valor={rhData?.alertasDocumentos ?? 0} subtitulo={`${rhData?.bloqueadosOperacionalmente ?? 0} bloqueados`} icon={AlertTriangle} cor="yellow" />
+            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Folha e Vencimentos</CardTitle>
+                <CardDescription>Competências lançadas e riscos operacionais.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {!hasRh ? (
+                  <EmptyState text="Nenhum colaborador cadastrado para gerar relatório de RH." />
+                ) : (
+                  <>
+                    <div className="flex flex-wrap gap-2">
+                      {(folha.data ?? []).map((item: any) => (
+                        <Badge key={item.referencia} variant="outline">
+                          {item.competencia} · {formatCurrency(item.totalBruto)} · {item.funcionarios} funcionário(s)
+                        </Badge>
+                      ))}
+                    </div>
+                    {rhData?.vencimentos?.length > 0 && (
+                      <div className="space-y-2">
+                        {rhData.vencimentos.slice(0, 5).map((item: any) => (
+                          <div key={item.id} className="flex items-center justify-between rounded-lg border p-3">
+                            <div>
+                              <p className="font-medium">{item.nome}</p>
+                              <p className="text-xs text-muted-foreground">{item.funcao}</p>
+                            </div>
+                            <div className="text-right text-xs text-muted-foreground">
+                              <p>CNH: {item.vencimentoCnh ? String(item.vencimentoCnh).slice(0, 10) : "—"}</p>
+                              <p>ASO: {item.vencimentoAso ? String(item.vencimentoAso).slice(0, 10) : "—"}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Fluxo de Caixa</CardTitle>
-              <CardDescription>Receitas vs Despesas por semana</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8 text-muted-foreground">Nenhum dado disponível para o período selecionado</div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* RH */}
-        <TabsContent value="rh" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <KpiCard
-              titulo="Motoristas Ativos"
-              valor={dadosRH.motoristasAtivos}
-              subtitulo={`${dadosRH.motoristasAfastados} afastados`}
-              icon={Users}
-              cor="blue"
-            />
-            <KpiCard
-              titulo="Rotatividade"
-              valor={`${dadosRH.rotatividade}%`}
-              subtitulo="Turnover mensal"
-              icon={TrendingDown}
-              cor="yellow"
-            />
-            <KpiCard
-              titulo="Custo com Pessoal"
-              valor={`R$ ${(dadosRH.custoRH / 1000).toFixed(1)}k`}
-              subtitulo="Salários e encargos"
-              icon={DollarSign}
-              cor="red"
-            />
-            <KpiCard
-              titulo="Média de Idade"
-              valor={`${dadosRH.mediaIdade} anos`}
-              subtitulo="Perfil da frota"
-              icon={Calendar}
-              cor="purple"
-            />
-          </div>
-        </TabsContent>
-
-        {/* Risco */}
-        <TabsContent value="risco" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <KpiCard
-              titulo="Acidentes"
-              valor={dadosRisco.acidentes}
-              subtitulo="No período selecionado"
-              icon={AlertTriangle}
-              cor="red"
-            />
-            <KpiCard
-              titulo="Multas"
-              valor={dadosRisco.multas}
-              subtitulo="Infrações registradas"
-              icon={AlertTriangle}
-              cor="yellow"
-            />
-            <KpiCard
-              titulo="Manutenções Pendentes"
-              valor={dadosRisco.manutencoesPendentes}
-              subtitulo="Veículos parados ou em risco"
-              icon={Truck}
-              cor="orange"
-            />
-            <KpiCard
-              titulo="Alertas de Segurança"
-              valor={dadosRisco.alertasSeguranca}
-              subtitulo="Telemetria e comportamento"
-              icon={AlertTriangle}
-              cor="red"
-            />
-          </div>
-        </TabsContent>
-      </Tabs>
+          <TabsContent value="ti" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <KpiCard titulo="Chamados Abertos" valor={tiData?.tickets?.abertos ?? 0} subtitulo={`${tiData?.tickets?.ativos ?? 0} ativos`} icon={AlertTriangle} cor="red" />
+              <KpiCard titulo="Em Atendimento" valor={tiData?.tickets?.emAndamento ?? 0} subtitulo="Fila ativa" icon={BarChart3} cor="blue" />
+              <KpiCard titulo="Ativos Online" valor={tiData?.ativos?.online ?? 0} subtitulo={`${tiData?.ativos?.critico ?? 0} críticos`} icon={Users} cor="green" />
+              <KpiCard titulo="Certificados Vencendo" valor={tiData?.certificados?.expirando ?? 0} subtitulo={`${tiData?.certificados?.vencidos ?? 0} vencidos`} icon={AlertTriangle} cor="yellow" />
+            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Resumo da operação de TI</CardTitle>
+                <CardDescription>Indicadores reais do suporte e monitoramento.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {!hasTi ? (
+                  <EmptyState text="Nenhum chamado ou agente suficiente para gerar relatório de TI." />
+                ) : (
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div className="rounded-lg border p-3">
+                      <p className="text-xs text-muted-foreground">SLA em risco</p>
+                        <p className="text-lg font-semibold">{tiData?.certificados?.expirando ?? 0}</p>
+                    </div>
+                    <div className="rounded-lg border p-3">
+                      <p className="text-xs text-muted-foreground">Aguardando usuário</p>
+                        <p className="text-lg font-semibold">{tiData?.ativos?.atencao ?? 0}</p>
+                    </div>
+                    <div className="rounded-lg border p-3">
+                      <p className="text-xs text-muted-foreground">Aguardando TI</p>
+                        <p className="text-lg font-semibold">{tiData?.ativos?.critico ?? 0}</p>
+                    </div>
+                    <div className="rounded-lg border p-3">
+                      <p className="text-xs text-muted-foreground">Resolvidos hoje</p>
+                        <p className="text-lg font-semibold">{tiData?.tickets?.resolvidosHoje ?? 0}</p>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      )}
     </div>
   );
 }
