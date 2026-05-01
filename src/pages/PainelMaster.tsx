@@ -482,6 +482,10 @@ export default function PainelMaster() {
     trpc.master.listCampaigns.useQuery(undefined, { enabled: isMaster });
   const { data: masterLandingPages = [], refetch: refetchMasterLandingPages } =
     trpc.master.listLandingPages.useQuery(undefined, { enabled: isMaster });
+  const { data: masterLeads = [], refetch: refetchMasterLeads } =
+    trpc.master.listLeads.useQuery(undefined, { enabled: isMaster });
+  const { data: masterProposals = [], refetch: refetchMasterProposals } =
+    trpc.master.listProposals.useQuery(undefined, { enabled: isMaster });
 
   const criarEmpresaMut = trpc.empresas.criar.useMutation({
         onSuccess: (d) => { toast.success(d.mensagem || "Empresa criada!"); setModalEmpresa(false); setFormEmpresa({ nome: "", cnpj: "", email: "", telefone: "", cidade: "", estado: "", tipoEmpresa: "independente", matrizId: "", grupoId: "" }); refetchEmpresas(); },
@@ -577,6 +581,26 @@ export default function PainelMaster() {
     },
     onError: (e) => toast.error(e.message),
   });
+  const createMasterLeadMut = trpc.master.createLead.useMutation({
+    onSuccess: () => {
+      toast.success("Lead salvo.");
+      setFormLeadMaster({
+        nome: "", empresa: "", contato: "", whatsapp: "", email: "", origem: "", status: "novo", interesse: "", proximaAcao: "", observacoes: "",
+      });
+      refetchMasterLeads(); refetchMasterDashboard();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterProposalMut = trpc.master.createProposal.useMutation({
+    onSuccess: () => {
+      toast.success("Proposta salva.");
+      setFormProposalMaster({
+        titulo: "", valor: "", status: "rascunho", validade: "", descricao: "", observacoes: "", clientId: "", leadId: "",
+      });
+      refetchMasterProposals(); refetchMasterDashboard();
+    },
+    onError: (e) => toast.error(e.message),
+  });
 
   const [formEmpresa, setFormEmpresa] = useState({ nome: "", cnpj: "", email: "", telefone: "", cidade: "", estado: "", tipoEmpresa: "independente" as any, matrizId: "", grupoId: "" });
   const [formClienteMaster, setFormClienteMaster] = useState({ nome: "", empresa: "", contato: "", whatsapp: "", email: "", servicos: "", valorMensal: "", status: "lead", proximaAcao: "", observacoes: "" });
@@ -591,6 +615,12 @@ export default function PainelMaster() {
   const [formLandingPageMaster, setFormLandingPageMaster] = useState({
     nome: "", url: "", dominio: "", status: "rascunho", dataPublicacao: "",
     formularioOk: false, whatsappOk: false, pixelInstalado: false, observacoes: "", melhorias: "", clientId: "",
+  });
+  const [formLeadMaster, setFormLeadMaster] = useState({
+    nome: "", empresa: "", contato: "", whatsapp: "", email: "", origem: "", status: "novo", interesse: "", proximaAcao: "", observacoes: "",
+  });
+  const [formProposalMaster, setFormProposalMaster] = useState({
+    titulo: "", valor: "", status: "rascunho", validade: "", descricao: "", observacoes: "", clientId: "", leadId: "",
   });
 
   useEffect(() => {
@@ -1144,6 +1174,134 @@ export default function PainelMaster() {
                       <p className="text-xs text-muted-foreground mt-2">
                         {page.formularioOk ? "Formulario ok" : "Formulario pendente"} · {page.whatsappOk ? "WhatsApp ok" : "WhatsApp pendente"} · {page.pixelInstalado ? "Pixel ok" : "Pixel pendente"}
                       </p>
+                    </div>
+                  ))
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Leads e funil comercial</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><Label>Nome *</Label><Input value={formLeadMaster.nome} onChange={e => setFormLeadMaster(f => ({ ...f, nome: e.target.value }))} /></div>
+                  <div><Label>Empresa</Label><Input value={formLeadMaster.empresa} onChange={e => setFormLeadMaster(f => ({ ...f, empresa: e.target.value }))} /></div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  <div><Label>Contato</Label><Input value={formLeadMaster.contato} onChange={e => setFormLeadMaster(f => ({ ...f, contato: e.target.value }))} /></div>
+                  <div><Label>WhatsApp</Label><Input value={formLeadMaster.whatsapp} onChange={e => setFormLeadMaster(f => ({ ...f, whatsapp: e.target.value }))} /></div>
+                  <div><Label>E-mail</Label><Input value={formLeadMaster.email} onChange={e => setFormLeadMaster(f => ({ ...f, email: e.target.value }))} /></div>
+                  <div><Label>Origem</Label><Input value={formLeadMaster.origem} onChange={e => setFormLeadMaster(f => ({ ...f, origem: e.target.value }))} /></div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <Label>Status</Label>
+                    <Select value={formLeadMaster.status} onValueChange={v => setFormLeadMaster(f => ({ ...f, status: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="novo">Novo</SelectItem>
+                        <SelectItem value="contato">Contato</SelectItem>
+                        <SelectItem value="qualificado">Qualificado</SelectItem>
+                        <SelectItem value="proposta">Proposta</SelectItem>
+                        <SelectItem value="fechado">Fechado</SelectItem>
+                        <SelectItem value="perdido">Perdido</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="md:col-span-2"><Label>Próxima ação</Label><Input value={formLeadMaster.proximaAcao} onChange={e => setFormLeadMaster(f => ({ ...f, proximaAcao: e.target.value }))} /></div>
+                </div>
+                <div><Label>Interesse</Label><Textarea rows={2} value={formLeadMaster.interesse} onChange={e => setFormLeadMaster(f => ({ ...f, interesse: e.target.value }))} /></div>
+                <div className="flex justify-end">
+                  <Button onClick={() => createMasterLeadMut.mutate(formLeadMaster as any)} disabled={createMasterLeadMut.isPending}>
+                    {createMasterLeadMut.isPending ? "Salvando..." : "Salvar lead"}
+                  </Button>
+                </div>
+
+                {!(masterDashboard as any)?.leads?.length ? (
+                  <p className="text-sm text-muted-foreground">Nenhum lead cadastrado ainda.</p>
+                ) : (
+                  ((masterDashboard as any).leads as any[]).map((lead: any) => (
+                    <div key={lead.id} className="rounded-lg border p-3">
+                      <p className="font-medium text-sm">{lead.nome}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{lead.empresa ?? "Sem empresa"} · {lead.status}</p>
+                      {lead.proximaAcao && <p className="text-sm text-muted-foreground mt-2">{lead.proximaAcao}</p>}
+                    </div>
+                  ))
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Propostas</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><Label>Título *</Label><Input value={formProposalMaster.titulo} onChange={e => setFormProposalMaster(f => ({ ...f, titulo: e.target.value }))} /></div>
+                  <div><Label>Valor</Label><Input placeholder="0.00" value={formProposalMaster.valor} onChange={e => setFormProposalMaster(f => ({ ...f, valor: e.target.value }))} /></div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  <div>
+                    <Label>Status</Label>
+                    <Select value={formProposalMaster.status} onValueChange={v => setFormProposalMaster(f => ({ ...f, status: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="rascunho">Rascunho</SelectItem>
+                        <SelectItem value="enviada">Enviada</SelectItem>
+                        <SelectItem value="negociacao">Negociação</SelectItem>
+                        <SelectItem value="aprovada">Aprovada</SelectItem>
+                        <SelectItem value="recusada">Recusada</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div><Label>Validade</Label><Input type="date" value={formProposalMaster.validade} onChange={e => setFormProposalMaster(f => ({ ...f, validade: e.target.value }))} /></div>
+                  <div>
+                    <Label>Cliente</Label>
+                    <Select value={formProposalMaster.clientId || "none"} onValueChange={v => setFormProposalMaster(f => ({ ...f, clientId: v === "none" ? "" : v }))}>
+                      <SelectTrigger><SelectValue placeholder="Opcional" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Nenhum</SelectItem>
+                        {(masterClients as any[]).map((client: any) => <SelectItem key={client.id} value={String(client.id)}>{client.nome}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Lead</Label>
+                    <Select value={formProposalMaster.leadId || "none"} onValueChange={v => setFormProposalMaster(f => ({ ...f, leadId: v === "none" ? "" : v }))}>
+                      <SelectTrigger><SelectValue placeholder="Opcional" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Nenhum</SelectItem>
+                        {(masterLeads as any[]).map((lead: any) => <SelectItem key={lead.id} value={String(lead.id)}>{lead.nome}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div><Label>Descrição</Label><Textarea rows={2} value={formProposalMaster.descricao} onChange={e => setFormProposalMaster(f => ({ ...f, descricao: e.target.value }))} /></div>
+                <div className="flex justify-end">
+                  <Button onClick={() => createMasterProposalMut.mutate({ ...formProposalMaster, clientId: formProposalMaster.clientId ? Number(formProposalMaster.clientId) : undefined, leadId: formProposalMaster.leadId ? Number(formProposalMaster.leadId) : undefined } as any)} disabled={createMasterProposalMut.isPending}>
+                    {createMasterProposalMut.isPending ? "Salvando..." : "Salvar proposta"}
+                  </Button>
+                </div>
+
+                {!(masterDashboard as any)?.propostas?.length ? (
+                  <p className="text-sm text-muted-foreground">Nenhuma proposta cadastrada ainda.</p>
+                ) : (
+                  ((masterDashboard as any).propostas as any[]).map((proposal: any) => (
+                    <div key={proposal.id} className="rounded-lg border p-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="font-medium text-sm">{proposal.titulo}</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {proposal.clienteNome ?? proposal.leadNome ?? "Sem vínculo"} · {proposal.status}
+                          </p>
+                        </div>
+                        {proposal.valor && <span className="font-semibold">{fmtMoeda(proposal.valor)}</span>}
+                      </div>
+                      {proposal.validade && <p className="text-xs text-muted-foreground mt-2">Validade: {fmtData(proposal.validade)}</p>}
                     </div>
                   ))
                 )}

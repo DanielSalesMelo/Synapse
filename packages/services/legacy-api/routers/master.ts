@@ -14,6 +14,8 @@ const FINANCIAL_STATUS_VALUES = ["pendente", "pago", "atrasado", "cancelado"] as
 const CAMPAIGN_PLATFORM_VALUES = ["meta_ads", "google_ads", "google_meu_negocio", "outro"] as const;
 const CAMPAIGN_STATUS_VALUES = ["ativa", "em_revisao", "pausada", "encerrada"] as const;
 const LANDING_PAGE_STATUS_VALUES = ["rascunho", "publicada", "em_ajuste", "pausada"] as const;
+const LEAD_STATUS_VALUES = ["novo", "contato", "qualificado", "proposta", "fechado", "perdido"] as const;
+const PROPOSAL_STATUS_VALUES = ["rascunho", "enviada", "negociacao", "aprovada", "recusada"] as const;
 
 function humanizeArea(area?: string | null) {
   if (area === "vida") return "vida pessoal";
@@ -28,7 +30,7 @@ export const masterRouter = router({
 
     const ownerUserId = ctx.user.id;
 
-    const [tasksResult, remindersResult, financeResult, clientsResult, eventsResult, notesResult, campaignsResult, landingPagesResult] = await Promise.all([
+    const [tasksResult, remindersResult, financeResult, clientsResult, eventsResult, notesResult, campaignsResult, landingPagesResult, leadsResult, proposalsResult] = await Promise.all([
       db.execute(sql`
         SELECT
           count(*)::int AS total,
@@ -105,6 +107,24 @@ export const masterRouter = router({
         WHERE "ownerUserId" = ${ownerUserId}
           AND "deletedAt" IS NULL
       `),
+      db.execute(sql`
+        SELECT
+          count(*)::int AS total,
+          count(*) FILTER (WHERE status IN ('novo','contato','qualificado'))::int AS abertos,
+          count(*) FILTER (WHERE status = 'proposta')::int AS emproposta
+        FROM master_leads
+        WHERE "ownerUserId" = ${ownerUserId}
+          AND "deletedAt" IS NULL
+      `),
+      db.execute(sql`
+        SELECT
+          count(*)::int AS total,
+          count(*) FILTER (WHERE status IN ('enviada','negociacao'))::int AS abertas,
+          count(*) FILTER (WHERE status = 'aprovada')::int AS aprovadas
+        FROM master_proposals
+        WHERE "ownerUserId" = ${ownerUserId}
+          AND "deletedAt" IS NULL
+      `),
     ]);
 
     const tarefasHoje = await db.execute(sql`
@@ -170,6 +190,31 @@ export const masterRouter = router({
       LIMIT 5
     `);
 
+    const leadsRows = await db.execute(sql`
+      SELECT *
+      FROM master_leads
+      WHERE "ownerUserId" = ${ownerUserId}
+        AND "deletedAt" IS NULL
+      ORDER BY
+        CASE status WHEN 'novo' THEN 0 WHEN 'contato' THEN 1 WHEN 'qualificado' THEN 2 WHEN 'proposta' THEN 3 ELSE 4 END,
+        id DESC
+      LIMIT 5
+    `);
+
+    const proposalsRows = await db.execute(sql`
+      SELECT mp.*, mc.nome AS "clienteNome", ml.nome AS "leadNome"
+      FROM master_proposals mp
+      LEFT JOIN master_clients mc ON mc.id = mp."clientId"
+      LEFT JOIN master_leads ml ON ml.id = mp."leadId"
+      WHERE mp."ownerUserId" = ${ownerUserId}
+        AND mp."deletedAt" IS NULL
+      ORDER BY
+        CASE mp.status WHEN 'enviada' THEN 0 WHEN 'negociacao' THEN 1 WHEN 'rascunho' THEN 2 ELSE 3 END,
+        COALESCE(mp.validade, CURRENT_DATE + INTERVAL '365 days') ASC,
+        mp.id DESC
+      LIMIT 5
+    `);
+
     const focoHojeRows = (tarefasHoje as any[]) ?? [];
     const agendaRows = (eventsResult as any[]) ?? [];
     const reminderStats = ((remindersResult as any[])[0] ?? {}) as any;
@@ -219,12 +264,16 @@ export const masterRouter = router({
         clientes: (clientsResult as any[])[0] ?? {},
         campanhas: (campaignsResult as any[])[0] ?? {},
         landingPages: (landingPagesResult as any[])[0] ?? {},
+        leads: (leadsResult as any[])[0] ?? {},
+        propostas: (proposalsResult as any[])[0] ?? {},
       },
       focoHoje: (tarefasHoje as any[]) ?? [],
       recebimentos: (recebimentos as any[]) ?? [],
       clientesCriticos: (clientesCriticos as any[]) ?? [],
       campanhas: (campanhasRows as any[]) ?? [],
       landingPages: (landingPagesRows as any[]) ?? [],
+      leads: (leadsRows as any[]) ?? [],
+      propostas: (proposalsRows as any[]) ?? [],
       agenda: (eventsResult as any[]) ?? [],
       notasRecentes: (notesResult as any[]) ?? [],
       planejamento: {
@@ -693,6 +742,109 @@ export const masterRouter = router({
         titulo: "Landing page registrada",
         mensagem: `${input.nome} foi salva na Central do Daniel.`,
         payload: created ? { landingPageId: created.id, status: input.status } : null,
+      });
+      return created;
+    }),
+
+  listLeads: masterAdminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    return db.execute(sql`
+      SELECT *
+      FROM master_leads
+      WHERE "ownerUserId" = ${ctx.user.id}
+        AND "deletedAt" IS NULL
+      ORDER BY
+        CASE status WHEN 'novo' THEN 0 WHEN 'contato' THEN 1 WHEN 'qualificado' THEN 2 WHEN 'proposta' THEN 3 ELSE 4 END,
+        id DESC
+    `) as unknown as any[];
+  }),
+
+  createLead: masterAdminProcedure
+    .input(z.object({
+      nome: z.string().min(2, "Informe o nome do lead."),
+      empresa: z.string().optional(),
+      contato: z.string().optional(),
+      whatsapp: z.string().optional(),
+      email: z.string().optional(),
+      origem: z.string().optional(),
+      status: z.enum(LEAD_STATUS_VALUES).default("novo"),
+      interesse: z.string().optional(),
+      proximaAcao: z.string().optional(),
+      observacoes: z.string().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_leads (
+          "ownerUserId", nome, empresa, contato, whatsapp, email, origem, status, interesse, "proximaAcao", observacoes
+        ) VALUES (
+          ${ctx.user.id}, ${input.nome}, ${input.empresa ?? null}, ${input.contato ?? null},
+          ${input.whatsapp ?? null}, ${input.email ?? null}, ${input.origem ?? null},
+          ${input.status}, ${input.interesse ?? null}, ${input.proximaAcao ?? null}, ${input.observacoes ?? null}
+        )
+        RETURNING *
+      `);
+      const created = ((res as any[])[0]) ?? null;
+      await createNotification({
+        userId: ctx.user.id,
+        tipo: "master_lead",
+        titulo: "Lead cadastrado",
+        mensagem: `${input.nome} entrou na sua fila comercial.`,
+        payload: created ? { leadId: created.id, status: input.status } : null,
+      });
+      return created;
+    }),
+
+  listProposals: masterAdminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    return db.execute(sql`
+      SELECT mp.*, mc.nome AS "clienteNome", ml.nome AS "leadNome"
+      FROM master_proposals mp
+      LEFT JOIN master_clients mc ON mc.id = mp."clientId"
+      LEFT JOIN master_leads ml ON ml.id = mp."leadId"
+      WHERE mp."ownerUserId" = ${ctx.user.id}
+        AND mp."deletedAt" IS NULL
+      ORDER BY
+        CASE mp.status WHEN 'enviada' THEN 0 WHEN 'negociacao' THEN 1 WHEN 'rascunho' THEN 2 ELSE 3 END,
+        COALESCE(mp.validade, CURRENT_DATE + INTERVAL '365 days') ASC,
+        mp.id DESC
+    `) as unknown as any[];
+  }),
+
+  createProposal: masterAdminProcedure
+    .input(z.object({
+      titulo: z.string().min(2, "Informe o título da proposta."),
+      valor: z.string().optional(),
+      status: z.enum(PROPOSAL_STATUS_VALUES).default("rascunho"),
+      validade: z.string().optional(),
+      descricao: z.string().optional(),
+      observacoes: z.string().optional(),
+      clientId: z.number().optional(),
+      leadId: z.number().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_proposals (
+          "ownerUserId", "clientId", "leadId", titulo, valor, status, validade, descricao, observacoes
+        ) VALUES (
+          ${ctx.user.id}, ${input.clientId ?? null}, ${input.leadId ?? null}, ${input.titulo},
+          ${input.valor ?? null}, ${input.status}, ${input.validade ? new Date(input.validade) : null},
+          ${input.descricao ?? null}, ${input.observacoes ?? null}
+        )
+        RETURNING *
+      `);
+      const created = ((res as any[])[0]) ?? null;
+      await createNotification({
+        userId: ctx.user.id,
+        tipo: "master_proposta",
+        titulo: "Proposta registrada",
+        mensagem: `${input.titulo} foi adicionada ao seu pipeline comercial.`,
+        payload: created ? { proposalId: created.id, status: input.status } : null,
       });
       return created;
     }),
