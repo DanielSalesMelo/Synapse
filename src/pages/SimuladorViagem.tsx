@@ -75,9 +75,22 @@ export default function SimuladorViagem() {
   
   const [mapReady, setMapReady] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
+  const [salvando, setSalvando] = useState(false);
 
   // Data from TRPC
   const { data: veiculos = [] } = trpc.veiculos.list.useQuery({ empresaId: EMPRESA_ID });
+  const historicoQ = trpc.simulador.listHistory.useQuery(
+    { empresaId: EMPRESA_ID, limit: 10 },
+    { enabled: !!EMPRESA_ID }
+  ) as any;
+  const saveSimulation = trpc.simulador.save.useMutation({
+    onSuccess: () => {
+      historicoQ.refetch?.();
+      toast.success("Simulação salva no histórico.");
+    },
+    onError: (error) => toast.error(error.message || "Não foi possível salvar a simulação."),
+    onSettled: () => setSalvando(false),
+  });
 
   // Update consumption when vehicle changes
   useEffect(() => {
@@ -202,6 +215,37 @@ export default function SimuladorViagem() {
     if (destinoInputRef.current) destinoInputRef.current.value = "";
   };
 
+  const salvarSimulacao = () => {
+    const origemAtual = origemInputRef.current?.value || origem;
+    const destinoAtual = destinoInputRef.current?.value || destino;
+    if (!EMPRESA_ID) {
+      toast.error("Selecione uma empresa antes de salvar.");
+      return;
+    }
+    if (!origemAtual || !destinoAtual) {
+      toast.error("Informe origem e destino.");
+      return;
+    }
+    setSalvando(true);
+    saveSimulation.mutate({
+      empresaId: EMPRESA_ID,
+      origem: origemAtual,
+      destino: destinoAtual,
+      distanceKm: Number(distanciaTotal || 0),
+      durationSec: Number(tempoTotal || 0),
+      idaVolta,
+      consumo: Number(consumo) || 0,
+      precoCombustivel: Number(precoCombustivel) || 0,
+      pedagio: Number(pedagioManual) || 0,
+      outrosCustos: Number(outrosCustos) || 0,
+      valorFrete: Number(valorFrete) || 0,
+      custoTotal: Number(custoTotal || 0),
+      lucro: Number(lucro || 0),
+      margem: Number(margem || 0),
+      rotaResumo: rotaAtual?.summary ?? null,
+    });
+  };
+
   // Lógica de Cálculo
   const rotaAtual = rotas[rotaSelecionada];
   const distanciaTotal = rotaAtual ? (idaVolta ? rotaAtual.distanceKm * 2 : rotaAtual.distanceKm) : 0;
@@ -228,9 +272,9 @@ export default function SimuladorViagem() {
             <Button variant="outline" onClick={limpar} className="bg-white border-gray-200 text-gray-600 hover:bg-gray-50">
               <RotateCcw className="w-4 h-4 mr-2" /> Reiniciar
             </Button>
-            <Badge variant="outline" className="bg-white border-gray-200 text-gray-600 px-3">
-              <History className="w-4 h-4 mr-2" /> Histórico em implantação
-            </Badge>
+            <Button variant="outline" onClick={salvarSimulacao} disabled={salvando} className="bg-white border-gray-200 text-gray-600 hover:bg-gray-50">
+              <History className="w-4 h-4 mr-2" /> {salvando ? "Salvando..." : "Salvar simulação"}
+            </Button>
           </div>
         </div>
 
@@ -483,6 +527,32 @@ export default function SimuladorViagem() {
                 </Card>
               </div>
             )}
+
+            <Card className="bg-white border-gray-200 shadow-sm">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-md font-semibold">Histórico de Simulações</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {(historicoQ.data ?? []).map((item: any) => (
+                  <div key={item.id} className="rounded-lg border border-gray-100 p-3">
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="font-semibold text-gray-900">{item.origem} → {item.destino}</p>
+                        <p className="text-xs text-gray-500">
+                          {item.rotaResumo || "Rota manual"} • {fmtKm(Number(item.distanceKm || 0))} • {fmt(item.custoTotal ? Number(item.custoTotal) : 0)}
+                        </p>
+                      </div>
+                      <Badge variant="outline" className="text-xs">
+                        {Number(item.margem || 0).toFixed(1)}%
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+                {(historicoQ.data ?? []).length === 0 && (
+                  <p className="text-sm text-gray-500">Nenhuma simulação salva.</p>
+                )}
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
