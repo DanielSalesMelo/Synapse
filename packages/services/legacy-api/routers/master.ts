@@ -13,6 +13,7 @@ const FINANCIAL_TYPE_VALUES = ["receita", "despesa"] as const;
 const FINANCIAL_STATUS_VALUES = ["pendente", "pago", "atrasado", "cancelado"] as const;
 const CAMPAIGN_PLATFORM_VALUES = ["meta_ads", "google_ads", "google_meu_negocio", "outro"] as const;
 const CAMPAIGN_STATUS_VALUES = ["ativa", "em_revisao", "pausada", "encerrada"] as const;
+const LANDING_PAGE_STATUS_VALUES = ["rascunho", "publicada", "em_ajuste", "pausada"] as const;
 
 function humanizeArea(area?: string | null) {
   if (area === "vida") return "vida pessoal";
@@ -27,7 +28,7 @@ export const masterRouter = router({
 
     const ownerUserId = ctx.user.id;
 
-    const [tasksResult, remindersResult, financeResult, clientsResult, eventsResult, notesResult, campaignsResult] = await Promise.all([
+    const [tasksResult, remindersResult, financeResult, clientsResult, eventsResult, notesResult, campaignsResult, landingPagesResult] = await Promise.all([
       db.execute(sql`
         SELECT
           count(*)::int AS total,
@@ -95,6 +96,15 @@ export const masterRouter = router({
         WHERE "ownerUserId" = ${ownerUserId}
           AND "deletedAt" IS NULL
       `),
+      db.execute(sql`
+        SELECT
+          count(*)::int AS total,
+          count(*) FILTER (WHERE status = 'publicada')::int AS publicadas,
+          count(*) FILTER (WHERE status = 'em_ajuste')::int AS ajustes
+        FROM master_landing_pages
+        WHERE "ownerUserId" = ${ownerUserId}
+          AND "deletedAt" IS NULL
+      `),
     ]);
 
     const tarefasHoje = await db.execute(sql`
@@ -148,6 +158,18 @@ export const masterRouter = router({
       LIMIT 5
     `);
 
+    const landingPagesRows = await db.execute(sql`
+      SELECT mlp.*, cli.nome AS "clienteNome"
+      FROM master_landing_pages mlp
+      LEFT JOIN master_clients cli ON cli.id = mlp."clientId"
+      WHERE mlp."ownerUserId" = ${ownerUserId}
+        AND mlp."deletedAt" IS NULL
+      ORDER BY
+        CASE mlp.status WHEN 'publicada' THEN 0 WHEN 'em_ajuste' THEN 1 WHEN 'rascunho' THEN 2 ELSE 3 END,
+        mlp.id DESC
+      LIMIT 5
+    `);
+
     const focoHojeRows = (tarefasHoje as any[]) ?? [];
     const agendaRows = (eventsResult as any[]) ?? [];
     const reminderStats = ((remindersResult as any[])[0] ?? {}) as any;
@@ -196,11 +218,13 @@ export const masterRouter = router({
         financeiro: (financeResult as any[])[0] ?? {},
         clientes: (clientsResult as any[])[0] ?? {},
         campanhas: (campaignsResult as any[])[0] ?? {},
+        landingPages: (landingPagesResult as any[])[0] ?? {},
       },
       focoHoje: (tarefasHoje as any[]) ?? [],
       recebimentos: (recebimentos as any[]) ?? [],
       clientesCriticos: (clientesCriticos as any[]) ?? [],
       campanhas: (campanhasRows as any[]) ?? [],
+      landingPages: (landingPagesRows as any[]) ?? [],
       agenda: (eventsResult as any[]) ?? [],
       notasRecentes: (notesResult as any[]) ?? [],
       planejamento: {
@@ -614,6 +638,61 @@ export const masterRouter = router({
         titulo: "Campanha registrada",
         mensagem: `${input.nome} foi adicionada ao painel de campanhas.`,
         payload: created ? { campaignId: created.id, plataforma: input.plataforma } : null,
+      });
+      return created;
+    }),
+
+  listLandingPages: masterAdminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    return db.execute(sql`
+      SELECT mlp.*, cli.nome AS "clienteNome"
+      FROM master_landing_pages mlp
+      LEFT JOIN master_clients cli ON cli.id = mlp."clientId"
+      WHERE mlp."ownerUserId" = ${ctx.user.id}
+        AND mlp."deletedAt" IS NULL
+      ORDER BY
+        CASE mlp.status WHEN 'publicada' THEN 0 WHEN 'em_ajuste' THEN 1 WHEN 'rascunho' THEN 2 ELSE 3 END,
+        mlp.id DESC
+    `) as unknown as any[];
+  }),
+
+  createLandingPage: masterAdminProcedure
+    .input(z.object({
+      nome: z.string().min(2, "Informe o nome da landing page."),
+      url: z.string().optional(),
+      dominio: z.string().optional(),
+      status: z.enum(LANDING_PAGE_STATUS_VALUES).default("rascunho"),
+      dataPublicacao: z.string().optional(),
+      formularioOk: z.boolean().default(false),
+      whatsappOk: z.boolean().default(false),
+      pixelInstalado: z.boolean().default(false),
+      observacoes: z.string().optional(),
+      melhorias: z.string().optional(),
+      clientId: z.number().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_landing_pages (
+          "ownerUserId", "clientId", nome, url, dominio, status, "dataPublicacao",
+          "formularioOk", "whatsappOk", "pixelInstalado", observacoes, melhorias
+        ) VALUES (
+          ${ctx.user.id}, ${input.clientId ?? null}, ${input.nome}, ${input.url ?? null},
+          ${input.dominio ?? null}, ${input.status}, ${input.dataPublicacao ? new Date(input.dataPublicacao) : null},
+          ${input.formularioOk}, ${input.whatsappOk}, ${input.pixelInstalado},
+          ${input.observacoes ?? null}, ${input.melhorias ?? null}
+        )
+        RETURNING *
+      `);
+      const created = ((res as any[])[0]) ?? null;
+      await createNotification({
+        userId: ctx.user.id,
+        tipo: "master_landing_page",
+        titulo: "Landing page registrada",
+        mensagem: `${input.nome} foi salva na Central do Daniel.`,
+        payload: created ? { landingPageId: created.id, status: input.status } : null,
       });
       return created;
     }),

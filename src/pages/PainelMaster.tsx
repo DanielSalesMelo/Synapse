@@ -480,6 +480,8 @@ export default function PainelMaster() {
     trpc.master.listReminders.useQuery(undefined, { enabled: isMaster });
   const { data: masterCampaigns = [], refetch: refetchMasterCampaigns } =
     trpc.master.listCampaigns.useQuery(undefined, { enabled: isMaster });
+  const { data: masterLandingPages = [], refetch: refetchMasterLandingPages } =
+    trpc.master.listLandingPages.useQuery(undefined, { enabled: isMaster });
 
   const criarEmpresaMut = trpc.empresas.criar.useMutation({
         onSuccess: (d) => { toast.success(d.mensagem || "Empresa criada!"); setModalEmpresa(false); setFormEmpresa({ nome: "", cnpj: "", email: "", telefone: "", cidade: "", estado: "", tipoEmpresa: "independente", matrizId: "", grupoId: "" }); refetchEmpresas(); },
@@ -564,6 +566,17 @@ export default function PainelMaster() {
     },
     onError: (e) => toast.error(e.message),
   });
+  const createMasterLandingPageMut = trpc.master.createLandingPage.useMutation({
+    onSuccess: () => {
+      toast.success("Landing page salva.");
+      setFormLandingPageMaster({
+        nome: "", url: "", dominio: "", status: "rascunho", dataPublicacao: "",
+        formularioOk: false, whatsappOk: false, pixelInstalado: false, observacoes: "", melhorias: "", clientId: "",
+      });
+      refetchMasterLandingPages(); refetchMasterDashboard();
+    },
+    onError: (e) => toast.error(e.message),
+  });
 
   const [formEmpresa, setFormEmpresa] = useState({ nome: "", cnpj: "", email: "", telefone: "", cidade: "", estado: "", tipoEmpresa: "independente" as any, matrizId: "", grupoId: "" });
   const [formClienteMaster, setFormClienteMaster] = useState({ nome: "", empresa: "", contato: "", whatsapp: "", email: "", servicos: "", valorMensal: "", status: "lead", proximaAcao: "", observacoes: "" });
@@ -574,6 +587,10 @@ export default function PainelMaster() {
   const [formCampaignMaster, setFormCampaignMaster] = useState({
     nome: "", plataforma: "meta_ads", objetivo: "", status: "ativa", orcamento: "",
     custoPorLead: "", ultimaRevisao: "", proximaRevisao: "", resultado: "", pendencias: "", observacoes: "", clientId: "",
+  });
+  const [formLandingPageMaster, setFormLandingPageMaster] = useState({
+    nome: "", url: "", dominio: "", status: "rascunho", dataPublicacao: "",
+    formularioOk: false, whatsappOk: false, pixelInstalado: false, observacoes: "", melhorias: "", clientId: "",
   });
 
   useEffect(() => {
@@ -1047,6 +1064,86 @@ export default function PainelMaster() {
                         Revisão: {fmtData(campaign.proximaRevisao)} {campaign.custoPorLead ? `· CPL ${fmtMoeda(campaign.custoPorLead)}` : ""}
                       </p>
                       {campaign.pendencias && <p className="text-sm text-muted-foreground mt-2">{campaign.pendencias}</p>}
+                    </div>
+                  ))
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Landing pages</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><Label>Nome *</Label><Input value={formLandingPageMaster.nome} onChange={e => setFormLandingPageMaster(f => ({ ...f, nome: e.target.value }))} /></div>
+                  <div>
+                    <Label>Cliente</Label>
+                    <Select value={formLandingPageMaster.clientId || "none"} onValueChange={v => setFormLandingPageMaster(f => ({ ...f, clientId: v === "none" ? "" : v }))}>
+                      <SelectTrigger><SelectValue placeholder="Opcional" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Nenhum</SelectItem>
+                        {(masterClients as any[]).map((client: any) => <SelectItem key={client.id} value={String(client.id)}>{client.nome}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div><Label>URL</Label><Input value={formLandingPageMaster.url} onChange={e => setFormLandingPageMaster(f => ({ ...f, url: e.target.value }))} /></div>
+                  <div><Label>Domínio</Label><Input value={formLandingPageMaster.dominio} onChange={e => setFormLandingPageMaster(f => ({ ...f, dominio: e.target.value }))} /></div>
+                  <div>
+                    <Label>Status</Label>
+                    <Select value={formLandingPageMaster.status} onValueChange={v => setFormLandingPageMaster(f => ({ ...f, status: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="rascunho">Rascunho</SelectItem>
+                        <SelectItem value="publicada">Publicada</SelectItem>
+                        <SelectItem value="em_ajuste">Em ajuste</SelectItem>
+                        <SelectItem value="pausada">Pausada</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  <div><Label>Publicação</Label><Input type="date" value={formLandingPageMaster.dataPublicacao} onChange={e => setFormLandingPageMaster(f => ({ ...f, dataPublicacao: e.target.value }))} /></div>
+                  <label className="flex items-center gap-2 text-sm pt-7"><input type="checkbox" checked={formLandingPageMaster.formularioOk} onChange={e => setFormLandingPageMaster(f => ({ ...f, formularioOk: e.target.checked }))} />Formulário ok</label>
+                  <label className="flex items-center gap-2 text-sm pt-7"><input type="checkbox" checked={formLandingPageMaster.whatsappOk} onChange={e => setFormLandingPageMaster(f => ({ ...f, whatsappOk: e.target.checked }))} />WhatsApp ok</label>
+                  <label className="flex items-center gap-2 text-sm pt-7"><input type="checkbox" checked={formLandingPageMaster.pixelInstalado} onChange={e => setFormLandingPageMaster(f => ({ ...f, pixelInstalado: e.target.checked }))} />Pixel instalado</label>
+                </div>
+                <div><Label>Melhorias futuras</Label><Textarea rows={2} value={formLandingPageMaster.melhorias} onChange={e => setFormLandingPageMaster(f => ({ ...f, melhorias: e.target.value }))} /></div>
+                <div className="flex justify-end">
+                  <Button onClick={() => createMasterLandingPageMut.mutate({ ...formLandingPageMaster, clientId: formLandingPageMaster.clientId ? Number(formLandingPageMaster.clientId) : undefined } as any)} disabled={createMasterLandingPageMut.isPending}>
+                    {createMasterLandingPageMut.isPending ? "Salvando..." : "Salvar landing page"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Páginas recentes</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {!(masterDashboard as any)?.landingPages?.length ? (
+                  <p className="text-sm text-muted-foreground">Nenhuma landing page cadastrada ainda.</p>
+                ) : (
+                  ((masterDashboard as any).landingPages as any[]).map((page: any) => (
+                    <div key={page.id} className="rounded-lg border p-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="font-medium text-sm">{page.nome}</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {page.clienteNome ?? "Sem cliente"} · {page.status}
+                          </p>
+                        </div>
+                        {page.dominio && <span className="text-xs text-muted-foreground">{page.dominio}</span>}
+                      </div>
+                      {page.url && <p className="text-xs text-blue-600 mt-2">{page.url}</p>}
+                      <p className="text-xs text-muted-foreground mt-2">
+                        {page.formularioOk ? "Formulario ok" : "Formulario pendente"} · {page.whatsappOk ? "WhatsApp ok" : "WhatsApp pendente"} · {page.pixelInstalado ? "Pixel ok" : "Pixel pendente"}
+                      </p>
                     </div>
                   ))
                 )}
