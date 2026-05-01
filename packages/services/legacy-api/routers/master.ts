@@ -11,6 +11,8 @@ const PRIORIDADE_VALUES = ["alta", "media", "baixa"] as const;
 const PERIODO_VALUES = ["manha", "tarde", "noite"] as const;
 const FINANCIAL_TYPE_VALUES = ["receita", "despesa"] as const;
 const FINANCIAL_STATUS_VALUES = ["pendente", "pago", "atrasado", "cancelado"] as const;
+const CAMPAIGN_PLATFORM_VALUES = ["meta_ads", "google_ads", "google_meu_negocio", "outro"] as const;
+const CAMPAIGN_STATUS_VALUES = ["ativa", "em_revisao", "pausada", "encerrada"] as const;
 
 function humanizeArea(area?: string | null) {
   if (area === "vida") return "vida pessoal";
@@ -25,7 +27,7 @@ export const masterRouter = router({
 
     const ownerUserId = ctx.user.id;
 
-    const [tasksResult, remindersResult, financeResult, clientsResult, eventsResult, notesResult] = await Promise.all([
+    const [tasksResult, remindersResult, financeResult, clientsResult, eventsResult, notesResult, campaignsResult] = await Promise.all([
       db.execute(sql`
         SELECT
           count(*)::int AS total,
@@ -84,6 +86,15 @@ export const masterRouter = router({
         ORDER BY fixada DESC, "updatedAt" DESC
         LIMIT 5
       `),
+      db.execute(sql`
+        SELECT
+          count(*)::int AS total,
+          count(*) FILTER (WHERE status = 'ativa')::int AS ativas,
+          count(*) FILTER (WHERE "proximaRevisao" IS NOT NULL AND "proximaRevisao" <= CURRENT_DATE + INTERVAL '7 days')::int AS revisar
+        FROM master_campaigns
+        WHERE "ownerUserId" = ${ownerUserId}
+          AND "deletedAt" IS NULL
+      `),
     ]);
 
     const tarefasHoje = await db.execute(sql`
@@ -121,6 +132,19 @@ export const masterRouter = router({
       ORDER BY
         CASE status WHEN 'proposta_enviada' THEN 0 WHEN 'lead' THEN 1 ELSE 2 END,
         id DESC
+      LIMIT 5
+    `);
+
+    const campanhasRows = await db.execute(sql`
+      SELECT mc.*, cli.nome AS "clienteNome"
+      FROM master_campaigns mc
+      LEFT JOIN master_clients cli ON cli.id = mc."clientId"
+      WHERE mc."ownerUserId" = ${ownerUserId}
+        AND mc."deletedAt" IS NULL
+      ORDER BY
+        CASE mc.status WHEN 'ativa' THEN 0 WHEN 'em_revisao' THEN 1 WHEN 'pausada' THEN 2 ELSE 3 END,
+        COALESCE(mc."proximaRevisao", CURRENT_DATE + INTERVAL '365 days') ASC,
+        mc.id DESC
       LIMIT 5
     `);
 
@@ -171,10 +195,12 @@ export const masterRouter = router({
         lembretes: (remindersResult as any[])[0] ?? {},
         financeiro: (financeResult as any[])[0] ?? {},
         clientes: (clientsResult as any[])[0] ?? {},
+        campanhas: (campaignsResult as any[])[0] ?? {},
       },
       focoHoje: (tarefasHoje as any[]) ?? [],
       recebimentos: (recebimentos as any[]) ?? [],
       clientesCriticos: (clientesCriticos as any[]) ?? [],
+      campanhas: (campanhasRows as any[]) ?? [],
       agenda: (eventsResult as any[]) ?? [],
       notasRecentes: (notesResult as any[]) ?? [],
       planejamento: {
@@ -528,6 +554,66 @@ export const masterRouter = router({
         titulo: "Lembrete criado",
         mensagem: `${input.titulo} foi salvo para acompanhamento.`,
         payload: created ? { reminderId: created.id } : null,
+      });
+      return created;
+    }),
+
+  listCampaigns: masterAdminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    return db.execute(sql`
+      SELECT mc.*, cli.nome AS "clienteNome"
+      FROM master_campaigns mc
+      LEFT JOIN master_clients cli ON cli.id = mc."clientId"
+      WHERE mc."ownerUserId" = ${ctx.user.id}
+        AND mc."deletedAt" IS NULL
+      ORDER BY
+        CASE mc.status WHEN 'ativa' THEN 0 WHEN 'em_revisao' THEN 1 WHEN 'pausada' THEN 2 ELSE 3 END,
+        COALESCE(mc."proximaRevisao", CURRENT_DATE + INTERVAL '365 days') ASC,
+        mc.id DESC
+    `) as unknown as any[];
+  }),
+
+  createCampaign: masterAdminProcedure
+    .input(z.object({
+      nome: z.string().min(2, "Informe o nome da campanha."),
+      plataforma: z.enum(CAMPAIGN_PLATFORM_VALUES).default("meta_ads"),
+      objetivo: z.string().optional(),
+      status: z.enum(CAMPAIGN_STATUS_VALUES).default("ativa"),
+      orcamento: z.string().optional(),
+      custoPorLead: z.string().optional(),
+      ultimaRevisao: z.string().optional(),
+      proximaRevisao: z.string().optional(),
+      resultado: z.string().optional(),
+      pendencias: z.string().optional(),
+      observacoes: z.string().optional(),
+      clientId: z.number().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_campaigns (
+          "ownerUserId", "clientId", plataforma, nome, objetivo, status,
+          orcamento, "custoPorLead", "ultimaRevisao", "proximaRevisao",
+          resultado, pendencias, observacoes
+        ) VALUES (
+          ${ctx.user.id}, ${input.clientId ?? null}, ${input.plataforma}, ${input.nome},
+          ${input.objetivo ?? null}, ${input.status}, ${input.orcamento ?? null},
+          ${input.custoPorLead ?? null},
+          ${input.ultimaRevisao ? new Date(input.ultimaRevisao) : null},
+          ${input.proximaRevisao ? new Date(input.proximaRevisao) : null},
+          ${input.resultado ?? null}, ${input.pendencias ?? null}, ${input.observacoes ?? null}
+        )
+        RETURNING *
+      `);
+      const created = ((res as any[])[0]) ?? null;
+      await createNotification({
+        userId: ctx.user.id,
+        tipo: "master_campanha",
+        titulo: "Campanha registrada",
+        mensagem: `${input.nome} foi adicionada ao painel de campanhas.`,
+        payload: created ? { campaignId: created.id, plataforma: input.plataforma } : null,
       });
       return created;
     }),

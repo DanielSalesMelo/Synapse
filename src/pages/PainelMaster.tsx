@@ -15,7 +15,7 @@ import {
   Eye, RefreshCw, Copy, CheckCircle, Key, CreditCard,
   Package, Calendar, AlertTriangle, DollarSign,
   Clock, Star, Check, X, Edit2, Ban,
-  RotateCcw, Receipt, Wallet,
+  RotateCcw, Receipt, Wallet, Megaphone,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useViewAs } from "@/contexts/ViewAsContext";
@@ -478,6 +478,8 @@ export default function PainelMaster() {
     trpc.master.listEvents.useQuery(undefined, { enabled: isMaster });
   const { data: masterReminders = [], refetch: refetchMasterReminders } =
     trpc.master.listReminders.useQuery(undefined, { enabled: isMaster });
+  const { data: masterCampaigns = [], refetch: refetchMasterCampaigns } =
+    trpc.master.listCampaigns.useQuery(undefined, { enabled: isMaster });
 
   const criarEmpresaMut = trpc.empresas.criar.useMutation({
         onSuccess: (d) => { toast.success(d.mensagem || "Empresa criada!"); setModalEmpresa(false); setFormEmpresa({ nome: "", cnpj: "", email: "", telefone: "", cidade: "", estado: "", tipoEmpresa: "independente", matrizId: "", grupoId: "" }); refetchEmpresas(); },
@@ -551,6 +553,17 @@ export default function PainelMaster() {
     },
     onError: (e) => toast.error(e.message),
   });
+  const createMasterCampaignMut = trpc.master.createCampaign.useMutation({
+    onSuccess: () => {
+      toast.success("Campanha salva.");
+      setFormCampaignMaster({
+        nome: "", plataforma: "meta_ads", objetivo: "", status: "ativa", orcamento: "",
+        custoPorLead: "", ultimaRevisao: "", proximaRevisao: "", resultado: "", pendencias: "", observacoes: "", clientId: "",
+      });
+      refetchMasterCampaigns(); refetchMasterDashboard();
+    },
+    onError: (e) => toast.error(e.message),
+  });
 
   const [formEmpresa, setFormEmpresa] = useState({ nome: "", cnpj: "", email: "", telefone: "", cidade: "", estado: "", tipoEmpresa: "independente" as any, matrizId: "", grupoId: "" });
   const [formClienteMaster, setFormClienteMaster] = useState({ nome: "", empresa: "", contato: "", whatsapp: "", email: "", servicos: "", valorMensal: "", status: "lead", proximaAcao: "", observacoes: "" });
@@ -558,6 +571,10 @@ export default function PainelMaster() {
   const [formFinanceMaster, setFormFinanceMaster] = useState({ tipo: "receita", descricao: "", valor: "", categoria: "", status: "pendente", vencimento: "", clientId: "", observacoes: "" });
   const [formEventMaster, setFormEventMaster] = useState({ titulo: "", area: "vida", inicio: "", fim: "", local: "", clientId: "" });
   const [formReminderMaster, setFormReminderMaster] = useState({ titulo: "", lembrarEm: "", descricao: "" });
+  const [formCampaignMaster, setFormCampaignMaster] = useState({
+    nome: "", plataforma: "meta_ads", objetivo: "", status: "ativa", orcamento: "",
+    custoPorLead: "", ultimaRevisao: "", proximaRevisao: "", resultado: "", pendencias: "", observacoes: "", clientId: "",
+  });
 
   useEffect(() => {
     if (!loading && user && (user as any).role !== "master_admin") navigate("/dashboard");
@@ -956,16 +973,80 @@ export default function PainelMaster() {
 
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-base">Notas recentes do Daniel</CardTitle>
+                <CardTitle className="text-base">Campanhas e revisões</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                {!(masterDashboard as any)?.notasRecentes?.length ? (
-                  <p className="text-sm text-muted-foreground">Nenhuma nota recente.</p>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><Label>Campanha *</Label><Input value={formCampaignMaster.nome} onChange={e => setFormCampaignMaster(f => ({ ...f, nome: e.target.value }))} /></div>
+                  <div>
+                    <Label>Cliente</Label>
+                    <Select value={formCampaignMaster.clientId || "none"} onValueChange={v => setFormCampaignMaster(f => ({ ...f, clientId: v === "none" ? "" : v }))}>
+                      <SelectTrigger><SelectValue placeholder="Opcional" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Nenhum</SelectItem>
+                        {(masterClients as any[]).map((client: any) => <SelectItem key={client.id} value={String(client.id)}>{client.nome}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  <div>
+                    <Label>Plataforma</Label>
+                    <Select value={formCampaignMaster.plataforma} onValueChange={v => setFormCampaignMaster(f => ({ ...f, plataforma: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="meta_ads">Meta Ads</SelectItem>
+                        <SelectItem value="google_ads">Google Ads</SelectItem>
+                        <SelectItem value="google_meu_negocio">Google Meu Negócio</SelectItem>
+                        <SelectItem value="outro">Outro</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div><Label>Objetivo</Label><Input value={formCampaignMaster.objetivo} onChange={e => setFormCampaignMaster(f => ({ ...f, objetivo: e.target.value }))} /></div>
+                  <div><Label>Orçamento</Label><Input placeholder="0.00" value={formCampaignMaster.orcamento} onChange={e => setFormCampaignMaster(f => ({ ...f, orcamento: e.target.value }))} /></div>
+                  <div><Label>CPL</Label><Input placeholder="0.00" value={formCampaignMaster.custoPorLead} onChange={e => setFormCampaignMaster(f => ({ ...f, custoPorLead: e.target.value }))} /></div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <Label>Status</Label>
+                    <Select value={formCampaignMaster.status} onValueChange={v => setFormCampaignMaster(f => ({ ...f, status: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ativa">Ativa</SelectItem>
+                        <SelectItem value="em_revisao">Em revisão</SelectItem>
+                        <SelectItem value="pausada">Pausada</SelectItem>
+                        <SelectItem value="encerrada">Encerrada</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div><Label>Última revisão</Label><Input type="date" value={formCampaignMaster.ultimaRevisao} onChange={e => setFormCampaignMaster(f => ({ ...f, ultimaRevisao: e.target.value }))} /></div>
+                  <div><Label>Próxima revisão</Label><Input type="date" value={formCampaignMaster.proximaRevisao} onChange={e => setFormCampaignMaster(f => ({ ...f, proximaRevisao: e.target.value }))} /></div>
+                </div>
+                <div><Label>Pendências</Label><Textarea rows={2} value={formCampaignMaster.pendencias} onChange={e => setFormCampaignMaster(f => ({ ...f, pendencias: e.target.value }))} /></div>
+                <div className="flex justify-end">
+                  <Button onClick={() => createMasterCampaignMut.mutate({ ...formCampaignMaster, clientId: formCampaignMaster.clientId ? Number(formCampaignMaster.clientId) : undefined } as any)} disabled={createMasterCampaignMut.isPending}>
+                    {createMasterCampaignMut.isPending ? "Salvando..." : "Salvar campanha"}
+                  </Button>
+                </div>
+
+                {!(masterDashboard as any)?.campanhas?.length ? (
+                  <p className="text-sm text-muted-foreground">Nenhuma campanha cadastrada ainda.</p>
                 ) : (
-                  (masterDashboard as any).notasRecentes.map((note: any) => (
-                    <div key={note.id} className="rounded-lg bg-muted/40 p-3">
-                      <p className="font-medium text-sm">{note.titulo}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{note.pasta ?? "Geral"} · atualizada em {fmtData(note.updatedAt)}</p>
+                  ((masterDashboard as any).campanhas as any[]).map((campaign: any) => (
+                    <div key={campaign.id} className="rounded-lg border p-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="font-medium text-sm">{campaign.nome}</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {campaign.clienteNome ?? "Sem cliente"} · {campaign.plataforma} · {campaign.status}
+                          </p>
+                        </div>
+                        {campaign.orcamento && <span className="font-semibold">{fmtMoeda(campaign.orcamento)}</span>}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Revisão: {fmtData(campaign.proximaRevisao)} {campaign.custoPorLead ? `· CPL ${fmtMoeda(campaign.custoPorLead)}` : ""}
+                      </p>
+                      {campaign.pendencias && <p className="text-sm text-muted-foreground mt-2">{campaign.pendencias}</p>}
                     </div>
                   ))
                 )}
