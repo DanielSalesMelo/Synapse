@@ -3,6 +3,7 @@ import { z } from "zod";
 import { getDb } from "../db";
 import { sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
+import { createNotification } from "../_core/notifications";
 
 const AREA_VALUES = ["vida", "clientes", "synapse"] as const;
 const TASK_STATUS_VALUES = ["a_fazer", "em_andamento", "concluida", "bloqueada"] as const;
@@ -175,7 +176,15 @@ export const masterRouter = router({
         )
         RETURNING *
       `);
-      return ((res as any[])[0]) ?? null;
+      const created = ((res as any[])[0]) ?? null;
+      await createNotification({
+        userId: ctx.user.id,
+        tipo: "master_cliente",
+        titulo: "Cliente cadastrado",
+        mensagem: `O cliente ${input.nome} foi salvo na Central do Daniel.`,
+        payload: created ? { clientId: created.id } : null,
+      });
+      return created;
     }),
 
   updateClient: masterAdminProcedure
@@ -262,7 +271,15 @@ export const masterRouter = router({
         )
         RETURNING *
       `);
-      return ((res as any[])[0]) ?? null;
+      const created = ((res as any[])[0]) ?? null;
+      await createNotification({
+        userId: ctx.user.id,
+        tipo: "master_tarefa",
+        titulo: "Tarefa criada",
+        mensagem: `A tarefa ${input.titulo} foi adicionada ao seu planejamento.`,
+        payload: created ? { taskId: created.id, area: input.area } : null,
+      });
+      return created;
     }),
 
   updateTaskStatus: masterAdminProcedure
@@ -282,6 +299,13 @@ export const masterRouter = router({
           AND "ownerUserId" = ${ctx.user.id}
           AND "deletedAt" IS NULL
       `);
+      await createNotification({
+        userId: ctx.user.id,
+        tipo: "master_tarefa",
+        titulo: input.status === "concluida" ? "Tarefa concluída" : "Tarefa atualizada",
+        mensagem: input.status === "concluida" ? "Uma tarefa do seu planejamento foi concluída." : "O status de uma tarefa foi atualizado.",
+        payload: { taskId: input.id, status: input.status },
+      });
       return { success: true };
     }),
 
@@ -325,7 +349,15 @@ export const masterRouter = router({
         )
         RETURNING *
       `);
-      return ((res as any[])[0]) ?? null;
+      const created = ((res as any[])[0]) ?? null;
+      await createNotification({
+        userId: ctx.user.id,
+        tipo: "master_financeiro",
+        titulo: input.tipo === "receita" ? "Receita registrada" : "Despesa registrada",
+        mensagem: `${input.descricao} foi salva no financeiro da Central do Daniel.`,
+        payload: created ? { transactionId: created.id, tipo: input.tipo, status: input.status } : null,
+      });
+      return created;
     }),
 
   markFinancialPaid: masterAdminProcedure
@@ -342,6 +374,13 @@ export const masterRouter = router({
           AND "ownerUserId" = ${ctx.user.id}
           AND "deletedAt" IS NULL
       `);
+      await createNotification({
+        userId: ctx.user.id,
+        tipo: "master_financeiro",
+        titulo: input.status === "pago" ? "Lançamento marcado como pago" : "Lançamento cancelado",
+        mensagem: input.status === "pago" ? "Um lançamento financeiro foi baixado." : "Um lançamento financeiro foi cancelado.",
+        payload: { transactionId: input.id, status: input.status },
+      });
       return { success: true };
     }),
 
@@ -385,7 +424,15 @@ export const masterRouter = router({
         )
         RETURNING *
       `);
-      return ((res as any[])[0]) ?? null;
+      const created = ((res as any[])[0]) ?? null;
+      await createNotification({
+        userId: ctx.user.id,
+        tipo: "master_agenda",
+        titulo: "Compromisso criado",
+        mensagem: `${input.titulo} foi adicionado à sua agenda.`,
+        payload: created ? { eventId: created.id, area: input.area } : null,
+      });
+      return created;
     }),
 
   listReminders: masterAdminProcedure.query(async ({ ctx }) => {
@@ -415,6 +462,14 @@ export const masterRouter = router({
         VALUES (${ctx.user.id}, ${input.titulo}, ${input.descricao ?? null}, ${new Date(input.lembrarEm)})
         RETURNING *
       `);
-      return ((res as any[])[0]) ?? null;
+      const created = ((res as any[])[0]) ?? null;
+      await createNotification({
+        userId: ctx.user.id,
+        tipo: "master_lembrete",
+        titulo: "Lembrete criado",
+        mensagem: `${input.titulo} foi salvo para acompanhamento.`,
+        payload: created ? { reminderId: created.id } : null,
+      });
+      return created;
     }),
 });

@@ -40,6 +40,7 @@ import { notasRouter } from "./routers/notas";
 import { tarefasRouter } from "./routers/tarefas";
 import { agentRouter } from "./routers/agent";
 import { masterRouter } from "./routers/master";
+import { notificationsRouter } from "./routers/notifications";
 
 export const appRouter = router({
   system: systemRouter,
@@ -84,6 +85,7 @@ export const appRouter = router({
   tarefas: tarefasRouter,
   agent: agentRouter,
   master: masterRouter,
+  notifications: notificationsRouter,
 });
 
 export type AppRouter = typeof appRouter;

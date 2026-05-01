@@ -253,10 +253,11 @@ function Sidebar({
   const conversationsQ = trpc.chat.listConversations.useQuery(undefined, { refetchInterval: 15000 });
   const tiUnreadQ = trpc.ti.getUnreadCount.useQuery(undefined, { refetchInterval: 30000 });
   const tiAlertsQ = trpc.ti.listAlertas.useQuery({ limit: 10 }, { refetchInterval: 30000 });
+  const persistedNotifsQ = trpc.notifications.unreadCount.useQuery(undefined, { refetchInterval: 15000 });
   const chatUnread = (conversationsQ.data ?? []).length;
   const tiOpen = Number(tiUnreadQ.data?.tickets ?? 0);
   const tiCritical = (tiAlertsQ.data ?? []).filter((a: any) => a.severidade === "critico").length;
-  const totalNotifs = chatUnread + tiOpen + tiCritical;
+  const totalNotifs = Number(persistedNotifsQ.data?.total ?? 0) || (chatUnread + tiOpen + tiCritical);
 
   // Atualiza título da aba com contador de notificações
   useEffect(() => {
@@ -636,18 +637,31 @@ function NotificationBell() {
   const [, navigate] = useLocation();
   const [open, setOpen] = useState(false);
   const [dismissedIds, setDismissedIds] = useState<number[]>([]);
-  const [readIds, setReadIds] = useState<number[]>([]);
+  const notificationsQ = trpc.notifications.list.useQuery({ limit: 20 }, { refetchInterval: 15000 });
+  const unreadQ = trpc.notifications.unreadCount.useQuery(undefined, { refetchInterval: 15000 });
+  const markReadMutation = trpc.notifications.markRead.useMutation();
+  const markAllReadMutation = trpc.notifications.markAllRead.useMutation();
+  const utils = trpc.useUtils();
   const conversationsQ = trpc.chat.listConversations.useQuery(undefined, { refetchInterval: 15000 });
   const ticketsQ = trpc.ti.listTickets.useQuery({ status: "aberto" }, { refetchInterval: 15000 });
   const alertasQ = trpc.ti.listAlertas.useQuery({ limit: 10 }, { refetchInterval: 15000 });
 
-  const notifs: Notification[] = [
+  const persistedNotifs: Notification[] = ((notificationsQ.data ?? []) as any[]).map((n: any) => ({
+    id: Number(n.id),
+    tipo: n.tipo?.includes("financeiro") ? "sistema" : n.tipo?.includes("agenda") || n.tipo?.includes("lembrete") ? "sistema" : "sistema",
+    titulo: n.titulo,
+    descricao: n.mensagem,
+    lido: !!n.readAt,
+    createdAt: new Date(n.createdAt || Date.now()),
+  }));
+
+  const fallbackNotifs: Notification[] = [
     ...(alertasQ.data ?? []).map((alerta: any) => ({
       id: Number(`1${alerta.id}`),
       tipo: alerta.severidade === "critico" ? "alerta" : "ti",
       titulo: alerta.hostname ? `Alerta em ${alerta.hostname}` : "Alerta de monitoramento",
       descricao: alerta.descricao || alerta.mensagem || alerta.tipo || "Evento registrado no monitoramento",
-      lido: readIds.includes(Number(`1${alerta.id}`)),
+      lido: false,
       createdAt: new Date(alerta.ocorridoEm || alerta.criadoEm || Date.now()),
     })),
     ...(ticketsQ.data ?? []).slice(0, 5).map((ticket: any) => ({
@@ -655,7 +669,7 @@ function NotificationBell() {
       tipo: "chamado",
       titulo: ticket.protocolo ? `Chamado ${ticket.protocolo}` : `Chamado #${ticket.id}`,
       descricao: ticket.titulo || ticket.descricao || "Chamado em aberto",
-      lido: readIds.includes(Number(`2${ticket.id}`)),
+      lido: false,
       createdAt: new Date(ticket.updatedAt || ticket.createdAt || Date.now()),
     })),
     ...(conversationsQ.data ?? []).slice(0, 5).map((conv: any) => ({
@@ -663,18 +677,29 @@ function NotificationBell() {
       tipo: "mensagem",
       titulo: conv.displayName || "Conversa recente",
       descricao: conv.isGroup ? "Grupo com atividade recente" : "Conversa disponível no chat",
-      lido: readIds.includes(Number(`3${conv.id}`)),
+      lido: false,
       createdAt: new Date(conv.lastMessageAt || Date.now()),
     })),
-  ]
+  ];
+
+  const notifs: Notification[] = (persistedNotifs.length > 0 ? persistedNotifs : fallbackNotifs)
     .filter((notif) => !dismissedIds.includes(notif.id))
     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
     .slice(0, 12);
 
-  const unread = notifs.filter((n) => !n.lido).length;
+  const unread = Number(unreadQ.data?.total ?? 0) || notifs.filter((n) => !n.lido).length;
 
-  const markAllRead = () => setReadIds(notifs.map((notif) => notif.id));
-  const markRead = (id: number) => setReadIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
+  const markAllRead = async () => {
+    await markAllReadMutation.mutateAsync();
+    await utils.notifications.list.invalidate();
+    await utils.notifications.unreadCount.invalidate();
+  };
+  const markRead = async (id: number) => {
+    if (String(id).startsWith("1") || String(id).startsWith("2") || String(id).startsWith("3")) return;
+    await markReadMutation.mutateAsync({ id });
+    await utils.notifications.list.invalidate();
+    await utils.notifications.unreadCount.invalidate();
+  };
   const removeNotif = (id: number) => setDismissedIds((prev) => [...prev, id]);
 
   const iconMap = {
@@ -743,10 +768,11 @@ function NotificationBell() {
                 notifs.map((n) => (
                   <div
                     key={n.id}
-                    onClick={() => {
-                      markRead(n.id);
+                    onClick={async () => {
+                      await markRead(n.id);
                       if (n.tipo === "mensagem") navigate("/chat");
                       if (n.tipo === "chamado" || n.tipo === "ti" || n.tipo === "alerta") navigate("/ti/dashboard");
+                      if (n.tipo === "sistema") navigate("/master/painel");
                       setOpen(false);
                     }}
                     className={`flex items-start gap-3 px-4 py-3 border-b border-border/50 cursor-pointer transition-colors hover:bg-accent/50 ${
