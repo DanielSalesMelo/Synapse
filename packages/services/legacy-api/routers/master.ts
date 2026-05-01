@@ -12,6 +12,12 @@ const PERIODO_VALUES = ["manha", "tarde", "noite"] as const;
 const FINANCIAL_TYPE_VALUES = ["receita", "despesa"] as const;
 const FINANCIAL_STATUS_VALUES = ["pendente", "pago", "atrasado", "cancelado"] as const;
 
+function humanizeArea(area?: string | null) {
+  if (area === "vida") return "vida pessoal";
+  if (area === "clientes") return "clientes";
+  return "Synapse";
+}
+
 export const masterRouter = router({
   dashboard: masterAdminProcedure.query(async ({ ctx }) => {
     const db = await getDb();
@@ -118,6 +124,47 @@ export const masterRouter = router({
       LIMIT 5
     `);
 
+    const focoHojeRows = (tarefasHoje as any[]) ?? [];
+    const agendaRows = (eventsResult as any[]) ?? [];
+    const reminderStats = ((remindersResult as any[])[0] ?? {}) as any;
+    const taskStats = ((tasksResult as any[])[0] ?? {}) as any;
+    const financeStats = ((financeResult as any[])[0] ?? {}) as any;
+    const clientesRows = (clientesCriticos as any[]) ?? [];
+
+    const topTasks = focoHojeRows.slice(0, 3).map((task: any) => task.titulo);
+    const hasAtrasados = Number(financeStats.atrasados ?? 0) > 0;
+    const firstEvento = agendaRows[0];
+    const firstClientAction = clientesRows.find((client: any) => client.proximaAcao);
+
+    const resumoPartes = topTasks.length
+      ? topTasks
+      : [
+          hasAtrasados ? "regularizar recebimentos atrasados" : null,
+          firstClientAction ? `agir com ${firstClientAction.nome}` : null,
+          firstEvento ? `preparar ${firstEvento.titulo}` : null,
+        ].filter(Boolean) as string[];
+
+    const resumo =
+      resumoPartes.length > 0
+        ? `Daniel, hoje recomendo focar em ${resumoPartes.slice(0, 3).join(", ")}.`
+        : "Daniel, hoje o melhor passo é cadastrar as primeiras tarefas, clientes e compromissos para o sistema conseguir priorizar seu dia.";
+
+    const proximaAcao = topTasks[0]
+      ? `Comece por: ${topTasks[0]}.`
+      : hasAtrasados
+        ? "Comece cobrando os recebimentos atrasados."
+        : firstClientAction?.proximaAcao
+          ? `Comece pelo cliente ${firstClientAction.nome}: ${firstClientAction.proximaAcao}.`
+          : firstEvento
+            ? `Comece se preparando para o compromisso ${firstEvento.titulo}.`
+            : "Comece criando a primeira tarefa prioritária do dia.";
+
+    const excessoTarefas = Number(taskStats.abertas ?? 0) + Number(taskStats.andamento ?? 0) > 8;
+    const alertas: string[] = [];
+    if (excessoTarefas) alertas.push("Você está com muitas tarefas abertas. Reduza o foco para no máximo 5 prioridades.");
+    if (hasAtrasados) alertas.push("Existem recebimentos ou pagamentos atrasados na sua central.");
+    if (Number(reminderStats.hoje ?? 0) > 3) alertas.push("Há vários lembretes para hoje. Vale reorganizar a agenda.");
+
     return {
       stats: {
         tarefas: (tasksResult as any[])[0] ?? {},
@@ -130,6 +177,18 @@ export const masterRouter = router({
       clientesCriticos: (clientesCriticos as any[]) ?? [],
       agenda: (eventsResult as any[]) ?? [],
       notasRecentes: (notesResult as any[]) ?? [],
+      planejamento: {
+        resumo,
+        proximaAcao,
+        microtarefas: focoHojeRows.slice(0, 5).map((task: any) => ({
+          id: task.id,
+          titulo: task.titulo,
+          area: humanizeArea(task.area),
+          periodo: task.periodo,
+          prioridade: task.prioridade,
+        })),
+        alertas,
+      },
     };
   }),
 

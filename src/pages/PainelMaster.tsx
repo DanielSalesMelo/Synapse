@@ -634,9 +634,21 @@ export default function PainelMaster() {
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             <Card className="xl:col-span-2">
               <CardHeader className="pb-3">
-                <CardTitle className="text-base">O que fazer agora</CardTitle>
+                <CardTitle className="text-base">Planejamento do dia</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
+                <div className="rounded-xl border bg-muted/30 p-4">
+                  <p className="text-sm leading-6">
+                    {(masterDashboard as any)?.planejamento?.resumo ?? "Cadastre tarefas, clientes e agenda para o Synapse montar seu plano."}
+                  </p>
+                  <p className="text-sm font-medium mt-3">
+                    {(masterDashboard as any)?.planejamento?.proximaAcao ?? "Defina a primeira prioridade do dia."}
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button size="sm">Planejar meu dia</Button>
+                  <Button size="sm" variant="outline">O que faço agora?</Button>
+                </div>
                 {!(masterDashboard as any)?.focoHoje?.length ? (
                   <p className="text-sm text-muted-foreground">Nenhuma tarefa priorizada ainda. Cadastre a primeira tarefa abaixo.</p>
                 ) : (
@@ -665,9 +677,18 @@ export default function PainelMaster() {
 
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-base">Agenda e lembretes</CardTitle>
+                <CardTitle className="text-base">Alertas, agenda e lembretes</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
+                {((masterDashboard as any)?.planejamento?.alertas?.length ?? 0) > 0 && (
+                  <div className="space-y-2">
+                    {((masterDashboard as any)?.planejamento?.alertas ?? []).map((alerta: string, index: number) => (
+                      <div key={`${alerta}-${index}`} className="rounded-lg border border-amber-200 bg-amber-50/50 p-3">
+                        <p className="text-sm text-amber-900">{alerta}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 {!(masterDashboard as any)?.agenda?.length && !(masterReminders as any[])?.length ? (
                   <p className="text-sm text-muted-foreground">Nenhum compromisso ou lembrete cadastrado.</p>
                 ) : (
