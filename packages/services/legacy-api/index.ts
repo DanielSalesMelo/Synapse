@@ -97,31 +97,66 @@ const requireUser = async (req: Request, res: Response, next: NextFunction) => {
 
 const mapLegacyMetric = (payload: any) => {
   const disks = Array.isArray(payload.disks) ? payload.disks : [];
-  const diskTotal = disks.reduce((sum: number, disk: any) => sum + Number(disk.total_gb || 0), 0);
-  const diskUsed = disks.reduce((sum: number, disk: any) => sum + Number(disk.used_gb || 0), 0);
+  const diskTotalFromArray = disks.reduce((sum: number, disk: any) => sum + Number(disk.total_gb || 0), 0);
+  const diskUsedFromArray = disks.reduce((sum: number, disk: any) => sum + Number(disk.used_gb || 0), 0);
   const tempGroups = payload.temperatures ? Object.values(payload.temperatures) : [];
   const firstTempGroup = Array.isArray(tempGroups[0]) ? (tempGroups[0] as any[]) : [];
   const firstTemp = firstTempGroup[0]?.current ?? null;
+  const topProcesses = Array.isArray(payload.top_processes)
+    ? payload.top_processes
+    : Array.isArray(payload.topProcessos)
+      ? payload.topProcessos
+      : Array.isArray(payload.processes)
+        ? payload.processes
+        : [];
+
+  const diskTotal = diskTotalFromArray || Number(payload.disk_total_gb || payload.disco_total_gb || 0);
+  const diskUsed = diskUsedFromArray || Number(payload.disk_used_gb || payload.disco_usado_gb || 0);
+  const cpuUso = payload.cpu?.percent ?? payload.cpu_percent ?? payload.cpu_uso ?? null;
+  const cpuFreqMhz = payload.cpu?.freq_mhz ?? payload.cpu_freq_mhz ?? payload.cpu_freq ?? payload.cpu_freq_mhz ?? null;
+  const ramTotalMb = payload.ram?.total_gb
+    ? Math.round(Number(payload.ram.total_gb) * 1024)
+    : payload.memory_total_mb ?? payload.ram_total_mb ?? null;
+  const ramUsadaMb = payload.ram?.used_gb
+    ? Math.round(Number(payload.ram.used_gb) * 1024)
+    : payload.memory_used_mb ?? payload.ram_usada_mb ?? null;
+  const ramUsoPct = payload.ram?.percent ?? payload.memory_percent ?? payload.ram_uso_pct ?? null;
+  const redeEnviadoKb = payload.network?.bytes_sent_mb
+    ? Number(payload.network.bytes_sent_mb) * 1024
+    : payload.bytes_sent_kb ?? payload.rede_enviado_kb ?? null;
+  const redeRecebidoKb = payload.network?.bytes_recv_mb
+    ? Number(payload.network.bytes_recv_mb) * 1024
+    : payload.bytes_recv_kb ?? payload.rede_recebido_kb ?? null;
+  const latenciaMs = payload.network?.latency_ms ?? payload.network_latency_ms ?? payload.latencia_ms ?? null;
+  const usuarioLogado = payload.logged_user ?? payload.user_name ?? payload.usuario_logado ?? null;
+  const uptime = payload.uptime_hours
+    ? Math.round(Number(payload.uptime_hours) * 3600)
+    : payload.uptime ?? null;
+
+  const collectedAtSource = payload.timestamp || payload.coletado_em;
+  const coletadoEm = collectedAtSource
+    ? new Date(collectedAtSource).toISOString()
+    : new Date().toISOString();
 
   return {
-    coletadoEm: payload.timestamp ? new Date(payload.timestamp) : new Date(),
-    cpuUso: payload.cpu?.percent ?? null,
-    cpuTemp: firstTemp,
-    cpuFreqMhz: payload.cpu?.freq_mhz ?? null,
-    ramTotalMb: payload.ram?.total_gb ? Math.round(Number(payload.ram.total_gb) * 1024) : null,
-    ramUsadaMb: payload.ram?.used_gb ? Math.round(Number(payload.ram.used_gb) * 1024) : null,
-    ramUsoPct: payload.ram?.percent ?? null,
+    coletadoEm,
+    cpuUso,
+    cpuTemp: firstTemp ?? payload.cpu_temp ?? null,
+    cpuFreqMhz,
+    ramTotalMb,
+    ramUsadaMb,
+    ramUsoPct,
     discoTotalGb: diskTotal || null,
     discoUsadoGb: diskUsed || null,
-    discoUsoPct: diskTotal > 0 ? Number(((diskUsed / diskTotal) * 100).toFixed(2)) : null,
-    redeEnviadoKb: payload.network?.bytes_sent_mb ? Number(payload.network.bytes_sent_mb) * 1024 : null,
-    redeRecebidoKb: payload.network?.bytes_recv_mb ? Number(payload.network.bytes_recv_mb) * 1024 : null,
-    latenciaMs: payload.network?.latency_ms ?? null,
-    processos: Array.isArray(payload.top_processes) ? payload.top_processes.length : null,
-    anydeskId: payload.anydesk_id ?? null,
-    usuarioLogado: payload.logged_user ?? null,
-    uptime: payload.uptime_hours ? Math.round(Number(payload.uptime_hours) * 3600) : null,
-    topProcessos: payload.top_processes ? JSON.stringify(payload.top_processes) : null,
+    discoUsoPct: payload.disk_percent ?? payload.disco_uso_pct ?? (diskTotal > 0 ? Number(((diskUsed / diskTotal) * 100).toFixed(2)) : null),
+    redeEnviadoKb,
+    redeRecebidoKb,
+    latenciaMs,
+    processos: payload.processos ?? (topProcesses.length || null),
+    anydeskId: payload.anydesk_id ?? payload.anydeskId ?? null,
+    usuarioLogado,
+    uptime,
+    topProcessos: topProcesses.length ? JSON.stringify(topProcesses) : null,
   };
 };
 
@@ -193,6 +228,10 @@ app.post("/api/agents/generate-pairing-code", requireUser, async (req, res) => {
 });
 
 app.get("/api/agent/download/windows", (_req, res) => {
+  res.download(path.join(AGENT_DIR, "synapse-agent.exe"), "synapse-agent.exe");
+});
+
+app.get("/api/agent/download/windows-installer", (_req, res) => {
   res.download(path.join(AGENT_DIR, "install_windows.bat"), "instalar_agente.bat");
 });
 
@@ -205,123 +244,130 @@ app.get("/api/agent/download/agent", (_req, res) => {
 });
 
 app.post("/api/agent/pair", async (req, res) => {
-  const client = await getRawClient();
-  if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+  try {
+    const client = await getRawClient();
+    if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
 
-  const pairCode = req.body?.pairCode;
-  const hostname = req.body?.hostname;
-  if (!pairCode || !hostname) {
-    return res.status(400).json({ error: "pairCode e hostname são obrigatórios" });
-  }
+    const pairCode = req.body?.pairCode;
+    const hostname = req.body?.hostname;
+    if (!pairCode || !hostname) {
+      return res.status(400).json({ error: "pairCode e hostname são obrigatórios" });
+    }
 
-  const pairings = await client`
-    SELECT * FROM agent_pairing_codes
-    WHERE codigo=${pairCode}
-      AND ("usado"=false OR "is_used"=false)
-      AND "expiresAt" > NOW()
-    LIMIT 1
-  `;
-  const pairing = pairings[0];
-  if (!pairing) {
-    return res.status(404).json({ error: "Código inválido ou expirado" });
-  }
+    const pairings = await client`
+      SELECT * FROM agent_pairing_codes
+      WHERE codigo=${pairCode}
+        AND ("usado"=false OR "is_used"=false)
+        AND "expiresAt" > NOW()
+      LIMIT 1
+    `;
+    const pairing = pairings[0];
+    if (!pairing) {
+      return res.status(404).json({ error: "Código inválido ou expirado" });
+    }
 
-  const token = `agent_${pairing.empresaId}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
-  const fingerprint = req.body?.fingerprint || `${hostname}:${req.body?.platform?.machine || ""}:${req.body?.platform?.processor || ""}`;
+    const token = `agent_${pairing.empresaId}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+    const fingerprint = req.body?.fingerprint || `${hostname}:${req.body?.platform?.machine || ""}:${req.body?.platform?.processor || ""}`;
 
-  const existingRows = await client`
-    SELECT * FROM monitor_agentes
-    WHERE "empresaId"=${pairing.empresaId}
-      AND (fingerprint=${fingerprint} OR hostname=${hostname})
-    LIMIT 1
-  `.catch(() => []);
+    const existingRows = await client`
+      SELECT * FROM monitor_agentes
+      WHERE "empresaId"=${pairing.empresaId}
+        AND (fingerprint=${fingerprint} OR hostname=${hostname})
+      LIMIT 1
+    `.catch(() => []);
 
-  let deviceId = existingRows[0]?.id;
+    let deviceId = existingRows[0]?.id;
 
-  if (deviceId) {
+    if (deviceId) {
+      await client`
+        UPDATE monitor_agentes
+        SET hostname=${hostname},
+            ip=${req.body?.ip || null},
+            so=${req.body?.platform?.os || req.body?.so || null},
+            "versaoAgente"=${req.body?.agentVersion || req.body?.versao_agente || "1.0.0"},
+            token=${token},
+            fingerprint=${fingerprint},
+            "pairingCode"=${pairCode},
+            status='online',
+            online=true,
+            ativo=true,
+            "ultimoContato"=NOW(),
+            "updatedAt"=NOW()
+        WHERE id=${deviceId}
+      `;
+    } else {
+      const inserted = await client`
+        INSERT INTO monitor_agentes (
+          "empresaId", hostname, ip, so, "versaoAgente", token,
+          "ultimoContato", online, ativo, "createdAt", "updatedAt",
+          status, "pairingCode", fingerprint, user_id, department_id
+        )
+        VALUES (
+          ${pairing.empresaId}, ${hostname}, ${req.body?.ip || null},
+          ${req.body?.platform?.os || req.body?.so || null},
+          ${req.body?.agentVersion || req.body?.versao_agente || "1.0.0"},
+          ${token}, NOW(), true, true, NOW(), NOW(),
+          'online', ${pairCode}, ${fingerprint}, ${pairing.user_id || null}, ${pairing.department_id || null}
+        )
+        RETURNING id
+      `;
+      deviceId = inserted[0]?.id;
+    }
+
     await client`
-      UPDATE monitor_agentes
-      SET hostname=${hostname},
-          ip=${req.body?.ip || null},
-          so=${req.body?.platform?.os || req.body?.so || null},
-          "versaoAgente"=${req.body?.agentVersion || req.body?.versao_agente || "1.0.0"},
-          token=${token},
-          fingerprint=${fingerprint},
-          "pairingCode"=${pairCode},
-          status='online',
-          online=true,
-          ativo=true,
-          "ultimoContato"=NOW(),
-          "updatedAt"=NOW()
-      WHERE id=${deviceId}
+      UPDATE agent_pairing_codes
+      SET "usado"=true, is_used=true, "agenteId"=${deviceId}, "usadoEm"=NOW(), "hostnameVinculado"=${hostname}
+      WHERE id=${pairing.id}
     `;
-  } else {
-    const inserted = await client`
-      INSERT INTO monitor_agentes (
-        "empresaId", hostname, ip, so, "versaoAgente", token,
-        "ultimoContato", online, ativo, "createdAt", "updatedAt",
-        status, "pairingCode", fingerprint, user_id, department_id
-      )
-      VALUES (
-        ${pairing.empresaId}, ${hostname}, ${req.body?.ip || null},
-        ${req.body?.platform?.os || req.body?.so || null},
-        ${req.body?.agentVersion || req.body?.versao_agente || "1.0.0"},
-        ${token}, NOW(), true, true, NOW(), NOW(),
-        'online', ${pairCode}, ${fingerprint}, ${pairing.user_id || null}, ${pairing.department_id || null}
-      )
-      RETURNING id
-    `;
-    deviceId = inserted[0]?.id;
+
+    return res.json({ token, deviceId });
+  } catch (error) {
+    console.error("[Agent Pair] Falha:", error);
+    return res.status(500).json({ error: "PAIR_FAILED" });
   }
-
-  await client`
-    UPDATE agent_pairing_codes
-    SET "usado"=true, is_used=true, "agenteId"=${deviceId}, "usadoEm"=NOW(), "hostnameVinculado"=${hostname}
-    WHERE id=${pairing.id}
-  `;
-
-  res.json({ token, deviceId });
 });
 
 app.post("/api/agent/metrics", async (req, res) => {
-  const authHeader = req.headers.authorization || "";
-  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
-  if (!token) return res.status(401).json({ error: "TOKEN_REQUIRED" });
+  try {
+    const authHeader = req.headers.authorization || "";
+    const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+    if (!token) return res.status(401).json({ error: "TOKEN_REQUIRED" });
 
-  const client = await getRawClient();
-  if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+    const client = await getRawClient();
+    if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
 
-  const agents = await client`SELECT * FROM monitor_agentes WHERE token=${token} LIMIT 1`.catch(() => []);
-  const agent = agents[0];
-  if (!agent) return res.status(401).json({ error: "TOKEN_INVALIDO" });
+    const agents = await client`SELECT * FROM monitor_agentes WHERE token=${token} LIMIT 1`.catch(() => []);
+    const agent = agents[0];
+    if (!agent) return res.status(401).json({ error: "TOKEN_INVALIDO" });
 
-  const metric = mapLegacyMetric(req.body ?? {});
+    const metric = mapLegacyMetric(req.body ?? {});
 
-  await client`
-    INSERT INTO monitor_metricas (
-      "agenteId", "empresaId", "coletadoEm", "cpuUso", "cpuTemp", "cpuFreqMhz",
-      "ramTotalMb", "ramUsadaMb", "ramUsoPct", "discoTotalGb", "discoUsadoGb",
-      "discoUsoPct", "redeEnviadoKb", "redeRecebidoKb", "latenciaMs", processos,
-      "anydeskId", "usuarioLogado", uptime, "topProcessos"
-    )
-    VALUES (
-      ${agent.id}, ${agent.empresaId}, ${metric.coletadoEm}, ${metric.cpuUso}, ${metric.cpuTemp}, ${metric.cpuFreqMhz},
-      ${metric.ramTotalMb}, ${metric.ramUsadaMb}, ${metric.ramUsoPct}, ${metric.discoTotalGb}, ${metric.discoUsadoGb},
-      ${metric.discoUsoPct}, ${metric.redeEnviadoKb}, ${metric.redeRecebidoKb}, ${metric.latenciaMs}, ${metric.processos},
-      ${metric.anydeskId}, ${metric.usuarioLogado}, ${metric.uptime}, ${metric.topProcessos}
-    )
-  `.catch(async (error) => {
-    console.error("[Agent Metrics] Falha ao inserir métricas:", error);
-    throw error;
-  });
+    await client`
+      INSERT INTO monitor_metricas (
+        "agenteId", "empresaId", "coletadoEm", "cpuUso", "cpuTemp", "cpuFreqMhz",
+        "ramTotalMb", "ramUsadaMb", "ramUsoPct", "discoTotalGb", "discoUsadoGb",
+        "discoUsoPct", "redeEnviadoKb", "redeRecebidoKb", "latenciaMs", processos,
+        "anydeskId", "usuarioLogado", uptime, "topProcessos"
+      )
+      VALUES (
+        ${agent.id}, ${agent.empresaId}, ${metric.coletadoEm}, ${metric.cpuUso}, ${metric.cpuTemp}, ${metric.cpuFreqMhz},
+        ${metric.ramTotalMb}, ${metric.ramUsadaMb}, ${metric.ramUsoPct}, ${metric.discoTotalGb}, ${metric.discoUsadoGb},
+        ${metric.discoUsoPct}, ${metric.redeEnviadoKb}, ${metric.redeRecebidoKb}, ${metric.latenciaMs}, ${metric.processos},
+        ${metric.anydeskId}, ${metric.usuarioLogado}, ${metric.uptime}, ${metric.topProcessos}
+      )
+    `;
 
-  await client`
-    UPDATE monitor_agentes
-    SET status='online', online=true, "ultimoContato"=NOW(), "updatedAt"=NOW()
-    WHERE id=${agent.id}
-  `;
+    await client`
+      UPDATE monitor_agentes
+      SET status='online', online=true, "ultimoContato"=NOW(), "updatedAt"=NOW()
+      WHERE id=${agent.id}
+    `;
 
-  res.json({ success: true });
+    return res.json({ success: true });
+  } catch (error) {
+    console.error("[Agent Metrics] Falha:", error);
+    return res.status(500).json({ error: "METRICS_FAILED" });
+  }
 });
 
 app.use(

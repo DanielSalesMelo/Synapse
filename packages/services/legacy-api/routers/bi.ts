@@ -4,6 +4,7 @@ import { getDb } from "../db";
 import { biDashboards, biWidgets, viagens, pedidos, contasPagar, contasReceber, funcionarios, veiculos, leads, clientes } from "../drizzle/schema";
 import { eq, and, desc, isNull, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
+import { resolveAccessibleEmpresaId } from "../_core/access";
 
 export const biRouter = router({
   // ─── DASHBOARDS ────────────────────────────────────────────────────────────
@@ -20,9 +21,9 @@ export const biRouter = router({
   }),
 
   // ─── MÉTRICAS GERAIS (BI automático) ───────────────────────────────────────
-  metricas: protectedProcedure.query(async ({ ctx }) => {
+  metricas: protectedProcedure.input(z.object({ empresaId: z.number().optional() }).optional()).query(async ({ ctx, input }) => {
     const db = await getDb(); if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    const empresaId = ctx.user.empresaId!;
+    const empresaId = await resolveAccessibleEmpresaId(ctx, input?.empresaId);
 
     // Viagens
     const [viagemStats] = await db.select({
@@ -51,16 +52,16 @@ export const biRouter = router({
     const [vendaStats] = await db.select({
       totalPedidos: sql<number>`count(*)`,
       valorPedidos: sql<string>`coalesce(sum("valorTotal"::numeric), 0)::text`,
-    }).from(pedidos).where(and(eq(pedidos.empresaId, empresaId), isNull(pedidos.deletedAt)));
+    }).from(pedidos).where(and(eq(pedidos.empresaId, empresaId), isNull(pedidos.deletedAt))).catch(() => [{ totalPedidos: 0, valorPedidos: "0" } as any]);
 
     // CRM
     const [crmStats] = await db.select({
       totalClientes: sql<number>`count(*)`,
-    }).from(clientes).where(and(eq(clientes.empresaId, empresaId), isNull(clientes.deletedAt)));
+    }).from(clientes).where(and(eq(clientes.empresaId, empresaId), isNull(clientes.deletedAt))).catch(() => [{ totalClientes: 0 } as any]);
     const [leadStats] = await db.select({
       totalLeads: sql<number>`count(*)`,
       novos: sql<number>`count(*) filter (where status = 'novo')`,
-    }).from(leads).where(and(eq(leads.empresaId, empresaId), isNull(leads.deletedAt)));
+    }).from(leads).where(and(eq(leads.empresaId, empresaId), isNull(leads.deletedAt))).catch(() => [{ totalLeads: 0, novos: 0 } as any]);
 
     return {
       viagens: viagemStats,
@@ -73,19 +74,19 @@ export const biRouter = router({
   }),
 
   // ─── TENDÊNCIAS (últimos 30 dias) ──────────────────────────────────────────
-  tendencias: protectedProcedure.query(async ({ ctx }) => {
+  tendencias: protectedProcedure.input(z.object({ empresaId: z.number().optional() }).optional()).query(async ({ ctx, input }) => {
     const db = await getDb(); if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    const empresaId = ctx.user.empresaId!;
+    const empresaId = await resolveAccessibleEmpresaId(ctx, input?.empresaId);
     const viagensPorDia = await db.execute(sql`
       SELECT date_trunc('day', "createdAt")::date as dia, count(*) as total
       FROM viagens WHERE "empresaId" = ${empresaId} AND "createdAt" >= current_date - interval '30 days'
       GROUP BY dia ORDER BY dia
-    `);
+    `).catch(() => ({ rows: [] } as any));
     const receitaPorDia = await db.execute(sql`
       SELECT date_trunc('day', "createdAt")::date as dia, coalesce(sum(valor::numeric), 0) as total
       FROM contas_receber WHERE "empresaId" = ${empresaId} AND "createdAt" >= current_date - interval '30 days'
       GROUP BY dia ORDER BY dia
-    `);
+    `).catch(() => ({ rows: [] } as any));
     return { viagensPorDia: viagensPorDia.rows || [], receitaPorDia: receitaPorDia.rows || [] };
   }),
 });

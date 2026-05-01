@@ -5,29 +5,14 @@ color 0A
 
 set "DEFAULT_SERVER=https://synapse-backend-ds2026.azurewebsites.net"
 set "INSTALL_DIR=%ProgramFiles%\SynapseAgent"
+set "AGENT_EXE=%INSTALL_DIR%\synapse-agent.exe"
+set "PAIR_CODE="
 
 echo.
 echo =====================================================
-echo  SYNAPSE - Instalador do Agente de Monitoramento
+echo  SYNAPSE - Instalador do Agente Windows
 echo =====================================================
 echo.
-
-python --version >nul 2>&1
-if errorlevel 1 (
-  echo [ERRO] Python nao encontrado. Instale o Python 3 e rode novamente.
-  echo Link sugerido: https://www.python.org/downloads/windows/
-  pause
-  exit /b 1
-)
-
-echo [OK] Python encontrado.
-echo Instalando dependencias...
-python -m pip install --quiet psutil requests
-if errorlevel 1 (
-  echo [ERRO] Nao foi possivel instalar psutil/requests.
-  pause
-  exit /b 1
-)
 
 set /p PAIR_CODE=Digite o codigo de pareamento (SYNC-XXXX-XXXX):
 if "%PAIR_CODE%"=="" (
@@ -42,35 +27,30 @@ if "%SERVER_URL%"=="" set "SERVER_URL=%DEFAULT_SERVER%"
 if not exist "%INSTALL_DIR%" mkdir "%INSTALL_DIR%"
 
 echo Baixando agente...
-powershell -Command "Invoke-WebRequest -Uri '%SERVER_URL%/api/agent/download/agent' -OutFile '%INSTALL_DIR%\synapse_agent.py'"
+powershell -Command "Invoke-WebRequest -Uri '%SERVER_URL%/api/agent/download/windows' -OutFile '%AGENT_EXE%'"
 if errorlevel 1 (
-  echo [ERRO] Falha ao baixar o agente.
+  echo [ERRO] Falha ao baixar o agente .exe.
   pause
   exit /b 1
 )
 
 echo Pareando dispositivo...
-python "%INSTALL_DIR%\synapse_agent.py" --pair "%PAIR_CODE%" --server "%SERVER_URL%"
+"%AGENT_EXE%" --pair "%PAIR_CODE%" --server "%SERVER_URL%" --pair-only
 if errorlevel 1 (
   echo [ERRO] Falha no pareamento.
   pause
   exit /b 1
 )
 
-(
-echo @echo off
-echo python "%INSTALL_DIR%\synapse_agent.py"
-) > "%INSTALL_DIR%\start_agent.bat"
-
 echo Registrando inicializacao automatica...
-schtasks /create /tn "SynapseAgent" /tr "\"%INSTALL_DIR%\start_agent.bat\"" /sc onlogon /ru "%USERNAME%" /f >nul 2>&1
+schtasks /create /tn "SynapseAgent" /tr "\"%AGENT_EXE%\"" /sc onlogon /ru "%USERNAME%" /f >nul 2>&1
 if errorlevel 1 (
-  echo [AVISO] Nao foi possivel criar a tarefa automatica. Inicie manualmente por %INSTALL_DIR%\start_agent.bat
+  echo [AVISO] Nao foi possivel criar a tarefa automatica. Inicie manualmente por %AGENT_EXE%
 ) else (
   echo [OK] Tarefa automatica criada.
 )
 
-start "" "%INSTALL_DIR%\start_agent.bat"
+start "" "%AGENT_EXE%"
 
 echo.
 echo =====================================================

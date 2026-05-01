@@ -4,6 +4,7 @@ import { getDb, getRawClient } from "../db";
 import { ticketsTi, ativosTi, certificadosTi } from "../drizzle/schema";
 import { eq, and, desc, ilike, isNull, or, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
+import { resolveAccessibleEmpresaId } from "../_core/access";
 
 function gerarOS(): string {
   const ano = new Date().getFullYear();
@@ -721,9 +722,10 @@ export const tiRouter = router({
   // ══════════════════════════════════════════════════════════════════════════
   // MONITORAMENTO — Agentes
   // ══════════════════════════════════════════════════════════════════════════
-  listAgentes: protectedProcedure.query(async ({ ctx }) => {
+  listAgentes: protectedProcedure.input(z.object({ empresaId: z.number().optional() }).optional()).query(async ({ ctx, input }) => {
     const client = await getRawClient();
     if (!client) return [];
+    const empresaId = await resolveAccessibleEmpresaId(ctx, input?.empresaId);
     return client`
       SELECT a.*,
         (SELECT "coletadoEm" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as ultima_coleta,
@@ -732,16 +734,17 @@ export const tiRouter = router({
         (SELECT "discoUsoPct" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as disco_atual,
         (SELECT "anydeskId" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as anydesk_id_atual
       FROM monitor_agentes a
-      WHERE a."empresaId"=${ctx.user.empresaId!} AND a."deletedAt" IS NULL
+      WHERE a."empresaId"=${empresaId} AND a."deletedAt" IS NULL
       ORDER BY a.hostname ASC
     `.catch(()=>[]);
   }),
 
   getAgenteMetricas: protectedProcedure
-    .input(z.object({ agenteId: z.number(), periodo: z.enum(["1h","24h","7d","30d","90d"]).optional() }))
+    .input(z.object({ agenteId: z.number(), periodo: z.enum(["1h","24h","7d","30d","90d"]).optional(), empresaId: z.number().optional() }))
     .query(async ({ input, ctx }) => {
       const client = await getRawClient();
       if (!client) return { metricas: [], ultima: null, picos: {} };
+      const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
       const periodoMap: Record<string,string> = { "1h":"1 hour","24h":"24 hours","7d":"7 days","30d":"30 days","90d":"90 days" };
       const intervalo = periodoMap[input.periodo||"24h"]||"24 hours";
       const metricas = await client`
@@ -751,12 +754,12 @@ export const tiRouter = router({
           round(avg("discoUsoPct")::numeric,1) as disco_medio,
           round(avg("latenciaMs")::numeric,0) as latencia_media, count(*) as amostras
         FROM monitor_metricas
-        WHERE "agenteId"=${input.agenteId} AND "empresaId"=${ctx.user.empresaId!}
+        WHERE "agenteId"=${input.agenteId} AND "empresaId"=${empresaId}
           AND "coletadoEm" >= NOW() - ${intervalo}::interval
         GROUP BY date_trunc('hour',"coletadoEm") ORDER BY hora ASC
       `.catch(()=>[]);
-      const ultima = await client`SELECT * FROM monitor_metricas WHERE "agenteId"=${input.agenteId} AND "empresaId"=${ctx.user.empresaId!} ORDER BY "coletadoEm" DESC LIMIT 1`.catch(()=>[null]).then(r=>r[0]||null);
-      const picos = await client`SELECT max("cpuUso") as cpu_max,max("ramUsoPct") as ram_max,max("discoUsoPct") as disco_max FROM monitor_metricas WHERE "agenteId"=${input.agenteId} AND "empresaId"=${ctx.user.empresaId!} AND "coletadoEm">=NOW()-${intervalo}::interval`.catch(()=>[{}]).then(r=>r[0]||{});
+      const ultima = await client`SELECT * FROM monitor_metricas WHERE "agenteId"=${input.agenteId} AND "empresaId"=${empresaId} ORDER BY "coletadoEm" DESC LIMIT 1`.catch(()=>[null]).then(r=>r[0]||null);
+      const picos = await client`SELECT max("cpuUso") as cpu_max,max("ramUsoPct") as ram_max,max("discoUsoPct") as disco_max FROM monitor_metricas WHERE "agenteId"=${input.agenteId} AND "empresaId"=${empresaId} AND "coletadoEm">=NOW()-${intervalo}::interval`.catch(()=>[{}]).then(r=>r[0]||{});
       return { metricas, ultima, picos };
     }),
 
@@ -835,34 +838,36 @@ export const tiRouter = router({
 
   // ── Códigos de Pareamento PC↔Synapse ──────────────────────────────────────────────────────────────────────────────
   gerarCodigoPareamento: protectedProcedure
-    .input(z.object({ descricao: z.string().optional(), ativoId: z.number().optional() }))
-    .mutation(async ({ input, ctx }) => {
-      const client = await getRawClient();
-      if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-      // Gera código único no formato SYNC-XXXX-XXXX
-      const parte1 = Math.random().toString(36).slice(2,6).toUpperCase();
-      const parte2 = Math.random().toString(36).slice(2,6).toUpperCase();
-      const codigo = `SYNC-${parte1}-${parte2}`;
-      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // 24h
-      const rows = await client`
-        INSERT INTO agent_pairing_codes ("empresaId",codigo,descricao,"ativoId","criadoPor","expiresAt","createdAt")
-        VALUES (${ctx.user.empresaId!},${codigo},${input.descricao||null},${input.ativoId||null},${ctx.user.id},${expiresAt},NOW())
-        RETURNING *
-      `;
-      return rows[0];
-    }),
+      .input(z.object({ descricao: z.string().optional(), ativoId: z.number().optional(), empresaId: z.number().optional() }))
+      .mutation(async ({ input, ctx }) => {
+        const client = await getRawClient();
+        if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
+        // Gera código único no formato SYNC-XXXX-XXXX
+        const parte1 = Math.random().toString(36).slice(2,6).toUpperCase();
+        const parte2 = Math.random().toString(36).slice(2,6).toUpperCase();
+        const codigo = `SYNC-${parte1}-${parte2}`;
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // 24h
+        const rows = await client`
+          INSERT INTO agent_pairing_codes ("empresaId",codigo,descricao,"ativoId","criadoPor","expiresAt","createdAt")
+          VALUES (${empresaId},${codigo},${input.descricao||null},${input.ativoId||null},${ctx.user.id},${expiresAt},NOW())
+          RETURNING *
+        `;
+        return rows[0];
+      }),
 
-  listCodigosPareamento: protectedProcedure.query(async ({ ctx }) => {
-    const client = await getRawClient();
-    if (!client) return [];
-    return client`
-      SELECT p.*, a.hostname as agente_hostname, a.ip as agente_ip
-      FROM agent_pairing_codes p
-      LEFT JOIN monitor_agentes a ON a.id = p."agenteId"
-      WHERE p."empresaId" = ${ctx.user.empresaId!}
-      ORDER BY p."createdAt" DESC LIMIT 50
-    `.catch(()=>[]);
-  }),
+  listCodigosPareamento: protectedProcedure.input(z.object({ empresaId: z.number().optional() }).optional()).query(async ({ ctx, input }) => {
+      const client = await getRawClient();
+      if (!client) return [];
+      const empresaId = await resolveAccessibleEmpresaId(ctx, input?.empresaId);
+      return client`
+        SELECT p.*, a.hostname as agente_hostname, a.ip as agente_ip
+        FROM agent_pairing_codes p
+        LEFT JOIN monitor_agentes a ON a.id = p."agenteId"
+        WHERE p."empresaId" = ${empresaId}
+        ORDER BY p."createdAt" DESC LIMIT 50
+      `.catch(()=>[]);
+    }),
 
   // ── Certificados Digitais ──────────────────────────────────────────────────
   listCertificados: protectedProcedure
@@ -907,13 +912,14 @@ export const tiRouter = router({
     }),
 
   revogarCodigoPareamento: protectedProcedure
-    .input(z.object({ id: z.number() }))
-    .mutation(async ({ input, ctx }) => {
-      const client = await getRawClient();
-      if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-      await client`DELETE FROM agent_pairing_codes WHERE id=${input.id} AND "empresaId"=${ctx.user.empresaId!}`;
-      return { success: true };
-    }),
+      .input(z.object({ id: z.number(), empresaId: z.number().optional() }))
+      .mutation(async ({ input, ctx }) => {
+        const client = await getRawClient();
+        if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
+        await client`DELETE FROM agent_pairing_codes WHERE id=${input.id} AND "empresaId"=${empresaId}`;
+        return { success: true };
+      }),
 
   // Chamado pelo agente na primeira execução para se vincular
   pairAgent: publicProcedure

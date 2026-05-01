@@ -26,6 +26,7 @@ import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 import { getBackendBaseUrl } from "@/lib/backend";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
 // ─── Helpers de cor ──────────────────────────────────────────────────────────
 const STATUS_COLORS: Record<string, string> = {
@@ -493,7 +494,8 @@ function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: ()
 // ─── Componente Principal ─────────────────────────────────────────────────────
 export default function TI({ params }: { params?: { tab?: string } }) {
   const { user } = useAuth();
-  const empresaId = user?.empresaId ?? 0;
+  const { effectiveEmpresaId } = useViewAs();
+  const empresaId = effectiveEmpresaId ?? user?.empresaId ?? 0;
   const backendBaseUrl = getBackendBaseUrl();
   const TAB_ALIASES: Record<string, string> = {
     agente: "agentes",
@@ -619,13 +621,13 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     { status: remoteStatusFilter === "todos" ? undefined : remoteStatusFilter },
     { refetchInterval: 15000 }
   ) as any;
-  const agentesQ = trpc.ti.listAgentes.useQuery(undefined, { refetchInterval: 20000 }) as any;
+  const agentesQ = trpc.ti.listAgentes.useQuery({ empresaId }, { refetchInterval: 20000 }) as any;
   const alertasQ = trpc.ti.listAlertas.useQuery({ limit: 20 }, { refetchInterval: 15000 }) as any;
   const manutencoesQ = trpc.ti.listManutencoes.useQuery(undefined, { refetchInterval: 60000 }) as any;
-  const codigosQ = trpc.ti.listCodigosPareamento.useQuery(undefined, { refetchInterval: 30000 }) as any;
+  const codigosQ = trpc.ti.listCodigosPareamento.useQuery({ empresaId }, { refetchInterval: 30000 }) as any;
   const certificadosQ = trpc.ti.listCertificados.useQuery({ search }, { refetchInterval: 60000 }) as any;
   const agenteMetricas = trpc.ti.getAgenteMetricas.useQuery(
-    { agenteId: selectedAgente?.id, periodo: "24h" },
+    { agenteId: selectedAgente?.id, periodo: "24h", empresaId },
     { enabled: !!selectedAgente?.id, refetchInterval: 30000 }
   ) as any;
 
@@ -1892,29 +1894,29 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   <p className="text-xs font-medium text-muted-foreground">COMO INSTALAR (WINDOWS):</p>
                   <div className="bg-muted rounded-lg p-3 space-y-2 text-xs font-mono">
                     <p className="text-muted-foreground"># 1. Baixe o instalador abaixo</p>
-                    <p className="text-muted-foreground"># 2. Clique com o botão direito e "Executar como Administrador"</p>
+                    <p className="text-muted-foreground"># 2. Execute o .exe e informe o código de pareamento</p>
                     <p className="text-muted-foreground"># 3. Use o código de pareamento gerado ao lado</p>
-                    <p className="text-muted-foreground"># 4. URL do Servidor: {window.location.origin}</p>
+                    <p className="text-muted-foreground"># 4. URL do Servidor: {backendBaseUrl}</p>
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <Button size="sm" className="w-full" asChild>
-                    <a href={`${backendBaseUrl}/api/agent/download/windows`} download="instalar_agente.bat">
-                      <Download className="h-4 w-4 mr-2" />Baixar Instalador (Windows .bat)
-                    </a>
-                  </Button>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="flex-1" asChild>
-                      <a href={`${backendBaseUrl}/api/agent/download/agent`} download="synapse_agent.py">
-                        <FileText className="h-4 w-4 mr-2" />Script Python
+                    <Button size="sm" className="w-full" asChild>
+                      <a href={`${backendBaseUrl}/api/agent/download/windows`} download="synapse-agent.exe">
+                        <Download className="h-4 w-4 mr-2" />Baixar Agente Windows (.exe)
                       </a>
                     </Button>
-                    <Button size="sm" variant="outline" className="flex-1" asChild>
-                      <a href={`${backendBaseUrl}/api/agent/download/linux`} download="install_linux.sh">
-                        <Download className="h-4 w-4 mr-2" />Linux (.sh)
-                      </a>
-                    </Button>
-                  </div>
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline" className="flex-1" asChild>
+                        <a href={`${backendBaseUrl}/api/agent/download/agent`} download="synapse_agent.py">
+                          <FileText className="h-4 w-4 mr-2" />Script Python
+                        </a>
+                      </Button>
+                      <Button size="sm" variant="outline" className="flex-1" asChild>
+                        <a href={`${backendBaseUrl}/api/agent/download/windows-installer`} download="instalar_agente.bat">
+                          <Download className="h-4 w-4 mr-2" />Instalador .bat
+                        </a>
+                      </Button>
+                    </div>
                 </div>
               </CardContent>
             </Card>
@@ -1926,7 +1928,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   <CardTitle className="text-sm flex items-center gap-2">
                     <Link2 className="h-4 w-4" />Códigos de Pareamento
                   </CardTitle>
-                  <Button size="sm" onClick={() => gerarCodigo.mutate({})} disabled={gerarCodigo.isPending}>
+                  <Button size="sm" onClick={() => gerarCodigo.mutate({ empresaId })} disabled={gerarCodigo.isPending}>
                     <Plus className="h-4 w-4 mr-1" />Gerar Código
                   </Button>
                 </div>
@@ -1956,7 +1958,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                           {copiedCode === c.codigo ? <Check className="h-3.5 w-3.5 text-green-600" /> : <Copy className="h-3.5 w-3.5" />}
                         </Button>
                       )}
-                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-red-500 hover:text-red-700" onClick={() => revogarCodigo.mutate({ id: c.id })}>
+                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-red-500 hover:text-red-700" onClick={() => revogarCodigo.mutate({ id: c.id, empresaId })}>
                         <X className="h-3.5 w-3.5" />
                       </Button>
                     </div>

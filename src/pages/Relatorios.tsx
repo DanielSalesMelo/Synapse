@@ -3,8 +3,9 @@ import { useTranslation } from "react-i18next";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, Search, Truck, Fuel, Wrench, MapPin } from "lucide-react";
+import { BarChart3, Search, Truck, Fuel, Wrench, MapPin, Download } from "lucide-react";
 import { useViewAs } from "@/contexts/ViewAsContext";
 
 type Tab = "viagens" | "abastecimentos" | "manutencoes";
@@ -26,10 +27,27 @@ export default function Relatorios() {
   const { t } = useTranslation();
   const [tab, setTab] = useState<Tab>("viagens");
   const [busca, setBusca] = useState("");
+  const { effectiveEmpresaId } = useViewAs();
 
-  const { data: viagens } = trpc.viagens.list.useQuery({ empresaId: 1, limit: 200 });
-  const { data: abastecimentos } = trpc.frota.abastecimentos.list.useQuery({ empresaId: 1, limit: 200 });
-  const { data: manutencoes } = trpc.frota.manutencoes.list.useQuery({ empresaId: 1, limit: 200 });
+  const { data: viagens } = trpc.viagens.list.useQuery({ empresaId: effectiveEmpresaId, limit: 200 });
+  const { data: abastecimentos } = trpc.frota.abastecimentos.list.useQuery({ empresaId: effectiveEmpresaId, limit: 200 });
+  const { data: manutencoes } = trpc.frota.manutencoes.list.useQuery({ empresaId: effectiveEmpresaId, limit: 200 });
+
+  const downloadCsv = (filename: string, rows: Record<string, any>[]) => {
+    if (!rows.length) return;
+    const headers = Object.keys(rows[0]);
+    const csv = [
+      headers.join(";"),
+      ...rows.map((row) => headers.map((header) => `"${String(row[header] ?? "").replace(/"/g, '""')}"`).join(";")),
+    ].join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
   const viagensFiltradas = (viagens ?? []).filter(v => {
     const q = busca.toLowerCase();
@@ -75,6 +93,55 @@ export default function Relatorios() {
               onChange={e => setBusca(e.target.value)}
             />
           </div>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              if (tab === "viagens") {
+                downloadCsv("relatorio-viagens.csv", viagensFiltradas.map((v: any) => ({
+                  data_saida: v.dataSaida ? new Date(v.dataSaida).toLocaleDateString("pt-BR") : "",
+                  tipo: v.tipo ?? "",
+                  veiculo: v.veiculoPlaca ?? "",
+                  motorista: v.motoristaNome ?? "",
+                  destino: v.destino ?? "",
+                  km_saida: v.kmSaida ?? "",
+                  km_chegada: v.kmChegada ?? "",
+                  status: v.status ?? "",
+                })));
+              }
+              if (tab === "abastecimentos") {
+                downloadCsv("relatorio-abastecimentos.csv", abastecimentosFiltrados.map((a: any) => ({
+                  data: a.data ? new Date(a.data).toLocaleDateString("pt-BR") : "",
+                  veiculo: a.veiculoId ?? "",
+                  motorista: a.motoristaId ?? "",
+                  litros: a.quantidade ?? "",
+                  valor_unitario: a.valorUnitario ?? "",
+                  valor_total: a.valorTotal ?? "",
+                  km: a.kmAtual ?? "",
+                })));
+              }
+              if (tab === "manutencoes") {
+                downloadCsv("relatorio-manutencoes.csv", manutencoesFiltradas.map((m: any) => ({
+                  data: m.data ? new Date(m.data).toLocaleDateString("pt-BR") : "",
+                  veiculo: m.veiculoId ?? "",
+                  tipo: m.tipo ?? "",
+                  descricao: m.descricao ?? "",
+                  valor: m.valor ?? "",
+                  km: m.kmAtual ?? "",
+                })));
+              }
+            }}
+            disabled={
+              (tab === "viagens" && viagensFiltradas.length === 0) ||
+              (tab === "abastecimentos" && abastecimentosFiltrados.length === 0) ||
+              (tab === "manutencoes" && manutencoesFiltradas.length === 0)
+            }
+          >
+            <Download className="h-4 w-4 mr-2" />Exportar CSV
+          </Button>
         </div>
 
         {/* Abas */}

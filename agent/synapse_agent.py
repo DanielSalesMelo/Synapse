@@ -51,7 +51,7 @@ LOG_FILE = AGENT_DIR / "agent.log"
 
 # Configurações padrão (sobrescritas pelo config.json)
 DEFAULT_CONFIG = {
-    "server_url": os.environ.get("SYNAPSE_SERVER_URL", "https://synapse-backend.railway.app"),
+    "server_url": os.environ.get("SYNAPSE_SERVER_URL", "https://synapse-backend-ds2026.azurewebsites.net"),
     "token": os.environ.get("SYNAPSE_TOKEN", ""),
     "collect_interval": 60,      # segundos entre coletas
     "send_interval": 300,        # segundos entre envios (5 min)
@@ -393,23 +393,22 @@ def send_batch(config: Dict, pending: List[Dict]) -> bool:
         return False
 
     try:
-        url = f"{config['server_url'].rstrip('/')}/api/trpc/ti.ingestMetrics"
-        payload = {
-            "0": {
-                "json": {
-                    "token": config["token"],
-                    "metricas": [p["payload"] for p in pending],
-                }
-            }
-        }
-        resp = requests.post(url, json=payload, timeout=15)
-        if resp.status_code == 200:
-            mark_sent([p["id"] for p in pending])
-            log.info(f"[Send] ✅ {len(pending)} métricas enviadas")
+        url = f"{config['server_url'].rstrip('/')}/api/agent/metrics"
+        sent_ids = []
+        headers = {"Authorization": f"Bearer {config['token']}"}
+        for item in pending:
+            resp = requests.post(url, json=item["payload"], headers=headers, timeout=15)
+            if resp.status_code == 200:
+                sent_ids.append(item["id"])
+            else:
+                log.warning(f"[Send] Servidor retornou {resp.status_code}: {resp.text[:120]}")
+                break
+
+        if sent_ids:
+            mark_sent(sent_ids)
+            log.info(f"[Send] ✅ {len(sent_ids)} métricas enviadas")
             return True
-        else:
-            log.warning(f"[Send] Servidor retornou {resp.status_code}: {resp.text[:100]}")
-            return False
+        return False
     except requests.exceptions.ConnectionError:
         log.warning("[Send] Sem conexão — métricas salvas no buffer local")
         return False
@@ -447,8 +446,8 @@ def get_hardware_fingerprint() -> str:
     return hashlib.sha256("|".join(parts).encode()).hexdigest()[:32]
 
 
-def pair_agent(config: Dict, codigo: str) -> Optional[str]:
-    """Realiza o pareamento com o código SYNC-XXXX-XXXX e retorna o token."""
+def pair_agent(config: Dict, codigo: str) -> Optional[Dict[str, Any]]:
+    """Realiza o pareamento com o código SYNC-XXXX-XXXX e retorna dados do vínculo."""
     if not HAS_REQUESTS:
         return None
     try:
@@ -489,7 +488,11 @@ def pair_agent(config: Dict, codigo: str) -> Optional[str]:
             token = result.get("token") if isinstance(result, dict) else None
             if token:
                 log.info(f"[Pair] ✅ Pareamento realizado! Token: {token[:16]}...")
-                return token
+                return {
+                    "token": token,
+                    "device_id": result.get("deviceId") or result.get("agenteId"),
+                    "empresa_id": result.get("empresaId"),
+                }
             else:
                 log.error(f"[Pair] Servidor não retornou token: {data}")
         else:
@@ -612,7 +615,7 @@ def install_windows():
     """Instala o agente como serviço Windows usando NSSM."""
     print("\n=== Instalador Synapse Agent (Windows) ===\n")
 
-    server_url = input("URL do servidor Synapse (ex: https://synapse-backend.railway.app): ").strip()
+    server_url = input("URL do servidor Synapse (ex: https://synapse-backend-ds2026.azurewebsites.net): ").strip()
     token = input("Token do agente (deixe em branco para registrar automaticamente): ").strip()
 
     config = DEFAULT_CONFIG.copy()
@@ -655,7 +658,7 @@ def install_linux():
     """Instala o agente como serviço systemd no Linux."""
     print("\n=== Instalador Synapse Agent (Linux) ===\n")
 
-    server_url = input("URL do servidor Synapse (ex: https://synapse-backend.railway.app): ").strip()
+    server_url = input("URL do servidor Synapse (ex: https://synapse-backend-ds2026.azurewebsites.net): ").strip()
     token = input("Token do agente (deixe em branco para registrar automaticamente): ").strip()
 
     config = DEFAULT_CONFIG.copy()
@@ -759,11 +762,21 @@ if __name__ == "__main__":
                     config["server_url"] = server_url
                 save_config(config)
 
+            if "--server" in sys.argv:
+                server_idx = sys.argv.index("--server")
+                if len(sys.argv) > server_idx + 1:
+                    config["server_url"] = sys.argv[server_idx + 1].strip()
+                    save_config(config)
+
             print(f"\nVinculando PC ao Synapse com código: {codigo}")
             print(f"Servidor: {config['server_url']}")
-            token = pair_agent(config, codigo)
-            if token:
-                config["token"] = token
+            pair_result = pair_agent(config, codigo)
+            if pair_result and pair_result.get("token"):
+                config["token"] = pair_result["token"]
+                if pair_result.get("device_id"):
+                    config["device_id"] = pair_result["device_id"]
+                if pair_result.get("empresa_id"):
+                    config["empresa_id"] = pair_result["empresa_id"]
                 save_config(config)
                 print(f"\n✅ PC vinculado com sucesso!")
                 if "--pair-only" in sys.argv:
