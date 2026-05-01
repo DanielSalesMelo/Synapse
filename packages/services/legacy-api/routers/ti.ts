@@ -14,6 +14,20 @@ function gerarProtocolo(): string {
   return `TI-${Date.now().toString(36).toUpperCase()}`;
 }
 
+const TICKET_STATUS_VALUES = [
+  "aberto",
+  "triagem_ia",
+  "aguardando_usuario",
+  "aguardando_ti",
+  "em_andamento",
+  "acesso_remoto_solicitado",
+  "em_acesso_remoto",
+  "resolvido",
+  "encerrado",
+  "cancelado",
+  "reaberto",
+] as const;
+
 export const tiRouter = router({
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -23,12 +37,12 @@ export const tiRouter = router({
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const empresaId = ctx.user.empresaId!;
-    const [ticketStats] = await db.select({
+      const [ticketStats] = await db.select({
       total: sql<number>`count(*)`,
       abertos: sql<number>`count(*) filter (where status = 'aberto')`,
       emAndamento: sql<number>`count(*) filter (where status = 'em_andamento')`,
       resolvidosHoje: sql<number>`count(*) filter (where status = 'resolvido' AND "resolvidoEm" >= current_date)`,
-      ativos: sql<number>`count(*) filter (where status IN ('aberto','em_andamento','aguardando'))`,
+      ativos: sql<number>`count(*) filter (where status IN ('aberto','triagem_ia','aguardando_usuario','aguardando_ti','em_andamento','acesso_remoto_solicitado','em_acesso_remoto','reaberto'))`,
     }).from(ticketsTi).where(and(eq(ticketsTi.empresaId, empresaId), isNull(ticketsTi.deletedAt)));
     const [ativoStats] = await db.select({
       total: sql<number>`count(*)`,
@@ -117,6 +131,11 @@ export const tiRouter = router({
       const ticket = rows[0];
       if (!ticket) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
 
+      await client`
+        INSERT INTO ticket_status_history ("ticketId","empresaId","changedBy","fromStatus","toStatus",motivo,"createdAt")
+        VALUES (${ticket.id},${ctx.user.empresaId!},${ctx.user.id},${null},'aberto',${'Chamado criado'},NOW())
+      `.catch(() => {});
+
       // Mensagem automática
       await client`
         INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
@@ -138,7 +157,7 @@ export const tiRouter = router({
   updateTicket: protectedProcedure
     .input(z.object({
       id: z.number(),
-      status: z.enum(["aberto", "em_andamento", "aguardando", "resolvido", "fechado"]).optional(),
+      status: z.enum(TICKET_STATUS_VALUES).optional(),
       prioridade: z.enum(["baixa", "media", "alta", "critica"]).optional(),
       tecnicoId: z.number().optional(),
       prazo: z.string().optional(),
@@ -149,6 +168,8 @@ export const tiRouter = router({
       const client = await getRawClient();
       if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       const { id, ...data } = input;
+      const currentRows = await client`SELECT status FROM tickets_ti WHERE id=${id} AND "empresaId"=${ctx.user.empresaId!} LIMIT 1`;
+      const currentStatus = currentRows?.[0]?.status ?? null;
       // Monta SET dinamicamente com raw SQL para suportar colunas extras (tecnicoId, slaHoras)
       const sets: string[] = ['"updatedAt"=NOW()'];
       const vals: any[] = [];
@@ -158,7 +179,7 @@ export const tiRouter = router({
       if (data.tecnicoId) { sets.push(`"tecnicoId"=$${i++}`); vals.push(data.tecnicoId); }
       if (data.resolucao) { sets.push(`resolucao=$${i++}`); vals.push(data.resolucao); }
       if (data.slaHoras) { sets.push(`"slaHoras"=$${i++}`); vals.push(data.slaHoras); }
-      if (data.status === 'resolvido' || data.status === 'fechado') sets.push('"resolvidoEm"=NOW()');
+      if (data.status === 'resolvido' || data.status === 'encerrado') sets.push('"resolvidoEm"=NOW()');
       vals.push(id); vals.push(ctx.user.empresaId!);
       await client.unsafe(
         `UPDATE tickets_ti SET ${sets.join(',')} WHERE id=$${i++} AND "empresaId"=$${i}`,
@@ -170,19 +191,35 @@ export const tiRouter = router({
           INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
           VALUES (${id},${ctx.user.empresaId!},${ctx.user.id},${'Status alterado para: ' + data.status + (data.resolucao ? ' — ' + data.resolucao : '')},'sistema',NOW())
         `.catch(() => {});
+        await client`
+          INSERT INTO ticket_status_history ("ticketId","empresaId","changedBy","fromStatus","toStatus",motivo,"createdAt")
+          VALUES (${id},${ctx.user.empresaId!},${ctx.user.id},${currentStatus},${data.status},${data.resolucao ?? null},NOW())
+        `.catch(() => {});
       }
       return { success: true };
     }),
 
   updateTicketStatus: protectedProcedure
-    .input(z.object({ id: z.number(), status: z.enum(["aberto", "em_andamento", "aguardando", "resolvido", "fechado"]), resolucao: z.string().optional() }))
+    .input(z.object({ id: z.number(), status: z.enum(TICKET_STATUS_VALUES), resolucao: z.string().optional() }))
     .mutation(async ({ input, ctx }) => {
-      const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-      const data: any = { status: input.status, updatedAt: new Date() };
-      if (input.resolucao) data.resolucao = input.resolucao;
-      if (input.status === "resolvido" || input.status === "fechado") data.resolvidoEm = new Date();
-      await db.update(ticketsTi).set(data).where(and(eq(ticketsTi.id, input.id), eq(ticketsTi.empresaId, ctx.user.empresaId!)));
+      const client = await getRawClient();
+      if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const rows = await client`SELECT status FROM tickets_ti WHERE id=${input.id} AND "empresaId"=${ctx.user.empresaId!} LIMIT 1`;
+      const currentStatus = rows?.[0]?.status ?? null;
+      const resolvedAt =
+        input.status === "resolvido" || input.status === "encerrado" ? new Date() : null;
+      await client`
+        UPDATE tickets_ti
+        SET status=${input.status},
+            resolucao=${input.resolucao ?? null},
+            "resolvidoEm"=${resolvedAt},
+            "updatedAt"=NOW()
+        WHERE id=${input.id} AND "empresaId"=${ctx.user.empresaId!}
+      `.catch(() => {});
+      await client`
+        INSERT INTO ticket_status_history ("ticketId","empresaId","changedBy","fromStatus","toStatus",motivo,"createdAt")
+        VALUES (${input.id},${ctx.user.empresaId!},${ctx.user.id},${currentStatus},${input.status},${input.resolucao ?? null},NOW())
+      `.catch(() => {});
       return { success: true };
     }),
 
@@ -229,6 +266,72 @@ export const tiRouter = router({
       `;
       await client`UPDATE tickets_ti SET "updatedAt"=NOW() WHERE id=${input.ticketId}`.catch(()=>{});
       return rows[0];
+    }),
+
+  listStatusHistory: protectedProcedure
+    .input(z.object({ ticketId: z.number() }))
+    .query(async ({ input, ctx }) => {
+      const client = await getRawClient();
+      if (!client) return [];
+      return client`
+        SELECT h.*, u.name as autor_nome
+        FROM ticket_status_history h
+        LEFT JOIN users u ON u.id = h."changedBy"
+        WHERE h."ticketId" = ${input.ticketId} AND h."empresaId" = ${ctx.user.empresaId!}
+        ORDER BY h."createdAt" ASC
+      `.catch(() => []);
+    }),
+
+  listInternalNotes: protectedProcedure
+    .input(z.object({ ticketId: z.number() }))
+    .query(async ({ input, ctx }) => {
+      const client = await getRawClient();
+      if (!client) return [];
+      return client`
+        SELECT n.*, u.name as autor_nome
+        FROM ticket_internal_notes n
+        LEFT JOIN users u ON u.id = n."autorId"
+        WHERE n."ticketId" = ${input.ticketId}
+          AND n."empresaId" = ${ctx.user.empresaId!}
+          AND n."deletedAt" IS NULL
+        ORDER BY n."createdAt" DESC
+      `.catch(() => []);
+    }),
+
+  addInternalNote: protectedProcedure
+    .input(z.object({ ticketId: z.number(), conteudo: z.string().min(2) }))
+    .mutation(async ({ input, ctx }) => {
+      const client = await getRawClient();
+      if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const rows = await client`
+        INSERT INTO ticket_internal_notes ("ticketId","empresaId","autorId",conteudo,"createdAt")
+        VALUES (${input.ticketId},${ctx.user.empresaId!},${ctx.user.id},${input.conteudo},NOW())
+        RETURNING *
+      `;
+      await client`
+        INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
+        VALUES (${input.ticketId},${ctx.user.empresaId!},${ctx.user.id},${'Nota interna registrada'},'sistema',NOW())
+      `.catch(() => {});
+      return rows[0];
+    }),
+
+  requestRemoteAccess: protectedProcedure
+    .input(z.object({ ticketId: z.number(), anydeskId: z.string().optional(), observacoes: z.string().optional() }))
+    .mutation(async ({ input, ctx }) => {
+      const client = await getRawClient();
+      if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      await client`
+        INSERT INTO remote_access_requests ("ticketId","empresaId","solicitadoPor",status,"anydeskId",observacoes)
+        VALUES (${input.ticketId},${ctx.user.empresaId!},${ctx.user.id},'solicitado',${input.anydeskId ?? null},${input.observacoes ?? null})
+      `.catch(() => {});
+      await client`
+        UPDATE tickets_ti SET status='acesso_remoto_solicitado',"updatedAt"=NOW() WHERE id=${input.ticketId} AND "empresaId"=${ctx.user.empresaId!}
+      `.catch(() => {});
+      await client`
+        INSERT INTO ticket_status_history ("ticketId","empresaId","changedBy","fromStatus","toStatus",motivo,"createdAt")
+        VALUES (${input.ticketId},${ctx.user.empresaId!},${ctx.user.id},${null},'acesso_remoto_solicitado',${input.observacoes ?? 'Acesso remoto solicitado'},NOW())
+      `.catch(() => {});
+      return { success: true };
     }),
 
   // ══════════════════════════════════════════════════════════════════════════

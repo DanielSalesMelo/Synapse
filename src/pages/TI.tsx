@@ -30,10 +30,16 @@ import { getBackendBaseUrl } from "@/lib/backend";
 // ─── Helpers de cor ──────────────────────────────────────────────────────────
 const STATUS_COLORS: Record<string, string> = {
   aberto: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  triagem_ia: "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300",
+  aguardando_usuario: "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300",
+  aguardando_ti: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
   em_andamento: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-  aguardando: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  acesso_remoto_solicitado: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
+  em_acesso_remoto: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
   resolvido: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  fechado: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400",
+  encerrado: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400",
+  cancelado: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
+  reaberto: "bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300",
 };
 const PRIORIDADE_COLORS: Record<string, string> = {
   baixa: "bg-gray-100 text-gray-700",
@@ -250,13 +256,25 @@ function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: ()
   const updateStatus = trpc.ti.updateTicketStatus.useMutation({
     onSuccess: () => toast.success("Status atualizado!"),
   });
+  const requestRemoteAccess = trpc.ti.requestRemoteAccess.useMutation({
+    onSuccess: () => toast.success("Acesso remoto solicitado!"),
+  });
+  const historyQ = trpc.ti.listStatusHistory.useQuery({ ticketId: ticket.id }) as any;
+  const notesQ = trpc.ti.listInternalNotes.useQuery({ ticketId: ticket.id }) as any;
+  const addNote = trpc.ti.addInternalNote.useMutation({
+    onSuccess: () => {
+      notesQ.refetch();
+      toast.success("Nota interna salva.");
+    },
+  });
+  const [internalNote, setInternalNote] = useState("");
   const tecnicos = trpc.ti.listTecnicos.useQuery() as any;
 
   const slaPercent = ticket.slaHoras && ticket.createdAt
     ? Math.min(100, Math.round(((Date.now() - new Date(ticket.createdAt).getTime()) / (1000 * 60 * 60 * ticket.slaHoras)) * 100))
     : null;
 
-  const STATUS_FLOW = ["aberto", "em_andamento", "aguardando", "resolvido", "fechado"];
+  const STATUS_FLOW = ["aberto", "triagem_ia", "aguardando_usuario", "aguardando_ti", "em_andamento", "acesso_remoto_solicitado", "em_acesso_remoto", "resolvido", "encerrado"];
   const currentIdx = STATUS_FLOW.indexOf(ticket.status);
 
   return (
@@ -396,6 +414,78 @@ function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: ()
 
       {/* Chat */}
       <TicketChat ticketId={ticket.id} empresaId={empresaId} />
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm">Histórico de status</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {(historyQ.data ?? []).length === 0 ? (
+              <p className="text-sm text-muted-foreground">Nenhuma mudança registrada ainda.</p>
+            ) : (
+              (historyQ.data ?? []).map((h: any) => (
+                <div key={h.id} className="rounded-lg border p-3">
+                  <p className="text-sm font-medium">
+                    {(h.fromStatus ?? "inicial").replaceAll("_", " ")} → {h.toStatus.replaceAll("_", " ")}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {h.autor_nome ?? "Sistema"} · {new Date(h.createdAt).toLocaleString("pt-BR")}
+                  </p>
+                  {h.motivo && <p className="text-xs text-muted-foreground mt-1">{h.motivo}</p>}
+                </div>
+              ))
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm">Notas internas da TI</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Textarea
+              rows={3}
+              value={internalNote}
+              onChange={(e) => setInternalNote(e.target.value)}
+              placeholder="Registre detalhes internos, causa raiz ou orientação para a equipe..."
+            />
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => requestRemoteAccess.mutate({ ticketId: ticket.id, anydeskId: ticket.anydeskId, observacoes: "Solicitação iniciada pela equipe de TI" })}
+              >
+                Solicitar acesso remoto
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => {
+                  if (!internalNote.trim()) return;
+                  addNote.mutate({ ticketId: ticket.id, conteudo: internalNote });
+                  setInternalNote("");
+                }}
+              >
+                Salvar nota interna
+              </Button>
+            </div>
+            <div className="space-y-2">
+              {(notesQ.data ?? []).length === 0 ? (
+                <p className="text-sm text-muted-foreground">Nenhuma nota interna registrada.</p>
+              ) : (
+                (notesQ.data ?? []).map((note: any) => (
+                  <div key={note.id} className="rounded-lg bg-muted/40 p-3">
+                    <p className="text-sm">{note.conteudo}</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {note.autor_nome ?? "Equipe TI"} · {new Date(note.createdAt).toLocaleString("pt-BR")}
+                    </p>
+                  </div>
+                ))
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
