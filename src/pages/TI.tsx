@@ -603,6 +603,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const [showOnlyUnassociated, setShowOnlyUnassociated] = useState(false);
   const [usuarios, setUsuarios] = useState<any[]>([]);
   const [usuariosLoading, setUsuariosLoading] = useState(false);
+  const [remoteStatusFilter, setRemoteStatusFilter] = useState("todos");
 
   // ── Queries ──
   const dashboard = trpc.ti.dashboard.useQuery(undefined, { refetchInterval: 30000 }) as any;
@@ -614,6 +615,10 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const licencasQ = trpc.ti.listLicencas.useQuery({ search }, { refetchInterval: 60000 }) as any;
   const comprasQ = trpc.ti.listCompras.useQuery(undefined, { refetchInterval: 60000 }) as any;
   const acessosQ = trpc.ti.listAcessos.useQuery(undefined, { refetchInterval: 60000 }) as any;
+  const remoteAccessQ = trpc.ti.listRemoteAccessRequests.useQuery(
+    { status: remoteStatusFilter === "todos" ? undefined : remoteStatusFilter },
+    { refetchInterval: 15000 }
+  ) as any;
   const agentesQ = trpc.ti.listAgentes.useQuery(undefined, { refetchInterval: 20000 }) as any;
   const alertasQ = trpc.ti.listAlertas.useQuery({ limit: 20 }, { refetchInterval: 15000 }) as any;
   const manutencoesQ = trpc.ti.listManutencoes.useQuery(undefined, { refetchInterval: 60000 }) as any;
@@ -646,6 +651,15 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   });
   const createAcesso = trpc.ti.createAcesso.useMutation({
     onSuccess: () => { acessosQ.refetch(); setShowNewAcesso(false); toast.success("Acesso cadastrado!"); },
+  });
+  const updateRemoteAccessRequest = trpc.ti.updateRemoteAccessRequest.useMutation({
+    onSuccess: () => {
+      remoteAccessQ.refetch();
+      ticketsQ.refetch();
+      dashboard.refetch();
+      toast.success("Solicitação de acesso remoto atualizada.");
+    },
+    onError: (err) => toast.error("Erro ao atualizar acesso remoto: " + err.message),
   });
   const createCertificado = trpc.ti.createCertificado.useMutation({
     onSuccess: () => { certificadosQ.refetch(); setShowNewCertificado(false); toast.success("Certificado cadastrado!"); },
@@ -1324,6 +1338,138 @@ export default function TI({ params }: { params?: { tab?: string } }) {
               </DialogContent>
             </Dialog>
           </div>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0">
+              <div>
+                <CardTitle className="text-sm">Solicitações de acesso remoto</CardTitle>
+                <p className="text-xs text-muted-foreground mt-1">Fluxo de consentimento e execução por chamado.</p>
+              </div>
+              <Select value={remoteStatusFilter} onValueChange={setRemoteStatusFilter}>
+                <SelectTrigger className="w-[210px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos os status</SelectItem>
+                  <SelectItem value="solicitado">Solicitado</SelectItem>
+                  <SelectItem value="autorizado">Autorizado</SelectItem>
+                  <SelectItem value="negado">Negado</SelectItem>
+                  <SelectItem value="em_acesso">Em acesso</SelectItem>
+                  <SelectItem value="encerrado">Encerrado</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Chamado</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>AnyDesk</TableHead>
+                    <TableHead>Consentimento</TableHead>
+                    <TableHead>Solicitado em</TableHead>
+                    <TableHead>Ações</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(remoteAccessQ.data ?? []).map((req: any) => (
+                    <TableRow key={req.id}>
+                      <TableCell>
+                        <div>
+                          <p className="text-sm font-medium">{req.protocolo ?? `#${req.ticketId}`}</p>
+                          <p className="text-xs text-muted-foreground">{req.ticket_titulo ?? "Chamado sem título"}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary" className="text-xs">{String(req.status).replaceAll("_", " ")}</Badge>
+                      </TableCell>
+                      <TableCell className="font-mono text-xs">{req.anydeskId || "—"}</TableCell>
+                      <TableCell>
+                        {req.consentimento === true ? (
+                          <Badge className="bg-green-100 text-green-700">Autorizado</Badge>
+                        ) : req.consentimento === false ? (
+                          <Badge className="bg-red-100 text-red-700">Negado</Badge>
+                        ) : (
+                          <Badge variant="outline">Pendente</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground">
+                        {req.solicitadoEm ? new Date(req.solicitadoEm).toLocaleString("pt-BR") : "—"}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                          {req.status === "solicitado" && (
+                            <>
+                              <Button
+                                size="sm"
+                                className="h-7 text-xs"
+                                onClick={() => updateRemoteAccessRequest.mutate({
+                                  id: req.id,
+                                  status: "autorizado",
+                                  consentimento: true,
+                                  anydeskId: req.anydeskId ?? undefined,
+                                  observacoes: "Consentimento confirmado pelo usuário.",
+                                })}
+                              >
+                                Autorizar
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-7 text-xs"
+                                onClick={() => updateRemoteAccessRequest.mutate({
+                                  id: req.id,
+                                  status: "negado",
+                                  consentimento: false,
+                                  observacoes: "Acesso remoto negado pelo usuário.",
+                                })}
+                              >
+                                Negar
+                              </Button>
+                            </>
+                          )}
+                          {req.status === "autorizado" && (
+                            <Button
+                              size="sm"
+                              className="h-7 text-xs"
+                              onClick={() => updateRemoteAccessRequest.mutate({
+                                id: req.id,
+                                status: "em_acesso",
+                                consentimento: true,
+                                observacoes: "Sessão remota iniciada pela equipe de TI.",
+                              })}
+                            >
+                              Iniciar sessão
+                            </Button>
+                          )}
+                          {req.status === "em_acesso" && (
+                            <Button
+                              size="sm"
+                              className="h-7 text-xs"
+                              onClick={() => updateRemoteAccessRequest.mutate({
+                                id: req.id,
+                                status: "encerrado",
+                                consentimento: true,
+                                observacoes: "Sessão remota encerrada.",
+                              })}
+                            >
+                              Encerrar sessão
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {(remoteAccessQ.data ?? []).length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center text-muted-foreground py-8">Nenhuma solicitação de acesso remoto registrada.</TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+
           <Card>
             <Table>
               <TableHeader>

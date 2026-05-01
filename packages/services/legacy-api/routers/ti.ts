@@ -334,6 +334,103 @@ export const tiRouter = router({
       return { success: true };
     }),
 
+  listRemoteAccessRequests: protectedProcedure
+    .input(z.object({ status: z.string().optional() }).optional())
+    .query(async ({ input, ctx }) => {
+      const client = await getRawClient();
+      if (!client) return [];
+      const status = input?.status;
+      return client`
+        SELECT r.*,
+          t.protocolo,
+          t.titulo as ticket_titulo,
+          solicitante.name as solicitado_por_nome,
+          autorizador.name as autorizado_por_nome
+        FROM remote_access_requests r
+        LEFT JOIN tickets_ti t ON t.id = r."ticketId"
+        LEFT JOIN users solicitante ON solicitante.id = r."solicitadoPor"
+        LEFT JOIN users autorizador ON autorizador.id = r."autorizadoPor"
+        WHERE r."empresaId" = ${ctx.user.empresaId!}
+          ${status && status !== "todos" ? client`AND r.status = ${status}` : client``}
+        ORDER BY COALESCE(r."solicitadoEm", NOW()) DESC, r.id DESC
+      `.catch(() => []);
+    }),
+
+  updateRemoteAccessRequest: protectedProcedure
+    .input(z.object({
+      id: z.number(),
+      status: z.enum(["solicitado", "autorizado", "negado", "em_acesso", "encerrado"]),
+      observacoes: z.string().optional(),
+      anydeskId: z.string().optional(),
+      consentimento: z.boolean().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const client = await getRawClient();
+      if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const rows = await client`
+        SELECT * FROM remote_access_requests
+        WHERE id = ${input.id} AND "empresaId" = ${ctx.user.empresaId!}
+        LIMIT 1
+      `;
+      const request = rows[0];
+      if (!request) throw new TRPCError({ code: "NOT_FOUND", message: "Solicitação não encontrada" });
+
+      const autorizadoEm = input.status === "autorizado" ? new Date() : request.autorizadoEm;
+      const encerradoEm = input.status === "encerrado" ? new Date() : request.encerradoEm;
+      const autorizadoPor = input.status === "autorizado" || input.status === "negado" || input.status === "encerrado"
+        ? ctx.user.id
+        : request.autorizadoPor;
+      const consentimento = input.consentimento ?? request.consentimento ?? null;
+      const observacoes = input.observacoes ?? request.observacoes ?? null;
+      const anydeskId = input.anydeskId ?? request.anydeskId ?? null;
+
+      await client`
+        UPDATE remote_access_requests
+        SET status = ${input.status},
+            "autorizadoPor" = ${autorizadoPor},
+            "autorizadoEm" = ${autorizadoEm},
+            "encerradoEm" = ${encerradoEm},
+            consentimento = ${consentimento},
+            "anydeskId" = ${anydeskId},
+            observacoes = ${observacoes}
+        WHERE id = ${input.id} AND "empresaId" = ${ctx.user.empresaId!}
+      `;
+
+      const ticketStatusMap: Record<string, string | null> = {
+        solicitado: "acesso_remoto_solicitado",
+        autorizado: "acesso_remoto_solicitado",
+        negado: "aguardando_ti",
+        em_acesso: "em_acesso_remoto",
+        encerrado: "resolvido",
+      };
+      const nextTicketStatus = ticketStatusMap[input.status];
+      if (nextTicketStatus) {
+        await client`
+          UPDATE tickets_ti
+          SET status = ${nextTicketStatus},
+              "updatedAt" = NOW(),
+              "resolvidoEm" = ${input.status === "encerrado" ? new Date() : null}
+          WHERE id = ${request.ticketId} AND "empresaId" = ${ctx.user.empresaId!}
+        `.catch(() => {});
+        await client`
+          INSERT INTO ticket_status_history ("ticketId","empresaId","changedBy","fromStatus","toStatus",motivo,"createdAt")
+          VALUES (${request.ticketId},${ctx.user.empresaId!},${ctx.user.id},${null},${nextTicketStatus},${observacoes},NOW())
+        `.catch(() => {});
+      }
+      await client`
+        INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
+        VALUES (
+          ${request.ticketId},
+          ${ctx.user.empresaId!},
+          ${ctx.user.id},
+          ${'Acesso remoto atualizado para: ' + input.status.replaceAll('_', ' ') + (observacoes ? ' — ' + observacoes : '')},
+          'sistema',
+          NOW()
+        )
+      `.catch(() => {});
+      return { success: true };
+    }),
+
   // ══════════════════════════════════════════════════════════════════════════
   // ATIVOS / INVENTÁRIO
   // ══════════════════════════════════════════════════════════════════════════
