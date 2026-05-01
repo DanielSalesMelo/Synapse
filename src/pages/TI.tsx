@@ -644,7 +644,20 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     onSuccess: () => { licencasQ.refetch(); setShowNewLicenca(false); toast.success("Licença adicionada!"); },
   });
   const createCompra = trpc.ti.createCompra.useMutation({
-    onSuccess: () => { comprasQ.refetch(); setShowNewCompra(false); toast.success("Requisição criada!"); },
+    onSuccess: () => {
+      comprasQ.refetch();
+      setShowNewCompra(false);
+      setCompraForm({
+        item: "", justificativa: "", observacoes: "", categoria: "hardware", valorUnitario: 0, quantidade: 1, fornecedor: "", urgencia: "normal",
+      });
+      toast.success("Requisição criada!");
+    },
+  });
+  const updateCompra = trpc.ti.updateCompra.useMutation({
+    onSuccess: () => {
+      comprasQ.refetch();
+      toast.success("Status da compra atualizado!");
+    },
   });
   const createManutencao = trpc.ti.createManutencao.useMutation({
     onSuccess: () => { manutencoesQ.refetch(); setShowNewManutencao(false); toast.success("Manutenção registrada!"); },
@@ -777,7 +790,14 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     expiracao: "", custoMensal: 0, fornecedor: "", chave: "",
   });
   const [compraForm, setCompraForm] = useState({
-    titulo: "", descricao: "", categoria: "hardware", valor: 0, fornecedor: "", urgencia: "normal",
+    item: "",
+    justificativa: "",
+    observacoes: "",
+    categoria: "hardware",
+    valorUnitario: 0,
+    quantidade: 1,
+    fornecedor: "",
+    urgencia: "normal",
   });
   const [manutencaoForm, setManutencaoForm] = useState({
     ativoId: 0, tipo: "preventiva", descricao: "", tecnico: "", custo: 0, dataAgendada: "",
@@ -1680,9 +1700,20 @@ export default function TI({ params }: { params?: { tab?: string } }) {
               </DialogTrigger>
               <DialogContent className="max-w-lg">
                 <DialogHeader><DialogTitle>Nova Requisição de Compra</DialogTitle></DialogHeader>
-                <form onSubmit={(e) => { e.preventDefault(); createCompra.mutate(compraForm); }} className="space-y-4">
-                  <div><Label>Título *</Label><Input value={compraForm.titulo} onChange={(e) => setCompraForm((p) => ({ ...p, titulo: e.target.value }))} placeholder="Notebook Dell para RH" required /></div>
-                  <div><Label>Descrição</Label><Textarea value={compraForm.descricao} onChange={(e) => setCompraForm((p) => ({ ...p, descricao: e.target.value }))} placeholder="Detalhes da necessidade..." rows={3} /></div>
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  createCompra.mutate({
+                    item: compraForm.item,
+                    fornecedor: compraForm.fornecedor || undefined,
+                    quantidade: Number(compraForm.quantidade) || 1,
+                    valorUnitario: Number(compraForm.valorUnitario) || undefined,
+                    justificativa: [compraForm.categoria, compraForm.urgencia, compraForm.justificativa].filter(Boolean).join(" | "),
+                    observacoes: compraForm.observacoes || undefined,
+                    status: "solicitado",
+                  });
+                }} className="space-y-4">
+                  <div><Label>Item *</Label><Input value={compraForm.item} onChange={(e) => setCompraForm((p) => ({ ...p, item: e.target.value }))} placeholder="Notebook Dell para RH" required /></div>
+                  <div><Label>Justificativa *</Label><Textarea value={compraForm.justificativa} onChange={(e) => setCompraForm((p) => ({ ...p, justificativa: e.target.value }))} placeholder="Explique a necessidade da compra..." rows={3} required /></div>
                   <div className="grid grid-cols-2 gap-3">
                     <div><Label>Categoria</Label>
                       <Select value={compraForm.categoria} onValueChange={(v) => setCompraForm((p) => ({ ...p, categoria: v }))}>
@@ -1705,8 +1736,10 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div><Label>Valor Estimado (R$)</Label><Input type="number" value={compraForm.valor} onChange={(e) => setCompraForm((p) => ({ ...p, valor: parseFloat(e.target.value) }))} /></div>
+                    <div><Label>Quantidade *</Label><Input type="number" min={1} value={compraForm.quantidade} onChange={(e) => setCompraForm((p) => ({ ...p, quantidade: Number(e.target.value) || 1 }))} required /></div>
+                    <div><Label>Valor Unitário (R$)</Label><Input type="number" min={0} step="0.01" value={compraForm.valorUnitario} onChange={(e) => setCompraForm((p) => ({ ...p, valorUnitario: Number(e.target.value) || 0 }))} /></div>
                     <div><Label>Fornecedor</Label><Input value={compraForm.fornecedor} onChange={(e) => setCompraForm((p) => ({ ...p, fornecedor: e.target.value }))} placeholder="Dell, Kabum..." /></div>
+                    <div className="col-span-2"><Label>Observações</Label><Textarea value={compraForm.observacoes} onChange={(e) => setCompraForm((p) => ({ ...p, observacoes: e.target.value }))} placeholder="Detalhes adicionais, prazo, link ou orçamento." rows={3} /></div>
                   </div>
                   <Button type="submit" className="w-full" disabled={createCompra.isPending}>Criar Requisição</Button>
                 </form>
@@ -1717,27 +1750,45 @@ export default function TI({ params }: { params?: { tab?: string } }) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Título</TableHead>
-                  <TableHead>Categoria</TableHead>
-                  <TableHead>Urgência</TableHead>
+                  <TableHead>Item</TableHead>
+                  <TableHead>Fornecedor</TableHead>
+                  <TableHead>Quantidade</TableHead>
                   <TableHead>Valor</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Data</TableHead>
+                  <TableHead className="text-right">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {(comprasQ.data ?? []).map((c: any) => (
                   <TableRow key={c.id}>
-                    <TableCell className="font-medium">{c.titulo}</TableCell>
-                    <TableCell><Badge variant="outline" className="text-xs">{c.categoria}</Badge></TableCell>
-                    <TableCell><Badge className={`text-xs ${c.urgencia === "urgente" ? "bg-red-100 text-red-700" : c.urgencia === "alta" ? "bg-orange-100 text-orange-700" : ""}`}>{c.urgencia}</Badge></TableCell>
-                    <TableCell className="text-sm">R$ {c.valor?.toLocaleString("pt-BR") ?? "—"}</TableCell>
+                    <TableCell className="font-medium">
+                      <div>{c.item}</div>
+                      {c.justificativa && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{c.justificativa}</p>}
+                    </TableCell>
+                    <TableCell>{c.fornecedor || "—"}</TableCell>
+                    <TableCell>{c.quantidade ?? 1}</TableCell>
+                    <TableCell className="text-sm">R$ {Number(c.valorUnitario ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
                     <TableCell><Badge variant="secondary" className="text-xs">{c.status}</Badge></TableCell>
                     <TableCell className="text-xs text-muted-foreground">{new Date(c.createdAt).toLocaleDateString("pt-BR")}</TableCell>
+                    <TableCell className="text-right">
+                      <Select value={c.status} onValueChange={(value) => updateCompra.mutate({ id: c.id, status: value as any })} disabled={updateCompra.isPending}>
+                        <SelectTrigger className="w-[150px] ml-auto">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="solicitado">Solicitado</SelectItem>
+                          <SelectItem value="aprovado">Aprovado</SelectItem>
+                          <SelectItem value="comprado">Comprado</SelectItem>
+                          <SelectItem value="entregue">Entregue</SelectItem>
+                          <SelectItem value="cancelado">Cancelado</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
                   </TableRow>
                 ))}
                 {(comprasQ.data ?? []).length === 0 && (
-                  <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">Nenhuma requisição criada</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">Nenhuma requisição criada</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>

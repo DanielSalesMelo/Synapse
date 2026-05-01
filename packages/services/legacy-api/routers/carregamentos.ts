@@ -4,6 +4,7 @@ import { carregamentos, itensCarregamento } from "../drizzle/schema";
 import { eq, and, isNull, desc, sql } from "drizzle-orm";
 import { z } from "zod";
 import { safeDb, requireDb } from "../helpers/errorHandler";
+import { resolveAccessibleEmpresaId } from "../_core/access";
 
 const statusCarregamentoEnum = z.enum(["montando", "pronto", "em_rota", "retornado", "encerrado"]);
 const statusNfEnum = z.enum(["pendente", "entregue", "devolvida", "parcial", "extraviada"]);
@@ -77,11 +78,12 @@ export const carregamentosRouter = router({
         status: statusCarregamentoEnum.optional(),
       }),
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "carregamentos.list");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         const conditions: any[] = [
-          eq(carregamentos.empresaId, input.empresaId),
+          eq(carregamentos.empresaId, empresaId),
           isNull(carregamentos.deletedAt),
         ];
         if (input.status) conditions.push(eq(carregamentos.status, input.status));
@@ -96,13 +98,17 @@ export const carregamentosRouter = router({
   // ─── Buscar carregamento por ID com itens ──────────────────────────────────
   getById: protectedProcedure
     .input(z.object({ id: z.number() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "carregamentos.getById");
         const [carg] = await db
           .select()
           .from(carregamentos)
-          .where(and(eq(carregamentos.id, input.id), isNull(carregamentos.deletedAt)))
+          .where(and(
+            eq(carregamentos.id, input.id),
+            isNull(carregamentos.deletedAt),
+            ctx.user.role !== "master_admin" ? eq(carregamentos.empresaId, ctx.user.empresaId!) : undefined,
+          ))
           .limit(1);
         if (!carg) return null;
         const itens = await db
@@ -136,12 +142,14 @@ export const carregamentosRouter = router({
         observacoes: z.string().optional(),
       }),
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "carregamentos.create");
-        const numero = await gerarNumero(db, input.empresaId);
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
+        const numero = await gerarNumero(db, empresaId);
         const [result] = await db.insert(carregamentos).values({
           ...input,
+          empresaId,
           numero,
           status: "montando",
         }).returning({ id: carregamentos.id });
