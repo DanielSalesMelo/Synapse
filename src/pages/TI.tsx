@@ -1711,7 +1711,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                     valorUnitario: Number(compraForm.valorUnitario) || undefined,
                     justificativa: [compraForm.categoria, compraForm.urgencia, compraForm.justificativa].filter(Boolean).join(" | "),
                     observacoes: compraForm.observacoes || undefined,
-                    status: "solicitado",
+                    status: "em_aprovacao",
                   });
                 }} className="space-y-4">
                   <div><Label>Item *</Label><Input value={compraForm.item} onChange={(e) => setCompraForm((p) => ({ ...p, item: e.target.value }))} placeholder="Notebook Dell para RH" required /></div>
@@ -1751,6 +1751,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {[
               { label: "Solicitado", value: (comprasQ.data ?? []).filter((c: any) => c.status === "solicitado").length },
+              { label: "Em aprovação", value: (comprasQ.data ?? []).filter((c: any) => c.status === "em_aprovacao").length },
               { label: "Aprovado", value: (comprasQ.data ?? []).filter((c: any) => c.status === "aprovado").length },
               { label: "Comprado", value: (comprasQ.data ?? []).filter((c: any) => c.status === "comprado").length },
               { label: "Entregue", value: (comprasQ.data ?? []).filter((c: any) => c.status === "entregue").length },
@@ -1778,13 +1779,18 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div><p className="text-muted-foreground">Quantidade</p><p>{c.quantidade ?? 1}</p></div>
                     <div><p className="text-muted-foreground">Valor unitário</p><p>R$ {Number(c.valorUnitario ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p></div>
+                    <div><p className="text-muted-foreground">Valor total</p><p>R$ {Number(c.valorTotal ?? (Number(c.quantidade ?? 1) * Number(c.valorUnitario ?? 0))).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p></div>
+                    <div><p className="text-muted-foreground">Alçada</p><p>Nível {c.nivelAlcada ?? 1}</p></div>
+                    <div className="col-span-2"><p className="text-muted-foreground">Aprovador</p><p>{c.aprovador_nome || "—"}</p></div>
                     <div className="col-span-2">
                       <p className="text-muted-foreground mb-1">Fluxo</p>
                       <Select value={c.status} onValueChange={(value) => updateCompra.mutate({ id: c.id, status: value as any })} disabled={updateCompra.isPending}>
                         <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="solicitado">Solicitado</SelectItem>
+                          <SelectItem value="em_aprovacao">Em aprovação</SelectItem>
                           <SelectItem value="aprovado">Aprovado</SelectItem>
+                          <SelectItem value="rejeitado">Rejeitado</SelectItem>
                           <SelectItem value="comprado">Comprado</SelectItem>
                           <SelectItem value="entregue">Entregue</SelectItem>
                           <SelectItem value="cancelado">Cancelado</SelectItem>
@@ -1806,6 +1812,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   <TableHead>Fornecedor</TableHead>
                   <TableHead>Quantidade</TableHead>
                   <TableHead>Valor</TableHead>
+                  <TableHead>Total</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Data</TableHead>
                   <TableHead className="text-right">Ações</TableHead>
@@ -1821,6 +1828,10 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                     <TableCell>{c.fornecedor || "—"}</TableCell>
                     <TableCell>{c.quantidade ?? 1}</TableCell>
                     <TableCell className="text-sm">R$ {Number(c.valorUnitario ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                    <TableCell className="text-sm">
+                      <div>R$ {Number(c.valorTotal ?? (Number(c.quantidade ?? 1) * Number(c.valorUnitario ?? 0))).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                      <p className="text-xs text-muted-foreground">Alçada {c.nivelAlcada ?? 1}</p>
+                    </TableCell>
                     <TableCell><Badge variant="secondary" className="text-xs">{c.status}</Badge></TableCell>
                     <TableCell className="text-xs text-muted-foreground">{new Date(c.createdAt).toLocaleDateString("pt-BR")}</TableCell>
                     <TableCell className="text-right">
@@ -1830,7 +1841,9 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="solicitado">Solicitado</SelectItem>
+                          <SelectItem value="em_aprovacao">Em aprovação</SelectItem>
                           <SelectItem value="aprovado">Aprovado</SelectItem>
+                          <SelectItem value="rejeitado">Rejeitado</SelectItem>
                           <SelectItem value="comprado">Comprado</SelectItem>
                           <SelectItem value="entregue">Entregue</SelectItem>
                           <SelectItem value="cancelado">Cancelado</SelectItem>
@@ -1840,7 +1853,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   </TableRow>
                 ))}
                 {(comprasQ.data ?? []).length === 0 && (
-                  <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">Nenhuma requisição criada</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">Nenhuma requisição criada</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>

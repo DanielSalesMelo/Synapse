@@ -37,6 +37,7 @@ import PlanoManutencao from "./pages/PlanoManutencao";
 import PainelMaster from "./pages/PainelMaster";
 import Permissoes from "./pages/Permissoes";
 import Chat from "./pages/Chat";
+import Omnichannel from "./pages/Omnichannel";
 import Login from "./pages/Login";
 import Trial from "./pages/Trial";
 import Integracoes from "./pages/Integracoes";
@@ -108,6 +109,7 @@ function DashboardRoutes() {
 
         {/* Sistema */}
         <Route path="/chat" component={Chat} />
+        <Route path="/omnichannel" component={Omnichannel} />
         <Route path="/relatorios" component={Relatorios} />
         <Route path="/usuarios" component={Usuarios} />
         <Route path="/empresa" component={Empresa} />

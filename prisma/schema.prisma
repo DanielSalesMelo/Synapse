@@ -92,6 +92,7 @@ model Empresa {
   contasReceber      ContaReceber[]
   viagens            Viagem[]
   ticketsTi          TicketTi[]
+  omnichannelConversations OmnichannelConversation[]
 
   @@map("empresas")
 }
@@ -275,9 +276,24 @@ model Funcionario {
   nome            String    @db.VarChar(255)
   funcao          String?   @db.VarChar(50)
   tipoContrato    String?   @db.VarChar(30)
+  cpf             String?   @db.VarChar(14)
+  rg              String?   @db.VarChar(20)
+  pis             String?   @db.VarChar(20)
+  telefone        String?   @db.VarChar(20)
+  email           String?   @db.VarChar(320)
+  salario         Decimal?  @db.Decimal(12, 2)
+  dataAdmissao    DateTime?
+  dataNascimento  DateTime?
+  cnh             String?   @db.VarChar(20)
   ativo           Boolean   @default(true)
   diaPagamento    Int?
   vencimentoCnh   DateTime?
+  vencimentoAso   DateTime?
+  vencimentoMopp  DateTime?
+  temPlanoSaude   Boolean   @default(false)
+  temValeRefeicao Boolean   @default(false)
+  temValeTransporte Boolean @default(false)
+  valorValeRefeicao Decimal? @db.Decimal(12, 2)
   deletedAt       DateTime?
   deletedBy       Int?
   deleteReason    String?
@@ -298,6 +314,9 @@ model ContaPagar {
   dataVencimento DateTime
   dataPagamento  DateTime?
   status         String    @db.VarChar(20)
+  fornecedor     String?   @db.VarChar(255)
+  funcionarioId  Int?
+  observacoes    String?
   deletedAt      DateTime?
   deletedBy      Int?
   deleteReason   String?
@@ -327,6 +346,89 @@ model ContaReceber {
   empresa Empresa @relation(fields: [empresaId], references: [id])
 
   @@map("contas_receber")
+}
+
+model OmnichannelConversation {
+  id             Int       @id @default(autoincrement())
+  empresaId      Int
+  provider       String    @db.VarChar(30)
+  externalId     String    @db.VarChar(255)
+  displayName    String?   @db.VarChar(255)
+  phone          String?   @db.VarChar(30)
+  username       String?   @db.VarChar(255)
+  status         String    @default("ativa") @db.VarChar(20)
+  assignedUserId Int?
+  metadata       Json?
+  lastMessageAt  DateTime  @default(now())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  empresa  Empresa               @relation(fields: [empresaId], references: [id])
+  messages OmnichannelMessage[]
+
+  @@unique([empresaId, provider, externalId])
+  @@map("omnichannel_conversations")
+}
+
+model OmnichannelMessage {
+  id                Int       @id @default(autoincrement())
+  conversationId    Int
+  provider          String    @db.VarChar(30)
+  direction         String    @db.VarChar(10)
+  externalMessageId String?   @db.VarChar(255)
+  senderName        String?   @db.VarChar(255)
+  content           String?
+  messageType       String    @default("text") @db.VarChar(20)
+  mediaUrl          String?
+  status            String    @default("recebida") @db.VarChar(20)
+  payload           Json?
+  createdAt         DateTime  @default(now())
+
+  conversation OmnichannelConversation @relation(fields: [conversationId], references: [id])
+
+  @@map("omnichannel_messages")
+}
+
+model CompraTi {
+  id                  Int       @id @default(autoincrement())
+  empresaId           Int
+  solicitanteId       Int
+  aprovadorId         Int?
+  item                String    @db.VarChar(255)
+  fornecedor          String?   @db.VarChar(255)
+  quantidade          Int?
+  valorUnitario       Decimal?  @db.Decimal(12, 2)
+  valorTotal          Decimal?  @db.Decimal(12, 2)
+  status              String    @db.VarChar(30)
+  justificativa       String?
+  observacoes         String?
+  observacaoAprovacao String?
+  nivelAlcada         Int?      @default(1)
+  aprovadoEm          DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  deletedAt           DateTime?
+
+  historico CompraTiHistorico[]
+
+  @@map("compras_ti")
+}
+
+model CompraTiHistorico {
+  id            Int       @id @default(autoincrement())
+  compraId      Int
+  empresaId     Int
+  userId        Int?
+  acao          String    @db.VarChar(50)
+  statusAnterior String?  @db.VarChar(30)
+  statusNovo    String?   @db.VarChar(30)
+  observacao    String?
+  createdAt     DateTime  @default(now())
+
+  compra CompraTi @relation(fields: [compraId], references: [id])
+
+  @@map("compras_ti_historico")
 }
 
 model Viagem {

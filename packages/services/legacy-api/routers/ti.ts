@@ -627,33 +627,97 @@ export const tiRouter = router({
   listCompras: protectedProcedure.query(async ({ ctx }) => {
     const client = await getRawClient();
     if (!client) return [];
-    return client`SELECT * FROM compras_ti WHERE "empresaId"=${ctx.user.empresaId!} AND "deletedAt" IS NULL ORDER BY "createdAt" DESC`.catch(()=>[]);
+    return client`
+      SELECT c.*,
+        solicitante.name as solicitante_nome,
+        aprovador.name as aprovador_nome
+      FROM compras_ti c
+      LEFT JOIN users solicitante ON solicitante.id = c."solicitanteId"
+      LEFT JOIN users aprovador ON aprovador.id = c."aprovadorId"
+      WHERE c."empresaId"=${ctx.user.empresaId!} AND c."deletedAt" IS NULL
+      ORDER BY c."createdAt" DESC
+    `.catch(()=>[]);
   }),
+
+  listComprasHistorico: protectedProcedure
+    .input(z.object({ compraId: z.number() }))
+    .query(async ({ input, ctx }) => {
+      const client = await getRawClient();
+      if (!client) return [];
+      return client`
+        SELECT h.*, u.name as autor_nome
+        FROM compras_ti_historico h
+        LEFT JOIN users u ON u.id = h."userId"
+        WHERE h."compraId"=${input.compraId}
+          AND h."empresaId"=${ctx.user.empresaId!}
+        ORDER BY h."createdAt" DESC, h.id DESC
+      `.catch(() => []);
+    }),
 
   createCompra: protectedProcedure
     .input(z.object({
       item: z.string().min(2), fornecedor: z.string().optional(),
       quantidade: z.number().optional(), valorUnitario: z.number().optional(),
-      status: z.enum(["solicitado","aprovado","comprado","entregue","cancelado"]).optional(),
+      status: z.enum(["solicitado","em_aprovacao","aprovado","rejeitado","comprado","entregue","cancelado"]).optional(),
       justificativa: z.string().optional(), observacoes: z.string().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
       const client = await getRawClient();
       if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const quantidade = input.quantidade || 1;
+      const valorUnitario = input.valorUnitario || 0;
+      const valorTotal = quantidade * valorUnitario;
+      const nivelAlcada = valorTotal >= 10000 ? 3 : valorTotal >= 3000 ? 2 : 1;
+      const needsApproval = valorTotal >= 1000;
+      const statusInicial = input.status || (needsApproval ? "em_aprovacao" : "solicitado");
       const rows = await client`
-        INSERT INTO compras_ti ("empresaId","solicitanteId",item,fornecedor,quantidade,"valorUnitario",status,justificativa,observacoes,"createdAt","updatedAt")
-        VALUES (${ctx.user.empresaId!},${ctx.user.id},${input.item},${input.fornecedor||null},${input.quantidade||1},${input.valorUnitario||null},${input.status||'solicitado'},${input.justificativa||null},${input.observacoes||null},NOW(),NOW())
+        INSERT INTO compras_ti ("empresaId","solicitanteId",item,fornecedor,quantidade,"valorUnitario","valorTotal",status,justificativa,observacoes,"nivelAlcada","createdAt","updatedAt")
+        VALUES (${ctx.user.empresaId!},${ctx.user.id},${input.item},${input.fornecedor||null},${quantidade},${input.valorUnitario||null},${valorTotal},${statusInicial},${input.justificativa||null},${input.observacoes||null},${nivelAlcada},NOW(),NOW())
         RETURNING *
       `;
-      return rows[0];
+      const compra = rows[0];
+      await client`
+        INSERT INTO compras_ti_historico ("compraId","empresaId","userId",acao,"statusAnterior","statusNovo",observacao,"createdAt")
+        VALUES (${compra.id},${ctx.user.empresaId!},${ctx.user.id},'criada',${null},${statusInicial},${needsApproval ? 'Compra entrou em fluxo de alçada.' : 'Compra criada sem necessidade de alçada.'},NOW())
+      `.catch(() => {});
+      return compra;
     }),
 
   updateCompra: protectedProcedure
-    .input(z.object({ id: z.number(), status: z.enum(["solicitado","aprovado","comprado","entregue","cancelado"]) }))
+    .input(z.object({
+      id: z.number(),
+      status: z.enum(["solicitado","em_aprovacao","aprovado","rejeitado","comprado","entregue","cancelado"]),
+      observacao: z.string().optional(),
+    }))
     .mutation(async ({ input, ctx }) => {
       const client = await getRawClient();
       if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-      await client`UPDATE compras_ti SET status=${input.status},"updatedAt"=NOW() WHERE id=${input.id} AND "empresaId"=${ctx.user.empresaId!}`;
+      const rows = await client`
+        SELECT * FROM compras_ti
+        WHERE id=${input.id} AND "empresaId"=${ctx.user.empresaId!}
+        LIMIT 1
+      `;
+      const compra = rows[0];
+      if (!compra) throw new TRPCError({ code: "NOT_FOUND", message: "Compra não encontrada." });
+
+      const isApproving = input.status === "aprovado" || input.status === "rejeitado";
+      if (isApproving && !["master_admin", "admin", "ti_master"].includes(String(ctx.user.role))) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Apenas perfis de gestão podem aprovar ou rejeitar compras." });
+      }
+
+      await client`
+        UPDATE compras_ti
+        SET status=${input.status},
+            "aprovadorId"=${isApproving ? ctx.user.id : compra.aprovadorId},
+            "aprovadoEm"=${isApproving ? new Date() : compra.aprovadoEm},
+            "observacaoAprovacao"=${input.observacao ?? compra.observacaoAprovacao ?? null},
+            "updatedAt"=NOW()
+        WHERE id=${input.id} AND "empresaId"=${ctx.user.empresaId!}
+      `;
+      await client`
+        INSERT INTO compras_ti_historico ("compraId","empresaId","userId",acao,"statusAnterior","statusNovo",observacao,"createdAt")
+        VALUES (${input.id},${ctx.user.empresaId!},${ctx.user.id},'status_alterado',${compra.status ?? null},${input.status},${input.observacao ?? null},NOW())
+      `.catch(() => {});
       return { success: true };
     }),
 

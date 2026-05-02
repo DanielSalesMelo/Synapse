@@ -2,61 +2,114 @@
 
 ## Acesso
 1. Abra `https://synapse-seven-nu.vercel.app`
-2. Entre com seu email e senha
-3. Se o navegador travar em sessao antiga, use `Limpar sessao antiga`
+2. Entre com e-mail e senha
+3. Se a sessão antiga travar a tela, use `Ctrl + F5`
 
-## Login Master Admin
-- Email: `danielmoraessales@outlook.com.br`
-- Senha: `Dan124578@#`
+## Estrutura do sistema
+O Synapse reúne operação, financeiro, RH, TI, logística, BI e uma central pessoal/profissional do master.
 
-## Painel Master
-O Painel Master concentra:
-- visao geral do licenciamento
-- empresas
-- cobrancas
-- planos
-- Central do Daniel
+## Troca de empresa
+- use o seletor no topo
+- cada tela passa a mostrar apenas a empresa ativa
+- usuários com acesso a mais de uma empresa podem alternar sem sair do sistema
 
-## Central do Daniel
-Serve para organizar:
+## Pessoal / Central do Daniel
+- agenda pessoal
 - clientes
-- tarefas do dia
-- recebimentos e despesas
-- compromissos
-- lembretes
+- tarefas
+- campanhas
+- landing pages
+- leads
+- propostas
+- financeiro pessoal/profissional
 
-### Cadastrar cliente
-1. Entre no Painel Master
-2. Abra `Central do Daniel`
-3. Preencha nome, empresa, contato e servicos
-4. Clique em `Salvar cliente`
+## Financeiro
+### Contas a pagar
+1. Abra `Financeiro`
+2. Vá em `Pagar`
+3. Clique em `Nova conta`
+4. Informe descrição, categoria, valor e vencimento
 
-### Criar tarefa
-1. Na Central do Daniel, use o bloco `Tarefa rapida`
-2. Informe titulo
-3. Escolha area, prioridade e periodo
-4. Clique em `Criar tarefa`
+### Contas a receber
+1. Abra `Financeiro`
+2. Vá em `Receber`
+3. Cadastre cliente, valor e vencimento
 
-### Lancar financeiro
-1. No bloco `Financeiro do Daniel`
-2. Escolha `Receita` ou `Despesa`
-3. Informe descricao e valor
-4. Clique em `Salvar lancamento`
+### Projeção
+- a visão geral mostra projeção de fluxo em 7, 15 e 30 dias
+- também mostra aging de pendências
 
-### Agenda e lembretes
-1. Preencha o bloco `Agenda rapida`
-2. Salve compromisso ou lembrete
+## RH
+### Novo colaborador
+1. Abra `RH`
+2. Clique em `Novo colaborador`
+3. Preencha nome, função e dados essenciais
+4. Se necessário, marque benefícios
 
-## Empresas
-- Cadastre empresas no Painel Master
-- O sistema permite ativar, desativar e gerar convite
+### Folha
+1. Abra `RH > Folha`
+2. Clique em `Processar folha`
+3. Escolha mês, ano e vencimento
+4. O sistema gera salário, benefícios e encargos estimados no financeiro
+
+## TI
+### Abrir chamado
+1. Vá em `TI > Chamados`
+2. Clique em `Novo chamado`
+3. Informe título, descrição e prioridade
+
+### Compras de TI
+1. Vá em `TI > Compras`
+2. Cadastre item, quantidade e valor
+3. O sistema calcula valor total e alçada
+4. Perfis de gestão aprovam ou rejeitam
+
+### Agente do PC
+1. Vá em `TI > Agentes`
+2. Gere um código
+3. Baixe `Instalador .bat`
+4. Execute o instalador
+5. Informe código e URL do servidor
+
+### Suporte do agente
+- o agente coleta hostname, CPU, RAM, disco, uptime, usuário e AnyDesk quando existir
+- o atalho/manual de suporte usa:
+```powershell
+C:\Users\<usuario>\AppData\Local\SynapseAgent\synapse-agent.exe --support
+```
+
+## Chat interno
+- conversa entre usuários
+- grupos
+- anexos
+- imagens
+- leitura de mensagens
+
+## Omnichannel externo
+- WhatsApp
+- Telegram
+- Instagram
+
+Uso:
+1. Configure a integração em `Sistema > Integrações`
+2. Ative o canal
+3. Use `Omnichannel` no menu para responder conversas externas
+
+## BI e relatórios
+- BI consolida dados reais do banco
+- relatórios mostram estado vazio honesto quando faltar base
 
 ## Erros comuns
-### Nao consigo entrar
-- confira email e senha
-- clique em `Limpar sessao antiga`
-- atualize a pagina com `Ctrl + F5`
+### Não consigo entrar
+- confira e-mail e senha
+- tente `Ctrl + F5`
+- se continuar, verifique se a sessão não expirou
 
-### A tela nao mostra dados
-- quando nao houver registros, o sistema deve mostrar estado vazio
-- cadastre o primeiro item no modulo correspondente
+### Não vejo dados
+- confirme a empresa selecionada no topo
+- cadastre o primeiro item no módulo correspondente
+
+### O agente não criou atalho
+- isso depende do caminho real da área de trabalho do Windows
+- use o instalador mais recente
+- se necessário, abra manualmente o executável pelo caminho exibido no fim da instalação

@@ -55,6 +55,7 @@ const getMenuGroups = (t: any): MenuGroup[] => [
       { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
       { icon: Brain, label: "IA Synapse", path: "/ia" },
       { icon: MessageSquare, label: "Chat", path: "/chat" },
+      { icon: Globe, label: "Omnichannel", path: "/omnichannel" },
       { icon: Bell, label: "Alertas", path: "/gestao/alertas" },
       { icon: Calendar, label: "Calendário", path: "/gestao/calendario" },
       { icon: CheckCircle, label: "Tarefas & Projetos", path: "/tarefas" },

@@ -382,20 +382,29 @@ export const funcionariosRouter = router({
       return safeDb(async () => {
         const db = requireDb(await getDb(), "funcionarios.lancarFolha");
         const { contasPagar } = await import("../drizzle/schema");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
 
         // Buscar todos os funcionários ativos da empresa que têm salário definido
         const funcs = await db.select().from(funcionarios)
           .where(and(
-            eq(funcionarios.empresaId, input.empresaId),
+            eq(funcionarios.empresaId, empresaId),
             eq(funcionarios.ativo, true),
             isNull(funcionarios.deletedAt),
             isNotNull(funcionarios.salario)
           ));
 
         let lancados = 0;
+        let beneficiosLancados = 0;
+        let encargosLancados = 0;
         for (const f of funcs) {
+          const salario = Number(f.salario ?? 0);
+          const vr = f.temValeRefeicao ? Number(f.valorValeRefeicao ?? 0) : 0;
+          const vt = f.temValeTransporte ? Math.round((salario * 0.06) * 100) / 100 : 0;
+          const planoSaude = f.temPlanoSaude ? 350 : 0;
+          const encargos = Math.round((salario * 0.28) * 100) / 100;
+
           await db.insert(contasPagar).values({
-            empresaId: input.empresaId,
+            empresaId,
             descricao: `Salário ${f.nome} - Ref: ${input.mes}/${input.ano}`,
             categoria: "salario",
             valor: f.salario!,
@@ -404,16 +413,84 @@ export const funcionariosRouter = router({
             funcionarioId: f.id,
           });
           lancados++;
+
+          if (vr > 0) {
+            await db.insert(contasPagar).values({
+              empresaId,
+              descricao: `Vale refeição ${f.nome} - Ref: ${input.mes}/${input.ano}`,
+              categoria: "outro",
+              valor: String(vr),
+              dataVencimento: input.dataVencimento,
+              status: "pendente",
+              funcionarioId: f.id,
+              observacoes: "Benefício automático de folha",
+            });
+            beneficiosLancados++;
+          }
+
+          if (vt > 0) {
+            await db.insert(contasPagar).values({
+              empresaId,
+              descricao: `Vale transporte ${f.nome} - Ref: ${input.mes}/${input.ano}`,
+              categoria: "outro",
+              valor: String(vt),
+              dataVencimento: input.dataVencimento,
+              status: "pendente",
+              funcionarioId: f.id,
+              observacoes: "Benefício automático de folha",
+            });
+            beneficiosLancados++;
+          }
+
+          if (planoSaude > 0) {
+            await db.insert(contasPagar).values({
+              empresaId,
+              descricao: `Plano de saúde ${f.nome} - Ref: ${input.mes}/${input.ano}`,
+              categoria: "seguro",
+              valor: String(planoSaude),
+              dataVencimento: input.dataVencimento,
+              status: "pendente",
+              funcionarioId: f.id,
+              observacoes: "Benefício automático de folha",
+            });
+            beneficiosLancados++;
+          }
+
+          if (encargos > 0) {
+            await db.insert(contasPagar).values({
+              empresaId,
+              descricao: `Encargos estimados ${f.nome} - Ref: ${input.mes}/${input.ano}`,
+              categoria: "outro",
+              valor: String(encargos),
+              dataVencimento: input.dataVencimento,
+              status: "pendente",
+              funcionarioId: f.id,
+              observacoes: "Encargo estimado automático de folha (28%)",
+            });
+            encargosLancados++;
+          }
         }
 
         await createAuditLog(ctx, {
           acao: "CREATE",
           tabela: "contas_pagar",
           registroId: 0,
-          dadosDepois: { mes: input.mes, ano: input.ano, totalLancados: lancados },
+          dadosDepois: {
+            mes: input.mes,
+            ano: input.ano,
+            totalLancados: lancados,
+            beneficiosLancados,
+            encargosLancados,
+          },
         });
 
-        return { success: true, totalLancados: lancados };
+        return {
+          success: true,
+          totalLancados: lancados,
+          beneficiosLancados,
+          encargosLancados,
+          totalRegistros: lancados + beneficiosLancados + encargosLancados,
+        };
       }, "funcionarios.lancarFolha");
     }),
 

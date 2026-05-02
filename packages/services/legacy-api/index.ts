@@ -186,6 +186,50 @@ const mapLegacyMetric = (payload: any) => {
   };
 };
 
+async function storeOmnichannelInbound(input: {
+  empresaId: number;
+  provider: "whatsapp" | "telegram" | "instagram";
+  externalId: string;
+  displayName?: string | null;
+  phone?: string | null;
+  username?: string | null;
+  content?: string | null;
+  externalMessageId?: string | null;
+  messageType?: string | null;
+  mediaUrl?: string | null;
+  payload?: any;
+}) {
+  const client = await getRawClient();
+  if (!client) throw new Error("DATABASE_UNAVAILABLE");
+
+  const convRows = await client`
+    INSERT INTO omnichannel_conversations
+      ("empresaId", provider, "externalId", "displayName", phone, username, metadata, "lastMessageAt", "updatedAt")
+    VALUES
+      (${input.empresaId}, ${input.provider}, ${input.externalId}, ${input.displayName ?? null}, ${input.phone ?? null}, ${input.username ?? null}, ${JSON.stringify(input.payload ?? {})}::jsonb, NOW(), NOW())
+    ON CONFLICT ("empresaId", provider, "externalId")
+    DO UPDATE SET
+      "displayName" = COALESCE(EXCLUDED."displayName", omnichannel_conversations."displayName"),
+      phone = COALESCE(EXCLUDED.phone, omnichannel_conversations.phone),
+      username = COALESCE(EXCLUDED.username, omnichannel_conversations.username),
+      metadata = COALESCE(EXCLUDED.metadata, omnichannel_conversations.metadata),
+      "lastMessageAt" = NOW(),
+      "updatedAt" = NOW()
+    RETURNING *
+  `;
+  const conversation = convRows[0];
+  if (!conversation) throw new Error("CONVERSATION_UPSERT_FAILED");
+
+  await client`
+    INSERT INTO omnichannel_messages
+      ("conversationId", provider, direction, "externalMessageId", "senderName", content, "messageType", "mediaUrl", status, payload)
+    VALUES
+      (${conversation.id}, ${input.provider}, 'in', ${input.externalMessageId ?? null}, ${input.displayName ?? null}, ${input.content ?? null}, ${input.messageType ?? "text"}, ${input.mediaUrl ?? null}, 'recebida', ${JSON.stringify(input.payload ?? {})}::jsonb)
+  `;
+
+  return conversation;
+}
+
 app.post("/api/upload", requireUser, upload.single("file"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "Arquivo não enviado" });
@@ -280,6 +324,92 @@ app.get("/api/agent/download/linux", (_req, res) => {
 
 app.get("/api/agent/download/agent", (_req, res) => {
   res.download(path.join(AGENT_DIR, "synapse_agent.py"), "synapse_agent.py");
+});
+
+app.post("/api/omnichannel/webhook/:provider/:empresaId", async (req, res) => {
+  try {
+    const provider = String(req.params.provider || "") as "whatsapp" | "telegram" | "instagram";
+    const empresaId = Number(req.params.empresaId);
+    const client = await getRawClient();
+    if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+    if (!["whatsapp", "telegram", "instagram"].includes(provider) || !empresaId) {
+      return res.status(400).json({ error: "INVALID_WEBHOOK" });
+    }
+
+    const integrations = await client`
+      SELECT * FROM integracoes
+      WHERE "empresaId"=${empresaId}
+        AND tipo IN (${provider}, ${provider === "whatsapp" ? "evolution_api" : provider})
+      ORDER BY "createdAt" DESC
+      LIMIT 1
+    `.catch(() => []);
+
+    const integration = integrations[0];
+    if (integration?.webhookSecret) {
+      const provided = String(req.headers["x-synapse-secret"] || req.query.secret || "");
+      if (provided !== String(integration.webhookSecret)) {
+        return res.status(401).json({ error: "INVALID_SECRET" });
+      }
+    }
+
+    if (provider === "telegram") {
+      const message = req.body?.message || req.body?.edited_message;
+      if (!message?.chat?.id) return res.json({ ignored: true });
+      await storeOmnichannelInbound({
+        empresaId,
+        provider,
+        externalId: String(message.chat.id),
+        displayName: [message.from?.first_name, message.from?.last_name].filter(Boolean).join(" ") || message.chat?.title || "Telegram",
+        username: message.from?.username || null,
+        content: message.text || message.caption || null,
+        externalMessageId: message.message_id ? String(message.message_id) : null,
+        messageType: message.photo ? "image" : "text",
+        payload: req.body,
+      });
+      return res.json({ success: true });
+    }
+
+    if (provider === "whatsapp") {
+      const event = req.body?.data || req.body;
+      const externalId = event?.key?.remoteJid || event?.from || event?.sender || null;
+      const content = event?.message?.conversation || event?.message?.extendedTextMessage?.text || event?.text || null;
+      if (!externalId) return res.json({ ignored: true });
+      await storeOmnichannelInbound({
+        empresaId,
+        provider,
+        externalId: String(externalId).replace(/@s\.whatsapp\.net$/, ""),
+        phone: String(externalId).replace(/@s\.whatsapp\.net$/, ""),
+        displayName: event?.pushName || event?.senderName || "WhatsApp",
+        content,
+        externalMessageId: event?.key?.id || null,
+        messageType: event?.message?.imageMessage ? "image" : "text",
+        payload: req.body,
+      });
+      return res.json({ success: true });
+    }
+
+    if (provider === "instagram") {
+      const changes = req.body?.entry?.[0]?.changes?.[0]?.value;
+      const msg = changes?.messages?.[0];
+      if (!msg?.from?.id) return res.json({ ignored: true });
+      await storeOmnichannelInbound({
+        empresaId,
+        provider,
+        externalId: String(msg.from.id),
+        displayName: changes?.contacts?.[0]?.profile?.name || "Instagram",
+        content: msg.text?.body || null,
+        externalMessageId: msg.id || null,
+        messageType: msg.image ? "image" : "text",
+        payload: req.body,
+      });
+      return res.json({ success: true });
+    }
+
+    return res.json({ ignored: true });
+  } catch (error: any) {
+    console.error("[Webhook][Omnichannel]", error);
+    return res.status(500).json({ error: error?.message || "WEBHOOK_ERROR" });
+  }
 });
 
 app.post("/api/agent/pair", async (req, res) => {

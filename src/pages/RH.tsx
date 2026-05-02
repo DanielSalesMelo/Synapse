@@ -159,10 +159,12 @@ export default function RH() {
   });
   const lancarFolha = trpc.funcionarios.lancarFolha.useMutation({
     onSuccess: (result) => {
-      toast.success(`Folha lançada com ${result.totalLancados} conta(s) a pagar.`);
+      toast.success(`Folha lançada com ${result.totalRegistros ?? result.totalLancados} lançamento(s), incluindo benefícios e encargos.`);
       setShowProcessarFolha(false);
       utils.funcionarios.folhaResumo.invalidate();
       utils.funcionarios.dashboard.invalidate();
+      utils.financeiro?.pagar?.list?.invalidate?.();
+      utils.financeiro?.dashboard?.invalidate?.();
     },
     onError: (error) => toast.error(error.message),
   });
