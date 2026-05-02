@@ -21,7 +21,7 @@ import {
   Building2, Receipt, Banknote, PieChart, UserPlus, GraduationCap,
   HeartHandshake, Award, Clipboard, Microscope, Thermometer, Leaf,
   Globe, Plug, Zap, Search, ChevronDown, ChevronUp, X, CheckCircle,
-  Info, Ticket, Wrench as WrenchIcon,
+  Info, Ticket, Crown, Wrench as WrenchIcon,
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useViewAs } from "@/contexts/ViewAsContext";
