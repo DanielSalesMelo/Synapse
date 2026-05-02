@@ -1899,7 +1899,8 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                     <p className="text-muted-foreground"># 2. Execute o instalador e informe o código de pareamento</p>
                     <p className="text-muted-foreground"># 3. A instalação agora usa a pasta do usuário para evitar travas de permissão</p>
                     <p className="text-muted-foreground"># 4. URL do Servidor: {backendBaseUrl}</p>
-                    <p className="text-muted-foreground"># 5. O instalador cria um atalho “Synapse Suporte” para abrir chamados e conversar com o TI</p>
+                    <p className="text-muted-foreground"># 5. O instalador tenta criar “Synapse Suporte” na área de trabalho e deixa o agente em {backendBaseUrl}</p>
+                    <p className="text-muted-foreground"># 6. Se o atalho não aparecer, rode manualmente: synapse-agent.exe --support</p>
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">

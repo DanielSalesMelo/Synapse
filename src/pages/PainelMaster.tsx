@@ -19,6 +19,7 @@ import {
   Briefcase, Store, MessageCircleMore, CalendarRange, Rocket,
   Home, Repeat, Handshake, FileText, Lightbulb, ClipboardList, CalendarDays, NotebookTabs, UsersRound, Newspaper,
   Target, Bot, Search, LifeBuoy, BarChart3, BookOpen, FolderOpen, Scale, TrendingUp, ShoppingCart, CheckCircle2,
+  Mail, Database, Truck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useViewAs } from "@/contexts/ViewAsContext";
@@ -153,6 +154,26 @@ const GENERIC_MASTER_MODULES = [
   { key: "centro_treinamentos", title: "Centro de treinamentos", icon: GraduationCap, fieldA: "Tema", fieldB: "Equipe", fieldC: "Carga horária", color: "text-purple-800" },
   { key: "indicadores_rh", title: "Indicadores de RH", icon: UsersRound, fieldA: "Indicador", fieldB: "Meta", fieldC: "Período", color: "text-rose-800" },
   { key: "indicadores_ti", title: "Indicadores de TI", icon: Activity, fieldA: "Indicador", fieldB: "SLA", fieldC: "Período", color: "text-blue-800" },
+  { key: "politica_precos", title: "Política de preços", icon: DollarSign, fieldA: "Serviço", fieldB: "Faixa", fieldC: "Regra", color: "text-emerald-800" },
+  { key: "cobranca_recorrente", title: "Cobrança recorrente", icon: Repeat, fieldA: "Cliente", fieldB: "Valor", fieldC: "Ciclo", color: "text-red-800" },
+  { key: "rotinas_financeiras", title: "Rotinas financeiras", icon: Wallet, fieldA: "Processo", fieldB: "Periodicidade", fieldC: "Responsável", color: "text-lime-800" },
+  { key: "fechamento_mensal", title: "Fechamento mensal", icon: Calendar, fieldA: "Mês", fieldB: "Etapa", fieldC: "Pendência", color: "text-violet-800" },
+  { key: "admissao_documentos", title: "Admissão e documentos", icon: UserPlus, fieldA: "Colaborador", fieldB: "Documento", fieldC: "Status", color: "text-sky-800" },
+  { key: "medicina_trabalho", title: "Medicina do trabalho", icon: HeartPulse, fieldA: "Exame", fieldB: "Vencimento", fieldC: "Clínica", color: "text-rose-700" },
+  { key: "escalas_motoristas", title: "Escalas de motoristas", icon: Truck, fieldA: "Motorista", fieldB: "Turno", fieldC: "Rota", color: "text-cyan-700" },
+  { key: "compliance_transporte", title: "Compliance de transporte", icon: Shield, fieldA: "Regra", fieldB: "Veículo", fieldC: "Ação", color: "text-orange-900" },
+  { key: "contratos_operacionais", title: "Contratos operacionais", icon: FileText, fieldA: "Cliente", fieldB: "Escopo", fieldC: "Renovação", color: "text-slate-700" },
+  { key: "preventivas_veiculos", title: "Preventivas de veículos", icon: Truck, fieldA: "Veículo", fieldB: "KM", fieldC: "Próxima revisão", color: "text-amber-800" },
+  { key: "qualidade_atendimento", title: "Qualidade de atendimento", icon: Star, fieldA: "Canal", fieldB: "Nota", fieldC: "Correção", color: "text-yellow-800" },
+  { key: "base_conhecimento_ti", title: "Base de conhecimento TI", icon: BookOpen, fieldA: "Tema", fieldB: "Categoria", fieldC: "Aplicação", color: "text-blue-900" },
+  { key: "automacoes_whatsapp", title: "Automações WhatsApp", icon: MessageCircleMore, fieldA: "Fluxo", fieldB: "Gatilho", fieldC: "Objetivo", color: "text-green-900" },
+  { key: "automacoes_email", title: "Automações de e-mail", icon: Mail, fieldA: "Campanha", fieldB: "Gatilho", fieldC: "Objetivo", color: "text-indigo-900" },
+  { key: "automacoes_telegram", title: "Automações Telegram", icon: Bot, fieldA: "Bot", fieldB: "Comando", fieldC: "Uso", color: "text-cyan-900" },
+  { key: "integracoes_fiscais", title: "Integrações fiscais", icon: Receipt, fieldA: "Fonte", fieldB: "Tipo", fieldC: "Status", color: "text-red-900" },
+  { key: "integracoes_bancarias", title: "Integrações bancárias", icon: Banknote, fieldA: "Banco", fieldB: "Canal", fieldC: "Sincronização", color: "text-emerald-900" },
+  { key: "mapa_processos", title: "Mapa de processos", icon: GitMerge, fieldA: "Área", fieldB: "Etapa", fieldC: "Dono", color: "text-purple-900" },
+  { key: "governanca_dados", title: "Governança de dados", icon: Database, fieldA: "Base", fieldB: "Regra", fieldC: "Responsável", color: "text-slate-900" },
+  { key: "iniciativas_ia", title: "Iniciativas de IA", icon: Brain, fieldA: "Projeto", fieldB: "Valor", fieldC: "Próximo teste", color: "text-fuchsia-900" },
 ] as const;
 
 function GenericMasterModuleCard({

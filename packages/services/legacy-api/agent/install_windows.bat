@@ -8,6 +8,9 @@ set "INSTALL_DIR=%LocalAppData%\SynapseAgent"
 set "AGENT_EXE=%INSTALL_DIR%\synapse-agent.exe"
 set "TEMP_EXE=%TEMP%\synapse-agent.exe"
 set "PAIR_CODE="
+set "DESKTOP_DIR="
+set "STARTUP_DIR="
+set "SHORTCUT_CREATED=0"
 
 echo.
 echo =====================================================
@@ -61,16 +64,34 @@ if errorlevel 1 (
 )
 
 echo Registrando inicializacao automatica...
-schtasks /create /tn "SynapseAgent" /tr "\"%AGENT_EXE%\"" /sc onlogon /ru "%USERNAME%" /f >nul 2>&1
+schtasks /create /tn "SynapseAgent" /tr "\"%AGENT_EXE%\"" /sc onlogon /f >nul 2>&1
 if errorlevel 1 (
   echo [AVISO] Nao foi possivel criar a tarefa automatica. Inicie manualmente por %AGENT_EXE%
 ) else (
   echo [OK] Tarefa automatica criada.
 )
 
-echo Criando atalho de suporte na area de trabalho...
-powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-  "$WshShell = New-Object -ComObject WScript.Shell; $Shortcut = $WshShell.CreateShortcut([System.IO.Path]::Combine($env:USERPROFILE,'Desktop','Synapse Suporte.lnk')); $Shortcut.TargetPath = '%AGENT_EXE%'; $Shortcut.Arguments = '--support'; $Shortcut.WorkingDirectory = '%INSTALL_DIR%'; $Shortcut.IconLocation = '%AGENT_EXE%,0'; $Shortcut.Save()"
+for /f "usebackq delims=" %%i in (`powershell -NoProfile -ExecutionPolicy Bypass -Command "[Environment]::GetFolderPath('Desktop')"`) do set "DESKTOP_DIR=%%i"
+for /f "usebackq delims=" %%i in (`powershell -NoProfile -ExecutionPolicy Bypass -Command "[Environment]::GetFolderPath('Startup')"`) do set "STARTUP_DIR=%%i"
+
+if "%DESKTOP_DIR%"=="" if exist "%USERPROFILE%\Desktop" set "DESKTOP_DIR=%USERPROFILE%\Desktop"
+if "%DESKTOP_DIR%"=="" if exist "%OneDrive%\Desktop" set "DESKTOP_DIR=%OneDrive%\Desktop"
+
+if not "%DESKTOP_DIR%"=="" (
+  echo Criando atalho de suporte na area de trabalho...
+  powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+    "$WshShell = New-Object -ComObject WScript.Shell; $Shortcut = $WshShell.CreateShortcut('%DESKTOP_DIR%\Synapse Suporte.lnk'); $Shortcut.TargetPath = '%AGENT_EXE%'; $Shortcut.Arguments = '--support'; $Shortcut.WorkingDirectory = '%INSTALL_DIR%'; $Shortcut.IconLocation = '%AGENT_EXE%,0'; $Shortcut.Save()"
+  if exist "%DESKTOP_DIR%\Synapse Suporte.lnk" (
+    set "SHORTCUT_CREATED=1"
+  ) else (
+    echo [AVISO] Nao foi possivel criar o atalho na area de trabalho.
+  )
+)
+
+if not "%STARTUP_DIR%"=="" (
+  powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+    "$WshShell = New-Object -ComObject WScript.Shell; $Shortcut = $WshShell.CreateShortcut('%STARTUP_DIR%\Synapse Agent.lnk'); $Shortcut.TargetPath = '%AGENT_EXE%'; $Shortcut.WorkingDirectory = '%INSTALL_DIR%'; $Shortcut.IconLocation = '%AGENT_EXE%,0'; $Shortcut.Save()"
+)
 
 start "" "%AGENT_EXE%"
 
@@ -79,7 +100,11 @@ echo =====================================================
 echo  Instalacao concluida
 echo  Pasta: %INSTALL_DIR%
 echo  Servidor: %SERVER_URL%
-echo  Atalho de suporte criado na area de trabalho
+if "%SHORTCUT_CREATED%"=="1" (
+  echo  Atalho de suporte: %DESKTOP_DIR%\Synapse Suporte.lnk
+) else (
+  echo  Abra manualmente: "%AGENT_EXE%" --support
+)
 echo =====================================================
 echo.
 pause
