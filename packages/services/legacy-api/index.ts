@@ -77,12 +77,26 @@ app.use(
 
 // Health check imediato para evitar que o deploy falhe
 app.get("/health", (_req, res) => res.status(200).send("OK"));
-app.get("/", (_req, res) => res.status(200).json({ status: "online", message: "Synapse API" }));
-
 // Servir arquivos estáticos
 const UPLOADS_DIR = path.join(process.cwd(), "uploads");
 if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 app.use("/uploads", express.static(UPLOADS_DIR));
+
+// Servir o frontend React (Vite build)
+const DIST_PATH = path.join(process.cwd(), "dist");
+if (fs.existsSync(DIST_PATH)) {
+  console.log(`[Server] Servindo frontend de: ${DIST_PATH}`);
+  app.use(express.static(DIST_PATH));
+  
+  // Fallback para SPA (Single Page Application)
+  app.get("*", (req, res, next) => {
+    if (req.path.startsWith("/api/")) return next();
+    res.sendFile(path.join(DIST_PATH, "index.html"));
+  });
+} else {
+  console.warn(`[Server] ⚠️ Pasta 'dist' não encontrada em: ${DIST_PATH}`);
+  app.get("/", (_req, res) => res.status(200).json({ status: "online", message: "Synapse API (Frontend não encontrado)" }));
+}
 
 // Inicialização do servidor
 app.listen(port, () => {
