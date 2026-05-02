@@ -67,6 +67,7 @@ import RH from "./pages/RH";
 import Tarefas from "./pages/Tarefas";
 import Notas from "./pages/Notas";
 import Configuracoes from "./pages/Configuracoes";
+import Pessoal from "./pages/Pessoal";
 
 function DashboardRoutes() {
   return (
@@ -132,12 +133,15 @@ function DashboardRoutes() {
         <Route path="/import-export" component={ImportExport} />
         <Route path="/ajuda" component={Ajuda} />
         <Route path="/ia" component={IA} />
+        <Route path="/pessoal" component={Pessoal} />
+        <Route path="/pessoal/calendario" component={Pessoal} />
 
         {/* Recepção (legado) */}
         <Route path="/recepcao" component={Recepcao} />
         <Route path="/recepcao/docas" component={Recepcao} />
 
         {/* WMS */}
+        <Route path="/wms" component={WMS} />
         <Route path="/wms/estoque" component={WMS} />
         <Route path="/wms/produtos" component={WMS} />
         <Route path="/wms/movimentacoes" component={WMS} />
@@ -167,6 +171,7 @@ function DashboardRoutes() {
         <Route path="/ti/:tab?">{(params) => <TI params={params} />}</Route>
 
         {/* Marketing */}
+        <Route path="/marketing" component={Marketing} />
         <Route path="/marketing/campanhas" component={Marketing} />
         <Route path="/marketing/email" component={Marketing} />
         <Route path="/marketing/landing-pages" component={Marketing} />
@@ -190,7 +195,12 @@ function DashboardRoutes() {
 
         {/* Master */}
         <Route path="/master/painel" component={PainelMaster} />
+        <Route path="/master/visao-geral" component={PainelMaster} />
         <Route path="/master/empresas" component={PainelMaster} />
+        <Route path="/master/licencas" component={PainelMaster} />
+        <Route path="/master/cobrancas" component={PainelMaster} />
+        <Route path="/master/planos" component={PainelMaster} />
+        <Route path="/master/config" component={PainelMaster} />
         <Route path="/master/permissoes" component={Permissoes} />
         <Route path="/master/ia-training" component={IA} />
         <Route path="/master/bi" component={BI} />

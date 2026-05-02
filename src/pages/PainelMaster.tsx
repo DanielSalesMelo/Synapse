@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -19,10 +19,29 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useViewAs } from "@/contexts/ViewAsContext";
-import { useEffect } from "react";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 type Aba = "workspace" | "visao-geral" | "empresas" | "licencas" | "cobrancas" | "planos" | "config";
+
+const TAB_ROUTE_MAP: Record<Aba, string> = {
+  workspace: "/master/painel",
+  "visao-geral": "/master/painel",
+  empresas: "/master/empresas",
+  licencas: "/master/licencas",
+  cobrancas: "/master/cobrancas",
+  planos: "/master/planos",
+  config: "/master/config",
+};
+
+function resolveMasterTab(path: string): Aba {
+  if (path.startsWith("/master/empresas")) return "empresas";
+  if (path.startsWith("/master/licencas")) return "licencas";
+  if (path.startsWith("/master/cobrancas")) return "cobrancas";
+  if (path.startsWith("/master/planos")) return "planos";
+  if (path.startsWith("/master/config")) return "config";
+  if (path.startsWith("/master/visao-geral")) return "visao-geral";
+  return "workspace";
+}
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 const PLANO_CORES: Record<string, string> = {
@@ -443,8 +462,8 @@ function PlanoCard({ plano, meta, onSave }: { plano: any; meta: any; onSave: (u:
 export default function PainelMaster() {
   const { user, loading } = useAuth();
   const { enterAdminView } = useViewAs();
-  const [, navigate] = useLocation();
-  const [abaAtiva, setAbaAtiva] = useState<Aba>("workspace");
+  const [location, navigate] = useLocation();
+  const [abaAtiva, setAbaAtiva] = useState<Aba>(resolveMasterTab(location));
   const [modalLicenca, setModalLicenca] = useState(false);
   const [modalCobranca, setModalCobranca] = useState(false);
   const [modalEmpresa, setModalEmpresa] = useState(false);
@@ -626,6 +645,9 @@ export default function PainelMaster() {
   useEffect(() => {
     if (!loading && user && (user as any).role !== "master_admin") navigate("/dashboard");
   }, [user, loading, navigate]);
+  useEffect(() => {
+    setAbaAtiva(resolveMasterTab(location));
+  }, [location]);
   if (loading || !user || (user as any).role !== "master_admin") return null;
 
   const copiar = (txt: string, label: string) => navigator.clipboard.writeText(txt).then(() => toast.success(`${label} copiado!`));
@@ -660,7 +682,7 @@ export default function PainelMaster() {
           { key: "planos",      label: "Planos",        icon: <Star className="w-4 h-4" /> },
           { key: "config",      label: "Configurações", icon: <Settings className="w-4 h-4" /> },
         ] as const).map(aba => (
-          <button key={aba.key} onClick={() => setAbaAtiva(aba.key)}
+          <button key={aba.key} onClick={() => navigate(TAB_ROUTE_MAP[aba.key])}
             className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${abaAtiva === aba.key ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
             {aba.icon} {aba.label}
             {aba.key === "licencas" && (dashboard as any)?.stats?.vencendoEm7dias ? (

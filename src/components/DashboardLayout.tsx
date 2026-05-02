@@ -62,6 +62,18 @@ const getMenuGroups = (t: any): MenuGroup[] => [
     ],
   },
 
+  {
+    label: "Pessoal",
+    icon: Crown,
+    requiredRole: "master_admin",
+    items: [
+      { icon: Crown, label: "Meu Workspace", path: "/pessoal" },
+      { icon: Calendar, label: "Agenda Pessoal", path: "/pessoal/calendario" },
+      { icon: Star, label: "Central do Daniel", path: "/master/painel" },
+      { icon: Brain, label: "IA Executiva", path: "/ia" },
+    ],
+  },
+
   // ── FROTA & OPERAÇÕES ──────────────────────────────────────────────────────
   {
     label: "Frota & Operações",
@@ -321,6 +333,7 @@ function Sidebar({
   // Mapa de acesso por grupo: quais roles podem ver cada grupo
   const GROUP_ACCESS: Record<string, string[]> = {
     "Início": [...FULL_ACCESS_ROLES, "financeiro", "comercial", "dispatcher", "motorista", "wms_operator", "rh", "ti", "monitor", "user"],
+    "Pessoal": ["master_admin", "ti_master"],
     "Frota & Operações": [...FULL_ACCESS_ROLES, "dispatcher", "motorista"],
     "Despachante": [...FULL_ACCESS_ROLES, "dispatcher"],
     "Comercial": [...FULL_ACCESS_ROLES, "comercial"],

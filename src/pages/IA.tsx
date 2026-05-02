@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 type Mensagem = { role: "user" | "assistant"; conteudo: string; tokens?: number; modoLocal?: boolean };
 
@@ -83,7 +83,8 @@ export default function IA() {
     onSuccess: () => { toast.success("Removido!"); refetchConhecimento(); },
   });
   const inicializar = trpc.ia.inicializarAgentes.useMutation({
-    onSuccess: (r) => toast({ title: r.message }),
+    onSuccess: (r) => toast.success(r.message),
+    onError: (e) => toast.error(e.message),
   });
 
   // Selecionar primeiro agente automaticamente
@@ -147,18 +148,49 @@ export default function IA() {
 
   return (
     <div className="space-y-4">
+        <div className="relative overflow-hidden rounded-3xl border border-border bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.14),_transparent_30%),radial-gradient(circle_at_top_right,_rgba(168,85,247,0.16),_transparent_32%),linear-gradient(180deg,rgba(15,23,42,0.98),rgba(15,23,42,0.9))] p-6 text-white shadow-2xl">
+          <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,rgba(255,255,255,0.05)_35%,transparent_70%)]" />
+          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="mb-2 flex items-center gap-2">
+                <Badge variant="outline" className="border-white/20 bg-white/10 text-white">
+                  <Sparkles className="mr-1 h-3 w-3" />
+                  IA conectada ao Synapse
+                </Badge>
+                <Badge variant="outline" className="border-emerald-400/30 bg-emerald-500/10 text-emerald-200">
+                  Resposta local garantida
+                </Badge>
+              </div>
+              <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Synapse AI</h1>
+              <p className="mt-2 max-w-2xl text-sm text-slate-200">
+                Assistentes por setor com fallback local para você nunca ficar sem resposta, mesmo quando a IA externa não estiver disponível.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:w-[320px]">
+              <div className="rounded-2xl border border-white/10 bg-white/10 p-3 backdrop-blur">
+                <p className="text-[11px] uppercase tracking-wide text-slate-200">Agentes</p>
+                <p className="mt-2 text-lg font-semibold">{agentes.length}</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/10 p-3 backdrop-blur">
+                <p className="text-[11px] uppercase tracking-wide text-slate-200">Sessão</p>
+                <p className="mt-2 text-lg font-semibold">{agenteAtivo?.nome ?? "Escolha um agente"}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
               <Brain className="h-6 w-6 text-primary" />
-              Synapse AI
+              Assistentes por contexto
               <Badge variant="outline" className="text-xs text-primary border-primary/30 bg-primary/5">
-                <Zap className="h-3 w-3 mr-1" /> Beta
+                <Zap className="h-3 w-3 mr-1" /> Pronto para uso
               </Badge>
-            </h1>
+            </h2>
             <p className="text-muted-foreground text-sm mt-1">
-              Assistentes inteligentes para cada setor do seu negócio
+              Faça perguntas operacionais, financeiras, de frota, manutenção ou gestão e receba retorno direto na conversa.
             </p>
           </div>
           {isAdmin && (
@@ -185,6 +217,11 @@ export default function IA() {
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Agentes</p>
                 </div>
                 <div className="flex-1 overflow-y-auto p-2 space-y-1">
+                  {agentes.length === 0 && (
+                    <div className="rounded-lg border border-dashed p-3 text-center text-xs text-muted-foreground">
+                      Nenhum agente disponível ainda. Clique em <strong>Inicializar Agentes</strong>.
+                    </div>
+                  )}
                   {agentes.map((ag: any) => (
                     <button
                       key={ag.id}
