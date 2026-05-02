@@ -31,6 +31,21 @@ const TEMPLATE_META: Record<string, { categoria: string; icon: any; destaque: st
   evolution_api: { categoria: "Mensageria", icon: Smartphone, destaque: "WhatsApp omnichannel" },
   arquivei: { categoria: "Fiscal", icon: FileText, destaque: "XML e DANFE" },
   winthor: { categoria: "ERP", icon: Building2, destaque: "Integração logística e estoque" },
+  controle_de_ponto: { categoria: "RH", icon: BadgeCheck, destaque: "Jornada e escalas" },
+  ponto_mobile: { categoria: "RH", icon: Smartphone, destaque: "Ponto com app" },
+  ofx_cnab: { categoria: "Financeiro", icon: FileText, destaque: "Conciliação bancária" },
+  bancos_pix_boletos: { categoria: "Financeiro", icon: Zap, destaque: "PIX e boletos" },
+  nfe: { categoria: "Fiscal", icon: FileText, destaque: "Notas fiscais" },
+  cte: { categoria: "Fiscal", icon: FileText, destaque: "Conhecimento de transporte" },
+  mdfe: { categoria: "Fiscal", icon: FileText, destaque: "Manifestos eletrônicos" },
+  sefaz_xml: { categoria: "Fiscal", icon: ShieldCheck, destaque: "Consulta e XML" },
+  slack: { categoria: "Comunicação", icon: MessageCircleMore, destaque: "Operação interna" },
+  teams: { categoria: "Comunicação", icon: MessageCircleMore, destaque: "Colaboração corporativa" },
+  google_business_profile: { categoria: "Marketing", icon: Globe2, destaque: "Perfil e avaliações" },
+  google_maps: { categoria: "Logística", icon: Globe2, destaque: "Rotas e geolocalização" },
+  mercadopago: { categoria: "Financeiro", icon: Zap, destaque: "Cobrança online" },
+  asaas: { categoria: "Financeiro", icon: Zap, destaque: "Recorrência e boletos" },
+  clicksign: { categoria: "Documentos", icon: FileText, destaque: "Assinatura eletrônica" },
 };
 
 function GenericIntegrationCard({

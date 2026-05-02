@@ -961,8 +961,8 @@ export default function TI({ params }: { params?: { tab?: string } }) {
           <TabsTrigger value="licencas"><Shield className="h-4 w-4 mr-1" />Licenças</TabsTrigger>
           <TabsTrigger value="compras"><ShoppingCart className="h-4 w-4 mr-1" />Compras</TabsTrigger>
           <TabsTrigger value="manutencao"><Wrench className="h-4 w-4 mr-1" />Manutenção</TabsTrigger>
-          <TabsTrigger value="agentes"><Network className="h-4 w-4 mr-1" />Agentes</TabsTrigger>
-          <TabsTrigger value="dispositivos"><Monitor className="h-4 w-4 mr-1" />Dispositivos</TabsTrigger>
+          <TabsTrigger value="agentes"><Network className="h-4 w-4 mr-1" />Agentes e Dispositivos</TabsTrigger>
+          <TabsTrigger value="dispositivos"><Monitor className="h-4 w-4 mr-1" />Vínculos e Inventário</TabsTrigger>
           <TabsTrigger value="certificados"><Shield className="h-4 w-4 mr-1" />Certificados</TabsTrigger>
           <TabsTrigger value="alertas" className="relative">
             <Bell className="h-4 w-4 mr-1" />Alertas
@@ -1882,13 +1882,15 @@ export default function TI({ params }: { params?: { tab?: string } }) {
             <Card>
               <CardHeader>
                 <CardTitle className="text-sm flex items-center gap-2">
-                  <Download className="h-4 w-4" />Instalar Agente de Monitoramento
+                  <Download className="h-4 w-4" />Instalar Agente Synapse
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-sm text-muted-foreground">
-                  O agente coleta métricas do PC (CPU, RAM, disco, rede, temperatura) e envia para o Synapse.
-                  Funciona offline com buffer local — nunca perde dados.
+                  O agente Synapse cria um dispositivo monitorado no sistema. Em termos práticos, agente e dispositivo são o mesmo ativo:
+                  o agente é o software instalado no PC e o dispositivo é o registro visível no módulo TI.
+                  Ele coleta métricas do PC (CPU, RAM, disco, rede, temperatura) e envia para o Synapse.
+                  Funciona offline com buffer local.
                 </p>
                 <div className="space-y-2">
                   <p className="text-xs font-medium text-muted-foreground">COMO INSTALAR (WINDOWS):</p>
@@ -1973,8 +1975,8 @@ export default function TI({ params }: { params?: { tab?: string } }) {
           {/* Lista de agentes registrados */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm flex items-center gap-2">
-                <Monitor className="h-4 w-4" />Agentes Registrados ({(agentesQ.data ?? []).length})
+                <CardTitle className="text-sm flex items-center gap-2">
+                <Monitor className="h-4 w-4" />Ativos Monitorados ({(agentesQ.data ?? []).length})
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -2041,7 +2043,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
         <TabsContent value="dispositivos" className="space-y-4 mt-4">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-2">
-              <p className="text-sm text-muted-foreground">Gerenciar e vincular dispositivos (agentes) aos usuários</p>
+              <p className="text-sm text-muted-foreground">Gerenciar vínculos dos ativos monitorados aos usuários. O software instalado e o dispositivo exibido são tratados como o mesmo item.</p>
               <Badge variant="secondary" className="text-xs">{agentes.length}</Badge>
             </div>
             <div className="flex gap-2">
