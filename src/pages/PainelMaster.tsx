@@ -18,6 +18,7 @@ import {
   RotateCcw, Receipt, Wallet, Megaphone, GraduationCap, HeartPulse, FolderKanban, NotebookPen, ListTodo,
   Briefcase, Store, MessageCircleMore, CalendarRange, Rocket,
   Home, Repeat, Handshake, FileText, Lightbulb, ClipboardList, CalendarDays, NotebookTabs, UsersRound, Newspaper,
+  Target, Bot, Search, LifeBuoy, BarChart3, BookOpen, FolderOpen, Scale,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useViewAs } from "@/contexts/ViewAsContext";
@@ -547,6 +548,26 @@ export default function PainelMaster() {
     trpc.master.listPartnerships.useQuery(undefined, { enabled: isMaster });
   const { data: masterDocumentRegisters = [], refetch: refetchMasterDocumentRegisters } =
     trpc.master.listDocumentRegisters.useQuery(undefined, { enabled: isMaster });
+  const { data: masterGoals = [], refetch: refetchMasterGoals } =
+    trpc.master.listGoals.useQuery(undefined, { enabled: isMaster });
+  const { data: masterDecisions = [], refetch: refetchMasterDecisions } =
+    trpc.master.listDecisions.useQuery(undefined, { enabled: isMaster });
+  const { data: masterAssetLibrary = [], refetch: refetchMasterAssetLibrary } =
+    trpc.master.listAssetLibrary.useQuery(undefined, { enabled: isMaster });
+  const { data: masterAutomationRules = [], refetch: refetchMasterAutomationRules } =
+    trpc.master.listAutomationRules.useQuery(undefined, { enabled: isMaster });
+  const { data: masterClientHealthChecks = [], refetch: refetchMasterClientHealthChecks } =
+    trpc.master.listClientHealthChecks.useQuery(undefined, { enabled: isMaster });
+  const { data: masterResearchItems = [], refetch: refetchMasterResearchItems } =
+    trpc.master.listResearchItems.useQuery(undefined, { enabled: isMaster });
+  const { data: masterSupportItems = [], refetch: refetchMasterSupportItems } =
+    trpc.master.listSupportItems.useQuery(undefined, { enabled: isMaster });
+  const { data: masterBenchmarkItems = [], refetch: refetchMasterBenchmarkItems } =
+    trpc.master.listBenchmarkItems.useQuery(undefined, { enabled: isMaster });
+  const { data: masterLearningMaterials = [], refetch: refetchMasterLearningMaterials } =
+    trpc.master.listLearningMaterials.useQuery(undefined, { enabled: isMaster });
+  const { data: masterKpiSnapshots = [], refetch: refetchMasterKpiSnapshots } =
+    trpc.master.listKpiSnapshots.useQuery(undefined, { enabled: isMaster });
 
   const criarEmpresaMut = trpc.empresas.criar.useMutation({
         onSuccess: (d) => { toast.success(d.mensagem || "Empresa criada!"); setModalEmpresa(false); setFormEmpresa({ nome: "", cnpj: "", email: "", telefone: "", cidade: "", estado: "", tipoEmpresa: "independente", matrizId: "", grupoId: "" }); refetchEmpresas(); },
@@ -840,6 +861,86 @@ export default function PainelMaster() {
     },
     onError: (e) => toast.error(e.message),
   });
+  const createMasterGoalMut = trpc.master.createGoal.useMutation({
+    onSuccess: () => {
+      toast.success("Meta salva.");
+      setFormGoalMaster({ titulo: "", area: "synapse", status: "ativa", meta: "", progresso: "0", prazo: "", observacoes: "" });
+      refetchMasterGoals();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterDecisionMut = trpc.master.createDecision.useMutation({
+    onSuccess: () => {
+      toast.success("Decisão registrada.");
+      setFormDecisionMaster({ titulo: "", contexto: "", decisao: "", impacto: "", status: "vigente", dataDecisao: "" });
+      refetchMasterDecisions();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterAssetLibraryMut = trpc.master.createAssetLibraryItem.useMutation({
+    onSuccess: () => {
+      toast.success("Asset salvo.");
+      setFormAssetMaster({ titulo: "", categoria: "arquivo", link: "", status: "ativo", tags: "", observacoes: "" });
+      refetchMasterAssetLibrary();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterAutomationRuleMut = trpc.master.createAutomationRule.useMutation({
+    onSuccess: () => {
+      toast.success("Automação salva.");
+      setFormAutomationMaster({ titulo: "", gatilho: "", acao: "", status: "ativa", area: "synapse", observacoes: "" });
+      refetchMasterAutomationRules();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterClientHealthCheckMut = trpc.master.createClientHealthCheck.useMutation({
+    onSuccess: () => {
+      toast.success("Saúde do cliente salva.");
+      setFormClientHealthMaster({ titulo: "", status: "atencao", nota: "3", risco: "", proximaAcao: "", observacoes: "", clientId: "" });
+      refetchMasterClientHealthChecks();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterResearchItemMut = trpc.master.createResearchItem.useMutation({
+    onSuccess: () => {
+      toast.success("Pesquisa salva.");
+      setFormResearchMaster({ titulo: "", fonte: "", categoria: "mercado", status: "aberto", resumo: "", link: "" });
+      refetchMasterResearchItems();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterSupportItemMut = trpc.master.createSupportItem.useMutation({
+    onSuccess: () => {
+      toast.success("Pendência de suporte salva.");
+      setFormSupportMaster({ titulo: "", origem: "cliente", prioridade: "media", status: "aberto", responsavel: "", observacoes: "" });
+      refetchMasterSupportItems();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterBenchmarkItemMut = trpc.master.createBenchmarkItem.useMutation({
+    onSuccess: () => {
+      toast.success("Benchmark salvo.");
+      setFormBenchmarkMaster({ concorrente: "", modulo: "", diferencial: "", gap: "", prioridade: "media", observacoes: "" });
+      refetchMasterBenchmarkItems();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterLearningMaterialMut = trpc.master.createLearningMaterial.useMutation({
+    onSuccess: () => {
+      toast.success("Material salvo.");
+      setFormLearningMaster({ titulo: "", categoria: "curso", link: "", status: "pendente", progresso: "0", observacoes: "" });
+      refetchMasterLearningMaterials();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterKpiSnapshotMut = trpc.master.createKpiSnapshot.useMutation({
+    onSuccess: () => {
+      toast.success("KPI salvo.");
+      setFormKpiMaster({ referencia: "", area: "synapse", indicador: "", valor: "", meta: "", observacoes: "" });
+      refetchMasterKpiSnapshots();
+    },
+    onError: (e) => toast.error(e.message),
+  });
 
   const [formEmpresa, setFormEmpresa] = useState({ nome: "", cnpj: "", email: "", telefone: "", cidade: "", estado: "", tipoEmpresa: "independente" as any, matrizId: "", grupoId: "" });
   const [formClienteMaster, setFormClienteMaster] = useState({ nome: "", empresa: "", contato: "", whatsapp: "", email: "", servicos: "", valorMensal: "", status: "lead", proximaAcao: "", observacoes: "" });
@@ -885,6 +986,16 @@ export default function PainelMaster() {
   const [formClientDeliveryMaster, setFormClientDeliveryMaster] = useState({ titulo: "", status: "pendente", prazo: "", responsavel: "", observacoes: "", clientId: "" });
   const [formPartnershipMaster, setFormPartnershipMaster] = useState({ nome: "", tipo: "parceria", status: "lead", contato: "", beneficio: "", observacoes: "" });
   const [formDocumentRegisterMaster, setFormDocumentRegisterMaster] = useState({ titulo: "", categoria: "documento", status: "ativo", link: "", dataRevisao: "", observacoes: "" });
+  const [formGoalMaster, setFormGoalMaster] = useState({ titulo: "", area: "synapse", status: "ativa", meta: "", progresso: "0", prazo: "", observacoes: "" });
+  const [formDecisionMaster, setFormDecisionMaster] = useState({ titulo: "", contexto: "", decisao: "", impacto: "", status: "vigente", dataDecisao: "" });
+  const [formAssetMaster, setFormAssetMaster] = useState({ titulo: "", categoria: "arquivo", link: "", status: "ativo", tags: "", observacoes: "" });
+  const [formAutomationMaster, setFormAutomationMaster] = useState({ titulo: "", gatilho: "", acao: "", status: "ativa", area: "synapse", observacoes: "" });
+  const [formClientHealthMaster, setFormClientHealthMaster] = useState({ titulo: "", status: "atencao", nota: "3", risco: "", proximaAcao: "", observacoes: "", clientId: "" });
+  const [formResearchMaster, setFormResearchMaster] = useState({ titulo: "", fonte: "", categoria: "mercado", status: "aberto", resumo: "", link: "" });
+  const [formSupportMaster, setFormSupportMaster] = useState({ titulo: "", origem: "cliente", prioridade: "media", status: "aberto", responsavel: "", observacoes: "" });
+  const [formBenchmarkMaster, setFormBenchmarkMaster] = useState({ concorrente: "", modulo: "", diferencial: "", gap: "", prioridade: "media", observacoes: "" });
+  const [formLearningMaster, setFormLearningMaster] = useState({ titulo: "", categoria: "curso", link: "", status: "pendente", progresso: "0", observacoes: "" });
+  const [formKpiMaster, setFormKpiMaster] = useState({ referencia: "", area: "synapse", indicador: "", valor: "", meta: "", observacoes: "" });
 
   useEffect(() => {
     if (!loading && user && (user as any).role !== "master_admin") navigate("/dashboard");
@@ -2362,6 +2473,174 @@ export default function PainelMaster() {
                 <div><Label>Data de revisão</Label><Input type="date" value={formDocumentRegisterMaster.dataRevisao} onChange={e => setFormDocumentRegisterMaster(f => ({ ...f, dataRevisao: e.target.value }))} /></div>
                 <div className="flex justify-end"><Button onClick={() => createMasterDocumentRegisterMut.mutate(formDocumentRegisterMaster as any)} disabled={createMasterDocumentRegisterMut.isPending}>{createMasterDocumentRegisterMut.isPending ? "Salvando..." : "Salvar documento"}</Button></div>
                 <div className="space-y-2">{(masterDocumentRegisters as any[]).slice(0, 3).map((doc: any) => <div key={doc.id} className="rounded-lg border p-3"><p className="font-medium text-sm">{doc.titulo}</p><p className="text-xs text-muted-foreground mt-1">{doc.categoria} · {doc.status}</p></div>)}</div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><Target className="w-4 h-4 text-red-500" /> Metas e OKRs</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><Label>Meta *</Label><Input value={formGoalMaster.titulo} onChange={e => setFormGoalMaster(f => ({ ...f, titulo: e.target.value }))} /></div>
+                  <div><Label>Meta numérica/texto</Label><Input value={formGoalMaster.meta} onChange={e => setFormGoalMaster(f => ({ ...f, meta: e.target.value }))} /></div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  <div><Label>Área</Label><Select value={formGoalMaster.area} onValueChange={v => setFormGoalMaster(f => ({ ...f, area: v }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="vida">Vida</SelectItem><SelectItem value="clientes">Clientes</SelectItem><SelectItem value="synapse">Synapse</SelectItem></SelectContent></Select></div>
+                  <div><Label>Status</Label><Select value={formGoalMaster.status} onValueChange={v => setFormGoalMaster(f => ({ ...f, status: v }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="ativa">Ativa</SelectItem><SelectItem value="em_risco">Em risco</SelectItem><SelectItem value="concluida">Concluída</SelectItem><SelectItem value="adiada">Adiada</SelectItem></SelectContent></Select></div>
+                  <div><Label>Progresso</Label><Input type="number" min={0} max={100} value={formGoalMaster.progresso} onChange={e => setFormGoalMaster(f => ({ ...f, progresso: e.target.value }))} /></div>
+                  <div><Label>Prazo</Label><Input type="date" value={formGoalMaster.prazo} onChange={e => setFormGoalMaster(f => ({ ...f, prazo: e.target.value }))} /></div>
+                </div>
+                <div className="flex justify-end"><Button onClick={() => createMasterGoalMut.mutate({ ...formGoalMaster, progresso: Number(formGoalMaster.progresso) } as any)} disabled={createMasterGoalMut.isPending}>{createMasterGoalMut.isPending ? "Salvando..." : "Salvar meta"}</Button></div>
+                <div className="space-y-2">{(masterGoals as any[]).slice(0, 4).map((goal: any) => <div key={goal.id} className="rounded-lg border p-3"><p className="font-medium text-sm">{goal.titulo}</p><p className="text-xs text-muted-foreground mt-1">{goal.area} · {goal.status} · {goal.progresso ?? 0}%</p></div>)}</div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><Scale className="w-4 h-4 text-slate-600" /> Decisões estratégicas</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                <div><Label>Título *</Label><Input value={formDecisionMaster.titulo} onChange={e => setFormDecisionMaster(f => ({ ...f, titulo: e.target.value }))} /></div>
+                <div><Label>Contexto</Label><Input value={formDecisionMaster.contexto} onChange={e => setFormDecisionMaster(f => ({ ...f, contexto: e.target.value }))} /></div>
+                <div><Label>Decisão *</Label><Textarea rows={2} value={formDecisionMaster.decisao} onChange={e => setFormDecisionMaster(f => ({ ...f, decisao: e.target.value }))} /></div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div><Label>Impacto</Label><Input value={formDecisionMaster.impacto} onChange={e => setFormDecisionMaster(f => ({ ...f, impacto: e.target.value }))} /></div>
+                  <div><Label>Status</Label><Select value={formDecisionMaster.status} onValueChange={v => setFormDecisionMaster(f => ({ ...f, status: v }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="vigente">Vigente</SelectItem><SelectItem value="revisar">Revisar</SelectItem><SelectItem value="substituida">Substituída</SelectItem></SelectContent></Select></div>
+                  <div><Label>Data</Label><Input type="date" value={formDecisionMaster.dataDecisao} onChange={e => setFormDecisionMaster(f => ({ ...f, dataDecisao: e.target.value }))} /></div>
+                </div>
+                <div className="flex justify-end"><Button onClick={() => createMasterDecisionMut.mutate(formDecisionMaster as any)} disabled={createMasterDecisionMut.isPending}>{createMasterDecisionMut.isPending ? "Salvando..." : "Salvar decisão"}</Button></div>
+                <div className="space-y-2">{(masterDecisions as any[]).slice(0, 4).map((decision: any) => <div key={decision.id} className="rounded-lg border p-3"><p className="font-medium text-sm">{decision.titulo}</p><p className="text-xs text-muted-foreground mt-1">{decision.status} · {fmtData(decision.dataDecisao)}</p></div>)}</div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <Card>
+              <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><FolderOpen className="w-4 h-4 text-blue-600" /> Biblioteca de assets</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                <div><Label>Título *</Label><Input value={formAssetMaster.titulo} onChange={e => setFormAssetMaster(f => ({ ...f, titulo: e.target.value }))} /></div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><Label>Categoria</Label><Input value={formAssetMaster.categoria} onChange={e => setFormAssetMaster(f => ({ ...f, categoria: e.target.value }))} /></div>
+                  <div><Label>Status</Label><Select value={formAssetMaster.status} onValueChange={v => setFormAssetMaster(f => ({ ...f, status: v }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="ativo">Ativo</SelectItem><SelectItem value="arquivado">Arquivado</SelectItem><SelectItem value="revisar">Revisar</SelectItem></SelectContent></Select></div>
+                </div>
+                <div><Label>Link</Label><Input value={formAssetMaster.link} onChange={e => setFormAssetMaster(f => ({ ...f, link: e.target.value }))} /></div>
+                <div><Label>Tags</Label><Input value={formAssetMaster.tags} onChange={e => setFormAssetMaster(f => ({ ...f, tags: e.target.value }))} /></div>
+                <div className="flex justify-end"><Button onClick={() => createMasterAssetLibraryMut.mutate(formAssetMaster as any)} disabled={createMasterAssetLibraryMut.isPending}>{createMasterAssetLibraryMut.isPending ? "Salvando..." : "Salvar asset"}</Button></div>
+                <div className="space-y-2">{(masterAssetLibrary as any[]).slice(0, 3).map((asset: any) => <div key={asset.id} className="rounded-lg border p-3"><p className="font-medium text-sm">{asset.titulo}</p><p className="text-xs text-muted-foreground mt-1">{asset.categoria} · {asset.status}</p></div>)}</div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><Bot className="w-4 h-4 text-violet-600" /> Regras de automação</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                <div><Label>Título *</Label><Input value={formAutomationMaster.titulo} onChange={e => setFormAutomationMaster(f => ({ ...f, titulo: e.target.value }))} /></div>
+                <div><Label>Gatilho *</Label><Input value={formAutomationMaster.gatilho} onChange={e => setFormAutomationMaster(f => ({ ...f, gatilho: e.target.value }))} /></div>
+                <div><Label>Ação *</Label><Textarea rows={2} value={formAutomationMaster.acao} onChange={e => setFormAutomationMaster(f => ({ ...f, acao: e.target.value }))} /></div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><Label>Status</Label><Select value={formAutomationMaster.status} onValueChange={v => setFormAutomationMaster(f => ({ ...f, status: v }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="ativa">Ativa</SelectItem><SelectItem value="teste">Teste</SelectItem><SelectItem value="pausada">Pausada</SelectItem></SelectContent></Select></div>
+                  <div><Label>Área</Label><Select value={formAutomationMaster.area} onValueChange={v => setFormAutomationMaster(f => ({ ...f, area: v }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="vida">Vida</SelectItem><SelectItem value="clientes">Clientes</SelectItem><SelectItem value="synapse">Synapse</SelectItem></SelectContent></Select></div>
+                </div>
+                <div className="flex justify-end"><Button onClick={() => createMasterAutomationRuleMut.mutate(formAutomationMaster as any)} disabled={createMasterAutomationRuleMut.isPending}>{createMasterAutomationRuleMut.isPending ? "Salvando..." : "Salvar regra"}</Button></div>
+                <div className="space-y-2">{(masterAutomationRules as any[]).slice(0, 3).map((rule: any) => <div key={rule.id} className="rounded-lg border p-3"><p className="font-medium text-sm">{rule.titulo}</p><p className="text-xs text-muted-foreground mt-1">{rule.area} · {rule.status}</p></div>)}</div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><HeartPulse className="w-4 h-4 text-red-600" /> Saúde dos clientes</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                <div><Label>Título *</Label><Input value={formClientHealthMaster.titulo} onChange={e => setFormClientHealthMaster(f => ({ ...f, titulo: e.target.value }))} /></div>
+                <div><Label>Cliente</Label><Select value={formClientHealthMaster.clientId || "sem_cliente"} onValueChange={v => setFormClientHealthMaster(f => ({ ...f, clientId: v === "sem_cliente" ? "" : v }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="sem_cliente">Sem cliente</SelectItem>{(masterClients as any[]).map((client: any) => <SelectItem key={client.id} value={String(client.id)}>{client.nome}</SelectItem>)}</SelectContent></Select></div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div><Label>Status</Label><Select value={formClientHealthMaster.status} onValueChange={v => setFormClientHealthMaster(f => ({ ...f, status: v }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="saudavel">Saudável</SelectItem><SelectItem value="atencao">Atenção</SelectItem><SelectItem value="critico">Crítico</SelectItem></SelectContent></Select></div>
+                  <div><Label>Nota</Label><Input type="number" min={1} max={5} value={formClientHealthMaster.nota} onChange={e => setFormClientHealthMaster(f => ({ ...f, nota: e.target.value }))} /></div>
+                  <div><Label>Risco</Label><Input value={formClientHealthMaster.risco} onChange={e => setFormClientHealthMaster(f => ({ ...f, risco: e.target.value }))} /></div>
+                </div>
+                <div><Label>Próxima ação</Label><Input value={formClientHealthMaster.proximaAcao} onChange={e => setFormClientHealthMaster(f => ({ ...f, proximaAcao: e.target.value }))} /></div>
+                <div className="flex justify-end"><Button onClick={() => createMasterClientHealthCheckMut.mutate({ ...formClientHealthMaster, nota: Number(formClientHealthMaster.nota), clientId: formClientHealthMaster.clientId ? Number(formClientHealthMaster.clientId) : undefined } as any)} disabled={createMasterClientHealthCheckMut.isPending}>{createMasterClientHealthCheckMut.isPending ? "Salvando..." : "Salvar saúde do cliente"}</Button></div>
+                <div className="space-y-2">{(masterClientHealthChecks as any[]).slice(0, 3).map((item: any) => <div key={item.id} className="rounded-lg border p-3"><p className="font-medium text-sm">{item.titulo}</p><p className="text-xs text-muted-foreground mt-1">{item.clienteNome ?? "Sem cliente"} · {item.status} · nota {item.nota}</p></div>)}</div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><Search className="w-4 h-4 text-cyan-600" /> Pesquisas e referências</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                <div><Label>Título *</Label><Input value={formResearchMaster.titulo} onChange={e => setFormResearchMaster(f => ({ ...f, titulo: e.target.value }))} /></div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div><Label>Fonte</Label><Input value={formResearchMaster.fonte} onChange={e => setFormResearchMaster(f => ({ ...f, fonte: e.target.value }))} /></div>
+                  <div><Label>Categoria</Label><Input value={formResearchMaster.categoria} onChange={e => setFormResearchMaster(f => ({ ...f, categoria: e.target.value }))} /></div>
+                  <div><Label>Status</Label><Select value={formResearchMaster.status} onValueChange={v => setFormResearchMaster(f => ({ ...f, status: v }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="aberto">Aberto</SelectItem><SelectItem value="em_estudo">Em estudo</SelectItem><SelectItem value="concluido">Concluído</SelectItem></SelectContent></Select></div>
+                </div>
+                <div><Label>Resumo</Label><Textarea rows={2} value={formResearchMaster.resumo} onChange={e => setFormResearchMaster(f => ({ ...f, resumo: e.target.value }))} /></div>
+                <div><Label>Link</Label><Input value={formResearchMaster.link} onChange={e => setFormResearchMaster(f => ({ ...f, link: e.target.value }))} /></div>
+                <div className="flex justify-end"><Button onClick={() => createMasterResearchItemMut.mutate(formResearchMaster as any)} disabled={createMasterResearchItemMut.isPending}>{createMasterResearchItemMut.isPending ? "Salvando..." : "Salvar pesquisa"}</Button></div>
+                <div className="space-y-2">{(masterResearchItems as any[]).slice(0, 4).map((item: any) => <div key={item.id} className="rounded-lg border p-3"><p className="font-medium text-sm">{item.titulo}</p><p className="text-xs text-muted-foreground mt-1">{item.categoria} · {item.status}</p></div>)}</div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><LifeBuoy className="w-4 h-4 text-orange-600" /> Pendências de suporte</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                <div><Label>Título *</Label><Input value={formSupportMaster.titulo} onChange={e => setFormSupportMaster(f => ({ ...f, titulo: e.target.value }))} /></div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  <div><Label>Origem</Label><Input value={formSupportMaster.origem} onChange={e => setFormSupportMaster(f => ({ ...f, origem: e.target.value }))} /></div>
+                  <div><Label>Prioridade</Label><Select value={formSupportMaster.prioridade} onValueChange={v => setFormSupportMaster(f => ({ ...f, prioridade: v }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="alta">Alta</SelectItem><SelectItem value="media">Média</SelectItem><SelectItem value="baixa">Baixa</SelectItem></SelectContent></Select></div>
+                  <div><Label>Status</Label><Select value={formSupportMaster.status} onValueChange={v => setFormSupportMaster(f => ({ ...f, status: v }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="aberto">Aberto</SelectItem><SelectItem value="em_andamento">Em andamento</SelectItem><SelectItem value="resolvido">Resolvido</SelectItem></SelectContent></Select></div>
+                  <div><Label>Responsável</Label><Input value={formSupportMaster.responsavel} onChange={e => setFormSupportMaster(f => ({ ...f, responsavel: e.target.value }))} /></div>
+                </div>
+                <div><Label>Observações</Label><Textarea rows={2} value={formSupportMaster.observacoes} onChange={e => setFormSupportMaster(f => ({ ...f, observacoes: e.target.value }))} /></div>
+                <div className="flex justify-end"><Button onClick={() => createMasterSupportItemMut.mutate(formSupportMaster as any)} disabled={createMasterSupportItemMut.isPending}>{createMasterSupportItemMut.isPending ? "Salvando..." : "Salvar pendência"}</Button></div>
+                <div className="space-y-2">{(masterSupportItems as any[]).slice(0, 4).map((item: any) => <div key={item.id} className="rounded-lg border p-3"><p className="font-medium text-sm">{item.titulo}</p><p className="text-xs text-muted-foreground mt-1">{item.origem} · {item.status} · {item.prioridade}</p></div>)}</div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <Card>
+              <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><BarChart3 className="w-4 h-4 text-purple-600" /> Benchmark de concorrentes</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                <div><Label>Concorrente *</Label><Input value={formBenchmarkMaster.concorrente} onChange={e => setFormBenchmarkMaster(f => ({ ...f, concorrente: e.target.value }))} /></div>
+                <div><Label>Módulo *</Label><Input value={formBenchmarkMaster.modulo} onChange={e => setFormBenchmarkMaster(f => ({ ...f, modulo: e.target.value }))} /></div>
+                <div><Label>Diferencial</Label><Input value={formBenchmarkMaster.diferencial} onChange={e => setFormBenchmarkMaster(f => ({ ...f, diferencial: e.target.value }))} /></div>
+                <div><Label>Gap do Synapse</Label><Textarea rows={2} value={formBenchmarkMaster.gap} onChange={e => setFormBenchmarkMaster(f => ({ ...f, gap: e.target.value }))} /></div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><Label>Prioridade</Label><Select value={formBenchmarkMaster.prioridade} onValueChange={v => setFormBenchmarkMaster(f => ({ ...f, prioridade: v }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="alta">Alta</SelectItem><SelectItem value="media">Média</SelectItem><SelectItem value="baixa">Baixa</SelectItem></SelectContent></Select></div>
+                  <div><Label>Observações</Label><Input value={formBenchmarkMaster.observacoes} onChange={e => setFormBenchmarkMaster(f => ({ ...f, observacoes: e.target.value }))} /></div>
+                </div>
+                <div className="flex justify-end"><Button onClick={() => createMasterBenchmarkItemMut.mutate(formBenchmarkMaster as any)} disabled={createMasterBenchmarkItemMut.isPending}>{createMasterBenchmarkItemMut.isPending ? "Salvando..." : "Salvar benchmark"}</Button></div>
+                <div className="space-y-2">{(masterBenchmarkItems as any[]).slice(0, 3).map((item: any) => <div key={item.id} className="rounded-lg border p-3"><p className="font-medium text-sm">{item.concorrente}</p><p className="text-xs text-muted-foreground mt-1">{item.modulo} · {item.prioridade}</p></div>)}</div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><BookOpen className="w-4 h-4 text-green-700" /> Materiais de estudo</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                <div><Label>Título *</Label><Input value={formLearningMaster.titulo} onChange={e => setFormLearningMaster(f => ({ ...f, titulo: e.target.value }))} /></div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  <div><Label>Categoria</Label><Input value={formLearningMaster.categoria} onChange={e => setFormLearningMaster(f => ({ ...f, categoria: e.target.value }))} /></div>
+                  <div><Label>Status</Label><Select value={formLearningMaster.status} onValueChange={v => setFormLearningMaster(f => ({ ...f, status: v }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="pendente">Pendente</SelectItem><SelectItem value="em_andamento">Em andamento</SelectItem><SelectItem value="concluido">Concluído</SelectItem></SelectContent></Select></div>
+                  <div><Label>Progresso</Label><Input type="number" min={0} max={100} value={formLearningMaster.progresso} onChange={e => setFormLearningMaster(f => ({ ...f, progresso: e.target.value }))} /></div>
+                  <div><Label>Link</Label><Input value={formLearningMaster.link} onChange={e => setFormLearningMaster(f => ({ ...f, link: e.target.value }))} /></div>
+                </div>
+                <div><Label>Observações</Label><Textarea rows={2} value={formLearningMaster.observacoes} onChange={e => setFormLearningMaster(f => ({ ...f, observacoes: e.target.value }))} /></div>
+                <div className="flex justify-end"><Button onClick={() => createMasterLearningMaterialMut.mutate({ ...formLearningMaster, progresso: Number(formLearningMaster.progresso) } as any)} disabled={createMasterLearningMaterialMut.isPending}>{createMasterLearningMaterialMut.isPending ? "Salvando..." : "Salvar material"}</Button></div>
+                <div className="space-y-2">{(masterLearningMaterials as any[]).slice(0, 3).map((item: any) => <div key={item.id} className="rounded-lg border p-3"><p className="font-medium text-sm">{item.titulo}</p><p className="text-xs text-muted-foreground mt-1">{item.categoria} · {item.status} · {item.progresso ?? 0}%</p></div>)}</div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><BarChart3 className="w-4 h-4 text-cyan-700" /> Snapshots de KPI</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                <div><Label>Indicador *</Label><Input value={formKpiMaster.indicador} onChange={e => setFormKpiMaster(f => ({ ...f, indicador: e.target.value }))} /></div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  <div><Label>Data</Label><Input type="date" value={formKpiMaster.referencia} onChange={e => setFormKpiMaster(f => ({ ...f, referencia: e.target.value }))} /></div>
+                  <div><Label>Área</Label><Select value={formKpiMaster.area} onValueChange={v => setFormKpiMaster(f => ({ ...f, area: v }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="vida">Vida</SelectItem><SelectItem value="clientes">Clientes</SelectItem><SelectItem value="synapse">Synapse</SelectItem></SelectContent></Select></div>
+                  <div><Label>Valor *</Label><Input value={formKpiMaster.valor} onChange={e => setFormKpiMaster(f => ({ ...f, valor: e.target.value }))} /></div>
+                  <div><Label>Meta</Label><Input value={formKpiMaster.meta} onChange={e => setFormKpiMaster(f => ({ ...f, meta: e.target.value }))} /></div>
+                </div>
+                <div><Label>Observações</Label><Textarea rows={2} value={formKpiMaster.observacoes} onChange={e => setFormKpiMaster(f => ({ ...f, observacoes: e.target.value }))} /></div>
+                <div className="flex justify-end"><Button onClick={() => createMasterKpiSnapshotMut.mutate(formKpiMaster as any)} disabled={createMasterKpiSnapshotMut.isPending}>{createMasterKpiSnapshotMut.isPending ? "Salvando..." : "Salvar KPI"}</Button></div>
+                <div className="space-y-2">{(masterKpiSnapshots as any[]).slice(0, 3).map((item: any) => <div key={item.id} className="rounded-lg border p-3"><p className="font-medium text-sm">{item.indicador}: {item.valor}</p><p className="text-xs text-muted-foreground mt-1">{item.area} · {fmtData(item.referencia)}</p></div>)}</div>
               </CardContent>
             </Card>
           </div>
