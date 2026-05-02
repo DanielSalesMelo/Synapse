@@ -1893,27 +1893,29 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                 <div className="space-y-2">
                   <p className="text-xs font-medium text-muted-foreground">COMO INSTALAR (WINDOWS):</p>
                   <div className="bg-muted rounded-lg p-3 space-y-2 text-xs font-mono">
-                    <p className="text-muted-foreground"># 1. Baixe o instalador abaixo</p>
-                    <p className="text-muted-foreground"># 2. Execute o .exe e informe o código de pareamento</p>
-                    <p className="text-muted-foreground"># 3. Use o código de pareamento gerado ao lado</p>
+                    <p className="text-muted-foreground"># 1. Baixe o Instalador .bat abaixo</p>
+                    <p className="text-muted-foreground"># 2. Execute o instalador e informe o código de pareamento</p>
+                    <p className="text-muted-foreground"># 3. O instalador usa Program Files e, se necessário, cai para a pasta do usuário</p>
                     <p className="text-muted-foreground"># 4. URL do Servidor: {backendBaseUrl}</p>
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                    <Button size="sm" className="w-full" asChild>
-                      <a href={`${backendBaseUrl}/api/agent/download/windows`} download="synapse-agent.exe">
-                        <Download className="h-4 w-4 mr-2" />Baixar Agente Windows (.exe)
-                      </a>
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button size="sm" className="flex-1" asChild>
+                        <a href={`${backendBaseUrl}/api/agent/download/windows-installer`} download="instalar_agente.bat">
+                          <Download className="h-4 w-4 mr-2" />Instalador .bat
+                        </a>
+                      </Button>
+                      <Button size="sm" variant="outline" className="flex-1" asChild>
+                        <a href={`${backendBaseUrl}/api/agent/download/windows`} download="synapse-agent.exe">
+                          <Download className="h-4 w-4 mr-2" />Agente .exe
+                        </a>
+                      </Button>
+                    </div>
                     <div className="flex gap-2">
                       <Button size="sm" variant="outline" className="flex-1" asChild>
                         <a href={`${backendBaseUrl}/api/agent/download/agent`} download="synapse_agent.py">
                           <FileText className="h-4 w-4 mr-2" />Script Python
-                        </a>
-                      </Button>
-                      <Button size="sm" variant="outline" className="flex-1" asChild>
-                        <a href={`${backendBaseUrl}/api/agent/download/windows-installer`} download="instalar_agente.bat">
-                          <Download className="h-4 w-4 mr-2" />Instalador .bat
                         </a>
                       </Button>
                     </div>

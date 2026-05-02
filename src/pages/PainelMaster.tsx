@@ -15,7 +15,7 @@ import {
   Eye, RefreshCw, Copy, CheckCircle, Key, CreditCard,
   Package, Calendar, AlertTriangle, DollarSign,
   Clock, Star, Check, X, Edit2, Ban,
-  RotateCcw, Receipt, Wallet, Megaphone,
+  RotateCcw, Receipt, Wallet, Megaphone, GraduationCap, HeartPulse, FolderKanban, NotebookPen, ListTodo,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useViewAs } from "@/contexts/ViewAsContext";
@@ -505,6 +505,16 @@ export default function PainelMaster() {
     trpc.master.listLeads.useQuery(undefined, { enabled: isMaster });
   const { data: masterProposals = [], refetch: refetchMasterProposals } =
     trpc.master.listProposals.useQuery(undefined, { enabled: isMaster });
+  const { data: masterHealthLogs = [], refetch: refetchMasterHealthLogs } =
+    trpc.master.listHealthLogs.useQuery(undefined, { enabled: isMaster });
+  const { data: masterCollegeTasks = [], refetch: refetchMasterCollegeTasks } =
+    trpc.master.listCollegeTasks.useQuery(undefined, { enabled: isMaster });
+  const { data: masterProjects = [], refetch: refetchMasterProjects } =
+    trpc.master.listProjects.useQuery(undefined, { enabled: isMaster });
+  const { data: masterAiNotes = [], refetch: refetchMasterAiNotes } =
+    trpc.master.listAiNotes.useQuery(undefined, { enabled: isMaster });
+  const { data: masterDailyPlans = [], refetch: refetchMasterDailyPlans } =
+    trpc.master.listDailyPlans.useQuery(undefined, { enabled: isMaster });
 
   const criarEmpresaMut = trpc.empresas.criar.useMutation({
         onSuccess: (d) => { toast.success(d.mensagem || "Empresa criada!"); setModalEmpresa(false); setFormEmpresa({ nome: "", cnpj: "", email: "", telefone: "", cidade: "", estado: "", tipoEmpresa: "independente", matrizId: "", grupoId: "" }); refetchEmpresas(); },
@@ -620,6 +630,52 @@ export default function PainelMaster() {
     },
     onError: (e) => toast.error(e.message),
   });
+  const createMasterHealthLogMut = trpc.master.createHealthLog.useMutation({
+    onSuccess: () => {
+      toast.success("Registro de saúde salvo.");
+      setFormHealthMaster({ referencia: "", humor: "3", energia: "3", sonoHoras: "", pesoKg: "", observacoes: "" });
+      refetchMasterHealthLogs();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterCollegeTaskMut = trpc.master.createCollegeTask.useMutation({
+    onSuccess: () => {
+      toast.success("Tarefa da faculdade salva.");
+      setFormCollegeMaster({ disciplina: "", titulo: "", status: "a_fazer", prazo: "", observacoes: "" });
+      refetchMasterCollegeTasks();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const updateMasterCollegeTaskStatusMut = trpc.master.updateCollegeTaskStatus.useMutation({
+    onSuccess: () => {
+      refetchMasterCollegeTasks();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterProjectMut = trpc.master.createProject.useMutation({
+    onSuccess: () => {
+      toast.success("Projeto salvo.");
+      setFormProjectMaster({ titulo: "", area: "synapse", status: "planejamento", progresso: "0", descricao: "", proximaEntrega: "", clientId: "" });
+      refetchMasterProjects();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterAiNoteMut = trpc.master.createAiNote.useMutation({
+    onSuccess: () => {
+      toast.success("Nota de IA salva.");
+      setFormAiNoteMaster({ titulo: "", categoria: "", conteudo: "" });
+      refetchMasterAiNotes();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterDailyPlanMut = trpc.master.createDailyPlan.useMutation({
+    onSuccess: () => {
+      toast.success("Planejamento diário salvo.");
+      setFormDailyPlanMaster({ referencia: "", focoPrincipal: "", top3: "", manha: "", tarde: "", noite: "", observacoes: "" });
+      refetchMasterDailyPlans();
+    },
+    onError: (e) => toast.error(e.message),
+  });
 
   const [formEmpresa, setFormEmpresa] = useState({ nome: "", cnpj: "", email: "", telefone: "", cidade: "", estado: "", tipoEmpresa: "independente" as any, matrizId: "", grupoId: "" });
   const [formClienteMaster, setFormClienteMaster] = useState({ nome: "", empresa: "", contato: "", whatsapp: "", email: "", servicos: "", valorMensal: "", status: "lead", proximaAcao: "", observacoes: "" });
@@ -641,6 +697,11 @@ export default function PainelMaster() {
   const [formProposalMaster, setFormProposalMaster] = useState({
     titulo: "", valor: "", status: "rascunho", validade: "", descricao: "", observacoes: "", clientId: "", leadId: "",
   });
+  const [formHealthMaster, setFormHealthMaster] = useState({ referencia: "", humor: "3", energia: "3", sonoHoras: "", pesoKg: "", observacoes: "" });
+  const [formCollegeMaster, setFormCollegeMaster] = useState({ disciplina: "", titulo: "", status: "a_fazer", prazo: "", observacoes: "" });
+  const [formProjectMaster, setFormProjectMaster] = useState({ titulo: "", area: "synapse", status: "planejamento", progresso: "0", descricao: "", proximaEntrega: "", clientId: "" });
+  const [formAiNoteMaster, setFormAiNoteMaster] = useState({ titulo: "", categoria: "", conteudo: "" });
+  const [formDailyPlanMaster, setFormDailyPlanMaster] = useState({ referencia: "", focoPrincipal: "", top3: "", manha: "", tarde: "", noite: "", observacoes: "" });
 
   useEffect(() => {
     if (!loading && user && (user as any).role !== "master_admin") navigate("/dashboard");
@@ -1327,6 +1388,211 @@ export default function PainelMaster() {
                     </div>
                   ))
                 )}
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2"><HeartPulse className="w-4 h-4 text-rose-500" /> Saúde e energia</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  <div><Label>Data</Label><Input type="date" value={formHealthMaster.referencia} onChange={e => setFormHealthMaster(f => ({ ...f, referencia: e.target.value }))} /></div>
+                  <div>
+                    <Label>Humor</Label>
+                    <Select value={formHealthMaster.humor} onValueChange={v => setFormHealthMaster(f => ({ ...f, humor: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>{["1","2","3","4","5"].map(v => <SelectItem key={v} value={v}>{v}/5</SelectItem>)}</SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Energia</Label>
+                    <Select value={formHealthMaster.energia} onValueChange={v => setFormHealthMaster(f => ({ ...f, energia: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>{["1","2","3","4","5"].map(v => <SelectItem key={v} value={v}>{v}/5</SelectItem>)}</SelectContent>
+                    </Select>
+                  </div>
+                  <div><Label>Sono (h)</Label><Input placeholder="7.5" value={formHealthMaster.sonoHoras} onChange={e => setFormHealthMaster(f => ({ ...f, sonoHoras: e.target.value }))} /></div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><Label>Peso (kg)</Label><Input placeholder="82.4" value={formHealthMaster.pesoKg} onChange={e => setFormHealthMaster(f => ({ ...f, pesoKg: e.target.value }))} /></div>
+                  <div><Label>Observações</Label><Input placeholder="Como você está hoje?" value={formHealthMaster.observacoes} onChange={e => setFormHealthMaster(f => ({ ...f, observacoes: e.target.value }))} /></div>
+                </div>
+                <div className="flex justify-end">
+                  <Button onClick={() => createMasterHealthLogMut.mutate({ ...formHealthMaster, humor: Number(formHealthMaster.humor), energia: Number(formHealthMaster.energia) } as any)} disabled={createMasterHealthLogMut.isPending}>
+                    {createMasterHealthLogMut.isPending ? "Salvando..." : "Salvar saúde"}
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  {(masterHealthLogs as any[]).slice(0, 4).map((item: any) => (
+                    <div key={item.id} className="rounded-lg border p-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="font-medium text-sm">{fmtData(item.referencia)}</p>
+                        <Badge variant="outline">Humor {item.humor ?? "—"} · Energia {item.energia ?? "—"}</Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">Sono {item.sonoHoras ?? "—"}h · Peso {item.pesoKg ?? "—"}kg</p>
+                      {item.observacoes && <p className="text-sm text-muted-foreground mt-2">{item.observacoes}</p>}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2"><GraduationCap className="w-4 h-4 text-indigo-500" /> Faculdade e estudos</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><Label>Disciplina *</Label><Input value={formCollegeMaster.disciplina} onChange={e => setFormCollegeMaster(f => ({ ...f, disciplina: e.target.value }))} /></div>
+                  <div><Label>Tarefa *</Label><Input value={formCollegeMaster.titulo} onChange={e => setFormCollegeMaster(f => ({ ...f, titulo: e.target.value }))} /></div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <Label>Status</Label>
+                    <Select value={formCollegeMaster.status} onValueChange={v => setFormCollegeMaster(f => ({ ...f, status: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="a_fazer">A fazer</SelectItem>
+                        <SelectItem value="em_andamento">Em andamento</SelectItem>
+                        <SelectItem value="concluida">Concluída</SelectItem>
+                        <SelectItem value="atrasada">Atrasada</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div><Label>Prazo</Label><Input type="date" value={formCollegeMaster.prazo} onChange={e => setFormCollegeMaster(f => ({ ...f, prazo: e.target.value }))} /></div>
+                  <div><Label>Observações</Label><Input value={formCollegeMaster.observacoes} onChange={e => setFormCollegeMaster(f => ({ ...f, observacoes: e.target.value }))} /></div>
+                </div>
+                <div className="flex justify-end">
+                  <Button onClick={() => createMasterCollegeTaskMut.mutate(formCollegeMaster as any)} disabled={createMasterCollegeTaskMut.isPending}>
+                    {createMasterCollegeTaskMut.isPending ? "Salvando..." : "Salvar tarefa"}
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  {(masterCollegeTasks as any[]).slice(0, 5).map((task: any) => (
+                    <div key={task.id} className="rounded-lg border p-3 flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-medium text-sm">{task.titulo}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{task.disciplina} · {task.status} {task.prazo ? `· ${fmtData(task.prazo)}` : ""}</p>
+                      </div>
+                      <Button size="sm" variant="outline" onClick={() => updateMasterCollegeTaskStatusMut.mutate({ id: task.id, status: task.status === "concluida" ? "a_fazer" : "concluida" })}>
+                        {task.status === "concluida" ? "Reabrir" : "Concluir"}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2"><FolderKanban className="w-4 h-4 text-cyan-500" /> Projetos e roadmap</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div><Label>Título *</Label><Input value={formProjectMaster.titulo} onChange={e => setFormProjectMaster(f => ({ ...f, titulo: e.target.value }))} /></div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <Label>Área</Label>
+                    <Select value={formProjectMaster.area} onValueChange={v => setFormProjectMaster(f => ({ ...f, area: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="vida">Vida</SelectItem>
+                        <SelectItem value="clientes">Clientes</SelectItem>
+                        <SelectItem value="synapse">Synapse</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Status</Label>
+                    <Select value={formProjectMaster.status} onValueChange={v => setFormProjectMaster(f => ({ ...f, status: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="planejamento">Planejamento</SelectItem>
+                        <SelectItem value="execucao">Execução</SelectItem>
+                        <SelectItem value="pausado">Pausado</SelectItem>
+                        <SelectItem value="concluido">Concluído</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><Label>Progresso (%)</Label><Input type="number" min={0} max={100} value={formProjectMaster.progresso} onChange={e => setFormProjectMaster(f => ({ ...f, progresso: e.target.value }))} /></div>
+                  <div><Label>Próxima entrega</Label><Input type="date" value={formProjectMaster.proximaEntrega} onChange={e => setFormProjectMaster(f => ({ ...f, proximaEntrega: e.target.value }))} /></div>
+                </div>
+                <div><Label>Descrição</Label><Textarea rows={2} value={formProjectMaster.descricao} onChange={e => setFormProjectMaster(f => ({ ...f, descricao: e.target.value }))} /></div>
+                <div className="flex justify-end">
+                  <Button onClick={() => createMasterProjectMut.mutate({ ...formProjectMaster, progresso: Number(formProjectMaster.progresso), clientId: formProjectMaster.clientId ? Number(formProjectMaster.clientId) : undefined } as any)} disabled={createMasterProjectMut.isPending}>
+                    {createMasterProjectMut.isPending ? "Salvando..." : "Salvar projeto"}
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  {(masterProjects as any[]).slice(0, 4).map((project: any) => (
+                    <div key={project.id} className="rounded-lg border p-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="font-medium text-sm">{project.titulo}</p>
+                        <Badge variant="outline">{project.progresso ?? 0}%</Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">{project.area} · {project.status}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2"><NotebookPen className="w-4 h-4 text-fuchsia-500" /> Notas da IA</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div><Label>Título *</Label><Input value={formAiNoteMaster.titulo} onChange={e => setFormAiNoteMaster(f => ({ ...f, titulo: e.target.value }))} /></div>
+                <div><Label>Categoria</Label><Input value={formAiNoteMaster.categoria} onChange={e => setFormAiNoteMaster(f => ({ ...f, categoria: e.target.value }))} /></div>
+                <div><Label>Conteúdo *</Label><Textarea rows={4} value={formAiNoteMaster.conteudo} onChange={e => setFormAiNoteMaster(f => ({ ...f, conteudo: e.target.value }))} /></div>
+                <div className="flex justify-end">
+                  <Button onClick={() => createMasterAiNoteMut.mutate(formAiNoteMaster as any)} disabled={createMasterAiNoteMut.isPending}>
+                    {createMasterAiNoteMut.isPending ? "Salvando..." : "Salvar nota"}
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  {(masterAiNotes as any[]).slice(0, 4).map((note: any) => (
+                    <div key={note.id} className="rounded-lg border p-3">
+                      <p className="font-medium text-sm">{note.titulo}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{note.categoria ?? "Sem categoria"} · {fmtData(note.createdAt)}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2"><ListTodo className="w-4 h-4 text-emerald-500" /> Planejamento diário</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div><Label>Data</Label><Input type="date" value={formDailyPlanMaster.referencia} onChange={e => setFormDailyPlanMaster(f => ({ ...f, referencia: e.target.value }))} /></div>
+                <div><Label>Foco principal *</Label><Input value={formDailyPlanMaster.focoPrincipal} onChange={e => setFormDailyPlanMaster(f => ({ ...f, focoPrincipal: e.target.value }))} /></div>
+                <div><Label>Top 3</Label><Input placeholder="Item 1 | Item 2 | Item 3" value={formDailyPlanMaster.top3} onChange={e => setFormDailyPlanMaster(f => ({ ...f, top3: e.target.value }))} /></div>
+                <div className="grid grid-cols-1 gap-3">
+                  <div><Label>Manhã</Label><Textarea rows={2} value={formDailyPlanMaster.manha} onChange={e => setFormDailyPlanMaster(f => ({ ...f, manha: e.target.value }))} /></div>
+                  <div><Label>Tarde</Label><Textarea rows={2} value={formDailyPlanMaster.tarde} onChange={e => setFormDailyPlanMaster(f => ({ ...f, tarde: e.target.value }))} /></div>
+                  <div><Label>Noite</Label><Textarea rows={2} value={formDailyPlanMaster.noite} onChange={e => setFormDailyPlanMaster(f => ({ ...f, noite: e.target.value }))} /></div>
+                </div>
+                <div className="flex justify-end">
+                  <Button onClick={() => createMasterDailyPlanMut.mutate(formDailyPlanMaster as any)} disabled={createMasterDailyPlanMut.isPending}>
+                    {createMasterDailyPlanMut.isPending ? "Salvando..." : "Salvar plano"}
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  {(masterDailyPlans as any[]).slice(0, 3).map((plan: any) => (
+                    <div key={plan.id} className="rounded-lg border p-3">
+                      <p className="font-medium text-sm">{plan.focoPrincipal}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{fmtData(plan.referencia)}</p>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </div>

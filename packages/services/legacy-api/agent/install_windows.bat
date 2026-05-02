@@ -5,7 +5,9 @@ color 0A
 
 set "DEFAULT_SERVER=https://synapse-backend-ds2026.azurewebsites.net"
 set "INSTALL_DIR=%ProgramFiles%\SynapseAgent"
+set "FALLBACK_DIR=%LocalAppData%\SynapseAgent"
 set "AGENT_EXE=%INSTALL_DIR%\synapse-agent.exe"
+set "TEMP_EXE=%TEMP%\synapse-agent.exe"
 set "PAIR_CODE="
 
 echo.
@@ -24,12 +26,40 @@ if "%PAIR_CODE%"=="" (
 set /p SERVER_URL=URL do servidor Synapse [%DEFAULT_SERVER%]:
 if "%SERVER_URL%"=="" set "SERVER_URL=%DEFAULT_SERVER%"
 
-if not exist "%INSTALL_DIR%" mkdir "%INSTALL_DIR%"
+if not exist "%INSTALL_DIR%" (
+  mkdir "%INSTALL_DIR%" >nul 2>&1
+)
+
+if not exist "%INSTALL_DIR%" (
+  echo [AVISO] Sem permissao para instalar em "%ProgramFiles%".
+  echo [INFO] Usando a pasta do usuario atual.
+  set "INSTALL_DIR=%FALLBACK_DIR%"
+  set "AGENT_EXE=%INSTALL_DIR%\synapse-agent.exe"
+)
+
+if not exist "%INSTALL_DIR%" (
+  mkdir "%INSTALL_DIR%" >nul 2>&1
+)
+
+if not exist "%INSTALL_DIR%" (
+  echo [ERRO] Nao foi possivel criar a pasta de instalacao.
+  pause
+  exit /b 1
+)
 
 echo Baixando agente...
-powershell -Command "Invoke-WebRequest -Uri '%SERVER_URL%/api/agent/download/windows' -OutFile '%AGENT_EXE%'"
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+  "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri '%SERVER_URL%/api/agent/download/windows' -OutFile '%TEMP_EXE%'"
 if errorlevel 1 (
   echo [ERRO] Falha ao baixar o agente .exe.
+  pause
+  exit /b 1
+)
+
+copy /Y "%TEMP_EXE%" "%AGENT_EXE%" >nul 2>&1
+if errorlevel 1 (
+  echo [ERRO] Falha ao copiar o agente para "%INSTALL_DIR%".
+  echo [INFO] Tente executar este instalador como Administrador ou use a pasta do usuario atual.
   pause
   exit /b 1
 )
