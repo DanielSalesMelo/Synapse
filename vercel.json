@@ -2,8 +2,15 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "framework": null,
+  "framework": "vite",
+  "env": {
+    "VITE_API_URL": "https://synapse-backend-ds2026.azurewebsites.net"
+  },
   "rewrites": [
+    {
+      "source": "/api/trpc/:path*",
+      "destination": "https://synapse-backend-ds2026.azurewebsites.net/api/trpc/:path*"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
