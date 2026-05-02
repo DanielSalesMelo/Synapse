@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -18,7 +18,7 @@ import {
   RotateCcw, Receipt, Wallet, Megaphone, GraduationCap, HeartPulse, FolderKanban, NotebookPen, ListTodo,
   Briefcase, Store, MessageCircleMore, CalendarRange, Rocket,
   Home, Repeat, Handshake, FileText, Lightbulb, ClipboardList, CalendarDays, NotebookTabs, UsersRound, Newspaper,
-  Target, Bot, Search, LifeBuoy, BarChart3, BookOpen, FolderOpen, Scale,
+  Target, Bot, Search, LifeBuoy, BarChart3, BookOpen, FolderOpen, Scale, TrendingUp, ShoppingCart, CheckCircle2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useViewAs } from "@/contexts/ViewAsContext";
@@ -90,6 +90,153 @@ function PlanoBadge({ plano }: { plano: string }) {
 }
 function StatusBadge({ status }: { status: string }) {
   return <Badge className={`text-xs ${STATUS_CORES[status] ?? "bg-gray-100 text-gray-600"}`}>{STATUS_LABELS[status] ?? status}</Badge>;
+}
+
+const GENERIC_MASTER_MODULES = [
+  { key: "contratos", title: "Contratos", icon: FileText, fieldA: "Tipo", fieldB: "Renovação", fieldC: "Status jurídico", color: "text-sky-600" },
+  { key: "faturas_clientes", title: "Faturas de clientes", icon: Receipt, fieldA: "Valor", fieldB: "Competência", fieldC: "Cobrança", color: "text-emerald-600" },
+  { key: "revisoes_clientes", title: "Revisões com clientes", icon: Calendar, fieldA: "Formato", fieldB: "Próxima pauta", fieldC: "Decisão", color: "text-violet-600" },
+  { key: "viagens_pessoais", title: "Viagens pessoais", icon: CalendarDays, fieldA: "Destino", fieldB: "Objetivo", fieldC: "Orçamento", color: "text-cyan-600" },
+  { key: "contatos_familia", title: "Contatos de família", icon: Home, fieldA: "Parentesco", fieldB: "Telefone", fieldC: "Cidade", color: "text-rose-600" },
+  { key: "lembretes_saude", title: "Lembretes de saúde", icon: HeartPulse, fieldA: "Tipo", fieldB: "Periodicidade", fieldC: "Próxima data", color: "text-red-600" },
+  { key: "dividas", title: "Dívidas", icon: Wallet, fieldA: "Credor", fieldB: "Valor", fieldC: "Parcela", color: "text-orange-600" },
+  { key: "investimentos", title: "Investimentos", icon: TrendingUp, fieldA: "Classe", fieldB: "Valor", fieldC: "Corretora", color: "text-green-700" },
+  { key: "assinaturas", title: "Assinaturas", icon: CreditCard, fieldA: "Serviço", fieldB: "Valor", fieldC: "Recorrência", color: "text-indigo-600" },
+  { key: "wishlist_compras", title: "Wishlist de compras", icon: ShoppingCart, fieldA: "Categoria", fieldB: "Preço alvo", fieldC: "Prioridade", color: "text-amber-600" },
+  { key: "synapse_bugs", title: "Bugs do Synapse", icon: AlertTriangle, fieldA: "Módulo", fieldB: "Impacto", fieldC: "Versão", color: "text-red-700" },
+  { key: "planos_teste", title: "Planos de teste", icon: CheckCircle2, fieldA: "Módulo", fieldB: "Cenário", fieldC: "Resultado esperado", color: "text-lime-700" },
+  { key: "clientes_piloto", title: "Clientes piloto", icon: Users, fieldA: "Segmento", fieldB: "Risco", fieldC: "Próxima ação", color: "text-blue-700" },
+  { key: "checklist_lancamento", title: "Checklist de lançamento", icon: Rocket, fieldA: "Etapa", fieldB: "Responsável", fieldC: "Dependência", color: "text-fuchsia-600" },
+  { key: "banco_ideias_conteudo", title: "Banco de ideias de conteúdo", icon: Lightbulb, fieldA: "Canal", fieldB: "Tema", fieldC: "CTA", color: "text-yellow-600" },
+  { key: "biblioteca_scripts", title: "Biblioteca de scripts", icon: NotebookPen, fieldA: "Canal", fieldB: "Objetivo", fieldC: "Tom", color: "text-slate-700" },
+  { key: "pipeline_contratacao", title: "Pipeline de contratação", icon: UsersRound, fieldA: "Vaga", fieldB: "Etapa", fieldC: "Perfil", color: "text-purple-700" },
+  { key: "materiais_academicos", title: "Materiais acadêmicos", icon: BookOpen, fieldA: "Disciplina", fieldB: "Formato", fieldC: "Link", color: "text-teal-700" },
+  { key: "itens_juridicos", title: "Itens jurídicos", icon: Scale, fieldA: "Tipo", fieldB: "Prazo", fieldC: "Responsável", color: "text-gray-700" },
+  { key: "registro_riscos", title: "Registro de riscos", icon: Shield, fieldA: "Probabilidade", fieldB: "Impacto", fieldC: "Mitigação", color: "text-pink-700" },
+] as const;
+
+function GenericMasterModuleCard({
+  config,
+  entries,
+  clients,
+  form,
+  setForm,
+  onSave,
+  saving,
+}: {
+  config: (typeof GENERIC_MASTER_MODULES)[number];
+  entries: any[];
+  clients: any[];
+  form: any;
+  setForm: (updater: any) => void;
+  onSave: () => void;
+  saving: boolean;
+}) {
+  const Icon = config.icon;
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <CardTitle className={`text-base flex items-center gap-2 ${config.color}`}><Icon className="w-4 h-4" /> {config.title}</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <div><Label>Título *</Label><Input value={form.titulo} onChange={(e) => setForm((f: any) => ({ ...f, titulo: e.target.value }))} /></div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div><Label>{config.fieldA}</Label><Input value={form.campoA} onChange={(e) => setForm((f: any) => ({ ...f, campoA: e.target.value }))} /></div>
+          <div><Label>{config.fieldB}</Label><Input value={form.campoB} onChange={(e) => setForm((f: any) => ({ ...f, campoB: e.target.value }))} /></div>
+          <div><Label>{config.fieldC}</Label><Input value={form.campoC} onChange={(e) => setForm((f: any) => ({ ...f, campoC: e.target.value }))} /></div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div><Label>Status</Label><Input value={form.status} onChange={(e) => setForm((f: any) => ({ ...f, status: e.target.value }))} /></div>
+          <div><Label>Data</Label><Input type="date" value={form.dataRef} onChange={(e) => setForm((f: any) => ({ ...f, dataRef: e.target.value }))} /></div>
+          <div>
+            <Label>Cliente</Label>
+            <Select value={form.clientId || "sem_cliente"} onValueChange={v => setForm((f: any) => ({ ...f, clientId: v === "sem_cliente" ? "" : v }))}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="sem_cliente">Sem cliente</SelectItem>
+                {clients.map((client: any) => <SelectItem key={client.id} value={String(client.id)}>{client.nome}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <div><Label>Observações</Label><Textarea rows={2} value={form.observacoes} onChange={(e) => setForm((f: any) => ({ ...f, observacoes: e.target.value }))} /></div>
+        <div className="flex justify-end"><Button onClick={onSave} disabled={saving}>{saving ? "Salvando..." : "Salvar módulo"}</Button></div>
+        <div className="space-y-2">
+          {entries.slice(0, 4).map((entry: any) => (
+            <div key={entry.id} className="rounded-lg border p-3">
+              <p className="font-medium text-sm">{entry.titulo}</p>
+              <p className="text-xs text-muted-foreground mt-1">{entry.clienteNome ?? "Sem cliente"} · {entry.status}</p>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function GenericMasterModuleSection({
+  config,
+  clients,
+  onSaved,
+}: {
+  config: (typeof GENERIC_MASTER_MODULES)[number];
+  clients: any[];
+  onSaved?: () => void;
+}) {
+  const [form, setForm] = useState({
+    titulo: "",
+    campoA: "",
+    campoB: "",
+    campoC: "",
+    status: "ativo",
+    dataRef: "",
+    clientId: "",
+    observacoes: "",
+  });
+
+  const { data: entries = [], refetch } = trpc.master.listModuleEntries.useQuery({ moduleKey: config.key });
+  const createMut = trpc.master.createModuleEntry.useMutation({
+    onSuccess: () => {
+      toast.success(`${config.title} salvo com sucesso.`);
+      setForm({
+        titulo: "",
+        campoA: "",
+        campoB: "",
+        campoC: "",
+        status: "ativo",
+        dataRef: "",
+        clientId: "",
+        observacoes: "",
+      });
+      refetch();
+      onSaved?.();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  return (
+    <GenericMasterModuleCard
+      config={config}
+      entries={entries as any[]}
+      clients={clients}
+      form={form}
+      setForm={setForm}
+      saving={createMut.isPending}
+      onSave={() =>
+        createMut.mutate({
+          moduleKey: config.key,
+          titulo: form.titulo,
+          campoA: form.campoA || undefined,
+          campoB: form.campoB || undefined,
+          campoC: form.campoC || undefined,
+          status: form.status || "ativo",
+          dataRef: form.dataRef || undefined,
+          observacoes: form.observacoes || undefined,
+          clientId: form.clientId ? Number(form.clientId) : undefined,
+        })
+      }
+    />
+  );
 }
 
 // ─── Modal: Criar Licença ─────────────────────────────────────────────────────
@@ -2643,6 +2790,30 @@ export default function PainelMaster() {
                 <div className="space-y-2">{(masterKpiSnapshots as any[]).slice(0, 3).map((item: any) => <div key={item.id} className="rounded-lg border p-3"><p className="font-medium text-sm">{item.indicador}: {item.valor}</p><p className="text-xs text-muted-foreground mt-1">{item.area} · {fmtData(item.referencia)}</p></div>)}</div>
               </CardContent>
             </Card>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <div>
+                <h3 className="text-lg font-semibold">Workspace expandido</h3>
+                <p className="text-sm text-muted-foreground">
+                  Mais 20 módulos vivos para contratos, riscos, finanças pessoais, jurídico, testes, clientes piloto e operação do Daniel.
+                </p>
+              </div>
+              <Badge variant="outline" className="text-xs px-3 py-1">
+                {GENERIC_MASTER_MODULES.length} módulos adicionais
+              </Badge>
+            </div>
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              {GENERIC_MASTER_MODULES.map((config) => (
+                <GenericMasterModuleSection
+                  key={config.key}
+                  config={config}
+                  clients={masterClients as any[]}
+                  onSaved={() => refetchMasterDashboard()}
+                />
+              ))}
+            </div>
           </div>
         </div>
       )}

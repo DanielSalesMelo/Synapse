@@ -47,6 +47,28 @@ const CLIENT_HEALTH_STATUS_VALUES = ["saudavel", "atencao", "critico"] as const;
 const RESEARCH_STATUS_VALUES = ["aberto", "em_estudo", "concluido"] as const;
 const SUPPORT_STATUS_VALUES = ["aberto", "em_andamento", "resolvido"] as const;
 const LEARNING_STATUS_VALUES = ["pendente", "em_andamento", "concluido"] as const;
+const GENERIC_MODULE_KEYS = [
+  "contratos",
+  "faturas_clientes",
+  "revisoes_clientes",
+  "viagens_pessoais",
+  "contatos_familia",
+  "lembretes_saude",
+  "dividas",
+  "investimentos",
+  "assinaturas",
+  "wishlist_compras",
+  "synapse_bugs",
+  "planos_teste",
+  "clientes_piloto",
+  "checklist_lancamento",
+  "banco_ideias_conteudo",
+  "biblioteca_scripts",
+  "pipeline_contratacao",
+  "materiais_academicos",
+  "itens_juridicos",
+  "registro_riscos",
+] as const;
 
 function humanizeArea(area?: string | null) {
   if (area === "vida") return "vida pessoal";
@@ -2067,5 +2089,58 @@ export const masterRouter = router({
         RETURNING *
       `);
       return ((res as any[])[0]) ?? null;
+    }),
+
+  listModuleEntries: masterAdminProcedure
+    .input(z.object({ moduleKey: z.enum(GENERIC_MODULE_KEYS) }))
+    .query(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      return db.execute(sql`
+        SELECT mme.*, mc.nome AS "clienteNome"
+        FROM master_module_entries mme
+        LEFT JOIN master_clients mc ON mc.id = mme."clientId"
+        WHERE mme."ownerUserId" = ${ctx.user.id}
+          AND mme."moduleKey" = ${input.moduleKey}
+          AND mme."deletedAt" IS NULL
+        ORDER BY COALESCE(mme."dataRef", CURRENT_DATE + INTERVAL '365 days') ASC, mme.id DESC
+        LIMIT 30
+      `) as unknown as any[];
+    }),
+
+  createModuleEntry: masterAdminProcedure
+    .input(z.object({
+      moduleKey: z.enum(GENERIC_MODULE_KEYS),
+      titulo: z.string().min(2, "Informe o título."),
+      status: z.string().default("ativo"),
+      dataRef: z.string().optional(),
+      campoA: z.string().optional(),
+      campoB: z.string().optional(),
+      campoC: z.string().optional(),
+      observacoes: z.string().optional(),
+      clientId: z.number().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_module_entries (
+          "ownerUserId", "clientId", "moduleKey", titulo, status, "dataRef", "campoA", "campoB", "campoC", observacoes
+        ) VALUES (
+          ${ctx.user.id}, ${input.clientId ?? null}, ${input.moduleKey}, ${input.titulo}, ${input.status},
+          ${input.dataRef ? new Date(input.dataRef) : null}, ${input.campoA ?? null}, ${input.campoB ?? null},
+          ${input.campoC ?? null}, ${input.observacoes ?? null}
+        )
+        RETURNING *
+      `);
+      const created = ((res as any[])[0]) ?? null;
+      await createNotification({
+        userId: ctx.user.id,
+        tipo: `master_${input.moduleKey}`,
+        titulo: "Registro salvo",
+        mensagem: `${input.titulo} foi salvo em ${input.moduleKey.replace(/_/g, " ")}.`,
+        payload: created ? { moduleKey: input.moduleKey, id: created.id } : null,
+      });
+      return created;
     }),
 });
