@@ -151,6 +151,54 @@ export const funcionariosRouter = router({
       }, "funcionarios.folhaResumo");
     }),
 
+  beneficiosResumo: protectedProcedure
+    .input(z.object({ empresaId: z.number() }))
+    .query(async ({ input, ctx }) => {
+      return safeDb(async () => {
+        const db = requireDb(await getDb(), "funcionarios.beneficiosResumo");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
+        const [stats] = await db.select({
+          planoSaude: sql<number>`count(*) filter (where ${funcionarios.temPlanoSaude} = true and ${funcionarios.deletedAt} is null and ${funcionarios.ativo} = true)`,
+          valeRefeicao: sql<number>`count(*) filter (where ${funcionarios.temValeRefeicao} = true and ${funcionarios.deletedAt} is null and ${funcionarios.ativo} = true)`,
+          valeTransporte: sql<number>`count(*) filter (where ${funcionarios.temValeTransporte} = true and ${funcionarios.deletedAt} is null and ${funcionarios.ativo} = true)`,
+          totalValeRefeicao: sql<number>`coalesce(sum(${funcionarios.valorValeRefeicao}) filter (where ${funcionarios.temValeRefeicao} = true and ${funcionarios.deletedAt} is null and ${funcionarios.ativo} = true), 0)`,
+        }).from(funcionarios).where(eq(funcionarios.empresaId, empresaId));
+        return {
+          planoSaude: Number(stats?.planoSaude) || 0,
+          valeRefeicao: Number(stats?.valeRefeicao) || 0,
+          valeTransporte: Number(stats?.valeTransporte) || 0,
+          totalValeRefeicao: Number(stats?.totalValeRefeicao) || 0,
+        };
+      }, "funcionarios.beneficiosResumo");
+    }),
+
+  previsaoFolha: protectedProcedure
+    .input(z.object({ empresaId: z.number() }))
+    .query(async ({ input, ctx }) => {
+      return safeDb(async () => {
+        const db = requireDb(await getDb(), "funcionarios.previsaoFolha");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
+        const [stats] = await db.select({
+          totalSalarios: sql<number>`coalesce(sum(${funcionarios.salario}) filter (where ${funcionarios.deletedAt} is null and ${funcionarios.ativo} = true), 0)`,
+          totalValeRefeicao: sql<number>`coalesce(sum(${funcionarios.valorValeRefeicao}) filter (where ${funcionarios.deletedAt} is null and ${funcionarios.ativo} = true and ${funcionarios.temValeRefeicao} = true), 0)`,
+          headcount: sql<number>`count(*) filter (where ${funcionarios.deletedAt} is null and ${funcionarios.ativo} = true)`,
+        }).from(funcionarios).where(eq(funcionarios.empresaId, empresaId));
+
+        const totalSalarios = Number(stats?.totalSalarios) || 0;
+        const totalValeRefeicao = Number(stats?.totalValeRefeicao) || 0;
+        const encargosEstimados = totalSalarios * 0.28;
+        const custoTotal = totalSalarios + totalValeRefeicao + encargosEstimados;
+
+        return {
+          headcount: Number(stats?.headcount) || 0,
+          totalSalarios,
+          totalValeRefeicao,
+          encargosEstimados,
+          custoTotal,
+        };
+      }, "funcionarios.previsaoFolha");
+    }),
+
   list: protectedProcedure
     .input(z.object({
       empresaId: z.number(),

@@ -494,6 +494,91 @@ export const financeiroRouter = router({
       }, "financeiro.dashboard");
     }),
 
+  projecaoFluxo: protectedProcedure
+    .input(z.object({ empresaId: z.number() }))
+    .query(async ({ input, ctx }) => {
+      return safeDb(async () => {
+        const db = requireDb(await getDb(), "financeiro.projecaoFluxo");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
+        const hoje = new Date();
+        const em7 = new Date(hoje);
+        const em15 = new Date(hoje);
+        const em30 = new Date(hoje);
+        em7.setDate(hoje.getDate() + 7);
+        em15.setDate(hoje.getDate() + 15);
+        em30.setDate(hoje.getDate() + 30);
+
+        const [receber7] = await db.select({ total: sql<number>`coalesce(sum(${contasReceber.valor}), 0)` })
+          .from(contasReceber)
+          .where(and(
+            eq(contasReceber.empresaId, empresaId),
+            isNull(contasReceber.deletedAt),
+            eq(contasReceber.status, "pendente"),
+            gte(contasReceber.dataVencimento, sql`${hoje.toISOString().split("T")[0]}::date`),
+            lte(contasReceber.dataVencimento, sql`${em7.toISOString().split("T")[0]}::date`),
+          ));
+        const [receber15] = await db.select({ total: sql<number>`coalesce(sum(${contasReceber.valor}), 0)` })
+          .from(contasReceber)
+          .where(and(
+            eq(contasReceber.empresaId, empresaId),
+            isNull(contasReceber.deletedAt),
+            eq(contasReceber.status, "pendente"),
+            gte(contasReceber.dataVencimento, sql`${hoje.toISOString().split("T")[0]}::date`),
+            lte(contasReceber.dataVencimento, sql`${em15.toISOString().split("T")[0]}::date`),
+          ));
+        const [receber30] = await db.select({ total: sql<number>`coalesce(sum(${contasReceber.valor}), 0)` })
+          .from(contasReceber)
+          .where(and(
+            eq(contasReceber.empresaId, empresaId),
+            isNull(contasReceber.deletedAt),
+            eq(contasReceber.status, "pendente"),
+            gte(contasReceber.dataVencimento, sql`${hoje.toISOString().split("T")[0]}::date`),
+            lte(contasReceber.dataVencimento, sql`${em30.toISOString().split("T")[0]}::date`),
+          ));
+
+        const [pagar7] = await db.select({ total: sql<number>`coalesce(sum(${contasPagar.valor}), 0)` })
+          .from(contasPagar)
+          .where(and(
+            eq(contasPagar.empresaId, empresaId),
+            isNull(contasPagar.deletedAt),
+            eq(contasPagar.status, "pendente"),
+            gte(contasPagar.dataVencimento, sql`${hoje.toISOString().split("T")[0]}::date`),
+            lte(contasPagar.dataVencimento, sql`${em7.toISOString().split("T")[0]}::date`),
+          ));
+        const [pagar15] = await db.select({ total: sql<number>`coalesce(sum(${contasPagar.valor}), 0)` })
+          .from(contasPagar)
+          .where(and(
+            eq(contasPagar.empresaId, empresaId),
+            isNull(contasPagar.deletedAt),
+            eq(contasPagar.status, "pendente"),
+            gte(contasPagar.dataVencimento, sql`${hoje.toISOString().split("T")[0]}::date`),
+            lte(contasPagar.dataVencimento, sql`${em15.toISOString().split("T")[0]}::date`),
+          ));
+        const [pagar30] = await db.select({ total: sql<number>`coalesce(sum(${contasPagar.valor}), 0)` })
+          .from(contasPagar)
+          .where(and(
+            eq(contasPagar.empresaId, empresaId),
+            isNull(contasPagar.deletedAt),
+            eq(contasPagar.status, "pendente"),
+            gte(contasPagar.dataVencimento, sql`${hoje.toISOString().split("T")[0]}::date`),
+            lte(contasPagar.dataVencimento, sql`${em30.toISOString().split("T")[0]}::date`),
+          ));
+
+        return {
+          receber: {
+            dias7: Number(receber7?.total) || 0,
+            dias15: Number(receber15?.total) || 0,
+            dias30: Number(receber30?.total) || 0,
+          },
+          pagar: {
+            dias7: Number(pagar7?.total) || 0,
+            dias15: Number(pagar15?.total) || 0,
+            dias30: Number(pagar30?.total) || 0,
+          },
+        };
+      }, "financeiro.projecaoFluxo");
+    }),
+
   // ─── DRE POR PLACA (Estratégico) ────────────────────────────────────────────────────────────────────────────────────────
   drePorPlaca: protectedProcedure
     .input(z.object({

@@ -186,6 +186,7 @@ export default function Chat() {
   const [attachments, setAttachments] = useState<AttachmentPreview[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [searchConv, setSearchConv] = useState("");
+  const [convFilter, setConvFilter] = useState<"todos" | "nao_lidas" | "grupos" | "diretas">("todos");
   const [searchUser, setSearchUser] = useState("");
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const [groupName, setGroupName] = useState("");
@@ -401,9 +402,14 @@ export default function Chat() {
 
   const selectedConv = conversations?.find((c) => c.id === selectedConvId);
 
-  const filteredConvs = conversations?.filter((c) =>
-    c.displayName.toLowerCase().includes(searchConv.toLowerCase())
-  );
+  const filteredConvs = conversations?.filter((c) => {
+    const matchesSearch = c.displayName.toLowerCase().includes(searchConv.toLowerCase());
+    if (!matchesSearch) return false;
+    if (convFilter === "nao_lidas") return Number(c.unreadCount ?? 0) > 0;
+    if (convFilter === "grupos") return Boolean(c.isGroup);
+    if (convFilter === "diretas") return !c.isGroup;
+    return true;
+  });
 
   const filteredUsers = allUsers?.filter((u: any) =>
     `${u.name} ${u.lastName ?? ""} ${u.email}`.toLowerCase().includes(searchUser.toLowerCase())
@@ -484,6 +490,25 @@ export default function Chat() {
                 onChange={(e) => setSearchConv(e.target.value)}
               />
             </div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {[
+                { key: "todos", label: "Todos" },
+                { key: "nao_lidas", label: "Não lidas" },
+                { key: "grupos", label: "Grupos" },
+                { key: "diretas", label: "Diretas" },
+              ].map((item) => (
+                <Button
+                  key={item.key}
+                  type="button"
+                  size="sm"
+                  variant={convFilter === item.key ? "default" : "outline"}
+                  className="h-7 rounded-full text-[11px]"
+                  onClick={() => setConvFilter(item.key as typeof convFilter)}
+                >
+                  {item.label}
+                </Button>
+              ))}
+            </div>
           </div>
 
           {/* Lista */}
@@ -523,7 +548,12 @@ export default function Chat() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-baseline">
-                        <p className="font-semibold text-sm truncate">{conv.displayName}</p>
+                        <div className="flex items-center gap-2 min-w-0">
+                          <p className="font-semibold text-sm truncate">{conv.displayName}</p>
+                          <Badge variant="outline" className="text-[9px] h-4 px-1.5 shrink-0">
+                            {conv.isGroup ? "Grupo" : "Direta"}
+                          </Badge>
+                        </div>
                         <span className="text-[10px] text-muted-foreground shrink-0 ml-1">
                           {new Date(conv.lastMessageAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                         </span>

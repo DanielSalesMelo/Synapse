@@ -80,13 +80,20 @@ export default function RH() {
     funcao: "outro",
     tipoContrato: "clt",
     cpf: "",
+    rg: "",
+    pis: "",
     telefone: "",
     email: "",
     salario: "",
     dataAdmissao: "",
+    dataNascimento: "",
     cnh: "",
     vencimentoCnh: "",
     vencimentoAso: "",
+    temPlanoSaude: false,
+    temValeRefeicao: false,
+    temValeTransporte: false,
+    valorValeRefeicao: "",
     observacoes: "",
   });
   const [folhaForm, setFolhaForm] = useState(() => {
@@ -110,6 +117,14 @@ export default function RH() {
     { empresaId: EMPRESA_ID, limit: 12 },
     { enabled: !!EMPRESA_ID },
   ) as any;
+  const beneficiosQ = trpc.funcionarios.beneficiosResumo.useQuery(
+    { empresaId: EMPRESA_ID },
+    { enabled: !!EMPRESA_ID },
+  ) as any;
+  const previsaoQ = trpc.funcionarios.previsaoFolha.useQuery(
+    { empresaId: EMPRESA_ID },
+    { enabled: !!EMPRESA_ID },
+  ) as any;
 
   const utils = trpc.useContext();
   const createFuncionario = trpc.funcionarios.create.useMutation({
@@ -121,13 +136,20 @@ export default function RH() {
         funcao: "outro",
         tipoContrato: "clt",
         cpf: "",
+        rg: "",
+        pis: "",
         telefone: "",
         email: "",
         salario: "",
         dataAdmissao: "",
+        dataNascimento: "",
         cnh: "",
         vencimentoCnh: "",
         vencimentoAso: "",
+        temPlanoSaude: false,
+        temValeRefeicao: false,
+        temValeTransporte: false,
+        valorValeRefeicao: "",
         observacoes: "",
       });
       utils.funcionarios.dashboard.invalidate();
@@ -178,13 +200,20 @@ export default function RH() {
       funcao: form.funcao as any,
       tipoContrato: form.tipoContrato as any,
       cpf: form.cpf || undefined,
+      rg: form.rg || undefined,
+      pis: form.pis || undefined,
       telefone: form.telefone || undefined,
       email: form.email || undefined,
       salario: form.salario || undefined,
       dataAdmissao: form.dataAdmissao || undefined,
+      dataNascimento: form.dataNascimento || undefined,
       cnh: form.cnh || undefined,
       vencimentoCnh: form.vencimentoCnh || undefined,
       vencimentoAso: form.vencimentoAso || undefined,
+      temPlanoSaude: form.temPlanoSaude,
+      temValeRefeicao: form.temValeRefeicao,
+      temValeTransporte: form.temValeTransporte,
+      valorValeRefeicao: form.valorValeRefeicao || undefined,
       observacoes: form.observacoes || undefined,
     });
   };
@@ -291,12 +320,24 @@ export default function RH() {
                     <Input type="email" value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} />
                   </div>
                   <div className="space-y-1.5">
+                    <Label>RG</Label>
+                    <Input value={form.rg} onChange={(e) => setForm((p) => ({ ...p, rg: e.target.value }))} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>PIS</Label>
+                    <Input value={form.pis} onChange={(e) => setForm((p) => ({ ...p, pis: e.target.value }))} />
+                  </div>
+                  <div className="space-y-1.5">
                     <Label>Salário base</Label>
                     <Input type="number" step="0.01" value={form.salario} onChange={(e) => setForm((p) => ({ ...p, salario: e.target.value }))} />
                   </div>
                   <div className="space-y-1.5">
                     <Label>Admissão</Label>
                     <Input type="date" value={form.dataAdmissao} onChange={(e) => setForm((p) => ({ ...p, dataAdmissao: e.target.value }))} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Nascimento</Label>
+                    <Input type="date" value={form.dataNascimento} onChange={(e) => setForm((p) => ({ ...p, dataNascimento: e.target.value }))} />
                   </div>
                   <div className="space-y-1.5">
                     <Label>CNH</Label>
@@ -309,6 +350,31 @@ export default function RH() {
                   <div className="space-y-1.5">
                     <Label>Vencimento ASO</Label>
                     <Input type="date" value={form.vencimentoAso} onChange={(e) => setForm((p) => ({ ...p, vencimentoAso: e.target.value }))} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Plano de Saúde</Label>
+                    <Select value={form.temPlanoSaude ? "sim" : "nao"} onValueChange={(value) => setForm((p) => ({ ...p, temPlanoSaude: value === "sim" }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent><SelectItem value="nao">Não</SelectItem><SelectItem value="sim">Sim</SelectItem></SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Vale Transporte</Label>
+                    <Select value={form.temValeTransporte ? "sim" : "nao"} onValueChange={(value) => setForm((p) => ({ ...p, temValeTransporte: value === "sim" }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent><SelectItem value="nao">Não</SelectItem><SelectItem value="sim">Sim</SelectItem></SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Vale Refeição</Label>
+                    <Select value={form.temValeRefeicao ? "sim" : "nao"} onValueChange={(value) => setForm((p) => ({ ...p, temValeRefeicao: value === "sim" }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent><SelectItem value="nao">Não</SelectItem><SelectItem value="sim">Sim</SelectItem></SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Valor Vale Refeição</Label>
+                    <Input type="number" step="0.01" value={form.valorValeRefeicao} onChange={(e) => setForm((p) => ({ ...p, valorValeRefeicao: e.target.value }))} />
                   </div>
                   <div className="col-span-2 space-y-1.5">
                     <Label>Observações</Label>
@@ -363,6 +429,37 @@ export default function RH() {
             </div>
             <p className="text-2xl font-bold">{dashboard?.bloqueadosOperacionalmente ?? 0}</p>
             <p className="text-xs text-muted-foreground mt-1">Motoristas ou ajudantes com documento vencido</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-xs text-muted-foreground font-medium mb-1">Plano de Saúde</p>
+            <p className="text-2xl font-bold">{beneficiosQ.data?.planoSaude ?? 0}</p>
+            <p className="text-xs text-muted-foreground mt-1">Colaboradores cobertos</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-xs text-muted-foreground font-medium mb-1">Vale Refeição</p>
+            <p className="text-2xl font-bold">{beneficiosQ.data?.valeRefeicao ?? 0}</p>
+            <p className="text-xs text-muted-foreground mt-1">{formatCurrency(beneficiosQ.data?.totalValeRefeicao)} por ciclo</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-xs text-muted-foreground font-medium mb-1">Vale Transporte</p>
+            <p className="text-2xl font-bold">{beneficiosQ.data?.valeTransporte ?? 0}</p>
+            <p className="text-xs text-muted-foreground mt-1">Benefício ativo</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-xs text-muted-foreground font-medium mb-1">Custo estimado</p>
+            <p className="text-2xl font-bold">{formatCurrency(previsaoQ.data?.custoTotal)}</p>
+            <p className="text-xs text-muted-foreground mt-1">Folha + benefícios + encargos</p>
           </CardContent>
         </Card>
       </div>
@@ -426,6 +523,34 @@ export default function RH() {
             <Input placeholder="Buscar por nome, função, e-mail ou CPF" value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
           </div>
           <Card>
+            <div className="md:hidden space-y-3 p-4">
+              {filtrados.map((f: any) => (
+                <div key={f.id} className="rounded-xl border p-4 space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="font-semibold">{f.nome}</p>
+                      <p className="text-xs text-muted-foreground">{FUNCAO_LABEL[f.funcao] ?? f.funcao}</p>
+                    </div>
+                    <Badge variant={f.ativo ? "default" : "secondary"}>{f.ativo ? "Ativo" : "Inativo"}</Badge>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge className={`text-xs ${CONTRATO_COLORS[f.tipoContrato] ?? "bg-gray-100 text-gray-700"}`}>
+                      {CONTRATO_LABEL[f.tipoContrato] ?? f.tipoContrato}
+                    </Badge>
+                    {f.temPlanoSaude && <Badge variant="outline">Plano</Badge>}
+                    {f.temValeRefeicao && <Badge variant="outline">VR</Badge>}
+                    {f.temValeTransporte && <Badge variant="outline">VT</Badge>}
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div><p className="text-muted-foreground">Salário</p><p>{f.salario ? formatCurrency(f.salario) : "—"}</p></div>
+                    <div><p className="text-muted-foreground">Admissão</p><p>{f.dataAdmissao ? new Date(f.dataAdmissao).toLocaleDateString("pt-BR") : "—"}</p></div>
+                    <div className="col-span-2"><p className="text-muted-foreground">Contato</p><p>{f.telefone || f.email || "—"}</p></div>
+                  </div>
+                </div>
+              ))}
+              {filtrados.length === 0 && <p className="text-center text-muted-foreground py-8">Nenhum colaborador cadastrado.</p>}
+            </div>
+            <div className="hidden md:block">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -463,6 +588,7 @@ export default function RH() {
                 )}
               </TableBody>
             </Table>
+            </div>
           </Card>
         </TabsContent>
 
@@ -475,6 +601,26 @@ export default function RH() {
             </Button>
           </div>
           <Card>
+            <div className="md:hidden space-y-3 p-4">
+              {folhaResumo.map((item: any) => (
+                <div key={item.referencia} className="rounded-xl border p-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="font-semibold">{item.competencia}</p>
+                    <Badge variant={Number(item.pendentes) > 0 ? "secondary" : "default"}>
+                      {Number(item.pendentes) > 0 ? "Em aberto" : "Quitado"}
+                    </Badge>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div><p className="text-muted-foreground">Funcionários</p><p>{item.funcionarios}</p></div>
+                    <div><p className="text-muted-foreground">Pagos</p><p>{item.pagos}</p></div>
+                    <div><p className="text-muted-foreground">Pendentes</p><p>{item.pendentes}</p></div>
+                    <div><p className="text-muted-foreground">Total</p><p className="font-semibold">{formatCurrency(item.totalBruto)}</p></div>
+                  </div>
+                </div>
+              ))}
+              {folhaResumo.length === 0 && <p className="text-center text-muted-foreground py-8">Nenhuma folha processada ainda.</p>}
+            </div>
+            <div className="hidden md:block">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -508,6 +654,7 @@ export default function RH() {
                 )}
               </TableBody>
             </Table>
+            </div>
           </Card>
         </TabsContent>
 
@@ -515,6 +662,32 @@ export default function RH() {
           <Card>
             <CardHeader><CardTitle className="text-sm">Vencimentos de documentos</CardTitle></CardHeader>
             <CardContent className="p-0">
+              <div className="md:hidden space-y-3 p-4">
+                {vencimentos.map((f: any) => {
+                  const bloqueado = [f.diasCnh, f.diasAso, f.diasMopp].some((days: number | null) => days !== null && days < 0);
+                  const atencao = !bloqueado && [f.diasCnh, f.diasAso, f.diasMopp].some((days: number | null) => days !== null && days <= 30);
+                  return (
+                    <div key={f.id} className="rounded-xl border p-4 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-semibold">{f.nome}</p>
+                          <p className="text-xs text-muted-foreground">{FUNCAO_LABEL[f.funcao] ?? f.funcao}</p>
+                        </div>
+                        <Badge className={bloqueado ? "bg-red-100 text-red-700" : atencao ? "bg-orange-100 text-orange-700" : "bg-green-100 text-green-700"}>
+                          {bloqueado ? "Bloqueado" : atencao ? "Atenção" : "Apto"}
+                        </Badge>
+                      </div>
+                      <div className="grid grid-cols-1 gap-1 text-sm">
+                        <p>CNH: {documentStatusLabel(f.diasCnh)}</p>
+                        <p>ASO: {documentStatusLabel(f.diasAso)}</p>
+                        <p>MOPP: {documentStatusLabel(f.diasMopp)}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+                {vencimentos.length === 0 && <p className="text-center text-muted-foreground py-8">Nenhum vencimento documental cadastrado.</p>}
+              </div>
+              <div className="hidden md:block">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -552,6 +725,7 @@ export default function RH() {
                   )}
                 </TableBody>
               </Table>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

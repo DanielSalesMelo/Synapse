@@ -1748,7 +1748,57 @@ export default function TI({ params }: { params?: { tab?: string } }) {
               </DialogContent>
             </Dialog>
           </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {[
+              { label: "Solicitado", value: (comprasQ.data ?? []).filter((c: any) => c.status === "solicitado").length },
+              { label: "Aprovado", value: (comprasQ.data ?? []).filter((c: any) => c.status === "aprovado").length },
+              { label: "Comprado", value: (comprasQ.data ?? []).filter((c: any) => c.status === "comprado").length },
+              { label: "Entregue", value: (comprasQ.data ?? []).filter((c: any) => c.status === "entregue").length },
+            ].map((card) => (
+              <Card key={card.label}>
+                <CardContent className="p-4">
+                  <p className="text-xs text-muted-foreground font-medium mb-1">{card.label}</p>
+                  <p className="text-2xl font-bold">{card.value}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
           <Card>
+            <div className="md:hidden space-y-3 p-4">
+              {(comprasQ.data ?? []).map((c: any) => (
+                <div key={c.id} className="rounded-xl border p-4 space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="font-semibold">{c.item}</p>
+                      <p className="text-xs text-muted-foreground">{c.fornecedor || "Fornecedor não informado"}</p>
+                    </div>
+                    <Badge variant="secondary" className="text-xs">{c.status}</Badge>
+                  </div>
+                  {c.justificativa && <p className="text-sm text-muted-foreground line-clamp-3">{c.justificativa}</p>}
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div><p className="text-muted-foreground">Quantidade</p><p>{c.quantidade ?? 1}</p></div>
+                    <div><p className="text-muted-foreground">Valor unitário</p><p>R$ {Number(c.valorUnitario ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p></div>
+                    <div className="col-span-2">
+                      <p className="text-muted-foreground mb-1">Fluxo</p>
+                      <Select value={c.status} onValueChange={(value) => updateCompra.mutate({ id: c.id, status: value as any })} disabled={updateCompra.isPending}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="solicitado">Solicitado</SelectItem>
+                          <SelectItem value="aprovado">Aprovado</SelectItem>
+                          <SelectItem value="comprado">Comprado</SelectItem>
+                          <SelectItem value="entregue">Entregue</SelectItem>
+                          <SelectItem value="cancelado">Cancelado</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {(comprasQ.data ?? []).length === 0 && (
+                <p className="text-center text-muted-foreground py-8">Nenhuma requisição criada</p>
+              )}
+            </div>
+            <div className="hidden md:block">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -1794,6 +1844,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                 )}
               </TableBody>
             </Table>
+            </div>
           </Card>
         </TabsContent>
 

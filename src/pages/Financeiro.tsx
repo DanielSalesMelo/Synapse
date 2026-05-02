@@ -18,6 +18,11 @@ function formatCurrency(v: unknown) {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
+function formatDate(v: unknown) {
+  if (!v) return "—";
+  return new Date(String(v)).toLocaleDateString("pt-BR");
+}
+
 const STATUS_PAGAR_COLORS: Record<string, string> = {
   pendente: "bg-yellow-100 text-yellow-700",
   pago: "bg-green-100 text-green-700",
@@ -227,6 +232,7 @@ export default function Financeiro() {
   const pagarResumoQ = trpc.financeiro.pagar.resumo.useQuery({ empresaId: EMPRESA_ID }, { enabled: !!EMPRESA_ID }) as any;
   const receberResumoQ = trpc.financeiro.receber.resumo.useQuery({ empresaId: EMPRESA_ID }, { enabled: !!EMPRESA_ID }) as any;
   const dashboardQ = trpc.financeiro.dashboard.useQuery({ empresaId: EMPRESA_ID }, { enabled: !!EMPRESA_ID }) as any;
+  const projecaoQ = trpc.financeiro.projecaoFluxo.useQuery({ empresaId: EMPRESA_ID }, { enabled: !!EMPRESA_ID }) as any;
   const pagarQ = trpc.financeiro.pagar.list.useQuery({ empresaId: EMPRESA_ID, limit: 100 }, { enabled: !!EMPRESA_ID }) as any;
   const receberQ = trpc.financeiro.receber.list.useQuery({ empresaId: EMPRESA_ID, limit: 100 }, { enabled: !!EMPRESA_ID }) as any;
   const dreQ = trpc.financeiro.drePorPlaca.useQuery({ empresaId: EMPRESA_ID }, { enabled: !!EMPRESA_ID }) as any;
@@ -236,6 +242,7 @@ export default function Financeiro() {
   const receber = receberQ.data ?? [];
   const veiculos = veiculosQ.data ?? [];
   const dashboard = dashboardQ.data;
+  const projecao = projecaoQ.data;
 
   const utils = trpc.useContext();
   const createPagar = trpc.financeiro.pagar.create.useMutation({
@@ -323,6 +330,34 @@ export default function Financeiro() {
     }).sort((a, b) => b.lucro - a.lucro);
   }, [dreQ.data, veiculos]);
 
+  const agingPagar = useMemo(() => {
+    const buckets = { vencidas: 0, hojea7: 0, dias8a30: 0, acima30: 0 };
+    const hoje = new Date();
+    for (const item of pagar) {
+      if (item.status === "pago" || item.status === "cancelado") continue;
+      const diff = Math.ceil((new Date(item.dataVencimento).getTime() - hoje.getTime()) / 86400000);
+      if (diff < 0) buckets.vencidas += Number(item.valor);
+      else if (diff <= 7) buckets.hojea7 += Number(item.valor);
+      else if (diff <= 30) buckets.dias8a30 += Number(item.valor);
+      else buckets.acima30 += Number(item.valor);
+    }
+    return buckets;
+  }, [pagar]);
+
+  const agingReceber = useMemo(() => {
+    const buckets = { vencidas: 0, hojea7: 0, dias8a30: 0, acima30: 0 };
+    const hoje = new Date();
+    for (const item of receber) {
+      if (item.status === "recebido" || item.status === "cancelado") continue;
+      const diff = Math.ceil((new Date(item.dataVencimento).getTime() - hoje.getTime()) / 86400000);
+      if (diff < 0) buckets.vencidas += Number(item.valor);
+      else if (diff <= 7) buckets.hojea7 += Number(item.valor);
+      else if (diff <= 30) buckets.dias8a30 += Number(item.valor);
+      else buckets.acima30 += Number(item.valor);
+    }
+    return buckets;
+  }, [receber]);
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
@@ -355,7 +390,7 @@ export default function Financeiro() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         <Card className="border-l-4 border-l-yellow-500">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-1">
@@ -398,6 +433,13 @@ export default function Financeiro() {
             <p className="text-xs text-muted-foreground mt-1">Margem {Number(dashboard?.margemMes ?? 0).toFixed(1)}%</p>
           </CardContent>
         </Card>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <Card><CardContent className="p-4"><p className="text-xs text-muted-foreground font-medium mb-1">Receber em 7 dias</p><p className="text-xl font-bold text-green-700">{formatCurrency(projecao?.receber?.dias7)}</p><p className="text-xs text-muted-foreground mt-1">Curto prazo</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-xs text-muted-foreground font-medium mb-1">Pagar em 7 dias</p><p className="text-xl font-bold text-red-600">{formatCurrency(projecao?.pagar?.dias7)}</p><p className="text-xs text-muted-foreground mt-1">Compromissos imediatos</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-xs text-muted-foreground font-medium mb-1">Receber em 30 dias</p><p className="text-xl font-bold">{formatCurrency(projecao?.receber?.dias30)}</p><p className="text-xs text-muted-foreground mt-1">Janela projetada</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-xs text-muted-foreground font-medium mb-1">Pagar em 30 dias</p><p className="text-xl font-bold">{formatCurrency(projecao?.pagar?.dias30)}</p><p className="text-xs text-muted-foreground mt-1">Planejamento financeiro</p></CardContent></Card>
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
@@ -456,10 +498,48 @@ export default function Financeiro() {
               </CardContent>
             </Card>
           </div>
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader><CardTitle className="text-sm">Aging de contas a pagar</CardTitle></CardHeader>
+              <CardContent className="grid grid-cols-2 gap-3">
+                <div className="rounded-lg bg-red-50 text-red-700 p-3"><p className="text-xs font-medium">Vencidas</p><p className="text-lg font-bold">{formatCurrency(agingPagar.vencidas)}</p></div>
+                <div className="rounded-lg bg-amber-50 text-amber-700 p-3"><p className="text-xs font-medium">0 a 7 dias</p><p className="text-lg font-bold">{formatCurrency(agingPagar.hojea7)}</p></div>
+                <div className="rounded-lg bg-blue-50 text-blue-700 p-3"><p className="text-xs font-medium">8 a 30 dias</p><p className="text-lg font-bold">{formatCurrency(agingPagar.dias8a30)}</p></div>
+                <div className="rounded-lg bg-slate-50 text-slate-700 p-3"><p className="text-xs font-medium">Acima de 30</p><p className="text-lg font-bold">{formatCurrency(agingPagar.acima30)}</p></div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle className="text-sm">Aging de contas a receber</CardTitle></CardHeader>
+              <CardContent className="grid grid-cols-2 gap-3">
+                <div className="rounded-lg bg-red-50 text-red-700 p-3"><p className="text-xs font-medium">Vencidas</p><p className="text-lg font-bold">{formatCurrency(agingReceber.vencidas)}</p></div>
+                <div className="rounded-lg bg-amber-50 text-amber-700 p-3"><p className="text-xs font-medium">0 a 7 dias</p><p className="text-lg font-bold">{formatCurrency(agingReceber.hojea7)}</p></div>
+                <div className="rounded-lg bg-blue-50 text-blue-700 p-3"><p className="text-xs font-medium">8 a 30 dias</p><p className="text-lg font-bold">{formatCurrency(agingReceber.dias8a30)}</p></div>
+                <div className="rounded-lg bg-slate-50 text-slate-700 p-3"><p className="text-xs font-medium">Acima de 30</p><p className="text-lg font-bold">{formatCurrency(agingReceber.acima30)}</p></div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="pagar" className="mt-4">
           <Card>
+            <div className="md:hidden space-y-3 p-4">
+              {pagar.map((p: any) => (
+                <div key={p.id} className="rounded-xl border p-4 space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="font-semibold">{p.descricao}</p>
+                      <p className="text-xs text-muted-foreground capitalize">{p.categoria}</p>
+                    </div>
+                    <Badge className={STATUS_PAGAR_COLORS[p.status]}>{p.status}</Badge>
+                  </div>
+                  <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">Vencimento</span><span>{formatDate(p.dataVencimento)}</span></div>
+                  <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">Fornecedor</span><span>{p.fornecedor || "—"}</span></div>
+                  <div className="text-lg font-bold">{formatCurrency(p.valor)}</div>
+                </div>
+              ))}
+              {pagar.length === 0 && <p className="text-center text-muted-foreground py-8">Nenhuma conta a pagar cadastrada.</p>}
+            </div>
+            <div className="hidden md:block">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -483,11 +563,30 @@ export default function Financeiro() {
                 {pagar.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Nenhuma conta a pagar cadastrada.</TableCell></TableRow>}
               </TableBody>
             </Table>
+            </div>
           </Card>
         </TabsContent>
 
         <TabsContent value="receber" className="mt-4">
           <Card>
+            <div className="md:hidden space-y-3 p-4">
+              {receber.map((r: any) => (
+                <div key={r.id} className="rounded-xl border p-4 space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="font-semibold">{r.descricao}</p>
+                      <p className="text-xs text-muted-foreground">{r.cliente || "Sem cliente vinculado"}</p>
+                    </div>
+                    <Badge className={STATUS_RECEBER_COLORS[r.status]}>{r.status}</Badge>
+                  </div>
+                  <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">Vencimento</span><span>{formatDate(r.dataVencimento)}</span></div>
+                  <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">Categoria</span><span className="capitalize">{r.categoria}</span></div>
+                  <div className="text-lg font-bold">{formatCurrency(r.valor)}</div>
+                </div>
+              ))}
+              {receber.length === 0 && <p className="text-center text-muted-foreground py-8">Nenhuma conta a receber cadastrada.</p>}
+            </div>
+            <div className="hidden md:block">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -511,6 +610,7 @@ export default function Financeiro() {
                 {receber.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Nenhuma conta a receber cadastrada.</TableCell></TableRow>}
               </TableBody>
             </Table>
+            </div>
           </Card>
         </TabsContent>
 
@@ -518,6 +618,22 @@ export default function Financeiro() {
           <Card>
             <CardHeader><CardTitle>Fluxo de Caixa Realizado</CardTitle></CardHeader>
             <CardContent>
+              <div className="md:hidden space-y-3">
+                {fluxoRows.map((row) => (
+                  <div key={row.id} className="rounded-xl border p-4">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <p className="font-semibold">{row.descricao}</p>
+                        <p className="text-xs text-muted-foreground">{formatDate(row.data)} · {row.categoria}</p>
+                      </div>
+                      <Badge variant={row.tipo === "entrada" ? "default" : "secondary"}>{row.tipo === "entrada" ? "Entrada" : "Saída"}</Badge>
+                    </div>
+                    <div className={`text-lg font-bold mt-3 ${row.tipo === "entrada" ? "text-green-600" : "text-red-600"}`}>{formatCurrency(row.valor)}</div>
+                  </div>
+                ))}
+                {fluxoRows.length === 0 && <p className="text-center text-muted-foreground py-8">Nenhum pagamento ou recebimento realizado ainda.</p>}
+              </div>
+              <div className="hidden md:block">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -547,6 +663,7 @@ export default function Financeiro() {
                   {fluxoRows.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Nenhum pagamento ou recebimento realizado ainda.</TableCell></TableRow>}
                 </TableBody>
               </Table>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -555,6 +672,24 @@ export default function Financeiro() {
           <Card>
             <CardHeader><CardTitle>DRE por veículo</CardTitle></CardHeader>
             <CardContent>
+              <div className="md:hidden space-y-3">
+                {dreRows.map((row) => (
+                  <div key={row.veiculoId} className="rounded-xl border p-4 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <p className="font-semibold">{row.placa}</p>
+                      <Badge variant="outline">{row.margem.toFixed(1)}%</Badge>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div><p className="text-muted-foreground">Receita</p><p className="font-semibold">{formatCurrency(row.receita)}</p></div>
+                      <div><p className="text-muted-foreground">Despesa</p><p className="font-semibold">{formatCurrency(row.despesa)}</p></div>
+                      <div><p className="text-muted-foreground">Lucro</p><p className={`font-semibold ${row.lucro >= 0 ? "text-green-600" : "text-red-600"}`}>{formatCurrency(row.lucro)}</p></div>
+                      <div><p className="text-muted-foreground">Custo/KM</p><p className="font-semibold">{formatCurrency(row.custoKm)}</p></div>
+                    </div>
+                  </div>
+                ))}
+                {dreRows.length === 0 && <p className="text-center text-muted-foreground py-8">Sem dados suficientes para gerar o DRE por veículo.</p>}
+              </div>
+              <div className="hidden md:block">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -582,6 +717,7 @@ export default function Financeiro() {
                   {dreRows.length === 0 && <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">Sem dados suficientes para gerar o DRE por veículo.</TableCell></TableRow>}
                 </TableBody>
               </Table>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
