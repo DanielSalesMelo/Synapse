@@ -551,32 +551,13 @@ app.get("/health", (req, res) => {
 });
 
 // 6. Servidor sobe IMEDIATAMENTE — migrações rodam em background
-
-
-// Servir o frontend React (Vite build) - Essencial para evitar tela branca
-const DIST_PATH = path.join(process.cwd(), "dist");
-if (fs.existsSync(DIST_PATH)) {
-  console.log(`[Server] Servindo frontend de: ${DIST_PATH}`);
-  app.use(express.static(DIST_PATH));
-  
-  app.get("*", (req, res, next) => {
-    if (req.path.startsWith("/api/")) return next();
-    res.sendFile(path.join(DIST_PATH, "index.html"));
-  });
-} else {
-  console.warn(`[Server] Pasta 'dist' não encontrada em: ${DIST_PATH}`);
-  app.get("/", (_req, res) => res.status(200).json({ status: "online", message: "Synapse API (Frontend não encontrado)" }));
-}
-
-// Inicialização do servidor
 app.listen(port, () => {
-  console.log(`[Server] Rodando na porta ${port}`);
-  
-  // Executar migrações e verificações em segundo plano
-  runInlineMigrations()
-    .then(() => {
-      console.log("[Migration] ✅ Tabelas verificadas");
-      checkCertificadosVencimento().catch(e => console.error("[Certificados] Erro:", e));
-    })
-    .catch(err => console.error("[Migration] ❌ Erro:", err));
+  console.log(`[Server] ✅ Synapse Backend running on port ${port}`);
+  // Inicia migrações em background após o servidor estar ouvindo
+  runMigrationsInBackground();
+
+  // Inicia verificação de certificados a cada 24h (86400000 ms)
+  // Executa uma vez na subida do servidor e depois periodicamente
+  checkCertificadosVencimento();
+  setInterval(checkCertificadosVencimento, 24 * 60 * 60 * 1000);
 });

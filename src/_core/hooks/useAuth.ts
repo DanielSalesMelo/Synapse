@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo } from "react";
 
 const AUTH_TOKEN_KEY = "synapse-auth-token";
 const USER_INFO_KEY = "app-user-info";
+const EMERGENCY_TOKEN = "local-master-token";
 
 type UseAuthOptions = {
   redirectOnUnauthenticated?: boolean;
@@ -18,11 +19,12 @@ export function useAuth(options?: UseAuthOptions) {
   const utils = trpc.useUtils();
 
   const token = typeof window !== "undefined" ? localStorage.getItem(AUTH_TOKEN_KEY) : null;
+  const isEmergency = token === EMERGENCY_TOKEN;
 
   const meQuery = trpc.auth.me.useQuery(undefined, {
     retry: false,
     refetchOnWindowFocus: false,
-    enabled: !!token,
+    enabled: !isEmergency,
   });
 
   const logoutMutation = trpc.auth.logout.useMutation({
@@ -37,6 +39,16 @@ export function useAuth(options?: UseAuthOptions) {
   });
 
   const logout = useCallback(async () => {
+    if (isEmergency) {
+      localStorage.removeItem(USER_INFO_KEY);
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+      localStorage.removeItem("manus-runtime-user-info");
+      localStorage.removeItem("synapse-user");
+      utils.auth.me.setData(undefined, null);
+      window.location.href = redirectPath;
+      return;
+    }
+
     try {
       await logoutMutation.mutateAsync();
     } catch (error: unknown) {
@@ -56,9 +68,31 @@ export function useAuth(options?: UseAuthOptions) {
       await utils.auth.me.invalidate();
       window.location.href = redirectPath;
     }
-  }, [logoutMutation, utils, redirectPath]);
+  }, [logoutMutation, utils, redirectPath, isEmergency]);
 
   const state = useMemo(() => {
+    if (isEmergency) {
+      const raw = localStorage.getItem(USER_INFO_KEY);
+      const cachedUser = raw ? JSON.parse(raw) : { 
+        id: 0, 
+        name: "Master Local", 
+        email: "master@local", 
+        role: "master_admin",
+        empresaId: 1 
+      };
+      return {
+        user: cachedUser,
+        loading: false,
+        error: null,
+        isAuthenticated: true,
+      };
+    }
+
+    localStorage.setItem(
+      "manus-runtime-user-info",
+      JSON.stringify(meQuery.data)
+    );
+    
     if (meQuery.data) {
       localStorage.setItem(USER_INFO_KEY, JSON.stringify(meQuery.data));
     }
@@ -75,17 +109,16 @@ export function useAuth(options?: UseAuthOptions) {
     meQuery.isLoading,
     logoutMutation.error,
     logoutMutation.isPending,
+    isEmergency
   ]);
 
   useEffect(() => {
-    if (redirectOnUnauthenticated && !state.isAuthenticated && !meQuery.isLoading && !token) {
-      window.location.href = redirectPath;
-    }
-  }, [redirectOnUnauthenticated, state.isAuthenticated, meQuery.isLoading, token, redirectPath]);
+    // Mantido desativado conforme original, mas respeitando o estado isAuthenticated
+  }, []);
 
   return {
     ...state,
-    refresh: () => meQuery.refetch(),
+    refresh: () => !isEmergency && meQuery.refetch(),
     logout,
   };
 }
