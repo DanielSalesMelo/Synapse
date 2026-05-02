@@ -95,6 +95,32 @@ const requireUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const requireAgent = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const authHeader = req.headers.authorization || "";
+    const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+    if (!token) {
+      return res.status(401).json({ error: "TOKEN_REQUIRED" });
+    }
+
+    const client = await getRawClient();
+    if (!client) {
+      return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+    }
+
+    const rows = await client`SELECT * FROM monitor_agentes WHERE token=${token} LIMIT 1`.catch(() => []);
+    const agent = rows[0];
+    if (!agent) {
+      return res.status(401).json({ error: "TOKEN_INVALIDO" });
+    }
+
+    (req as any).agent = agent;
+    next();
+  } catch {
+    res.status(401).json({ error: "TOKEN_INVALIDO" });
+  }
+};
+
 const mapLegacyMetric = (payload: any) => {
   const disks = Array.isArray(payload.disks) ? payload.disks : [];
   const diskTotalFromArray = disks.reduce((sum: number, disk: any) => sum + Number(disk.total_gb || 0), 0);
@@ -214,6 +240,15 @@ app.post("/api/agents/generate-pairing-code", requireUser, async (req, res) => {
   if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
 
   const { userId, departmentId } = req.body ?? {};
+  const requestedEmpresaId = Number(req.body?.empresaId || user.empresaId || user.activeCompanyId || 0);
+  const empresaId = Number.isFinite(requestedEmpresaId) && requestedEmpresaId > 0 ? requestedEmpresaId : 0;
+  if (!empresaId) {
+    return res.status(400).json({ error: "EMPRESA_REQUIRED" });
+  }
+  if (user.role !== "master_admin" && user.empresaId && Number(user.empresaId) !== empresaId) {
+    return res.status(403).json({ error: "FORBIDDEN_COMPANY" });
+  }
+
   const part1 = Math.random().toString(36).slice(2, 6).toUpperCase();
   const part2 = Math.random().toString(36).slice(2, 6).toUpperCase();
   const code = `SYNC-${part1}-${part2}`;
@@ -221,10 +256,10 @@ app.post("/api/agents/generate-pairing-code", requireUser, async (req, res) => {
 
   await client`
     INSERT INTO agent_pairing_codes ("empresaId", codigo, "criadoPor", "expiresAt", user_id, department_id, "createdAt")
-    VALUES (${user.empresaId}, ${code}, ${user.id}, ${expiresAt}, ${userId || null}, ${departmentId || null}, NOW())
+    VALUES (${empresaId}, ${code}, ${user.id}, ${expiresAt}, ${userId || null}, ${departmentId || null}, NOW())
   `;
 
-  res.json({ code, expiresAt });
+  res.json({ code, expiresAt, empresaId });
 });
 
 app.get("/api/agent/download/windows", (_req, res) => {
@@ -233,6 +268,10 @@ app.get("/api/agent/download/windows", (_req, res) => {
 
 app.get("/api/agent/download/windows-installer", (_req, res) => {
   res.download(path.join(AGENT_DIR, "install_windows.bat"), "instalar_agente.bat");
+});
+
+app.get("/api/agent/download/windows-node-installer", (_req, res) => {
+  res.download(path.join(AGENT_DIR, "install_synapse.js"), "instalar_agente_node.js");
 });
 
 app.get("/api/agent/download/linux", (_req, res) => {
@@ -368,6 +407,181 @@ app.post("/api/agent/metrics", async (req, res) => {
     console.error("[Agent Metrics] Falha:", error);
     return res.status(500).json({ error: "METRICS_FAILED" });
   }
+});
+
+app.get("/api/agent/profile", requireAgent, async (req, res) => {
+  const agent = (req as any).agent;
+  const client = await getRawClient();
+  if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+
+  const profileRows = await client`
+    SELECT a.*,
+      e.nome as empresa_nome,
+      u.name as usuario_nome,
+      u.email as usuario_email,
+      (
+        SELECT row_to_json(mm)
+        FROM (
+          SELECT "coletadoEm","cpuUso","ramUsoPct","discoUsoPct","anydeskId","usuarioLogado",uptime
+          FROM monitor_metricas
+          WHERE "agenteId" = a.id
+          ORDER BY "coletadoEm" DESC
+          LIMIT 1
+        ) mm
+      ) as ultima_metrica
+    FROM monitor_agentes a
+    LEFT JOIN empresas e ON e.id = a."empresaId"
+    LEFT JOIN users u ON u.id = a.user_id
+    WHERE a.id = ${agent.id}
+    LIMIT 1
+  `.catch(() => []);
+
+  return res.json(profileRows[0] ?? null);
+});
+
+app.get("/api/agent/tickets", requireAgent, async (req, res) => {
+  const agent = (req as any).agent;
+  const client = await getRawClient();
+  if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+  if (!agent.user_id) {
+    return res.json([]);
+  }
+
+  const rows = await client`
+    SELECT id, protocolo, titulo, descricao, categoria, prioridade, status, "createdAt", "updatedAt", "resolvidoEm"
+    FROM tickets_ti
+    WHERE "empresaId" = ${agent.empresaId}
+      AND "solicitanteId" = ${agent.user_id}
+      AND "deletedAt" IS NULL
+    ORDER BY "updatedAt" DESC, id DESC
+    LIMIT 20
+  `.catch(() => []);
+
+  res.json(rows);
+});
+
+app.post("/api/agent/tickets/open", requireAgent, async (req, res) => {
+  const agent = (req as any).agent;
+  const client = await getRawClient();
+  if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+  if (!agent.user_id) {
+    return res.status(400).json({ error: "AGENT_NOT_ASSOCIATED_TO_USER" });
+  }
+
+  const titulo = String(req.body?.titulo || "").trim();
+  const descricao = String(req.body?.descricao || "").trim();
+  const categoria = String(req.body?.categoria || "hardware");
+  const prioridade = String(req.body?.prioridade || "media");
+
+  if (!titulo || titulo.length < 2) {
+    return res.status(400).json({ error: "Informe o título do chamado." });
+  }
+  if (!descricao || descricao.length < 5) {
+    return res.status(400).json({ error: "Informe a descrição do chamado." });
+  }
+
+  const protocolo = `TI-${Date.now().toString(36).toUpperCase()}`;
+  const enrichedDescription = `${descricao}\n\nDispositivo vinculado: ${agent.hostname}\nAgente: ${agent.id}`;
+
+  const rows = await client`
+    INSERT INTO tickets_ti (
+      "empresaId", "solicitanteId", protocolo, titulo, descricao,
+      categoria, prioridade, status, "createdAt", "updatedAt"
+    ) VALUES (
+      ${agent.empresaId}, ${agent.user_id}, ${protocolo}, ${titulo}, ${enrichedDescription},
+      ${categoria}, ${prioridade}, 'aberto', NOW(), NOW()
+    ) RETURNING id, protocolo, titulo, status, "createdAt"
+  `.catch(() => []);
+
+  const ticket = rows[0];
+  if (!ticket) return res.status(500).json({ error: "TICKET_CREATE_FAILED" });
+
+  await client`
+    INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
+    VALUES (
+      ${ticket.id},
+      ${agent.empresaId},
+      ${agent.user_id},
+      ${`Chamado aberto pelo agente do dispositivo ${agent.hostname}.`},
+      'sistema',
+      NOW()
+    )
+  `.catch(() => {});
+
+  await client`
+    INSERT INTO ticket_status_history ("ticketId","empresaId","changedBy","fromStatus","toStatus",motivo,"createdAt")
+    VALUES (${ticket.id}, ${agent.empresaId}, ${agent.user_id}, ${null}, 'aberto', ${'Chamado aberto pelo agente'}, NOW())
+  `.catch(() => {});
+
+  res.json(ticket);
+});
+
+app.get("/api/agent/tickets/:id/messages", requireAgent, async (req, res) => {
+  const agent = (req as any).agent;
+  const client = await getRawClient();
+  if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+  if (!agent.user_id) {
+    return res.status(400).json({ error: "AGENT_NOT_ASSOCIATED_TO_USER" });
+  }
+
+  const ticketId = Number(req.params.id);
+  const ticketRows = await client`
+    SELECT id
+    FROM tickets_ti
+    WHERE id = ${ticketId}
+      AND "empresaId" = ${agent.empresaId}
+      AND "solicitanteId" = ${agent.user_id}
+    LIMIT 1
+  `.catch(() => []);
+
+  if (!ticketRows[0]) {
+    return res.status(404).json({ error: "TICKET_NOT_FOUND" });
+  }
+
+  const rows = await client`
+    SELECT m.*, u.name as autor_nome, u.email as autor_email
+    FROM ticket_mensagens m
+    LEFT JOIN users u ON u.id = m."autorId"
+    WHERE m."ticketId" = ${ticketId}
+      AND m."empresaId" = ${agent.empresaId}
+    ORDER BY m."createdAt" ASC
+  `.catch(() => []);
+
+  res.json(rows);
+});
+
+app.post("/api/agent/tickets/:id/messages", requireAgent, async (req, res) => {
+  const agent = (req as any).agent;
+  const client = await getRawClient();
+  if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+  if (!agent.user_id) {
+    return res.status(400).json({ error: "AGENT_NOT_ASSOCIATED_TO_USER" });
+  }
+
+  const ticketId = Number(req.params.id);
+  const conteudo = String(req.body?.conteudo || "").trim();
+  if (!conteudo) return res.status(400).json({ error: "MESSAGE_REQUIRED" });
+
+  const ticketRows = await client`
+    SELECT id
+    FROM tickets_ti
+    WHERE id = ${ticketId}
+      AND "empresaId" = ${agent.empresaId}
+      AND "solicitanteId" = ${agent.user_id}
+    LIMIT 1
+  `.catch(() => []);
+
+  if (!ticketRows[0]) {
+    return res.status(404).json({ error: "TICKET_NOT_FOUND" });
+  }
+
+  const rows = await client`
+    INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
+    VALUES (${ticketId}, ${agent.empresaId}, ${agent.user_id}, ${conteudo}, 'mensagem', NOW())
+    RETURNING *
+  `.catch(() => []);
+
+  res.json(rows[0] ?? { success: false });
 });
 
 app.use(

@@ -1897,8 +1897,9 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   <div className="bg-muted rounded-lg p-3 space-y-2 text-xs font-mono">
                     <p className="text-muted-foreground"># 1. Baixe o Instalador .bat abaixo</p>
                     <p className="text-muted-foreground"># 2. Execute o instalador e informe o código de pareamento</p>
-                    <p className="text-muted-foreground"># 3. O instalador usa Program Files e, se necessário, cai para a pasta do usuário</p>
+                    <p className="text-muted-foreground"># 3. A instalação agora usa a pasta do usuário para evitar travas de permissão</p>
                     <p className="text-muted-foreground"># 4. URL do Servidor: {backendBaseUrl}</p>
+                    <p className="text-muted-foreground"># 5. O instalador cria um atalho “Synapse Suporte” para abrir chamados e conversar com o TI</p>
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -1915,6 +1916,11 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                       </Button>
                     </div>
                     <div className="flex gap-2">
+                      <Button size="sm" variant="outline" className="flex-1" asChild>
+                        <a href={`${backendBaseUrl}/api/agent/download/windows-node-installer`} download="instalar_agente_node.js">
+                          <FileText className="h-4 w-4 mr-2" />Instalador Node
+                        </a>
+                      </Button>
                       <Button size="sm" variant="outline" className="flex-1" asChild>
                         <a href={`${backendBaseUrl}/api/agent/download/agent`} download="synapse_agent.py">
                           <FileText className="h-4 w-4 mr-2" />Script Python

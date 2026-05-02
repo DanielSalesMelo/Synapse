@@ -4,8 +4,7 @@ title Synapse Agent Installer
 color 0A
 
 set "DEFAULT_SERVER=https://synapse-backend-ds2026.azurewebsites.net"
-set "INSTALL_DIR=%ProgramFiles%\SynapseAgent"
-set "FALLBACK_DIR=%LocalAppData%\SynapseAgent"
+set "INSTALL_DIR=%LocalAppData%\SynapseAgent"
 set "AGENT_EXE=%INSTALL_DIR%\synapse-agent.exe"
 set "TEMP_EXE=%TEMP%\synapse-agent.exe"
 set "PAIR_CODE="
@@ -25,17 +24,6 @@ if "%PAIR_CODE%"=="" (
 
 set /p SERVER_URL=URL do servidor Synapse [%DEFAULT_SERVER%]:
 if "%SERVER_URL%"=="" set "SERVER_URL=%DEFAULT_SERVER%"
-
-if not exist "%INSTALL_DIR%" (
-  mkdir "%INSTALL_DIR%" >nul 2>&1
-)
-
-if not exist "%INSTALL_DIR%" (
-  echo [AVISO] Sem permissao para instalar em "%ProgramFiles%".
-  echo [INFO] Usando a pasta do usuario atual.
-  set "INSTALL_DIR=%FALLBACK_DIR%"
-  set "AGENT_EXE=%INSTALL_DIR%\synapse-agent.exe"
-)
 
 if not exist "%INSTALL_DIR%" (
   mkdir "%INSTALL_DIR%" >nul 2>&1
@@ -80,6 +68,10 @@ if errorlevel 1 (
   echo [OK] Tarefa automatica criada.
 )
 
+echo Criando atalho de suporte na area de trabalho...
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+  "$WshShell = New-Object -ComObject WScript.Shell; $Shortcut = $WshShell.CreateShortcut([System.IO.Path]::Combine($env:USERPROFILE,'Desktop','Synapse Suporte.lnk')); $Shortcut.TargetPath = '%AGENT_EXE%'; $Shortcut.Arguments = '--support'; $Shortcut.WorkingDirectory = '%INSTALL_DIR%'; $Shortcut.IconLocation = '%AGENT_EXE%,0'; $Shortcut.Save()"
+
 start "" "%AGENT_EXE%"
 
 echo.
@@ -87,6 +79,7 @@ echo =====================================================
 echo  Instalacao concluida
 echo  Pasta: %INSTALL_DIR%
 echo  Servidor: %SERVER_URL%
+echo  Atalho de suporte criado na area de trabalho
 echo =====================================================
 echo.
 pause

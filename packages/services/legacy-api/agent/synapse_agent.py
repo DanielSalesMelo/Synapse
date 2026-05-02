@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    SYNAPSE MONITORING AGENT v1.0.0                         ║
+║                    SYNAPSE MONITORING AGENT v2.2.0                         ║
 ║                                                                              ║
 ║  Coleta métricas do PC e envia para o servidor Synapse.                     ║
 ║  Buffer SQLite local: nunca perde dados mesmo sem internet.                 ║
@@ -43,7 +43,7 @@ except ImportError:
     print("[WARN] requests não instalado. Execute: pip install psutil requests")
 
 # ─── Configuração ─────────────────────────────────────────────────────────────
-VERSION = "1.0.0"
+VERSION = "2.2.0"
 AGENT_DIR = Path(os.environ.get("SYNAPSE_AGENT_DIR", Path.home() / ".synapse-agent"))
 CONFIG_FILE = AGENT_DIR / "config.json"
 DB_FILE = AGENT_DIR / "buffer.db"
@@ -73,7 +73,6 @@ logging.basicConfig(
 )
 log = logging.getLogger("synapse-agent")
 
-# ─── Configuração ─────────────────────────────────────────────────────────────
 def load_config() -> Dict:
     config = DEFAULT_CONFIG.copy()
     if CONFIG_FILE.exists():
@@ -88,6 +87,21 @@ def load_config() -> Dict:
 def save_config(config: Dict):
     with open(CONFIG_FILE, "w") as f:
         json.dump(config, f, indent=2)
+
+def get_last_buffered_metrics() -> Optional[Dict[str, Any]]:
+    if not DB_FILE.exists():
+        return None
+    conn = sqlite3.connect(DB_FILE)
+    row = conn.execute(
+        "SELECT payload FROM metricas_buffer ORDER BY id DESC LIMIT 1"
+    ).fetchone()
+    conn.close()
+    if not row:
+        return None
+    try:
+        return json.loads(row[0])
+    except Exception:
+        return None
 
 # ─── Buffer SQLite ────────────────────────────────────────────────────────────
 def init_db():
@@ -530,6 +544,243 @@ def register_agent(config: Dict) -> Optional[str]:
         log.error(f"[Register] Erro: {e}")
     return None
 
+def agent_request(config: Dict, method: str, path: str, payload: Optional[Dict[str, Any]] = None) -> Optional[Any]:
+    if not HAS_REQUESTS or not config.get("token"):
+        return None
+    try:
+        url = f"{config['server_url'].rstrip('/')}{path}"
+        response = requests.request(
+            method.upper(),
+            url,
+            headers={"Authorization": f"Bearer {config['token']}"},
+            json=payload,
+            timeout=20,
+        )
+        if response.status_code >= 400:
+            log.error(f"[Agent API] {method.upper()} {path} => {response.status_code}: {response.text[:200]}")
+            return None
+        return response.json() if response.content else None
+    except Exception as e:
+        log.error(f"[Agent API] Erro em {method.upper()} {path}: {e}")
+        return None
+
+def fetch_agent_profile(config: Dict) -> Optional[Dict[str, Any]]:
+    result = agent_request(config, "GET", "/api/agent/profile")
+    return result if isinstance(result, dict) else None
+
+def fetch_agent_tickets(config: Dict) -> List[Dict[str, Any]]:
+    result = agent_request(config, "GET", "/api/agent/tickets")
+    return result if isinstance(result, list) else []
+
+def open_support_ticket(config: Dict, titulo: str, descricao: str, categoria: str = "hardware", prioridade: str = "media") -> Optional[Dict[str, Any]]:
+    return agent_request(
+        config,
+        "POST",
+        "/api/agent/tickets/open",
+        {
+            "titulo": titulo,
+            "descricao": descricao,
+            "categoria": categoria,
+            "prioridade": prioridade,
+        },
+    )
+
+def fetch_ticket_messages(config: Dict, ticket_id: int) -> List[Dict[str, Any]]:
+    result = agent_request(config, "GET", f"/api/agent/tickets/{ticket_id}/messages")
+    return result if isinstance(result, list) else []
+
+def send_ticket_message(config: Dict, ticket_id: int, conteudo: str) -> Optional[Dict[str, Any]]:
+    return agent_request(
+        config,
+        "POST",
+        f"/api/agent/tickets/{ticket_id}/messages",
+        {"conteudo": conteudo},
+    )
+
+def launch_support_center():
+    config = load_config()
+    if not config.get("token"):
+        print("Agente ainda não pareado. Execute o instalador e vincule este PC ao Synapse.")
+        return
+
+    try:
+        import tkinter as tk
+        from tkinter import ttk, messagebox, simpledialog, scrolledtext
+    except Exception as e:
+        print(f"Não foi possível abrir a central visual de suporte: {e}")
+        return
+
+    root = tk.Tk()
+    root.title(f"Synapse Support Center v{VERSION}")
+    root.geometry("1080x720")
+    root.configure(bg="#0b1020")
+
+    style = ttk.Style()
+    try:
+        style.theme_use("clam")
+    except Exception:
+        pass
+
+    header = tk.Frame(root, bg="#0f172a", padx=18, pady=14)
+    header.pack(fill="x")
+
+    title = tk.Label(header, text="Synapse Support Center", fg="white", bg="#0f172a", font=("Segoe UI", 18, "bold"))
+    title.pack(anchor="w")
+    subtitle = tk.Label(header, text="Abrir chamados, conversar com o TI e acompanhar o desempenho deste PC.", fg="#94a3b8", bg="#0f172a", font=("Segoe UI", 10))
+    subtitle.pack(anchor="w", pady=(4, 0))
+
+    info_var = tk.StringVar(value="Carregando perfil do dispositivo...")
+    info = tk.Label(header, textvariable=info_var, fg="#cbd5e1", bg="#0f172a", font=("Segoe UI", 10))
+    info.pack(anchor="w", pady=(8, 0))
+
+    body = tk.Frame(root, bg="#0b1020", padx=14, pady=14)
+    body.pack(fill="both", expand=True)
+    body.grid_columnconfigure(0, weight=2)
+    body.grid_columnconfigure(1, weight=3)
+    body.grid_rowconfigure(1, weight=1)
+
+    metrics_card = tk.LabelFrame(body, text=" Desempenho do PC ", bg="#111827", fg="white", padx=12, pady=10, font=("Segoe UI", 10, "bold"))
+    metrics_card.grid(row=0, column=0, sticky="nsew", padx=(0, 10), pady=(0, 10))
+    metrics_var = tk.StringVar(value="Sem métricas ainda.")
+    tk.Label(metrics_card, textvariable=metrics_var, justify="left", fg="#e5e7eb", bg="#111827", font=("Consolas", 10)).pack(anchor="w")
+
+    actions_card = tk.LabelFrame(body, text=" Ações rápidas ", bg="#111827", fg="white", padx=12, pady=10, font=("Segoe UI", 10, "bold"))
+    actions_card.grid(row=0, column=1, sticky="nsew", pady=(0, 10))
+
+    tickets_card = tk.LabelFrame(body, text=" Chamados deste usuário ", bg="#111827", fg="white", padx=12, pady=10, font=("Segoe UI", 10, "bold"))
+    tickets_card.grid(row=1, column=0, sticky="nsew", padx=(0, 10))
+    chat_card = tk.LabelFrame(body, text=" Conversa do chamado ", bg="#111827", fg="white", padx=12, pady=10, font=("Segoe UI", 10, "bold"))
+    chat_card.grid(row=1, column=1, sticky="nsew")
+
+    tickets_list = tk.Listbox(tickets_card, bg="#0f172a", fg="white", selectbackground="#2563eb", activestyle="none", font=("Segoe UI", 10))
+    tickets_list.pack(fill="both", expand=True)
+
+    chat_text = scrolledtext.ScrolledText(chat_card, bg="#0f172a", fg="white", insertbackground="white", wrap="word", font=("Segoe UI", 10))
+    chat_text.pack(fill="both", expand=True)
+    chat_text.configure(state="disabled")
+
+    composer = tk.Frame(chat_card, bg="#111827")
+    composer.pack(fill="x", pady=(10, 0))
+    msg_entry = tk.Entry(composer, bg="#1f2937", fg="white", insertbackground="white", relief="flat", font=("Segoe UI", 10))
+    msg_entry.pack(side="left", fill="x", expand=True, padx=(0, 10), ipady=8)
+
+    selected_ticket = {"id": None}
+    tickets_cache: List[Dict[str, Any]] = []
+
+    def render_metrics():
+        data = get_last_buffered_metrics() or {}
+        lines = [
+            f"Hostname: {data.get('hostname', socket.gethostname())}",
+            f"Usuário logado: {data.get('usuario_logado') or '—'}",
+            f"SO: {data.get('so') or f'{platform.system()} {platform.release()}'}",
+            f"CPU: {data.get('cpu_uso') or 0}%",
+            f"RAM: {data.get('ram_uso_pct') or 0}%",
+            f"Disco: {data.get('disco_uso_pct') or 0}%",
+            f"AnyDesk: {data.get('anydesk_id') or 'não identificado'}",
+        ]
+        metrics_var.set("\n".join(lines))
+
+    def refresh_profile():
+        profile = fetch_agent_profile(config)
+        if profile:
+            info_var.set(
+                f"PC: {profile.get('hostname') or socket.gethostname()} · Empresa: {profile.get('empresa_nome') or '—'} · "
+                f"Usuário: {profile.get('usuario_nome') or 'não vinculado'}"
+            )
+            latest = profile.get("ultima_metrica") or {}
+            if latest:
+                metrics_var.set(
+                    "\n".join(
+                        [
+                            f"Hostname: {profile.get('hostname') or socket.gethostname()}",
+                            f"Usuário logado: {latest.get('usuarioLogado') or '—'}",
+                            f"CPU: {latest.get('cpuUso') or 0}%",
+                            f"RAM: {latest.get('ramUsoPct') or 0}%",
+                            f"Disco: {latest.get('discoUsoPct') or 0}%",
+                            f"AnyDesk: {latest.get('anydeskId') or 'não identificado'}",
+                        ]
+                    )
+                )
+        else:
+            info_var.set("Perfil indisponível no momento. O agente continuará coletando dados localmente.")
+            render_metrics()
+
+    def refresh_tickets():
+        nonlocal tickets_cache
+        tickets_cache = fetch_agent_tickets(config)
+        tickets_list.delete(0, tk.END)
+        for ticket in tickets_cache:
+            tickets_list.insert(
+                tk.END,
+                f"#{ticket.get('id')} · {ticket.get('titulo')} · {ticket.get('status')}"
+            )
+        if not tickets_cache:
+            tickets_list.insert(tk.END, "Nenhum chamado associado a este usuário ainda.")
+
+    def render_messages(ticket_id: int):
+        messages = fetch_ticket_messages(config, ticket_id)
+        chat_text.configure(state="normal")
+        chat_text.delete("1.0", tk.END)
+        for message in messages:
+            author = message.get("autor_nome") or "Synapse"
+            when = str(message.get("createdAt") or "")[:16].replace("T", " ")
+            content = message.get("conteudo") or ""
+            chat_text.insert(tk.END, f"{author} · {when}\n{content}\n\n")
+        chat_text.configure(state="disabled")
+        chat_text.see(tk.END)
+
+    def on_select_ticket(_event=None):
+        selection = tickets_list.curselection()
+        if not selection or not tickets_cache:
+            return
+        idx = selection[0]
+        if idx >= len(tickets_cache):
+            return
+        ticket = tickets_cache[idx]
+        selected_ticket["id"] = ticket.get("id")
+        render_messages(selected_ticket["id"])
+
+    def send_message_action():
+        if not selected_ticket["id"]:
+            messagebox.showwarning("Synapse", "Selecione um chamado antes de enviar uma mensagem.")
+            return
+        content = msg_entry.get().strip()
+        if not content:
+            return
+        result = send_ticket_message(config, int(selected_ticket["id"]), content)
+        if result is None:
+            messagebox.showerror("Synapse", "Não foi possível enviar a mensagem agora.")
+            return
+        msg_entry.delete(0, tk.END)
+        render_messages(int(selected_ticket["id"]))
+
+    def open_ticket_action():
+        title = simpledialog.askstring("Novo chamado", "Título do chamado:", parent=root)
+        if not title:
+            return
+        description = simpledialog.askstring("Novo chamado", "Descreva o problema:", parent=root)
+        if not description:
+            return
+        result = open_support_ticket(config, title, description)
+        if result:
+            messagebox.showinfo("Synapse", f"Chamado aberto com sucesso: {result.get('protocolo') or result.get('id')}")
+            refresh_tickets()
+        else:
+            messagebox.showerror("Synapse", "Não foi possível abrir o chamado.")
+
+    ttk.Button(actions_card, text="Atualizar agora", command=lambda: [refresh_profile(), refresh_tickets()]).pack(side="left", padx=(0, 8))
+    ttk.Button(actions_card, text="Abrir chamado", command=open_ticket_action).pack(side="left", padx=(0, 8))
+    ttk.Button(actions_card, text="Ver desempenho", command=render_metrics).pack(side="left")
+    ttk.Button(composer, text="Enviar", command=send_message_action).pack(side="right")
+
+    tickets_list.bind("<<ListboxSelect>>", on_select_ticket)
+    msg_entry.bind("<Return>", lambda _event: send_message_action())
+
+    refresh_profile()
+    refresh_tickets()
+    render_metrics()
+    root.mainloop()
+
 def get_mac_address() -> str:
     try:
         import uuid as _uuid
@@ -791,6 +1042,24 @@ if __name__ == "__main__":
                 install_windows()
             else:
                 install_linux()
+        elif cmd == "--support":
+            launch_support_center()
+        elif cmd == "--list-tickets":
+            config = load_config()
+            print(json.dumps(fetch_agent_tickets(config), indent=2, ensure_ascii=False))
+        elif cmd == "--ticket-messages" and len(sys.argv) > 2:
+            config = load_config()
+            print(json.dumps(fetch_ticket_messages(config, int(sys.argv[2])), indent=2, ensure_ascii=False))
+        elif cmd == "--open-ticket" and len(sys.argv) > 3:
+            config = load_config()
+            title = sys.argv[2]
+            description = sys.argv[3]
+            result = open_support_ticket(config, title, description)
+            print(json.dumps(result, indent=2, ensure_ascii=False))
+        elif cmd == "--send-message" and len(sys.argv) > 3:
+            config = load_config()
+            result = send_ticket_message(config, int(sys.argv[2]), sys.argv[3])
+            print(json.dumps(result, indent=2, ensure_ascii=False))
         elif cmd == "--status":
             config = load_config()
             print(f"Synapse Agent v{VERSION}")
@@ -820,6 +1089,6 @@ if __name__ == "__main__":
         elif cmd == "--version":
             print(f"Synapse Agent v{VERSION}")
         else:
-            print(f"Uso: synapse_agent.py [--install|--status|--config|--test|--version]")
+            print(f"Uso: synapse_agent.py [--install|--status|--support|--list-tickets|--ticket-messages ID|--open-ticket TITULO DESCRICAO|--send-message ID MSG|--config|--test|--version]")
     else:
         main()
