@@ -29,6 +29,38 @@ export const chatRouter = router({
     // Para cada conversa, buscar o outro participante (se não for grupo)
     const conversationsWithDetails = await Promise.all(
       userConversations.map(async (conv) => {
+        const [lastMessageRow] = await db.execute(sql`
+          SELECT
+            content,
+            type,
+            "createdAt",
+            "senderId"
+          FROM chat_messages
+          WHERE "conversationId" = ${conv.id}
+            AND "deletedAt" IS NULL
+          ORDER BY "createdAt" DESC
+          LIMIT 1
+        `) as unknown as any[];
+
+        const [memberState] = await db.execute(sql`
+          SELECT
+            COALESCE(
+              (
+                SELECT count(*)::int
+                FROM chat_messages m
+                WHERE m."conversationId" = ${conv.id}
+                  AND m."deletedAt" IS NULL
+                  AND m."senderId" <> ${ctx.user!.id}
+                  AND m."createdAt" > cm."lastReadAt"
+              ),
+              0
+            ) AS "unreadCount"
+          FROM chat_members cm
+          WHERE cm."conversationId" = ${conv.id}
+            AND cm."userId" = ${ctx.user!.id}
+          LIMIT 1
+        `) as unknown as any[];
+
         if (!conv.isGroup) {
           const otherMembers = await db
             .select({
@@ -50,9 +82,18 @@ export const chatRouter = router({
           return {
             ...conv,
             displayName: otherMember ? `${otherMember.name} ${otherMember.lastName || ""}`.trim() : "Usuário",
+            lastMessagePreview: lastMessageRow?.content || "Sem mensagens ainda",
+            lastMessageType: lastMessageRow?.type || "text",
+            unreadCount: Number(memberState?.unreadCount ?? 0),
           };
         }
-        return { ...conv, displayName: conv.name || "Grupo" };
+        return {
+          ...conv,
+          displayName: conv.name || "Grupo",
+          lastMessagePreview: lastMessageRow?.content || "Grupo sem mensagens ainda",
+          lastMessageType: lastMessageRow?.type || "text",
+          unreadCount: Number(memberState?.unreadCount ?? 0),
+        };
       })
     );
 
@@ -93,6 +134,12 @@ export const chatRouter = router({
           m."fileName",
           m."fileSize",
           m."mimeType",
+          (
+            SELECT max(cm."lastReadAt")
+            FROM chat_members cm
+            WHERE cm."conversationId" = m."conversationId"
+              AND cm."userId" <> m."senderId"
+          ) AS "readAt",
           u.name AS "senderName",
           u."lastName" AS "senderLastName"
         FROM chat_messages m
@@ -110,6 +157,7 @@ export const chatRouter = router({
         createdAt: row.createdAt,
         type: row.type || "text",
         senderName: `${row.senderName || ""} ${row.senderLastName || ""}`.trim(),
+        readAt: row.readAt || null,
         // Campos de arquivo
         attachmentUrl: row.fileUrl || null,
         attachmentName: row.fileName || null,
@@ -122,6 +170,24 @@ export const chatRouter = router({
       }));
 
       return messages.reverse();
+    }),
+
+  markConversationRead: protectedProcedure
+    .input(z.object({ conversationId: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      const db = requireDb(await getDb(), "chat.markConversationRead");
+
+      await db
+        .update(chatMembers)
+        .set({ lastReadAt: new Date() })
+        .where(
+          and(
+            eq(chatMembers.conversationId, input.conversationId),
+            eq(chatMembers.userId, ctx.user.id)
+          )
+        );
+
+      return { success: true };
     }),
 
   // Enviar mensagem (texto ou arquivo)

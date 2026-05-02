@@ -17,6 +17,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { createRoot } from "react-dom/client";
 import superjson from "superjson";
+import { registerSW } from "virtual:pwa-register";
 import App from "./App";
 import { Toaster } from "sonner";
 import "./index.css";
@@ -26,6 +27,7 @@ import { getBackendBaseUrl } from "@/lib/backend";
 const AUTH_TOKEN_KEY = "synapse-auth-token";
 const USER_INFO_KEY = "app-user-info";
 const UNAUTHED_ERR_MSG = 'Please login (10001)';
+const UPDATE_GUARD_KEY = "synapse-update-recovering";
 function getPersistedUser() {
   try {
     const raw = localStorage.getItem(USER_INFO_KEY);
@@ -72,6 +74,50 @@ queryClient.getQueryCache().subscribe(event => {
   if (event.type === "updated" && event.action.type === "error") {
     handleUnauthorized(event.query.state.error);
   }
+});
+
+const recoverFromBrokenUpdate = () => {
+  try {
+    if (sessionStorage.getItem(UPDATE_GUARD_KEY) === "1") return;
+    sessionStorage.setItem(UPDATE_GUARD_KEY, "1");
+    window.location.reload();
+  } catch {
+    window.location.reload();
+  }
+};
+
+window.addEventListener("load", () => {
+  sessionStorage.removeItem(UPDATE_GUARD_KEY);
+});
+
+window.addEventListener("vite:preloadError", (event) => {
+  event.preventDefault();
+  recoverFromBrokenUpdate();
+});
+
+window.addEventListener("error", (event) => {
+  const message = String(event.error?.message || event.message || "");
+  if (message.includes("Loading chunk") || message.includes("Failed to fetch dynamically imported module")) {
+    recoverFromBrokenUpdate();
+  }
+});
+
+window.addEventListener("unhandledrejection", (event) => {
+  const reason = String((event.reason as any)?.message || event.reason || "");
+  if (reason.includes("Loading chunk") || reason.includes("Failed to fetch dynamically imported module")) {
+    event.preventDefault();
+    recoverFromBrokenUpdate();
+  }
+});
+
+registerSW({
+  immediate: true,
+  onNeedRefresh() {
+    recoverFromBrokenUpdate();
+  },
+  onOfflineReady() {
+    sessionStorage.removeItem(UPDATE_GUARD_KEY);
+  },
 });
 
 const trpcClient = trpc.createClient({

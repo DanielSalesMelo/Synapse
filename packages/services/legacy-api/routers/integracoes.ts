@@ -6,7 +6,23 @@ import { eq, and, desc, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { resolveAccessibleEmpresaId } from "../_core/access";
 
-const integrationTypeSchema = z.enum(["whatsapp", "winthor", "webhook", "api_externa", "arquivei"]);
+const integrationTypeSchema = z.enum([
+  "whatsapp",
+  "telegram",
+  "instagram",
+  "serasa",
+  "gmail",
+  "google_calendar",
+  "google_drive",
+  "meta_ads",
+  "google_ads",
+  "anydesk",
+  "evolution_api",
+  "winthor",
+  "webhook",
+  "api_externa",
+  "arquivei",
+]);
 const integrationStatusSchema = z.enum(["ativa", "inativa", "erro", "configurando"]);
 
 export const integracoesRouter = router({
@@ -162,6 +178,16 @@ export const integracoesRouter = router({
   templates: protectedProcedure.query(async () => {
     return [
       { tipo: "whatsapp", nome: "WhatsApp Business API", descricao: "Envie e receba mensagens via WhatsApp. Integração com Evolution API ou API oficial Meta.", campos: ["apiUrl", "apiKey", "instanceName"] },
+      { tipo: "telegram", nome: "Telegram Bot", descricao: "Receba alertas, tickets e mensagens operacionais pelo Telegram.", campos: ["botToken", "chatIdPadrao"] },
+      { tipo: "instagram", nome: "Instagram DM", descricao: "Centralize mensagens do Instagram para comercial e atendimento.", campos: ["appId", "appSecret", "paginaId"] },
+      { tipo: "serasa", nome: "Serasa / Crédito", descricao: "Base para consultas e validações financeiras em cobranças e cadastros.", campos: ["clientId", "clientSecret", "ambiente"] },
+      { tipo: "gmail", nome: "Gmail", descricao: "Sincronize caixa de entrada, cobranças, propostas e notificações por e-mail.", campos: ["clientId", "clientSecret", "refreshToken"] },
+      { tipo: "google_calendar", nome: "Google Calendar", descricao: "Integre agenda, compromissos, follow-ups e tarefas do Synapse.", campos: ["clientId", "clientSecret", "calendarId"] },
+      { tipo: "google_drive", nome: "Google Drive", descricao: "Armazene anexos, documentos e relatórios compartilhados por equipe.", campos: ["clientId", "clientSecret", "folderId"] },
+      { tipo: "meta_ads", nome: "Meta Ads", descricao: "Puxe resultados, campanhas e revisão de mídia para clientes e marketing.", campos: ["appId", "appSecret", "adAccountId"] },
+      { tipo: "google_ads", nome: "Google Ads", descricao: "Consolide campanhas e custos com foco em performance comercial.", campos: ["developerToken", "clientId", "clientSecret", "customerId"] },
+      { tipo: "anydesk", nome: "AnyDesk", descricao: "Estruture consentimento, identificação e operação remota da equipe de TI.", campos: ["aliasPadrao", "clientePadrao", "observacoesOperacionais"] },
+      { tipo: "evolution_api", nome: "Evolution API", descricao: "Camada de mensageria para WhatsApp omnichannel, bots e notificações.", campos: ["apiUrl", "apiKey", "instanceName"] },
       { tipo: "winthor", nome: "TOTVS Winthor", descricao: "Sincronize produtos, clientes, notas fiscais e estoque com o Winthor (TOTVS).", campos: ["host", "port", "database", "user", "password", "schema"] },
       { tipo: "webhook", nome: "Webhook Genérico", descricao: "Receba notificações de sistemas externos via webhook HTTP.", campos: ["webhookUrl", "webhookSecret"] },
       { tipo: "api_externa", nome: "API Externa", descricao: "Conecte-se a qualquer API REST externa.", campos: ["baseUrl", "apiKey", "headers"] },

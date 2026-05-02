@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Building2, CheckCircle, FileText, Key, Link2, Loader2, Search, Settings, XCircle, Zap } from "lucide-react";
+import { BadgeCheck, Building2, CheckCircle, FileText, Globe2, Key, Link2, Loader2, MessageCircleMore, Search, Settings, ShieldCheck, Smartphone, XCircle, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { useViewAs } from "@/contexts/ViewAsContext";
 import { trpc } from "@/lib/trpc";
@@ -9,6 +9,129 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+
+type IntegrationTemplate = {
+  tipo: string;
+  nome: string;
+  descricao: string;
+  campos: string[];
+};
+
+const TEMPLATE_META: Record<string, { categoria: string; icon: any; destaque: string }> = {
+  whatsapp: { categoria: "Mensageria", icon: Smartphone, destaque: "Atendimento, bot e notificações" },
+  telegram: { categoria: "Mensageria", icon: MessageCircleMore, destaque: "Alertas e operação interna" },
+  instagram: { categoria: "Comercial", icon: MessageCircleMore, destaque: "DM e leads" },
+  serasa: { categoria: "Financeiro", icon: ShieldCheck, destaque: "Crédito e validação" },
+  gmail: { categoria: "Comunicação", icon: Globe2, destaque: "E-mails e follow-up" },
+  google_calendar: { categoria: "Agenda", icon: Globe2, destaque: "Compromissos e agenda" },
+  google_drive: { categoria: "Arquivos", icon: FileText, destaque: "Documentos e anexos" },
+  meta_ads: { categoria: "Marketing", icon: Zap, destaque: "Campanhas e mídia" },
+  google_ads: { categoria: "Marketing", icon: Zap, destaque: "Campanhas e conversão" },
+  anydesk: { categoria: "TI", icon: ShieldCheck, destaque: "Acesso remoto" },
+  evolution_api: { categoria: "Mensageria", icon: Smartphone, destaque: "WhatsApp omnichannel" },
+  arquivei: { categoria: "Fiscal", icon: FileText, destaque: "XML e DANFE" },
+  winthor: { categoria: "ERP", icon: Building2, destaque: "Integração logística e estoque" },
+};
+
+function GenericIntegrationCard({
+  empresaId,
+  template,
+  existing,
+}: {
+  empresaId: number;
+  template: IntegrationTemplate;
+  existing?: any;
+}) {
+  const initial = useMemo(
+    () => {
+      const config = existing?.config ? JSON.parse(existing.config) : {};
+      const values: Record<string, string> = {};
+      for (const field of template.campos) values[field] = config?.[field] ?? "";
+      return values;
+    },
+    [existing, template.campos]
+  );
+
+  const [values, setValues] = useState<Record<string, string>>(initial);
+
+  useEffect(() => {
+    setValues(initial);
+  }, [initial]);
+
+  const saveConfig = trpc.integracoes.upsert.useMutation({
+    onSuccess: () => toast.success(`${template.nome} salva com sucesso.`),
+    onError: (error) => toast.error(error.message || "Não foi possível salvar a integração."),
+  });
+
+  const meta = TEMPLATE_META[template.tipo] || { categoria: "Integração", icon: Link2, destaque: "Configuração avançada" };
+  const Icon = meta.icon;
+
+  const handleSave = () => {
+    const payload = Object.fromEntries(Object.entries(values).filter(([, value]) => String(value).trim().length > 0));
+    if (Object.keys(payload).length === 0) {
+      toast.error("Preencha pelo menos um campo para salvar.");
+      return;
+    }
+    saveConfig.mutate({
+      empresaId,
+      tipo: template.tipo as any,
+      nome: template.nome,
+      status: "configurando",
+      config: JSON.stringify(payload),
+    });
+  };
+
+  return (
+    <Card className="overflow-hidden border-border/70">
+      <CardHeader className="border-b bg-muted/20">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <Icon className="h-5 w-5" />
+            </div>
+            <div>
+              <CardTitle className="text-base">{template.nome}</CardTitle>
+              <CardDescription className="mt-1">{template.descricao}</CardDescription>
+            </div>
+          </div>
+          <Badge variant={existing ? "secondary" : "outline"} className={existing ? "bg-green-50 text-green-700" : ""}>
+            {existing ? "Configurada" : "Pendente"}
+          </Badge>
+        </div>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Badge variant="outline">{meta.categoria}</Badge>
+          <Badge variant="outline">{meta.destaque}</Badge>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4 pt-5">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          {template.campos.map((field) => (
+            <div key={field} className="space-y-1.5">
+              <Label>{field}</Label>
+              <Input
+                value={values[field] ?? ""}
+                onChange={(e) => setValues((current) => ({ ...current, [field]: e.target.value }))}
+                placeholder={`Informe ${field}`}
+                type={field.toLowerCase().includes("secret") || field.toLowerCase().includes("password") || field.toLowerCase().includes("token") ? "password" : "text"}
+              />
+            </div>
+          ))}
+        </div>
+        <div className="flex items-center gap-2">
+          <Button onClick={handleSave} disabled={saveConfig.isPending}>
+            {saveConfig.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <BadgeCheck className="mr-2 h-4 w-4" />}
+            Salvar configuração
+          </Button>
+          {existing?.ultimaSincronizacao && (
+            <p className="text-xs text-muted-foreground">
+              Última sincronização: {new Date(existing.ultimaSincronizacao).toLocaleString("pt-BR")}
+            </p>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 const WINTHOR_ROUTINAS = [
   { codigo: "901", descricao: "Montar Carga", modulo: "Carregamento" },
@@ -246,6 +369,8 @@ function WinthorTab({ empresaId }: { empresaId: number }) {
 export default function Integracoes() {
   const { effectiveEmpresaId } = useViewAs();
   const meQ = trpc.auth.me.useQuery();
+  const templatesQ = trpc.integracoes.templates.useQuery(undefined, { staleTime: 1000 * 60 * 10 });
+  const integrationsQ = trpc.integracoes.list.useQuery({ empresaId: effectiveEmpresaId }, { enabled: !!effectiveEmpresaId });
   const canAccess = (meQ.data as any)?.role === "admin" || (meQ.data as any)?.role === "master_admin";
 
   if (meQ.isLoading) return null;
@@ -276,7 +401,7 @@ export default function Integracoes() {
       </div>
 
       <Tabs defaultValue="arquivei">
-        <TabsList className="grid w-full grid-cols-2 max-w-sm">
+        <TabsList className="grid w-full grid-cols-3 max-w-lg">
           <TabsTrigger value="arquivei" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
             Arquivei
@@ -284,6 +409,10 @@ export default function Integracoes() {
           <TabsTrigger value="winthor" className="flex items-center gap-2">
             <Building2 className="h-4 w-4" />
             Winthor
+          </TabsTrigger>
+          <TabsTrigger value="catalogo" className="flex items-center gap-2">
+            <Globe2 className="h-4 w-4" />
+            Catálogo
           </TabsTrigger>
         </TabsList>
 
@@ -293,6 +422,30 @@ export default function Integracoes() {
 
         <TabsContent value="winthor" className="mt-6">
           <WinthorTab empresaId={effectiveEmpresaId} />
+        </TabsContent>
+
+        <TabsContent value="catalogo" className="mt-6">
+          <div className="space-y-4">
+            <div className="rounded-2xl border bg-muted/20 p-4">
+              <h2 className="text-base font-semibold">Integrações estratégicas do Synapse</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Mensageria, marketing, crédito, agenda, arquivos e operação remota configurados por empresa.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+              {(templatesQ.data ?? [])
+                .filter((template: any) => !["arquivei", "winthor"].includes(template.tipo))
+                .map((template: any) => (
+                  <GenericIntegrationCard
+                    key={template.tipo}
+                    empresaId={effectiveEmpresaId}
+                    template={template}
+                    existing={(integrationsQ.data ?? []).find((item: any) => item.tipo === template.tipo)}
+                  />
+                ))}
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
     </div>

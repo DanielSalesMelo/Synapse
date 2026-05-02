@@ -210,6 +210,7 @@ export default function Chat() {
   const { data: allUsers } = trpc.chat.listUsers.useQuery(undefined, {
     enabled: showUserList || showGroupCreate,
   });
+  const markConversationReadMutation = trpc.chat.markConversationRead.useMutation();
 
   const sendMutation = trpc.chat.sendMessage.useMutation({
     onSuccess: () => {
@@ -272,6 +273,11 @@ export default function Chat() {
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [selectedConvId]);
+
+  useEffect(() => {
+    if (!selectedConvId || !messages?.length) return;
+    markConversationReadMutation.mutate({ conversationId: selectedConvId });
+  }, [selectedConvId, messages, markConversationReadMutation]);
 
   // Drag & Drop
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -419,6 +425,28 @@ export default function Chat() {
           "flex flex-col w-full md:w-80 border-r bg-card",
           selectedConvId ? "hidden md:flex" : "flex"
         )}>
+          <div className="border-b bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.12),_transparent_35%),linear-gradient(180deg,rgba(15,23,42,0.04),transparent)] p-4">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Inbox Synapse</p>
+                <h2 className="mt-1 text-lg font-bold">Chat da operação</h2>
+              </div>
+              <Badge variant="outline" className="text-[10px]">
+                {(conversations ?? []).reduce((acc: number, conv: any) => acc + Number(conv.unreadCount ?? 0), 0)} não lidas
+              </Badge>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="rounded-2xl border bg-background/70 p-3">
+                <p className="text-[11px] text-muted-foreground">Conversas</p>
+                <p className="mt-1 text-xl font-semibold">{(conversations ?? []).length}</p>
+              </div>
+              <div className="rounded-2xl border bg-background/70 p-3">
+                <p className="text-[11px] text-muted-foreground">Equipe ativa</p>
+                <p className="mt-1 text-xl font-semibold">{(allUsers ?? []).length || "—"}</p>
+              </div>
+            </div>
+          </div>
+
           {/* Header */}
           <div className="p-4 border-b flex items-center justify-between">
             <h2 className="font-bold text-base flex items-center gap-2">
@@ -473,7 +501,10 @@ export default function Chat() {
                 {filteredConvs?.map((conv) => (
                   <button
                     key={conv.id}
-                    onClick={() => setSelectedConvId(conv.id)}
+                    onClick={() => {
+                      setSelectedConvId(conv.id);
+                      markConversationReadMutation.mutate({ conversationId: conv.id });
+                    }}
                     className={cn(
                       "w-full p-3 flex items-center gap-3 hover:bg-accent/50 transition-colors text-left",
                       selectedConvId === conv.id ? "bg-primary/10 border-l-2 border-primary" : ""
@@ -497,9 +528,16 @@ export default function Chat() {
                           {new Date(conv.lastMessageAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                         </span>
                       </div>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {conv.isGroup ? "Grupo" : "Conversa privada"}
-                      </p>
+                      <div className="mt-1 flex items-center justify-between gap-2">
+                        <p className="text-xs text-muted-foreground truncate">
+                          {conv.lastMessagePreview || (conv.isGroup ? "Grupo" : "Conversa privada")}
+                        </p>
+                        {Number(conv.unreadCount ?? 0) > 0 && (
+                          <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">
+                            {Number(conv.unreadCount) > 9 ? "9+" : Number(conv.unreadCount)}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </button>
                 ))}
@@ -532,7 +570,7 @@ export default function Chat() {
                   <p className="font-semibold text-sm">{selectedConv?.displayName}</p>
                   <p className="text-[10px] text-green-500 flex items-center gap-1">
                     <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
-                    {selectedConv?.isGroup ? "Grupo" : "Online"}
+                    {selectedConv?.isGroup ? "Grupo ativo" : "Conversa ativa"}
                   </p>
                 </div>
                 <div className="flex gap-1">
@@ -543,7 +581,10 @@ export default function Chat() {
               </div>
 
               {/* Mensagens */}
-              <ScrollArea className="flex-1 p-4">
+              <div className="border-b bg-muted/20 px-4 py-2 text-center text-[11px] text-muted-foreground">
+                Comunicação interna com anexos, imagens, prints, leitura e grupos. Estrutura pronta para evoluir para omnichannel.
+              </div>
+              <ScrollArea className="flex-1 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.06),_transparent_32%),linear-gradient(180deg,rgba(241,245,249,0.4),transparent)] p-4 dark:bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.08),_transparent_32%),linear-gradient(180deg,rgba(15,23,42,0.38),transparent)]">
                 <div className="space-y-3 max-w-3xl mx-auto">
                   {loadingMsgs ? (
                     <div className="flex justify-center py-10"><Loader2 className="animate-spin text-primary" /></div>
