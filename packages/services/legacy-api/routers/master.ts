@@ -25,6 +25,20 @@ const FOLLOW_UP_STATUS_VALUES = ["pendente", "feito", "sem_retorno", "reagendado
 const PAYMENT_SCHEDULE_STATUS_VALUES = ["pendente", "cobrado", "pago", "atrasado", "cancelado"] as const;
 const PAYMENT_SCHEDULE_RECURRENCE_VALUES = ["mensal", "quinzenal", "semanal", "avulso"] as const;
 const RELEASE_STATUS_VALUES = ["planejada", "em_desenvolvimento", "em_teste", "publicada", "adiada"] as const;
+const HOME_ITEM_STATUS_VALUES = ["pendente", "em_andamento", "concluido"] as const;
+const HOME_ITEM_PRIORITY_VALUES = ["alta", "media", "baixa"] as const;
+const HABIT_FREQUENCY_VALUES = ["diaria", "semanal", "personalizada"] as const;
+const HABIT_STATUS_VALUES = ["ativo", "pausado", "concluido"] as const;
+const MEETING_TYPE_VALUES = ["cliente", "interna", "vendas", "produto", "pessoal"] as const;
+const MEETING_STATUS_VALUES = ["agendada", "realizada", "reagendada", "cancelada"] as const;
+const VENDOR_STATUS_VALUES = ["ativo", "avaliacao", "pausado"] as const;
+const CONTENT_CHANNEL_VALUES = ["instagram", "whatsapp", "telegram", "linkedin", "site", "blog", "outro"] as const;
+const CONTENT_STATUS_VALUES = ["ideia", "planejado", "producao", "publicado"] as const;
+const WEEKLY_ROUTINE_STATUS_VALUES = ["ativa", "concluida", "adiada"] as const;
+const PRODUCT_IDEA_STATUS_VALUES = ["backlog", "avaliando", "planejada", "implementada"] as const;
+const DELIVERY_STATUS_VALUES = ["pendente", "em_producao", "em_revisao", "entregue", "atrasada"] as const;
+const PARTNERSHIP_STATUS_VALUES = ["lead", "ativo", "pausado", "encerrado"] as const;
+const DOCUMENT_STATUS_VALUES = ["rascunho", "ativo", "revisar", "arquivado"] as const;
 
 function humanizeArea(area?: string | null) {
   if (area === "vida") return "vida pessoal";
@@ -1362,5 +1376,355 @@ export const masterRouter = router({
         payload: created ? { releaseId: created.id, status: input.status } : null,
       });
       return created;
+    }),
+
+  listHomeItems: masterAdminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    return db.execute(sql`
+      SELECT *
+      FROM master_home_items
+      WHERE "ownerUserId" = ${ctx.user.id}
+        AND "deletedAt" IS NULL
+      ORDER BY
+        CASE status WHEN 'pendente' THEN 0 WHEN 'em_andamento' THEN 1 ELSE 2 END,
+        CASE prioridade WHEN 'alta' THEN 0 WHEN 'media' THEN 1 ELSE 2 END,
+        COALESCE("dataAlvo", CURRENT_DATE + INTERVAL '365 days') ASC,
+        id DESC
+      LIMIT 30
+    `) as unknown as any[];
+  }),
+
+  createHomeItem: masterAdminProcedure
+    .input(z.object({
+      titulo: z.string().min(2, "Informe o título."),
+      categoria: z.string().optional(),
+      status: z.enum(HOME_ITEM_STATUS_VALUES).default("pendente"),
+      prioridade: z.enum(HOME_ITEM_PRIORITY_VALUES).default("media"),
+      dataAlvo: z.string().optional(),
+      observacoes: z.string().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_home_items (
+          "ownerUserId", titulo, categoria, status, prioridade, "dataAlvo", observacoes
+        ) VALUES (
+          ${ctx.user.id}, ${input.titulo}, ${input.categoria ?? 'casa'}, ${input.status},
+          ${input.prioridade}, ${input.dataAlvo ? new Date(input.dataAlvo) : null}, ${input.observacoes ?? null}
+        )
+        RETURNING *
+      `);
+      return ((res as any[])[0]) ?? null;
+    }),
+
+  listHabits: masterAdminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    return db.execute(sql`
+      SELECT *
+      FROM master_habits
+      WHERE "ownerUserId" = ${ctx.user.id}
+        AND "deletedAt" IS NULL
+      ORDER BY CASE status WHEN 'ativo' THEN 0 WHEN 'pausado' THEN 1 ELSE 2 END, id DESC
+      LIMIT 30
+    `) as unknown as any[];
+  }),
+
+  createHabit: masterAdminProcedure
+    .input(z.object({
+      titulo: z.string().min(2, "Informe o hábito."),
+      frequencia: z.enum(HABIT_FREQUENCY_VALUES).default("diaria"),
+      meta: z.string().optional(),
+      status: z.enum(HABIT_STATUS_VALUES).default("ativo"),
+      observacoes: z.string().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_habits ("ownerUserId", titulo, frequencia, meta, status, observacoes)
+        VALUES (${ctx.user.id}, ${input.titulo}, ${input.frequencia}, ${input.meta ?? null}, ${input.status}, ${input.observacoes ?? null})
+        RETURNING *
+      `);
+      return ((res as any[])[0]) ?? null;
+    }),
+
+  listMeetings: masterAdminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    return db.execute(sql`
+      SELECT mm.*, mc.nome AS "clienteNome"
+      FROM master_meetings mm
+      LEFT JOIN master_clients mc ON mc.id = mm."clientId"
+      WHERE mm."ownerUserId" = ${ctx.user.id}
+        AND mm."deletedAt" IS NULL
+      ORDER BY COALESCE(mm.inicio, CURRENT_DATE + INTERVAL '365 days') ASC, mm.id DESC
+      LIMIT 30
+    `) as unknown as any[];
+  }),
+
+  createMeeting: masterAdminProcedure
+    .input(z.object({
+      titulo: z.string().min(2, "Informe o título da reunião."),
+      tipo: z.enum(MEETING_TYPE_VALUES).default("cliente"),
+      inicio: z.string().optional(),
+      local: z.string().optional(),
+      pauta: z.string().optional(),
+      status: z.enum(MEETING_STATUS_VALUES).default("agendada"),
+      observacoes: z.string().optional(),
+      clientId: z.number().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_meetings ("ownerUserId", "clientId", titulo, tipo, inicio, local, pauta, status, observacoes)
+        VALUES (
+          ${ctx.user.id}, ${input.clientId ?? null}, ${input.titulo}, ${input.tipo},
+          ${input.inicio ? new Date(input.inicio) : null}, ${input.local ?? null}, ${input.pauta ?? null},
+          ${input.status}, ${input.observacoes ?? null}
+        )
+        RETURNING *
+      `);
+      return ((res as any[])[0]) ?? null;
+    }),
+
+  listVendors: masterAdminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    return db.execute(sql`
+      SELECT *
+      FROM master_vendors
+      WHERE "ownerUserId" = ${ctx.user.id}
+        AND "deletedAt" IS NULL
+      ORDER BY CASE status WHEN 'ativo' THEN 0 WHEN 'avaliacao' THEN 1 ELSE 2 END, id DESC
+      LIMIT 30
+    `) as unknown as any[];
+  }),
+
+  createVendor: masterAdminProcedure
+    .input(z.object({
+      nome: z.string().min(2, "Informe o nome."),
+      categoria: z.string().optional(),
+      contato: z.string().optional(),
+      whatsapp: z.string().optional(),
+      email: z.string().optional(),
+      status: z.enum(VENDOR_STATUS_VALUES).default("ativo"),
+      observacoes: z.string().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_vendors ("ownerUserId", nome, categoria, contato, whatsapp, email, status, observacoes)
+        VALUES (${ctx.user.id}, ${input.nome}, ${input.categoria ?? 'fornecedor'}, ${input.contato ?? null}, ${input.whatsapp ?? null}, ${input.email ?? null}, ${input.status}, ${input.observacoes ?? null})
+        RETURNING *
+      `);
+      return ((res as any[])[0]) ?? null;
+    }),
+
+  listContentPlans: masterAdminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    return db.execute(sql`
+      SELECT mcp.*, mc.nome AS "clienteNome"
+      FROM master_content_plans mcp
+      LEFT JOIN master_clients mc ON mc.id = mcp."clientId"
+      WHERE mcp."ownerUserId" = ${ctx.user.id}
+        AND mcp."deletedAt" IS NULL
+      ORDER BY COALESCE(mcp."dataPublicacao", CURRENT_DATE + INTERVAL '365 days') ASC, mcp.id DESC
+      LIMIT 30
+    `) as unknown as any[];
+  }),
+
+  createContentPlan: masterAdminProcedure
+    .input(z.object({
+      titulo: z.string().min(2, "Informe o título."),
+      canal: z.enum(CONTENT_CHANNEL_VALUES).default("instagram"),
+      status: z.enum(CONTENT_STATUS_VALUES).default("ideia"),
+      dataPublicacao: z.string().optional(),
+      objetivo: z.string().optional(),
+      observacoes: z.string().optional(),
+      clientId: z.number().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_content_plans ("ownerUserId", "clientId", titulo, canal, status, "dataPublicacao", objetivo, observacoes)
+        VALUES (
+          ${ctx.user.id}, ${input.clientId ?? null}, ${input.titulo}, ${input.canal}, ${input.status},
+          ${input.dataPublicacao ? new Date(input.dataPublicacao) : null}, ${input.objetivo ?? null}, ${input.observacoes ?? null}
+        )
+        RETURNING *
+      `);
+      return ((res as any[])[0]) ?? null;
+    }),
+
+  listWeeklyRoutines: masterAdminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    return db.execute(sql`
+      SELECT *
+      FROM master_weekly_routines
+      WHERE "ownerUserId" = ${ctx.user.id}
+        AND "deletedAt" IS NULL
+      ORDER BY semana DESC, id DESC
+      LIMIT 20
+    `) as unknown as any[];
+  }),
+
+  createWeeklyRoutine: masterAdminProcedure
+    .input(z.object({
+      semana: z.string().min(1, "Informe a semana."),
+      area: z.enum(AREA_VALUES).default("vida"),
+      foco: z.string().min(2, "Informe o foco."),
+      rotina: z.string().optional(),
+      status: z.enum(WEEKLY_ROUTINE_STATUS_VALUES).default("ativa"),
+      observacoes: z.string().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_weekly_routines ("ownerUserId", semana, area, foco, rotina, status, observacoes)
+        VALUES (${ctx.user.id}, ${new Date(input.semana)}, ${input.area}, ${input.foco}, ${input.rotina ?? null}, ${input.status}, ${input.observacoes ?? null})
+        RETURNING *
+      `);
+      return ((res as any[])[0]) ?? null;
+    }),
+
+  listProductIdeas: masterAdminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    return db.execute(sql`
+      SELECT *
+      FROM master_product_ideas
+      WHERE "ownerUserId" = ${ctx.user.id}
+        AND "deletedAt" IS NULL
+      ORDER BY CASE status WHEN 'avaliando' THEN 0 WHEN 'planejada' THEN 1 WHEN 'backlog' THEN 2 ELSE 3 END, id DESC
+      LIMIT 30
+    `) as unknown as any[];
+  }),
+
+  createProductIdea: masterAdminProcedure
+    .input(z.object({
+      titulo: z.string().min(2, "Informe a ideia."),
+      area: z.string().optional(),
+      impacto: z.string().optional(),
+      status: z.enum(PRODUCT_IDEA_STATUS_VALUES).default("backlog"),
+      descricao: z.string().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_product_ideas ("ownerUserId", titulo, area, impacto, status, descricao)
+        VALUES (${ctx.user.id}, ${input.titulo}, ${input.area ?? 'synapse'}, ${input.impacto ?? null}, ${input.status}, ${input.descricao ?? null})
+        RETURNING *
+      `);
+      return ((res as any[])[0]) ?? null;
+    }),
+
+  listClientDeliveries: masterAdminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    return db.execute(sql`
+      SELECT mcd.*, mc.nome AS "clienteNome"
+      FROM master_client_deliveries mcd
+      LEFT JOIN master_clients mc ON mc.id = mcd."clientId"
+      WHERE mcd."ownerUserId" = ${ctx.user.id}
+        AND mcd."deletedAt" IS NULL
+      ORDER BY COALESCE(mcd.prazo, CURRENT_DATE + INTERVAL '365 days') ASC, mcd.id DESC
+      LIMIT 30
+    `) as unknown as any[];
+  }),
+
+  createClientDelivery: masterAdminProcedure
+    .input(z.object({
+      titulo: z.string().min(2, "Informe a entrega."),
+      status: z.enum(DELIVERY_STATUS_VALUES).default("pendente"),
+      prazo: z.string().optional(),
+      responsavel: z.string().optional(),
+      observacoes: z.string().optional(),
+      clientId: z.number().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_client_deliveries ("ownerUserId", "clientId", titulo, status, prazo, responsavel, observacoes)
+        VALUES (${ctx.user.id}, ${input.clientId ?? null}, ${input.titulo}, ${input.status}, ${input.prazo ? new Date(input.prazo) : null}, ${input.responsavel ?? null}, ${input.observacoes ?? null})
+        RETURNING *
+      `);
+      return ((res as any[])[0]) ?? null;
+    }),
+
+  listPartnerships: masterAdminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    return db.execute(sql`
+      SELECT *
+      FROM master_partnerships
+      WHERE "ownerUserId" = ${ctx.user.id}
+        AND "deletedAt" IS NULL
+      ORDER BY CASE status WHEN 'ativo' THEN 0 WHEN 'lead' THEN 1 WHEN 'pausado' THEN 2 ELSE 3 END, id DESC
+      LIMIT 30
+    `) as unknown as any[];
+  }),
+
+  createPartnership: masterAdminProcedure
+    .input(z.object({
+      nome: z.string().min(2, "Informe o nome da parceria."),
+      tipo: z.string().optional(),
+      status: z.enum(PARTNERSHIP_STATUS_VALUES).default("lead"),
+      contato: z.string().optional(),
+      beneficio: z.string().optional(),
+      observacoes: z.string().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_partnerships ("ownerUserId", nome, tipo, status, contato, beneficio, observacoes)
+        VALUES (${ctx.user.id}, ${input.nome}, ${input.tipo ?? 'parceria'}, ${input.status}, ${input.contato ?? null}, ${input.beneficio ?? null}, ${input.observacoes ?? null})
+        RETURNING *
+      `);
+      return ((res as any[])[0]) ?? null;
+    }),
+
+  listDocumentRegisters: masterAdminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    return db.execute(sql`
+      SELECT *
+      FROM master_document_registers
+      WHERE "ownerUserId" = ${ctx.user.id}
+        AND "deletedAt" IS NULL
+      ORDER BY COALESCE("dataRevisao", CURRENT_DATE + INTERVAL '365 days') ASC, id DESC
+      LIMIT 30
+    `) as unknown as any[];
+  }),
+
+  createDocumentRegister: masterAdminProcedure
+    .input(z.object({
+      titulo: z.string().min(2, "Informe o título do documento."),
+      categoria: z.string().optional(),
+      status: z.enum(DOCUMENT_STATUS_VALUES).default("ativo"),
+      link: z.string().optional(),
+      dataRevisao: z.string().optional(),
+      observacoes: z.string().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_document_registers ("ownerUserId", titulo, categoria, status, link, "dataRevisao", observacoes)
+        VALUES (${ctx.user.id}, ${input.titulo}, ${input.categoria ?? 'documento'}, ${input.status}, ${input.link ?? null}, ${input.dataRevisao ? new Date(input.dataRevisao) : null}, ${input.observacoes ?? null})
+        RETURNING *
+      `);
+      return ((res as any[])[0]) ?? null;
     }),
 });
