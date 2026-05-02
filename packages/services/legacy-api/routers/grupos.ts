@@ -1,10 +1,99 @@
 import { router, protectedProcedure } from "../_core/trpc";
 import { z } from "zod";
 import { getDb } from "../db";
-import { empresas } from "../drizzle/schema";
-import { eq, and, isNull } from "drizzle-orm";
+import { empresas, grupoEmpresas, gruposEmpresariais, users } from "../drizzle/schema";
+import { eq, and, inArray, isNull } from "drizzle-orm";
+import { TRPCError } from "@trpc/server";
+import { getAccessibleCompanySummary, resolveAccessibleEmpresaId } from "../_core/access";
 
 export const gruposRouter = router({
+  listAcessiveis: protectedProcedure.query(async ({ ctx }) => {
+    return getAccessibleCompanySummary(ctx.user);
+  }),
+
+  listGrupos: protectedProcedure.query(async ({ ctx }) => {
+    if (ctx.user.role !== "master_admin") {
+      throw new TRPCError({ code: "FORBIDDEN", message: "Apenas Master Admin pode listar grupos empresariais." });
+    }
+
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+
+    const grupos = await db
+      .select()
+      .from(gruposEmpresariais)
+      .where(and(isNull(gruposEmpresariais.deletedAt), eq(gruposEmpresariais.ativo, true)));
+
+    return grupos;
+  }),
+
+  criarGrupo: protectedProcedure
+    .input(
+      z.object({
+        nome: z.string().min(2, "Informe o nome do grupo empresarial."),
+        cnpj: z.string().optional(),
+        descricao: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user.role !== "master_admin") {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Apenas Master Admin pode criar grupos empresariais." });
+      }
+
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+
+      const [grupo] = await db
+        .insert(gruposEmpresariais)
+        .values({
+          nome: input.nome,
+          cnpj: input.cnpj || null,
+          descricao: input.descricao || null,
+          adminUserId: ctx.user.id,
+          ativo: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .returning();
+
+      return grupo;
+    }),
+
+  vincularEmpresaGrupo: protectedProcedure
+    .input(
+      z.object({
+        grupoId: z.number(),
+        empresaId: z.number(),
+        papel: z.enum(["matriz", "filial"]).default("filial"),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user.role !== "master_admin") {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Apenas Master Admin pode vincular empresas a grupos." });
+      }
+
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+
+      await db.insert(grupoEmpresas).values({
+        grupoId: input.grupoId,
+        empresaId: input.empresaId,
+        papel: input.papel,
+        createdAt: new Date(),
+      });
+
+      await db
+        .update(empresas)
+        .set({
+          grupoId: input.grupoId,
+          tipoEmpresa: input.papel === "matriz" ? "matriz" : "filial",
+          updatedAt: new Date(),
+        })
+        .where(eq(empresas.id, input.empresaId));
+
+      return { success: true };
+    }),
+
   // Listar todas as matrizes (empresas que são matriz ou independente)
   listMatrizes: protectedProcedure
     .query(async ({ ctx }) => {
@@ -253,16 +342,12 @@ export const gruposRouter = router({
   setEmpresaAtiva: protectedProcedure
     .input(z.object({ empresaId: z.number() }))
     .mutation(async ({ input, ctx }) => {
-      // Verificar se o usuário tem acesso a essa empresa
-      // (master_admin tem acesso a todas, outros só à sua)
-      if (
-        ctx.user.role !== "master_admin" &&
-        ctx.user.empresaId !== input.empresaId
-      ) {
-        throw new Error("Acesso negado a essa empresa");
-      }
+      const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
 
-      // Retornar a empresa para o frontend atualizar o contexto
-      return { empresaId: input.empresaId };
+      await db.update(users).set({ empresaId, updatedAt: new Date() }).where(eq(users.id, ctx.user.id));
+
+      return { empresaId };
     }),
 });

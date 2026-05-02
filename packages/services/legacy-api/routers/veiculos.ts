@@ -5,6 +5,7 @@ import { veiculos, funcionarios } from "../drizzle/schema";
 import { eq, and, isNull, isNotNull, desc, sql } from "drizzle-orm";
 import { z } from "zod";
 import { safeDb, requireDb } from "../helpers/errorHandler";
+import { resolveAccessibleEmpresaId } from "../_core/access";
 
 // Apenas placa e tipo são obrigatórios — todo o resto é opcional
 const veiculoInput = z.object({
@@ -43,12 +44,13 @@ export const veiculosRouter = router({
       tipo: z.enum(["van", "toco", "truck", "cavalo", "carreta", "empilhadeira", "paletera", "outro"]).optional(),
       apenasAtivos: z.boolean().default(true),
     }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "veiculos.list");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         return db.select().from(veiculos)
           .where(and(
-            eq(veiculos.empresaId, input.empresaId),
+            eq(veiculos.empresaId, empresaId),
             isNull(veiculos.deletedAt),
             input.apenasAtivos ? eq(veiculos.ativo, true) : undefined,
             input.tipo ? eq(veiculos.tipo, input.tipo) : undefined,
@@ -59,12 +61,13 @@ export const veiculosRouter = router({
 
   listCavalos: protectedProcedure
     .input(z.object({ empresaId: z.number() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "veiculos.listCavalos");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         return db.select().from(veiculos)
           .where(and(
-            eq(veiculos.empresaId, input.empresaId),
+            eq(veiculos.empresaId, empresaId),
             eq(veiculos.tipo, "cavalo"),
             eq(veiculos.ativo, true),
             isNull(veiculos.deletedAt),
@@ -94,7 +97,7 @@ export const veiculosRouter = router({
     .mutation(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "veiculos.create");
-        const empresaId = ctx.user.role !== "master_admin" ? ctx.user.empresaId! : input.empresaId;
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         const [result] = await db.insert(veiculos).values({
           ...input,
           empresaId,
@@ -126,7 +129,8 @@ export const veiculosRouter = router({
         if (ctx.user.role !== "master_admin") {
           whereClause.push(eq(veiculos.empresaId, ctx.user.empresaId!));
         }
-        const [oldData] = await db.select().from(veiculos).where(eq(veiculos.id, id)).limit(1);
+        const [oldData] = await db.select().from(veiculos).where(and(...whereClause)).limit(1);
+        if (!oldData) throw new Error("Veículo não encontrado ou sem permissão");
         const [updated] = await db.update(veiculos).set({
           ...data,
           placa: data.placa ? data.placa.toUpperCase().trim() : undefined,
@@ -150,15 +154,19 @@ export const veiculosRouter = router({
 
   softDelete: adminProcedure
     .input(z.object({ id: z.number(), reason: z.string().min(1, "Informe o motivo da exclusão") }))
-    .mutation(async ({ input, ctx }) => {
+      .mutation(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "veiculos.softDelete");
+        const whereClause = [eq(veiculos.id, input.id)];
+        if (ctx.user.role !== "master_admin") {
+          whereClause.push(eq(veiculos.empresaId, ctx.user.empresaId!));
+        }
         const [deleted] = await db.update(veiculos).set({
           deletedAt: new Date(),
           deletedBy: ctx.user!.id,
           deleteReason: input.reason,
           ativo: false,
-        }).where(eq(veiculos.id, input.id)).returning();
+        }).where(and(...whereClause)).returning();
 
         await createAuditLog(ctx, {
           acao: "DELETE",
@@ -173,15 +181,19 @@ export const veiculosRouter = router({
 
   restore: adminProcedure
     .input(z.object({ id: z.number() }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "veiculos.restore");
+        const whereClause = [eq(veiculos.id, input.id)];
+        if (ctx.user.role !== "master_admin") {
+          whereClause.push(eq(veiculos.empresaId, ctx.user.empresaId!));
+        }
         await db.update(veiculos).set({
           deletedAt: null,
           deletedBy: null,
           deleteReason: null,
           ativo: true,
-        }).where(eq(veiculos.id, input.id));
+        }).where(and(...whereClause));
         return { success: true };
       }, "veiculos.restore");
     }),
@@ -208,12 +220,13 @@ export const veiculosRouter = router({
 
   listDeleted: protectedProcedure
     .input(z.object({ empresaId: z.number() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "veiculos.listDeleted");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         return db.select().from(veiculos)
           .where(and(
-            eq(veiculos.empresaId, input.empresaId),
+            eq(veiculos.empresaId, empresaId),
             isNotNull(veiculos.deletedAt),
           ))
           .orderBy(desc(veiculos.deletedAt));

@@ -13,62 +13,42 @@ import {
   Tooltip, ResponsiveContainer, Legend 
 } from "recharts";
 import { toast } from "sonner";
+import { trpc } from "@/lib/trpc";
 
 export default function DeviceDetails() {
   const { agentId } = useParams() as any;
   const [, setLocation] = useLocation();
   const [period, setPeriod] = useState("24h");
-  const [agente, setAgente] = useState<any>(null);
-  const [metrics, setMetrics] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const agentesQ = trpc.ti.listAgentes.useQuery(undefined, { refetchInterval: 20000 }) as any;
+  const metricasQ = trpc.ti.getAgenteMetricas.useQuery(
+    { agenteId: Number(agentId), periodo: period === "24h" ? "24h" : period === "7d" ? "7d" : "30d" },
+    { enabled: !!agentId, refetchInterval: 30000 }
+  ) as any;
 
-  const fetchData = async (isRefresh = false) => {
-    if (isRefresh) setRefreshing(true);
-    else setLoading(true);
+  const agente = (agentesQ.data ?? []).find((a: any) => a.id === Number(agentId)) ?? null;
+  const metrics = (metricasQ.data?.metricas ?? []).map((m: any) => ({
+    ...m,
+    timestamp: m.hora,
+    cpuUsage: Number(m.cpu_medio ?? 0),
+    ramUsedGb: Number(m.ram_medio ?? 0),
+    time: new Date(m.hora).toLocaleTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      day: period !== "24h" ? "2-digit" : undefined,
+      month: period !== "24h" ? "2-digit" : undefined,
+    }),
+  }));
+  const loading = agentesQ.isLoading || metricasQ.isLoading;
+  const refreshing = agentesQ.isRefetching || metricasQ.isRefetching;
 
+  const fetchData = async () => {
     try {
-      const token = localStorage.getItem("synapse-auth-token") ?? "";
-      const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : "";
-      
-      // Buscar dados do agente
-      const agentsRes = await fetch(`${baseUrl}/api/agents`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const agents = await agentsRes.json();
-      const currentAgent = agents.find((a: any) => a.id === parseInt(agentId || "0"));
-      setAgente(currentAgent);
-
-      // Buscar métricas
-      const metricsRes = await fetch(`${baseUrl}/api/agents/${agentId}/metrics?period=${period}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const metricsData = await metricsRes.json();
-      
-      // Formatar timestamps para o gráfico
-      const formattedMetrics = metricsData.map((m: any) => ({
-        ...m,
-        time: new Date(m.timestamp).toLocaleTimeString("pt-BR", { 
-          hour: '2-digit', 
-          minute: '2-digit',
-          day: period !== '24h' ? '2-digit' : undefined,
-          month: period !== '24h' ? '2-digit' : undefined
-        })
-      }));
-      
-      setMetrics(formattedMetrics);
+      await Promise.all([agentesQ.refetch(), metricasQ.refetch()]);
     } catch (error) {
       console.error("Erro ao buscar dados:", error);
       toast.error("Erro ao carregar dados do dispositivo");
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
     }
   };
-
-  useEffect(() => {
-    fetchData();
-  }, [agentId, period]);
 
   if (loading) {
     return (
@@ -151,7 +131,7 @@ export default function DeviceDetails() {
               {agente.status?.toUpperCase() || "OFFLINE"}
             </Badge>
             <p className="text-xs text-muted-foreground mt-1">
-              Visto por último: {agente.updatedAt ? new Date(agente.updatedAt).toLocaleString("pt-BR") : "Nunca"}
+              Visto por último: {(agente.ultima_coleta || agente.updatedAt) ? new Date(agente.ultima_coleta || agente.updatedAt).toLocaleString("pt-BR") : "Nunca"}
             </p>
           </CardContent>
         </Card>
@@ -162,7 +142,7 @@ export default function DeviceDetails() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-sm font-medium truncate" title={agente.cpu_model}>{agente.cpu_model || "N/A"}</div>
+            <div className="text-sm font-medium truncate" title={agente.cpu_model}>{agente.cpu_model || agente.processador || "N/A"}</div>
             <p className="text-xs text-muted-foreground">{agente.so || "Sistema desconhecido"}</p>
           </CardContent>
         </Card>
@@ -174,7 +154,7 @@ export default function DeviceDetails() {
           </CardHeader>
           <CardContent>
             <div className="text-lg font-bold">
-              {agente.total_ram ? `${(agente.total_ram / 1024 / 1024 / 1024).toFixed(1)} GB` : "N/A"}
+              {agente.ram_total_mb ? `${(Number(agente.ram_total_mb) / 1024).toFixed(1)} GB` : "N/A"}
             </div>
             <p className="text-xs text-muted-foreground">Capacidade total instalada</p>
           </CardContent>

@@ -1,25 +1,26 @@
 import { router, adminProcedure, masterAdminProcedure, protectedProcedure } from "../_core/trpc";
 import { z } from "zod";
-import { updateUser, deleteUser, getDb, getUserByEmail } from "../db";
+import { updateUser, getDb, getUserByEmail } from "../db";
 import { TRPCError } from "@trpc/server";
-import { users } from "../drizzle/schema";
-import { eq, and } from "drizzle-orm";
+import { userCompanyAccess, users } from "../drizzle/schema";
+import { eq, and, inArray, isNull } from "drizzle-orm";
 import bcrypt from "bcryptjs";
+import {
+  COMPANY_ROLE_CODES,
+  ensurePrimaryCompanyAccess,
+  listAccessibleCompanyIds,
+  resolveAccessibleEmpresaId,
+} from "../_core/access";
 
-// ─── Todos os perfis de acesso do Synapse ────────────────────────────────────
-const ALL_ROLES = [
+const LEGACY_USER_ROLES = [
   "user",
   "admin",
   "master_admin",
   "monitor",
   "dispatcher",
-  "ti_master",
-  "financeiro",
-  "comercial",
-  "motorista",
-  "operador_wms",
-  "rh",
 ] as const;
+
+const COMPANY_ROLE_INPUT = z.enum(COMPANY_ROLE_CODES);
 
 export const usersRouter = router({
 
@@ -31,7 +32,8 @@ export const usersRouter = router({
       email: z.string().email(),
       password: z.string().min(6, "Senha deve ter ao menos 6 caracteres"),
       phone: z.string().optional(),
-      role: z.enum(ALL_ROLES).default("user"),
+      role: z.enum(LEGACY_USER_ROLES).default("user"),
+      roleCode: COMPANY_ROLE_INPUT.optional(),
       empresaId: z.number().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
@@ -55,16 +57,23 @@ export const usersRouter = router({
         }
 
         const hashedPassword = await bcrypt.hash(input.password, 10);
-        await db.insert(users).values({
+        const [created] = await db.insert(users).values({
           name: input.name,
           lastName: input.lastName ?? "",
           email: input.email,
           password: hashedPassword,
           phone: input.phone ?? "",
-          role: input.role as any,
+          role: input.role,
           status: "approved",
           empresaId: targetEmpresaId,
-        } as any);
+        } as any).returning({ id: users.id });
+
+        await ensurePrimaryCompanyAccess({
+          userId: created.id,
+          empresaId: targetEmpresaId,
+          roleCode: input.roleCode ?? input.role,
+          createdBy: ctx.user.id,
+        });
 
         return { success: true };
       } catch (error) {
@@ -75,40 +84,25 @@ export const usersRouter = router({
 
   // ── Listar todos os usuários (VERSÃO CORRIGIDA E FINAL) ──────────────────
   listAll: protectedProcedure.query(async ({ ctx }) => {
-    console.log('[DEBUG] Endpoint listAll foi chamado.');
-    const user = ctx.user as any;
-    console.log(`[DEBUG] ID do usuário logado: ${user.id}, Perfil: ${user.role}`);
-    console.log(`[DEBUG] ID da empresa: ${user.empresaId}`);
-
     try {
       const db = await getDb();
       if (!db) {
-        console.error('[FATAL] Conexão com o banco de dados falhou.');
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
       }
 
-      let foundUsers;
-
-      // Se for master_admin, busca todos os usuários de todas as empresas.
-      if (user.role === 'master_admin') {
-        console.log('[DEBUG] Usuário é master_admin. Buscando todos os usuários.');
-        foundUsers = await db.select().from(users);
-      } 
-      // Se for qualquer outro perfil, busca APENAS os usuários da MESMA empresa.
-      else {
-        if (!user.empresaId) {
-          console.error(`[ERROR] Usuário ${user.id} (${user.role}) não tem empresaId. Retornando lista vazia.`);
-          return [];
-        }
-        console.log(`[DEBUG] Buscando usuários para a empresaId: ${user.empresaId}`);
-        foundUsers = await db.select().from(users).where(eq(users.empresaId, user.empresaId));
+      if (ctx.user.role === "master_admin") {
+        return await db.select().from(users).where(isNull(users.deletedAt));
       }
 
-      console.log(`[DEBUG] Consulta ao banco de dados retornou ${foundUsers.length} usuários.`);
-      return foundUsers;
+      const accessibleIds = await listAccessibleCompanyIds(ctx.user);
+      if (accessibleIds.length === 0) return [];
+
+      return await db
+        .select()
+        .from(users)
+        .where(and(inArray(users.empresaId, accessibleIds), isNull(users.deletedAt)));
 
     } catch (error) {
-      console.error('[FATAL] Ocorreu um erro ao consultar o banco de dados:', error);
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao listar usuários" });
     }
   }),
@@ -122,11 +116,25 @@ export const usersRouter = router({
       lastName: z.string().optional(),
       email: z.string().email().optional(),
       phone: z.string().optional(),
-      role: z.enum(ALL_ROLES).optional(),
+      role: z.enum(LEGACY_USER_ROLES).optional(),
+      roleCode: COMPANY_ROLE_INPUT.optional(),
       empresaId: z.number().nullable().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
       try {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+
+        const [target] = await db.select().from(users).where(and(eq(users.id, input.id), isNull(users.deletedAt))).limit(1);
+        if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "Usuário não encontrado" });
+
+        if (ctx.user.role !== "master_admin") {
+          const accessibleIds = await listAccessibleCompanyIds(ctx.user);
+          if (!target.empresaId || !accessibleIds.includes(target.empresaId)) {
+            throw new TRPCError({ code: "FORBIDDEN", message: "Você não pode editar este usuário." });
+          }
+        }
+
         const updateData: Record<string, unknown> = {};
         if (input.name !== undefined) updateData.name = input.name;
         if (input.lastName !== undefined) updateData.lastName = input.lastName;
@@ -138,9 +146,20 @@ export const usersRouter = router({
           }
           updateData.role = input.role;
         }
-        if (input.empresaId !== undefined) updateData.empresaId = input.empresaId;
+        if (input.empresaId !== undefined) {
+          updateData.empresaId =
+            input.empresaId === null ? null : await resolveAccessibleEmpresaId(ctx, input.empresaId);
+        }
 
         await updateUser(input.id, updateData);
+        if (updateData.empresaId) {
+          await ensurePrimaryCompanyAccess({
+            userId: input.id,
+            empresaId: updateData.empresaId as number,
+            roleCode: input.roleCode ?? input.role ?? target.role,
+            createdBy: ctx.user.id,
+          });
+        }
         return { success: true };
       } catch (error) {
         if (error instanceof TRPCError) throw error;
@@ -159,10 +178,12 @@ export const usersRouter = router({
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
 
+        const [target] = await db.select().from(users).where(and(eq(users.id, input.userId), isNull(users.deletedAt)));
+        if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "Usuário não encontrado" });
+
         if (ctx.user.role !== "master_admin") {
-          const [target] = await db.select().from(users).where(eq(users.id, input.userId));
-          if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "Usuário não encontrado" });
-          if ((target as any).empresaId !== (ctx.user as any).empresaId) {
+          const accessibleIds = await listAccessibleCompanyIds(ctx.user);
+          if (!target.empresaId || !accessibleIds.includes(target.empresaId)) {
             throw new TRPCError({ code: "FORBIDDEN", message: "Sem permissão para alterar este usuário" });
           }
         }
@@ -214,9 +235,17 @@ export const usersRouter = router({
         if (ctx.user.role === "admin" && (ctx.user as any).empresaId) {
           updateData.empresaId = (ctx.user as any).empresaId;
         } else if (input.empresaId) {
-          updateData.empresaId = input.empresaId;
+          updateData.empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         }
         await updateUser(input.id, updateData);
+        if (updateData.empresaId) {
+          await ensurePrimaryCompanyAccess({
+            userId: input.id,
+            empresaId: updateData.empresaId as number,
+            roleCode: "leitor",
+            createdBy: ctx.user.id,
+          });
+        }
         return { success: true };
       } catch (error) {
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao aprovar usuário" });
@@ -238,9 +267,17 @@ export const usersRouter = router({
   // ── Deletar usuário ───────────────────────────────────────────────────────
   delete: adminProcedure
     .input(z.object({ id: z.number() }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       try {
-        await deleteUser(input.id);
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+        await db.update(users).set({
+          deletedAt: new Date(),
+          deletedBy: ctx.user.id,
+          deleteReason: "Desativado pelo administrador",
+          status: "rejected",
+          updatedAt: new Date(),
+        } as any).where(eq(users.id, input.id));
         return { success: true };
       } catch (error) {
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao deletar usuário" });
@@ -258,11 +295,96 @@ export const usersRouter = router({
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
         await db.update(users).set({ empresaId: input.empresaId } as any).where(eq(users.id, input.userId));
+        if (input.empresaId) {
+          await ensurePrimaryCompanyAccess({
+            userId: input.userId,
+            empresaId: input.empresaId,
+            roleCode: "leitor",
+          });
+        }
         return { success: true };
       } catch (error) {
         if (error instanceof TRPCError) throw error;
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao vincular empresa" });
       }
+    }),
+
+  listCompanyAccess: adminProcedure
+    .input(z.object({ userId: z.number() }))
+    .query(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+
+      const rows = await db
+        .select()
+        .from(userCompanyAccess)
+        .where(and(eq(userCompanyAccess.userId, input.userId), isNull(userCompanyAccess.deletedAt)));
+
+      if (ctx.user.role === "master_admin") {
+        return rows;
+      }
+
+      const accessibleIds = await listAccessibleCompanyIds(ctx.user);
+      return rows.filter(row => accessibleIds.includes(row.empresaId));
+    }),
+
+  saveCompanyAccess: adminProcedure
+    .input(
+      z.object({
+        userId: z.number(),
+        accessos: z.array(
+          z.object({
+            empresaId: z.number(),
+            roleCode: COMPANY_ROLE_INPUT,
+            canViewGroup: z.boolean().default(false),
+            isDefault: z.boolean().default(false),
+          })
+        ),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+
+      const allowedAccess = ctx.user.role === "master_admin"
+        ? input.accessos
+        : await Promise.all(
+            input.accessos.map(async acesso => ({
+              ...acesso,
+              empresaId: await resolveAccessibleEmpresaId(ctx, acesso.empresaId),
+            }))
+          );
+
+      await db
+        .update(userCompanyAccess)
+        .set({
+          deletedAt: new Date(),
+          deletedBy: ctx.user.id,
+          deleteReason: "Acessos substituídos",
+          updatedAt: new Date(),
+        })
+        .where(and(eq(userCompanyAccess.userId, input.userId), isNull(userCompanyAccess.deletedAt)));
+
+      for (const acesso of allowedAccess) {
+        await db.insert(userCompanyAccess).values({
+          userId: input.userId,
+          empresaId: acesso.empresaId,
+          roleCode: acesso.roleCode,
+          canViewGroup: acesso.canViewGroup,
+          isDefault: acesso.isDefault,
+          ativo: true,
+          createdBy: ctx.user.id,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+      }
+
+      const defaultAccess = allowedAccess.find(acesso => acesso.isDefault) ?? allowedAccess[0];
+      if (defaultAccess) {
+        await db.update(users).set({ empresaId: defaultAccess.empresaId, updatedAt: new Date() }).where(eq(users.id, input.userId));
+      }
+
+      return { success: true };
     }),
 
   // ── Atualizar próprio perfil ──────────────────────────────────────────────────
@@ -298,10 +420,19 @@ export const usersRouter = router({
       const db = await getDb();
       if (!db) return [];
       const { empresas } = await import("../drizzle/schema");
-      const all = await db.select({ id: empresas.id, nome: empresas.nome }).from(empresas);
-      if (ctx.user.role !== "master_admin") {
-        return all.filter((e) => e.id === (ctx.user as any).empresaId);
+      const accessibleIds = ctx.user.role === "master_admin"
+        ? undefined
+        : await listAccessibleCompanyIds(ctx.user);
+      if (ctx.user.role !== "master_admin" && (!accessibleIds || accessibleIds.length === 0)) {
+        return [];
       }
+
+      const all = await db.select({ id: empresas.id, nome: empresas.nome }).from(empresas).where(
+        and(
+          isNull(empresas.deletedAt),
+          accessibleIds ? inArray(empresas.id, accessibleIds) : undefined,
+        )
+      );
       return all;
     } catch {
       return [];

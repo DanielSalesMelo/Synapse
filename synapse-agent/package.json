@@ -1,22 +1,23 @@
 {
   "name": "synapse-agent",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Synapse Agent with Tauri v2",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build:executable": "pkg agent.js --output synapse-agent.exe",
-    "build:installer": "echo \"Para construir o instalador MSI, você precisará de um ambiente Windows com o WiX Toolset instalado. Este script é um placeholder.\""
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "ui:dev": "pnpm --filter ui dev",
+    "ui:build": "pnpm --filter ui build",
+    "tauri": "tauri"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.33.0",
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.1.0"
+  },
   "dependencies": {
     "axios": "^1.15.1",
     "os-utils": "^0.0.14",
     "systeminformation": "^5.31.5",
-    "node-windows": "^1.0.0-beta.8",
-    "pkg": "^5.8.1"
-  }
+    "node-windows": "^1.0.0-beta.8"
+  },
+  "packageManager": "pnpm@10.33.0"
 }

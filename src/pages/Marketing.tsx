@@ -3,60 +3,113 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
-import {
-  Megaphone, Plus, Search, TrendingUp, Users, Mail, Zap,
-  Globe, BarChart3, Target, Eye, MousePointer, DollarSign,
-  Play, Pause, CheckCircle2, Clock, ArrowUpRight, Filter,
-  MessageSquare, Instagram, Phone, Send,
-} from "lucide-react";
+import { useMemo, useState } from "react";
+import { Megaphone, Plus, Search, TrendingUp, Users, Eye, Target, Loader2, Globe, FileText } from "lucide-react";
 import { toast } from "sonner";
-
-// ─── Dados mockados ─────────────────────────────────────────────────────────
-const MOCK_CAMPANHAS: any[] = [];
-const MOCK_AUTOMACOES: any[] = [];
-const MOCK_SEGMENTOS: any[] = [];
+import { trpc } from "@/lib/trpc";
 
 const STATUS_COLORS: Record<string, string> = {
   ativa: "bg-green-100 text-green-700",
-  pausada: "bg-yellow-100 text-yellow-700",
-  rascunho: "bg-gray-100 text-gray-700",
-  finalizada: "bg-blue-100 text-blue-700",
+  em_revisao: "bg-yellow-100 text-yellow-700",
+  pausada: "bg-slate-100 text-slate-700",
+  encerrada: "bg-blue-100 text-blue-700",
+  publicada: "bg-green-100 text-green-700",
+  em_ajuste: "bg-yellow-100 text-yellow-700",
+  rascunho: "bg-slate-100 text-slate-700",
 };
 
-const CANAL_ICONS: Record<string, any> = {
-  Email: Mail,
-  WhatsApp: Phone,
-  Instagram: Instagram,
-  SMS: MessageSquare,
-};
+function formatCurrency(value: unknown) {
+  return Number(value || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
 
 export default function Marketing() {
   const [tab, setTab] = useState("visao-geral");
   const [search, setSearch] = useState("");
   const [showNovaCampanha, setShowNovaCampanha] = useState(false);
+  const [campanhaForm, setCampanhaForm] = useState({
+    nome: "",
+    plataforma: "meta_ads",
+    objetivo: "",
+    status: "ativa",
+    orcamento: "",
+    custoPorLead: "",
+    pendencias: "",
+    observacoes: "",
+  });
 
-  const campanhasFiltradas = MOCK_CAMPANHAS.filter((c) =>
-    c.nome.toLowerCase().includes(search.toLowerCase())
-  );
+  const me = trpc.auth.me.useQuery();
+  const isMaster = (me.data as any)?.role === "master_admin";
+
+  const campaignsQ = trpc.master.listCampaigns.useQuery(undefined, { enabled: isMaster });
+  const landingPagesQ = trpc.master.listLandingPages.useQuery(undefined, { enabled: isMaster });
+  const leadsQ = trpc.master.listLeads.useQuery(undefined, { enabled: isMaster });
+  const proposalsQ = trpc.master.listProposals.useQuery(undefined, { enabled: isMaster });
+  const createCampaign = trpc.master.createCampaign.useMutation({
+    onSuccess: () => {
+      campaignsQ.refetch();
+      setShowNovaCampanha(false);
+      setCampanhaForm({
+        nome: "",
+        plataforma: "meta_ads",
+        objetivo: "",
+        status: "ativa",
+        orcamento: "",
+        custoPorLead: "",
+        pendencias: "",
+        observacoes: "",
+      });
+      toast.success("Campanha criada com sucesso.");
+    },
+    onError: (error) => toast.error(error.message),
+  });
+
+  const campanhas = useMemo(() => {
+    const base = (campaignsQ.data ?? []) as any[];
+    return base.filter((item) => item.nome?.toLowerCase().includes(search.toLowerCase()) || item.clienteNome?.toLowerCase().includes(search.toLowerCase()));
+  }, [campaignsQ.data, search]);
+
+  const landingPages = (landingPagesQ.data ?? []) as any[];
+  const leads = (leadsQ.data ?? []) as any[];
+  const propostas = (proposalsQ.data ?? []) as any[];
+
+  const campanhasAtivas = campanhas.filter((item) => item.status === "ativa").length;
+  const taxaConversao = leads.length > 0 ? ((propostas.filter((item) => item.status === "aprovada").length / leads.length) * 100).toFixed(1) : "0.0";
+  const orcamentoTotal = campanhas.reduce((acc, item) => acc + Number(item.orcamento || 0), 0);
+
+  if (me.isLoading) {
+    return <div className="flex items-center justify-center py-20 text-muted-foreground"><Loader2 className="h-5 w-5 animate-spin mr-2" />Carregando marketing...</div>;
+  }
+
+  if (!isMaster) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold flex items-center gap-2"><Megaphone className="h-6 w-6 text-primary" />Marketing</h1>
+          <p className="text-muted-foreground text-sm">Este módulo está disponível para a Central do Daniel.</p>
+        </div>
+        <Card>
+          <CardContent className="py-14 text-center text-muted-foreground">
+            Nenhum dado cadastrado para este perfil. Use a Central do Daniel para gerenciar campanhas, landing pages, leads e propostas.
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      {/* ── Cabeçalho ── */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Megaphone className="h-6 w-6 text-primary" />
             Marketing
           </h1>
           <p className="text-muted-foreground text-sm">
-            Campanhas · Automações · Segmentação · Analytics
+            Campanhas, landing pages, leads e propostas com dados reais da Central do Daniel.
           </p>
         </div>
         <Dialog open={showNovaCampanha} onOpenChange={setShowNovaCampanha}>
@@ -65,91 +118,179 @@ export default function Marketing() {
           </DialogTrigger>
           <DialogContent className="max-w-lg">
             <DialogHeader><DialogTitle>Criar Nova Campanha</DialogTitle></DialogHeader>
-            <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); toast.success("Campanha criada!"); setShowNovaCampanha(false); }}>
-              <div><Label>Nome da Campanha *</Label><Input placeholder="Ex: Promoção de Maio" required /></div>
+            <form
+              className="space-y-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                createCampaign.mutate(campanhaForm as any);
+              }}
+            >
+              <div><Label>Nome da Campanha *</Label><Input value={campanhaForm.nome} onChange={(e) => setCampanhaForm((prev) => ({ ...prev, nome: e.target.value }))} required /></div>
               <div className="grid grid-cols-2 gap-3">
-                <div><Label>Canal</Label>
-                  <Select defaultValue="email">
+                <div>
+                  <Label>Plataforma</Label>
+                  <Select value={campanhaForm.plataforma} onValueChange={(value) => setCampanhaForm((prev) => ({ ...prev, plataforma: value }))}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="email">📧 E-mail</SelectItem>
-                      <SelectItem value="whatsapp">📱 WhatsApp</SelectItem>
-                      <SelectItem value="sms">💬 SMS</SelectItem>
-                      <SelectItem value="instagram">📸 Instagram</SelectItem>
-                      <SelectItem value="multi">🔀 Multi-canal</SelectItem>
+                      <SelectItem value="meta_ads">Meta Ads</SelectItem>
+                      <SelectItem value="google_ads">Google Ads</SelectItem>
+                      <SelectItem value="google_meu_negocio">Google Meu Negócio</SelectItem>
+                      <SelectItem value="outro">Outro</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                <div><Label>Segmento</Label>
-                  <Select defaultValue="todos">
+                <div>
+                  <Label>Status</Label>
+                  <Select value={campanhaForm.status} onValueChange={(value) => setCampanhaForm((prev) => ({ ...prev, status: value }))}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="todos">Todos os Leads</SelectItem>
-                      {MOCK_SEGMENTOS.map((s) => (
-                        <SelectItem key={s.id} value={String(s.id)}>{s.nome}</SelectItem>
-                      ))}
+                      <SelectItem value="ativa">Ativa</SelectItem>
+                      <SelectItem value="em_revisao">Em revisão</SelectItem>
+                      <SelectItem value="pausada">Pausada</SelectItem>
+                      <SelectItem value="encerrada">Encerrada</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
+              <div><Label>Objetivo</Label><Input value={campanhaForm.objetivo} onChange={(e) => setCampanhaForm((prev) => ({ ...prev, objetivo: e.target.value }))} /></div>
               <div className="grid grid-cols-2 gap-3">
-                <div><Label>Data de Início</Label><Input type="date" /></div>
-                <div><Label>Data de Fim</Label><Input type="date" /></div>
+                <div><Label>Orçamento</Label><Input value={campanhaForm.orcamento} onChange={(e) => setCampanhaForm((prev) => ({ ...prev, orcamento: e.target.value }))} placeholder="0.00" /></div>
+                <div><Label>Custo por lead</Label><Input value={campanhaForm.custoPorLead} onChange={(e) => setCampanhaForm((prev) => ({ ...prev, custoPorLead: e.target.value }))} placeholder="0.00" /></div>
               </div>
-              <div><Label>Objetivo da Campanha</Label><Textarea placeholder="Descreva o objetivo e a mensagem principal..." rows={3} /></div>
-              <Button type="submit" className="w-full">Criar Campanha</Button>
+              <div><Label>Pendências</Label><Textarea rows={2} value={campanhaForm.pendencias} onChange={(e) => setCampanhaForm((prev) => ({ ...prev, pendencias: e.target.value }))} /></div>
+              <div><Label>Observações</Label><Textarea rows={2} value={campanhaForm.observacoes} onChange={(e) => setCampanhaForm((prev) => ({ ...prev, observacoes: e.target.value }))} /></div>
+              <Button type="submit" className="w-full" disabled={createCampaign.isPending}>Salvar campanha</Button>
             </form>
           </DialogContent>
         </Dialog>
       </div>
 
-      {/* ── KPIs ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="pb-2"><CardTitle className="text-xs text-muted-foreground flex items-center gap-1"><Users className="h-3.5 w-3.5" />Total de Leads</CardTitle></CardHeader>
-          <CardContent><div className="text-2xl font-bold">0</div><p className="text-xs text-muted-foreground mt-1">Nenhum lead cadastrado</p></CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2"><CardTitle className="text-xs text-muted-foreground flex items-center gap-1"><Megaphone className="h-3.5 w-3.5" />Campanhas Ativas</CardTitle></CardHeader>
-          <CardContent><div className="text-2xl font-bold">{MOCK_CAMPANHAS.filter((c) => c.status === "ativa").length}</div><p className="text-xs text-muted-foreground mt-1">{MOCK_CAMPANHAS.length} no total</p></CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2"><CardTitle className="text-xs text-muted-foreground flex items-center gap-1"><Eye className="h-3.5 w-3.5" />Taxa de Abertura</CardTitle></CardHeader>
-          <CardContent><div className="text-2xl font-bold">0%</div><p className="text-xs text-muted-foreground mt-1">Sem dados no período</p></CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2"><CardTitle className="text-xs text-muted-foreground flex items-center gap-1"><Target className="h-3.5 w-3.5" />Taxa de Conversão</CardTitle></CardHeader>
-          <CardContent><div className="text-2xl font-bold">0%</div><p className="text-xs text-muted-foreground mt-1">Sem dados no período</p></CardContent>
-        </Card>
+        <Card><CardHeader className="pb-2"><CardTitle className="text-xs text-muted-foreground flex items-center gap-1"><Users className="h-3.5 w-3.5" />Leads</CardTitle></CardHeader><CardContent><div className="text-2xl font-bold">{leads.length}</div><p className="text-xs text-muted-foreground mt-1">Base comercial ativa</p></CardContent></Card>
+        <Card><CardHeader className="pb-2"><CardTitle className="text-xs text-muted-foreground flex items-center gap-1"><Megaphone className="h-3.5 w-3.5" />Campanhas Ativas</CardTitle></CardHeader><CardContent><div className="text-2xl font-bold">{campanhasAtivas}</div><p className="text-xs text-muted-foreground mt-1">{campaignsQ.data?.length ?? 0} registradas</p></CardContent></Card>
+        <Card><CardHeader className="pb-2"><CardTitle className="text-xs text-muted-foreground flex items-center gap-1"><Eye className="h-3.5 w-3.5" />Landing Pages</CardTitle></CardHeader><CardContent><div className="text-2xl font-bold">{landingPages.length}</div><p className="text-xs text-muted-foreground mt-1">{landingPages.filter((item) => item.status === "publicada").length} publicadas</p></CardContent></Card>
+        <Card><CardHeader className="pb-2"><CardTitle className="text-xs text-muted-foreground flex items-center gap-1"><Target className="h-3.5 w-3.5" />Conversão</CardTitle></CardHeader><CardContent><div className="text-2xl font-bold">{taxaConversao}%</div><p className="text-xs text-muted-foreground mt-1">{propostas.filter((item) => item.status === "aprovada").length} propostas aprovadas</p></CardContent></Card>
       </div>
 
-      {/* ── Tabs ── */}
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="flex-wrap h-auto gap-1">
-          <TabsTrigger value="visao-geral"><BarChart3 className="h-4 w-4 mr-1" />Visão Geral</TabsTrigger>
-          <TabsTrigger value="campanhas"><Megaphone className="h-4 w-4 mr-1" />Campanhas</TabsTrigger>
-          <TabsTrigger value="automacoes"><Zap className="h-4 w-4 mr-1" />Automações</TabsTrigger>
-          <TabsTrigger value="segmentos"><Filter className="h-4 w-4 mr-1" />Segmentação</TabsTrigger>
-          <TabsTrigger value="email"><Mail className="h-4 w-4 mr-1" />E-mail Marketing</TabsTrigger>
-          <TabsTrigger value="analytics"><TrendingUp className="h-4 w-4 mr-1" />Analytics</TabsTrigger>
+          <TabsTrigger value="visao-geral">Visão Geral</TabsTrigger>
+          <TabsTrigger value="campanhas">Campanhas</TabsTrigger>
+          <TabsTrigger value="landing-pages">Landing Pages</TabsTrigger>
+          <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
         </TabsList>
 
-        {/* ── VISÃO GERAL ── */}
         <TabsContent value="visao-geral" className="space-y-4 mt-4">
-          <div className="text-center py-12 text-muted-foreground">Nenhuma campanha ou automação ativa no momento</div>
+          <div className="grid lg:grid-cols-3 gap-4">
+            <Card>
+              <CardHeader><CardTitle>Orçamento em campanhas</CardTitle></CardHeader>
+              <CardContent><p className="text-2xl font-bold">{formatCurrency(orcamentoTotal)}</p><p className="text-xs text-muted-foreground mt-1">Soma das campanhas registradas</p></CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle>Revisões pendentes</CardTitle></CardHeader>
+              <CardContent><p className="text-2xl font-bold">{campanhas.filter((item) => item.status === "em_revisao").length}</p><p className="text-xs text-muted-foreground mt-1">Campanhas em revisão</p></CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle>Propostas em aberto</CardTitle></CardHeader>
+              <CardContent><p className="text-2xl font-bold">{propostas.filter((item) => ["rascunho", "enviada", "negociacao"].includes(item.status)).length}</p><p className="text-xs text-muted-foreground mt-1">Oportunidades comerciais</p></CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
-        {/* ── CAMPANHAS ── */}
         <TabsContent value="campanhas" className="space-y-4 mt-4">
-          <div className="flex gap-2">
-            <div className="relative flex-1 max-w-sm">
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Buscar campanhas..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
-            </div>
+          <div className="relative max-w-sm">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input placeholder="Buscar campanhas..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
           </div>
-          <Card>
-            <div className="text-center py-12 text-muted-foreground">Nenhuma campanha encontrada</div>
-          </Card>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {campanhas.length === 0 ? (
+              <Card className="md:col-span-2 xl:col-span-3"><CardContent className="py-12 text-center text-muted-foreground">Nenhuma campanha cadastrada.</CardContent></Card>
+            ) : (
+              campanhas.map((campanha: any) => (
+                <Card key={campanha.id}>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <CardTitle className="text-base">{campanha.nome}</CardTitle>
+                        <p className="text-xs text-muted-foreground mt-1">{campanha.clienteNome || "Sem cliente vinculado"}</p>
+                      </div>
+                      <Badge className={STATUS_COLORS[campanha.status] || ""}>{campanha.status.replace("_", " ")}</Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm">
+                    <div className="flex items-center justify-between"><span className="text-muted-foreground">Plataforma</span><span>{campanha.plataforma}</span></div>
+                    <div className="flex items-center justify-between"><span className="text-muted-foreground">Orçamento</span><span>{formatCurrency(campanha.orcamento)}</span></div>
+                    <div className="flex items-center justify-between"><span className="text-muted-foreground">CPL</span><span>{formatCurrency(campanha.custoPorLead)}</span></div>
+                    {campanha.objetivo && <p className="text-xs text-muted-foreground pt-1">{campanha.objetivo}</p>}
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="landing-pages" className="space-y-4 mt-4">
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {landingPages.length === 0 ? (
+              <Card className="md:col-span-2 xl:col-span-3"><CardContent className="py-12 text-center text-muted-foreground">Nenhuma landing page cadastrada.</CardContent></Card>
+            ) : (
+              landingPages.map((page: any) => (
+                <Card key={page.id}>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <CardTitle className="text-base flex items-center gap-2"><Globe className="h-4 w-4" />{page.nome}</CardTitle>
+                        <p className="text-xs text-muted-foreground mt-1">{page.clienteNome || "Sem cliente vinculado"}</p>
+                      </div>
+                      <Badge className={STATUS_COLORS[page.status] || ""}>{page.status.replace("_", " ")}</Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm">
+                    <p className="text-xs break-all text-muted-foreground">{page.url || "URL não cadastrada"}</p>
+                    <div className="flex items-center justify-between"><span>Formulário</span><span>{page.formularioOk ? "OK" : "Pendente"}</span></div>
+                    <div className="flex items-center justify-between"><span>WhatsApp</span><span>{page.whatsappOk ? "OK" : "Pendente"}</span></div>
+                    <div className="flex items-center justify-between"><span>Pixel</span><span>{page.pixelInstalado ? "Instalado" : "Pendente"}</span></div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="pipeline" className="space-y-4 mt-4">
+          <div className="grid lg:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader><CardTitle>Leads</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                {leads.length === 0 ? <p className="text-sm text-muted-foreground">Nenhum lead cadastrado.</p> : leads.slice(0, 8).map((lead: any) => (
+                  <div key={lead.id} className="flex items-center justify-between border rounded-lg p-3">
+                    <div>
+                      <p className="font-medium">{lead.nome}</p>
+                      <p className="text-xs text-muted-foreground">{lead.empresa || lead.email || "Sem contato principal"}</p>
+                    </div>
+                    <Badge variant="outline">{lead.status}</Badge>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle>Propostas</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                {propostas.length === 0 ? <p className="text-sm text-muted-foreground">Nenhuma proposta cadastrada.</p> : propostas.slice(0, 8).map((proposta: any) => (
+                  <div key={proposta.id} className="flex items-center justify-between border rounded-lg p-3">
+                    <div>
+                      <p className="font-medium flex items-center gap-2"><FileText className="h-4 w-4" />{proposta.titulo}</p>
+                      <p className="text-xs text-muted-foreground">{proposta.clienteNome || proposta.leadNome || "Sem vínculo comercial"}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold">{formatCurrency(proposta.valor)}</p>
+                      <Badge className={STATUS_COLORS[proposta.status] || ""}>{proposta.status}</Badge>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>

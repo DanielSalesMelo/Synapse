@@ -25,14 +25,22 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
+import { getBackendBaseUrl } from "@/lib/backend";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
 // ─── Helpers de cor ──────────────────────────────────────────────────────────
 const STATUS_COLORS: Record<string, string> = {
   aberto: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  triagem_ia: "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300",
+  aguardando_usuario: "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300",
+  aguardando_ti: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
   em_andamento: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-  aguardando: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  acesso_remoto_solicitado: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
+  em_acesso_remoto: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
   resolvido: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  fechado: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400",
+  encerrado: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400",
+  cancelado: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
+  reaberto: "bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300",
 };
 const PRIORIDADE_COLORS: Record<string, string> = {
   baixa: "bg-gray-100 text-gray-700",
@@ -64,6 +72,7 @@ function Lightbox({ src, onClose }: { src: string; onClose: () => void }) {
 // ─── Componente de Chat do Chamado ────────────────────────────────────────────
 function TicketChat({ ticketId, empresaId }: { ticketId: number; empresaId: number }) {
   const { user } = useAuth();
+  const backendBaseUrl = getBackendBaseUrl();
   const [msg, setMsg] = useState("");
   const [lightbox, setLightbox] = useState<string | null>(null);
   const [preview, setPreview] = useState<{ url: string; nome: string } | null>(null);
@@ -89,7 +98,7 @@ function TicketChat({ ticketId, empresaId }: { ticketId: number; empresaId: numb
   const uploadFile = async (file: File) => {
     setUploading(true);
     const token = localStorage.getItem("synapse-auth-token") ?? "";
-    const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : "";
+    const baseUrl = backendBaseUrl;
     const fd = new FormData();
     fd.append("file", file);
     try {
@@ -248,13 +257,25 @@ function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: ()
   const updateStatus = trpc.ti.updateTicketStatus.useMutation({
     onSuccess: () => toast.success("Status atualizado!"),
   });
+  const requestRemoteAccess = trpc.ti.requestRemoteAccess.useMutation({
+    onSuccess: () => toast.success("Acesso remoto solicitado!"),
+  });
+  const historyQ = trpc.ti.listStatusHistory.useQuery({ ticketId: ticket.id }) as any;
+  const notesQ = trpc.ti.listInternalNotes.useQuery({ ticketId: ticket.id }) as any;
+  const addNote = trpc.ti.addInternalNote.useMutation({
+    onSuccess: () => {
+      notesQ.refetch();
+      toast.success("Nota interna salva.");
+    },
+  });
+  const [internalNote, setInternalNote] = useState("");
   const tecnicos = trpc.ti.listTecnicos.useQuery() as any;
 
   const slaPercent = ticket.slaHoras && ticket.createdAt
     ? Math.min(100, Math.round(((Date.now() - new Date(ticket.createdAt).getTime()) / (1000 * 60 * 60 * ticket.slaHoras)) * 100))
     : null;
 
-  const STATUS_FLOW = ["aberto", "em_andamento", "aguardando", "resolvido", "fechado"];
+  const STATUS_FLOW = ["aberto", "triagem_ia", "aguardando_usuario", "aguardando_ti", "em_andamento", "acesso_remoto_solicitado", "em_acesso_remoto", "resolvido", "encerrado"];
   const currentIdx = STATUS_FLOW.indexOf(ticket.status);
 
   return (
@@ -394,6 +415,78 @@ function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: ()
 
       {/* Chat */}
       <TicketChat ticketId={ticket.id} empresaId={empresaId} />
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm">Histórico de status</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {(historyQ.data ?? []).length === 0 ? (
+              <p className="text-sm text-muted-foreground">Nenhuma mudança registrada ainda.</p>
+            ) : (
+              (historyQ.data ?? []).map((h: any) => (
+                <div key={h.id} className="rounded-lg border p-3">
+                  <p className="text-sm font-medium">
+                    {(h.fromStatus ?? "inicial").replaceAll("_", " ")} → {h.toStatus.replaceAll("_", " ")}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {h.autor_nome ?? "Sistema"} · {new Date(h.createdAt).toLocaleString("pt-BR")}
+                  </p>
+                  {h.motivo && <p className="text-xs text-muted-foreground mt-1">{h.motivo}</p>}
+                </div>
+              ))
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm">Notas internas da TI</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Textarea
+              rows={3}
+              value={internalNote}
+              onChange={(e) => setInternalNote(e.target.value)}
+              placeholder="Registre detalhes internos, causa raiz ou orientação para a equipe..."
+            />
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => requestRemoteAccess.mutate({ ticketId: ticket.id, anydeskId: ticket.anydeskId, observacoes: "Solicitação iniciada pela equipe de TI" })}
+              >
+                Solicitar acesso remoto
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => {
+                  if (!internalNote.trim()) return;
+                  addNote.mutate({ ticketId: ticket.id, conteudo: internalNote });
+                  setInternalNote("");
+                }}
+              >
+                Salvar nota interna
+              </Button>
+            </div>
+            <div className="space-y-2">
+              {(notesQ.data ?? []).length === 0 ? (
+                <p className="text-sm text-muted-foreground">Nenhuma nota interna registrada.</p>
+              ) : (
+                (notesQ.data ?? []).map((note: any) => (
+                  <div key={note.id} className="rounded-lg bg-muted/40 p-3">
+                    <p className="text-sm">{note.conteudo}</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {note.autor_nome ?? "Equipe TI"} · {new Date(note.createdAt).toLocaleString("pt-BR")}
+                    </p>
+                  </div>
+                ))
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
@@ -401,16 +494,26 @@ function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: ()
 // ─── Componente Principal ─────────────────────────────────────────────────────
 export default function TI({ params }: { params?: { tab?: string } }) {
   const { user } = useAuth();
-  const empresaId = user?.empresaId ?? 0;
+  const { effectiveEmpresaId } = useViewAs();
+  const empresaId = effectiveEmpresaId ?? user?.empresaId ?? 0;
+  const backendBaseUrl = getBackendBaseUrl();
+  const TAB_ALIASES: Record<string, string> = {
+    agente: "agentes",
+    agentes: "agentes",
+    dispositivo: "dispositivos",
+    dispositivos: "dispositivos",
+    chamado: "tickets",
+    chamados: "tickets",
+  };
 
   const [location, setLocation] = useLocation() as any;
   // Prioriza o parâmetro da rota (params.tab), depois tenta extrair da URL, fallback para dashboard
   const getInitialTab = () => {
-    if (params?.tab) return params.tab;
+    if (params?.tab) return TAB_ALIASES[params.tab] ?? params.tab;
     const parts = location.split("/");
     const tiIndex = parts.indexOf("ti");
     if (tiIndex !== -1 && parts[tiIndex + 1]) {
-      return parts[tiIndex + 1];
+      return TAB_ALIASES[parts[tiIndex + 1]] ?? parts[tiIndex + 1];
     }
     return "dashboard";
   };
@@ -448,12 +551,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
       toast.success("Agente associado com sucesso!");
       setShowAssociateModal(false);
       // Recarregar agentes
-      const token = localStorage.getItem("synapse-auth-token") ?? "";
-      const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : "";
-      const res = await fetch(`${baseUrl}/api/agents`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) setAgentes(await res.json());
+      await agentesQ.refetch();
     } catch (err) {
       toast.error("Erro ao associar agente: " + (err as any).message);
     }
@@ -507,6 +605,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const [showOnlyUnassociated, setShowOnlyUnassociated] = useState(false);
   const [usuarios, setUsuarios] = useState<any[]>([]);
   const [usuariosLoading, setUsuariosLoading] = useState(false);
+  const [remoteStatusFilter, setRemoteStatusFilter] = useState("todos");
 
   // ── Queries ──
   const dashboard = trpc.ti.dashboard.useQuery(undefined, { refetchInterval: 30000 }) as any;
@@ -518,13 +617,17 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const licencasQ = trpc.ti.listLicencas.useQuery({ search }, { refetchInterval: 60000 }) as any;
   const comprasQ = trpc.ti.listCompras.useQuery(undefined, { refetchInterval: 60000 }) as any;
   const acessosQ = trpc.ti.listAcessos.useQuery(undefined, { refetchInterval: 60000 }) as any;
-  const agentesQ = trpc.ti.listAgentes.useQuery(undefined, { refetchInterval: 20000 }) as any;
+  const remoteAccessQ = trpc.ti.listRemoteAccessRequests.useQuery(
+    { status: remoteStatusFilter === "todos" ? undefined : remoteStatusFilter },
+    { refetchInterval: 15000 }
+  ) as any;
+  const agentesQ = trpc.ti.listAgentes.useQuery({ empresaId }, { refetchInterval: 20000 }) as any;
   const alertasQ = trpc.ti.listAlertas.useQuery({ limit: 20 }, { refetchInterval: 15000 }) as any;
   const manutencoesQ = trpc.ti.listManutencoes.useQuery(undefined, { refetchInterval: 60000 }) as any;
-  const codigosQ = trpc.ti.listCodigosPareamento.useQuery(undefined, { refetchInterval: 30000 }) as any;
+  const codigosQ = trpc.ti.listCodigosPareamento.useQuery({ empresaId }, { refetchInterval: 30000 }) as any;
   const certificadosQ = trpc.ti.listCertificados.useQuery({ search }, { refetchInterval: 60000 }) as any;
   const agenteMetricas = trpc.ti.getAgenteMetricas.useQuery(
-    { agenteId: selectedAgente?.id, periodo: "24h" },
+    { agenteId: selectedAgente?.id, periodo: "24h", empresaId },
     { enabled: !!selectedAgente?.id, refetchInterval: 30000 }
   ) as any;
 
@@ -543,13 +646,35 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     onSuccess: () => { licencasQ.refetch(); setShowNewLicenca(false); toast.success("Licença adicionada!"); },
   });
   const createCompra = trpc.ti.createCompra.useMutation({
-    onSuccess: () => { comprasQ.refetch(); setShowNewCompra(false); toast.success("Requisição criada!"); },
+    onSuccess: () => {
+      comprasQ.refetch();
+      setShowNewCompra(false);
+      setCompraForm({
+        item: "", justificativa: "", observacoes: "", categoria: "hardware", valorUnitario: 0, quantidade: 1, fornecedor: "", urgencia: "normal",
+      });
+      toast.success("Requisição criada!");
+    },
+  });
+  const updateCompra = trpc.ti.updateCompra.useMutation({
+    onSuccess: () => {
+      comprasQ.refetch();
+      toast.success("Status da compra atualizado!");
+    },
   });
   const createManutencao = trpc.ti.createManutencao.useMutation({
     onSuccess: () => { manutencoesQ.refetch(); setShowNewManutencao(false); toast.success("Manutenção registrada!"); },
   });
   const createAcesso = trpc.ti.createAcesso.useMutation({
     onSuccess: () => { acessosQ.refetch(); setShowNewAcesso(false); toast.success("Acesso cadastrado!"); },
+  });
+  const updateRemoteAccessRequest = trpc.ti.updateRemoteAccessRequest.useMutation({
+    onSuccess: () => {
+      remoteAccessQ.refetch();
+      ticketsQ.refetch();
+      dashboard.refetch();
+      toast.success("Solicitação de acesso remoto atualizada.");
+    },
+    onError: (err) => toast.error("Erro ao atualizar acesso remoto: " + err.message),
   });
   const createCertificado = trpc.ti.createCertificado.useMutation({
     onSuccess: () => { certificadosQ.refetch(); setShowNewCertificado(false); toast.success("Certificado cadastrado!"); },
@@ -570,7 +695,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const associateAgente = {
     mutateAsync: async (data: { agentId: number; userId: string; departmentId?: string }) => {
       const token = localStorage.getItem("synapse-auth-token") ?? "";
-      const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : "";
+      const baseUrl = backendBaseUrl;
       const res = await fetch(`${baseUrl}/api/agents/${data.agentId}/associate`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -584,7 +709,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const generatePairingCode = {
     mutateAsync: async (data: { userId: string; departmentId: string }) => {
       const token = localStorage.getItem("synapse-auth-token") ?? "";
-      const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : "";
+      const baseUrl = backendBaseUrl;
       const res = await fetch(`${baseUrl}/api/agents/generate-pairing-code`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -595,30 +720,10 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     }
   };
 
-  // Buscar agentes via REST API
   useEffect(() => {
-    const fetchAgentes = async () => {
-      setAgentesLoading(true);
-      try {
-        const token = localStorage.getItem("synapse-auth-token") ?? "";
-        const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : "";
-        const res = await fetch(`${baseUrl}/api/agents`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setAgentes(data);
-        }
-      } catch (err) {
-        console.error("Erro ao buscar agentes:", err);
-      } finally {
-        setAgentesLoading(false);
-      }
-    };
-    if (tab === "dispositivos") {
-      fetchAgentes();
-    }
-  }, [tab]);
+    setAgentes(agentesQ.data ?? []);
+    setAgentesLoading(agentesQ.isLoading);
+  }, [agentesQ.data, agentesQ.isLoading]);
 
   // Buscar usuários
   useEffect(() => {
@@ -663,7 +768,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     const files = Array.from(e.target.files ?? []);
     if (!files.length) return;
     const token = localStorage.getItem("synapse-auth-token") ?? "";
-    const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : "";
+    const baseUrl = backendBaseUrl;
     for (const file of files) {
       const fd = new FormData();
       fd.append("file", file);
@@ -687,7 +792,14 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     expiracao: "", custoMensal: 0, fornecedor: "", chave: "",
   });
   const [compraForm, setCompraForm] = useState({
-    titulo: "", descricao: "", categoria: "hardware", valor: 0, fornecedor: "", urgencia: "normal",
+    item: "",
+    justificativa: "",
+    observacoes: "",
+    categoria: "hardware",
+    valorUnitario: 0,
+    quantidade: 1,
+    fornecedor: "",
+    urgencia: "normal",
   });
   const [manutencaoForm, setManutencaoForm] = useState({
     ativoId: 0, tipo: "preventiva", descricao: "", tecnico: "", custo: 0, dataAgendada: "",
@@ -849,8 +961,8 @@ export default function TI({ params }: { params?: { tab?: string } }) {
           <TabsTrigger value="licencas"><Shield className="h-4 w-4 mr-1" />Licenças</TabsTrigger>
           <TabsTrigger value="compras"><ShoppingCart className="h-4 w-4 mr-1" />Compras</TabsTrigger>
           <TabsTrigger value="manutencao"><Wrench className="h-4 w-4 mr-1" />Manutenção</TabsTrigger>
-          <TabsTrigger value="agentes"><Network className="h-4 w-4 mr-1" />Agentes</TabsTrigger>
-          <TabsTrigger value="dispositivos"><Monitor className="h-4 w-4 mr-1" />Dispositivos</TabsTrigger>
+          <TabsTrigger value="agentes"><Network className="h-4 w-4 mr-1" />Agentes e Dispositivos</TabsTrigger>
+          <TabsTrigger value="dispositivos"><Monitor className="h-4 w-4 mr-1" />Vínculos e Inventário</TabsTrigger>
           <TabsTrigger value="certificados"><Shield className="h-4 w-4 mr-1" />Certificados</TabsTrigger>
           <TabsTrigger value="alertas" className="relative">
             <Bell className="h-4 w-4 mr-1" />Alertas
@@ -1248,6 +1360,138 @@ export default function TI({ params }: { params?: { tab?: string } }) {
               </DialogContent>
             </Dialog>
           </div>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0">
+              <div>
+                <CardTitle className="text-sm">Solicitações de acesso remoto</CardTitle>
+                <p className="text-xs text-muted-foreground mt-1">Fluxo de consentimento e execução por chamado.</p>
+              </div>
+              <Select value={remoteStatusFilter} onValueChange={setRemoteStatusFilter}>
+                <SelectTrigger className="w-[210px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos os status</SelectItem>
+                  <SelectItem value="solicitado">Solicitado</SelectItem>
+                  <SelectItem value="autorizado">Autorizado</SelectItem>
+                  <SelectItem value="negado">Negado</SelectItem>
+                  <SelectItem value="em_acesso">Em acesso</SelectItem>
+                  <SelectItem value="encerrado">Encerrado</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Chamado</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>AnyDesk</TableHead>
+                    <TableHead>Consentimento</TableHead>
+                    <TableHead>Solicitado em</TableHead>
+                    <TableHead>Ações</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(remoteAccessQ.data ?? []).map((req: any) => (
+                    <TableRow key={req.id}>
+                      <TableCell>
+                        <div>
+                          <p className="text-sm font-medium">{req.protocolo ?? `#${req.ticketId}`}</p>
+                          <p className="text-xs text-muted-foreground">{req.ticket_titulo ?? "Chamado sem título"}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary" className="text-xs">{String(req.status).replaceAll("_", " ")}</Badge>
+                      </TableCell>
+                      <TableCell className="font-mono text-xs">{req.anydeskId || "—"}</TableCell>
+                      <TableCell>
+                        {req.consentimento === true ? (
+                          <Badge className="bg-green-100 text-green-700">Autorizado</Badge>
+                        ) : req.consentimento === false ? (
+                          <Badge className="bg-red-100 text-red-700">Negado</Badge>
+                        ) : (
+                          <Badge variant="outline">Pendente</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground">
+                        {req.solicitadoEm ? new Date(req.solicitadoEm).toLocaleString("pt-BR") : "—"}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                          {req.status === "solicitado" && (
+                            <>
+                              <Button
+                                size="sm"
+                                className="h-7 text-xs"
+                                onClick={() => updateRemoteAccessRequest.mutate({
+                                  id: req.id,
+                                  status: "autorizado",
+                                  consentimento: true,
+                                  anydeskId: req.anydeskId ?? undefined,
+                                  observacoes: "Consentimento confirmado pelo usuário.",
+                                })}
+                              >
+                                Autorizar
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-7 text-xs"
+                                onClick={() => updateRemoteAccessRequest.mutate({
+                                  id: req.id,
+                                  status: "negado",
+                                  consentimento: false,
+                                  observacoes: "Acesso remoto negado pelo usuário.",
+                                })}
+                              >
+                                Negar
+                              </Button>
+                            </>
+                          )}
+                          {req.status === "autorizado" && (
+                            <Button
+                              size="sm"
+                              className="h-7 text-xs"
+                              onClick={() => updateRemoteAccessRequest.mutate({
+                                id: req.id,
+                                status: "em_acesso",
+                                consentimento: true,
+                                observacoes: "Sessão remota iniciada pela equipe de TI.",
+                              })}
+                            >
+                              Iniciar sessão
+                            </Button>
+                          )}
+                          {req.status === "em_acesso" && (
+                            <Button
+                              size="sm"
+                              className="h-7 text-xs"
+                              onClick={() => updateRemoteAccessRequest.mutate({
+                                id: req.id,
+                                status: "encerrado",
+                                consentimento: true,
+                                observacoes: "Sessão remota encerrada.",
+                              })}
+                            >
+                              Encerrar sessão
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {(remoteAccessQ.data ?? []).length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center text-muted-foreground py-8">Nenhuma solicitação de acesso remoto registrada.</TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+
           <Card>
             <Table>
               <TableHeader>
@@ -1458,9 +1702,20 @@ export default function TI({ params }: { params?: { tab?: string } }) {
               </DialogTrigger>
               <DialogContent className="max-w-lg">
                 <DialogHeader><DialogTitle>Nova Requisição de Compra</DialogTitle></DialogHeader>
-                <form onSubmit={(e) => { e.preventDefault(); createCompra.mutate(compraForm); }} className="space-y-4">
-                  <div><Label>Título *</Label><Input value={compraForm.titulo} onChange={(e) => setCompraForm((p) => ({ ...p, titulo: e.target.value }))} placeholder="Notebook Dell para RH" required /></div>
-                  <div><Label>Descrição</Label><Textarea value={compraForm.descricao} onChange={(e) => setCompraForm((p) => ({ ...p, descricao: e.target.value }))} placeholder="Detalhes da necessidade..." rows={3} /></div>
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  createCompra.mutate({
+                    item: compraForm.item,
+                    fornecedor: compraForm.fornecedor || undefined,
+                    quantidade: Number(compraForm.quantidade) || 1,
+                    valorUnitario: Number(compraForm.valorUnitario) || undefined,
+                    justificativa: [compraForm.categoria, compraForm.urgencia, compraForm.justificativa].filter(Boolean).join(" | "),
+                    observacoes: compraForm.observacoes || undefined,
+                    status: "em_aprovacao",
+                  });
+                }} className="space-y-4">
+                  <div><Label>Item *</Label><Input value={compraForm.item} onChange={(e) => setCompraForm((p) => ({ ...p, item: e.target.value }))} placeholder="Notebook Dell para RH" required /></div>
+                  <div><Label>Justificativa *</Label><Textarea value={compraForm.justificativa} onChange={(e) => setCompraForm((p) => ({ ...p, justificativa: e.target.value }))} placeholder="Explique a necessidade da compra..." rows={3} required /></div>
                   <div className="grid grid-cols-2 gap-3">
                     <div><Label>Categoria</Label>
                       <Select value={compraForm.categoria} onValueChange={(v) => setCompraForm((p) => ({ ...p, categoria: v }))}>
@@ -1483,42 +1738,126 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div><Label>Valor Estimado (R$)</Label><Input type="number" value={compraForm.valor} onChange={(e) => setCompraForm((p) => ({ ...p, valor: parseFloat(e.target.value) }))} /></div>
+                    <div><Label>Quantidade *</Label><Input type="number" min={1} value={compraForm.quantidade} onChange={(e) => setCompraForm((p) => ({ ...p, quantidade: Number(e.target.value) || 1 }))} required /></div>
+                    <div><Label>Valor Unitário (R$)</Label><Input type="number" min={0} step="0.01" value={compraForm.valorUnitario} onChange={(e) => setCompraForm((p) => ({ ...p, valorUnitario: Number(e.target.value) || 0 }))} /></div>
                     <div><Label>Fornecedor</Label><Input value={compraForm.fornecedor} onChange={(e) => setCompraForm((p) => ({ ...p, fornecedor: e.target.value }))} placeholder="Dell, Kabum..." /></div>
+                    <div className="col-span-2"><Label>Observações</Label><Textarea value={compraForm.observacoes} onChange={(e) => setCompraForm((p) => ({ ...p, observacoes: e.target.value }))} placeholder="Detalhes adicionais, prazo, link ou orçamento." rows={3} /></div>
                   </div>
                   <Button type="submit" className="w-full" disabled={createCompra.isPending}>Criar Requisição</Button>
                 </form>
               </DialogContent>
             </Dialog>
           </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {[
+              { label: "Solicitado", value: (comprasQ.data ?? []).filter((c: any) => c.status === "solicitado").length },
+              { label: "Em aprovação", value: (comprasQ.data ?? []).filter((c: any) => c.status === "em_aprovacao").length },
+              { label: "Aprovado", value: (comprasQ.data ?? []).filter((c: any) => c.status === "aprovado").length },
+              { label: "Comprado", value: (comprasQ.data ?? []).filter((c: any) => c.status === "comprado").length },
+              { label: "Entregue", value: (comprasQ.data ?? []).filter((c: any) => c.status === "entregue").length },
+            ].map((card) => (
+              <Card key={card.label}>
+                <CardContent className="p-4">
+                  <p className="text-xs text-muted-foreground font-medium mb-1">{card.label}</p>
+                  <p className="text-2xl font-bold">{card.value}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
           <Card>
+            <div className="md:hidden space-y-3 p-4">
+              {(comprasQ.data ?? []).map((c: any) => (
+                <div key={c.id} className="rounded-xl border p-4 space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="font-semibold">{c.item}</p>
+                      <p className="text-xs text-muted-foreground">{c.fornecedor || "Fornecedor não informado"}</p>
+                    </div>
+                    <Badge variant="secondary" className="text-xs">{c.status}</Badge>
+                  </div>
+                  {c.justificativa && <p className="text-sm text-muted-foreground line-clamp-3">{c.justificativa}</p>}
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div><p className="text-muted-foreground">Quantidade</p><p>{c.quantidade ?? 1}</p></div>
+                    <div><p className="text-muted-foreground">Valor unitário</p><p>R$ {Number(c.valorUnitario ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p></div>
+                    <div><p className="text-muted-foreground">Valor total</p><p>R$ {Number(c.valorTotal ?? (Number(c.quantidade ?? 1) * Number(c.valorUnitario ?? 0))).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p></div>
+                    <div><p className="text-muted-foreground">Alçada</p><p>Nível {c.nivelAlcada ?? 1}</p></div>
+                    <div className="col-span-2"><p className="text-muted-foreground">Aprovador</p><p>{c.aprovador_nome || "—"}</p></div>
+                    <div className="col-span-2">
+                      <p className="text-muted-foreground mb-1">Fluxo</p>
+                      <Select value={c.status} onValueChange={(value) => updateCompra.mutate({ id: c.id, status: value as any })} disabled={updateCompra.isPending}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="solicitado">Solicitado</SelectItem>
+                          <SelectItem value="em_aprovacao">Em aprovação</SelectItem>
+                          <SelectItem value="aprovado">Aprovado</SelectItem>
+                          <SelectItem value="rejeitado">Rejeitado</SelectItem>
+                          <SelectItem value="comprado">Comprado</SelectItem>
+                          <SelectItem value="entregue">Entregue</SelectItem>
+                          <SelectItem value="cancelado">Cancelado</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {(comprasQ.data ?? []).length === 0 && (
+                <p className="text-center text-muted-foreground py-8">Nenhuma requisição criada</p>
+              )}
+            </div>
+            <div className="hidden md:block">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Título</TableHead>
-                  <TableHead>Categoria</TableHead>
-                  <TableHead>Urgência</TableHead>
+                  <TableHead>Item</TableHead>
+                  <TableHead>Fornecedor</TableHead>
+                  <TableHead>Quantidade</TableHead>
                   <TableHead>Valor</TableHead>
+                  <TableHead>Total</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Data</TableHead>
+                  <TableHead className="text-right">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {(comprasQ.data ?? []).map((c: any) => (
                   <TableRow key={c.id}>
-                    <TableCell className="font-medium">{c.titulo}</TableCell>
-                    <TableCell><Badge variant="outline" className="text-xs">{c.categoria}</Badge></TableCell>
-                    <TableCell><Badge className={`text-xs ${c.urgencia === "urgente" ? "bg-red-100 text-red-700" : c.urgencia === "alta" ? "bg-orange-100 text-orange-700" : ""}`}>{c.urgencia}</Badge></TableCell>
-                    <TableCell className="text-sm">R$ {c.valor?.toLocaleString("pt-BR") ?? "—"}</TableCell>
+                    <TableCell className="font-medium">
+                      <div>{c.item}</div>
+                      {c.justificativa && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{c.justificativa}</p>}
+                    </TableCell>
+                    <TableCell>{c.fornecedor || "—"}</TableCell>
+                    <TableCell>{c.quantidade ?? 1}</TableCell>
+                    <TableCell className="text-sm">R$ {Number(c.valorUnitario ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                    <TableCell className="text-sm">
+                      <div>R$ {Number(c.valorTotal ?? (Number(c.quantidade ?? 1) * Number(c.valorUnitario ?? 0))).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                      <p className="text-xs text-muted-foreground">Alçada {c.nivelAlcada ?? 1}</p>
+                    </TableCell>
                     <TableCell><Badge variant="secondary" className="text-xs">{c.status}</Badge></TableCell>
                     <TableCell className="text-xs text-muted-foreground">{new Date(c.createdAt).toLocaleDateString("pt-BR")}</TableCell>
+                    <TableCell className="text-right">
+                      <Select value={c.status} onValueChange={(value) => updateCompra.mutate({ id: c.id, status: value as any })} disabled={updateCompra.isPending}>
+                        <SelectTrigger className="w-[150px] ml-auto">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="solicitado">Solicitado</SelectItem>
+                          <SelectItem value="em_aprovacao">Em aprovação</SelectItem>
+                          <SelectItem value="aprovado">Aprovado</SelectItem>
+                          <SelectItem value="rejeitado">Rejeitado</SelectItem>
+                          <SelectItem value="comprado">Comprado</SelectItem>
+                          <SelectItem value="entregue">Entregue</SelectItem>
+                          <SelectItem value="cancelado">Cancelado</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
                   </TableRow>
                 ))}
                 {(comprasQ.data ?? []).length === 0 && (
-                  <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">Nenhuma requisição criada</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">Nenhuma requisição criada</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>
+            </div>
           </Card>
         </TabsContent>
 
@@ -1607,41 +1946,52 @@ export default function TI({ params }: { params?: { tab?: string } }) {
             <Card>
               <CardHeader>
                 <CardTitle className="text-sm flex items-center gap-2">
-                  <Download className="h-4 w-4" />Instalar Agente de Monitoramento
+                  <Download className="h-4 w-4" />Instalar Agente Synapse
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-sm text-muted-foreground">
-                  O agente coleta métricas do PC (CPU, RAM, disco, rede, temperatura) e envia para o Synapse.
-                  Funciona offline com buffer local — nunca perde dados.
+                  O agente Synapse cria um dispositivo monitorado no sistema. Em termos práticos, agente e dispositivo são o mesmo ativo:
+                  o agente é o software instalado no PC e o dispositivo é o registro visível no módulo TI.
+                  Ele coleta métricas do PC (CPU, RAM, disco, rede, temperatura) e envia para o Synapse.
+                  Funciona offline com buffer local.
                 </p>
                 <div className="space-y-2">
                   <p className="text-xs font-medium text-muted-foreground">COMO INSTALAR (WINDOWS):</p>
                   <div className="bg-muted rounded-lg p-3 space-y-2 text-xs font-mono">
-                    <p className="text-muted-foreground"># 1. Baixe o instalador abaixo</p>
-                    <p className="text-muted-foreground"># 2. Clique com o botão direito e "Executar como Administrador"</p>
-                    <p className="text-muted-foreground"># 3. Use o código de pareamento gerado ao lado</p>
-                    <p className="text-muted-foreground"># 4. URL do Servidor: {window.location.origin}</p>
+                    <p className="text-muted-foreground"># 1. Baixe o Instalador .bat abaixo</p>
+                    <p className="text-muted-foreground"># 2. Execute o instalador e informe o código de pareamento</p>
+                    <p className="text-muted-foreground"># 3. A instalação agora usa a pasta do usuário para evitar travas de permissão</p>
+                    <p className="text-muted-foreground"># 4. URL do Servidor: {backendBaseUrl}</p>
+                    <p className="text-muted-foreground"># 5. O instalador tenta criar “Synapse Suporte” na área de trabalho e deixa o agente em {backendBaseUrl}</p>
+                    <p className="text-muted-foreground"># 6. Se o atalho não aparecer, rode manualmente: synapse-agent.exe --support</p>
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <Button size="sm" className="w-full" asChild>
-                    <a href="https://synapse-backend.railway.app/api/agent/download/windows" download="instalar_agente.bat">
-                      <Download className="h-4 w-4 mr-2" />Baixar Instalador (Windows .bat)
-                    </a>
-                  </Button>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="flex-1" asChild>
-                      <a href="https://synapse-backend.railway.app/api/agent/download/agent" download="synapse_agent.py">
-                        <FileText className="h-4 w-4 mr-2" />Script Python
-                      </a>
-                    </Button>
-                    <Button size="sm" variant="outline" className="flex-1" asChild>
-                      <a href="https://synapse-backend.railway.app/api/agent/download/linux" download="install_linux.sh">
-                        <Download className="h-4 w-4 mr-2" />Linux (.sh)
-                      </a>
-                    </Button>
-                  </div>
+                    <div className="flex gap-2">
+                      <Button size="sm" className="flex-1" asChild>
+                        <a href={`${backendBaseUrl}/api/agent/download/windows-installer`} download="instalar_agente.bat">
+                          <Download className="h-4 w-4 mr-2" />Instalador .bat
+                        </a>
+                      </Button>
+                      <Button size="sm" variant="outline" className="flex-1" asChild>
+                        <a href={`${backendBaseUrl}/api/agent/download/windows`} download="synapse-agent.exe">
+                          <Download className="h-4 w-4 mr-2" />Agente .exe
+                        </a>
+                      </Button>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline" className="flex-1" asChild>
+                        <a href={`${backendBaseUrl}/api/agent/download/windows-node-installer`} download="instalar_agente_node.js">
+                          <FileText className="h-4 w-4 mr-2" />Instalador Node
+                        </a>
+                      </Button>
+                      <Button size="sm" variant="outline" className="flex-1" asChild>
+                        <a href={`${backendBaseUrl}/api/agent/download/agent`} download="synapse_agent.py">
+                          <FileText className="h-4 w-4 mr-2" />Script Python
+                        </a>
+                      </Button>
+                    </div>
                 </div>
               </CardContent>
             </Card>
@@ -1653,7 +2003,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   <CardTitle className="text-sm flex items-center gap-2">
                     <Link2 className="h-4 w-4" />Códigos de Pareamento
                   </CardTitle>
-                  <Button size="sm" onClick={() => gerarCodigo.mutate({})} disabled={gerarCodigo.isPending}>
+                  <Button size="sm" onClick={() => gerarCodigo.mutate({ empresaId })} disabled={gerarCodigo.isPending}>
                     <Plus className="h-4 w-4 mr-1" />Gerar Código
                   </Button>
                 </div>
@@ -1683,7 +2033,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                           {copiedCode === c.codigo ? <Check className="h-3.5 w-3.5 text-green-600" /> : <Copy className="h-3.5 w-3.5" />}
                         </Button>
                       )}
-                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-red-500 hover:text-red-700" onClick={() => revogarCodigo.mutate({ id: c.id })}>
+                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-red-500 hover:text-red-700" onClick={() => revogarCodigo.mutate({ id: c.id, empresaId })}>
                         <X className="h-3.5 w-3.5" />
                       </Button>
                     </div>
@@ -1696,8 +2046,8 @@ export default function TI({ params }: { params?: { tab?: string } }) {
           {/* Lista de agentes registrados */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm flex items-center gap-2">
-                <Monitor className="h-4 w-4" />Agentes Registrados ({(agentesQ.data ?? []).length})
+                <CardTitle className="text-sm flex items-center gap-2">
+                <Monitor className="h-4 w-4" />Ativos Monitorados ({(agentesQ.data ?? []).length})
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -1764,7 +2114,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
         <TabsContent value="dispositivos" className="space-y-4 mt-4">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-2">
-              <p className="text-sm text-muted-foreground">Gerenciar e vincular dispositivos (agentes) aos usuários</p>
+              <p className="text-sm text-muted-foreground">Gerenciar vínculos dos ativos monitorados aos usuários. O software instalado e o dispositivo exibido são tratados como o mesmo item.</p>
               <Badge variant="secondary" className="text-xs">{agentes.length}</Badge>
             </div>
             <div className="flex gap-2">
@@ -1806,7 +2156,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   )}
                 </DialogContent>
               </Dialog>
-              <Button size="sm" variant="outline" onClick={() => { const token = localStorage.getItem("synapse-auth-token") ?? ""; const baseUrl = window.location.hostname === "localhost" ? "http://localhost:3001" : ""; fetch(`${baseUrl}/api/agents`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()).then(setAgentes); }}><RefreshCw className="h-4 w-4 mr-2" />Atualizar</Button>
+              <Button size="sm" variant="outline" onClick={() => agentesQ.refetch()}><RefreshCw className="h-4 w-4 mr-2" />Atualizar</Button>
             </div>
           </div>
           <div className="flex gap-2">

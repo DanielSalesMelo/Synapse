@@ -6,6 +6,13 @@ import { eq, sql } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { TRPCError } from "@trpc/server";
 import { sdk } from "../_core/sdk";
+import {
+  ensurePrimaryCompanyAccess,
+  getAccessibleCompanySummary,
+  resolveAccessibleEmpresaId,
+  resolveRoleCodeForCompany,
+} from "../_core/access";
+import { createAuditLog } from "../_core/audit";
 
 // ─── Rate limiting em memória para o endpoint de login ───────────────────────
 // Limita tentativas por IP: máx 10 tentativas em 15 minutos
@@ -94,6 +101,10 @@ export const authRouter = router({
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Usuário ou senha incorretos" });
       }
 
+      if ((user as any).deletedAt) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Sua conta está desativada. Fale com o administrador." });
+      }
+
       // Verificar status de aprovação
       if (user.status === "pending") {
         throw new TRPCError({
@@ -121,6 +132,13 @@ export const authRouter = router({
       );
 
       ctx.res.setHeader("Set-Cookie", buildCookieHeader(token));
+
+      await createAuditLog(ctx, {
+        acao: "LOGIN",
+        tabela: "users",
+        registroId: user.id,
+        dadosDepois: { email: user.email, empresaId: user.empresaId },
+      });
 
       // Retornar user sem o campo password
       const { password: _pw, ...safeUser } = user as any;
@@ -219,6 +237,15 @@ export const authRouter = router({
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Erro ao criar usuário" });
       }
 
+      if (targetEmpresaId) {
+        await ensurePrimaryCompanyAccess({
+          userId: newUser.id,
+          empresaId: targetEmpresaId,
+          roleCode: targetRole,
+          createdBy: ctx.user?.id ?? null,
+        });
+      }
+
       return {
         success: true,
         message: isAdmin
@@ -231,11 +258,34 @@ export const authRouter = router({
     if (!ctx.user) return null;
     // Nunca retornar o hash da senha para o frontend
     const { password: _pw, ...safeUser } = ctx.user as any;
-    return safeUser;
+    const accessibleCompanies = await getAccessibleCompanySummary(ctx.user);
+    const currentEmpresaId =
+      ctx.user.role === "master_admin"
+        ? ctx.user.empresaId ?? accessibleCompanies[0]?.empresaId ?? null
+        : await resolveAccessibleEmpresaId(ctx, ctx.user.empresaId ?? undefined).catch(() => accessibleCompanies[0]?.empresaId ?? null);
+
+    const companyRoleCode = currentEmpresaId
+      ? await resolveRoleCodeForCompany(ctx.user, currentEmpresaId).catch(() => ctx.user.role)
+      : ctx.user.role;
+
+    return {
+      ...safeUser,
+      empresaId: currentEmpresaId,
+      roleCode: companyRoleCode,
+      accessibleCompanies,
+    };
   }),
 
   logout: publicProcedure.mutation(async ({ ctx }) => {
     ctx.res.setHeader("Set-Cookie", buildClearCookieHeader());
+    if (ctx.user) {
+      await createAuditLog(ctx, {
+        acao: "LOGOUT",
+        tabela: "users",
+        registroId: ctx.user.id,
+        dadosDepois: { email: ctx.user.email },
+      });
+    }
     return { success: true };
   }),
 });

@@ -3,18 +3,22 @@ import { z } from "zod";
 import { getDb } from "../db";
 import { sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
+import { resolveAccessibleEmpresaId } from "../_core/access";
 
 const STATUS_VALUES = ["backlog", "a_fazer", "em_andamento", "revisao", "concluido"] as const;
 const PRIORIDADE_VALUES = ["critica", "alta", "media", "baixa"] as const;
 
 export const tarefasRouter = router({
   // ── Listar projetos ──────────────────────────────────────────────────────
-  listProjetos: protectedProcedure.query(async ({ ctx }) => {
+  listProjetos: protectedProcedure
+    .input(z.object({ empresaId: z.number().optional() }).optional())
+    .query(async ({ ctx, input }) => {
     const db = await getDb();
     if (!db) return [];
+    const empresaId = await resolveAccessibleEmpresaId(ctx, input?.empresaId);
     const rows = await db.execute(sql`
       SELECT * FROM projetos
-      WHERE "empresaId" = ${ctx.user.empresaId ?? 1}
+      WHERE "empresaId" = ${empresaId}
         AND ativo = true
       ORDER BY nome
     `);
@@ -23,6 +27,7 @@ export const tarefasRouter = router({
 
   createProjeto: protectedProcedure
     .input(z.object({
+      empresaId: z.number().optional(),
       nome: z.string().min(1).max(200),
       descricao: z.string().optional(),
       cor: z.string().optional().default("#6366f1"),
@@ -30,9 +35,10 @@ export const tarefasRouter = router({
     .mutation(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
       await db.execute(sql`
         INSERT INTO projetos ("empresaId", nome, descricao, cor)
-        VALUES (${ctx.user.empresaId ?? 1}, ${input.nome}, ${input.descricao ?? null}, ${input.cor})
+        VALUES (${empresaId}, ${input.nome}, ${input.descricao ?? null}, ${input.cor})
       `);
       return { success: true };
     }),
@@ -40,6 +46,7 @@ export const tarefasRouter = router({
   // ── Listar tarefas ───────────────────────────────────────────────────────
   list: protectedProcedure
     .input(z.object({
+      empresaId: z.number().optional(),
       projetoId: z.number().optional(),
       status: z.enum(STATUS_VALUES).optional(),
       responsavelId: z.number().optional(),
@@ -48,8 +55,9 @@ export const tarefasRouter = router({
     .query(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) return [];
+      const empresaId = await resolveAccessibleEmpresaId(ctx, input?.empresaId);
 
-      const rows = await db.execute(sql`
+      const queryWithSoftDelete = sql`
         SELECT
           t.*,
           u.name AS "responsavelNomeReal",
@@ -61,14 +69,41 @@ export const tarefasRouter = router({
         FROM tarefas t
         LEFT JOIN users u ON t."responsavelId" = u.id
         LEFT JOIN projetos p ON t."projetoId" = p.id
-        WHERE t."empresaId" = ${ctx.user.empresaId ?? 1}
+        WHERE t."empresaId" = ${empresaId}
+          AND t."deletedAt" IS NULL
           ${input?.projetoId ? sql`AND t."projetoId" = ${input.projetoId}` : sql``}
           ${input?.status ? sql`AND t.status = ${input.status}` : sql``}
           ${input?.responsavelId ? sql`AND t."responsavelId" = ${input.responsavelId}` : sql``}
           ${input?.sprint ? sql`AND t.sprint = ${input.sprint}` : sql``}
         ORDER BY t."createdAt" DESC
         LIMIT 500
-      `);
+      `;
+      const legacyQuery = sql`
+        SELECT
+          t.*,
+          u.name AS "responsavelNomeReal",
+          p.nome AS "projetoNome",
+          p.cor AS "projetoCor",
+          (
+            SELECT COUNT(*)::int FROM tarefa_comentarios tc WHERE tc."tarefaId" = t.id
+          ) AS "totalComentarios"
+        FROM tarefas t
+        LEFT JOIN users u ON t."responsavelId" = u.id
+        LEFT JOIN projetos p ON t."projetoId" = p.id
+        WHERE t."empresaId" = ${empresaId}
+          ${input?.projetoId ? sql`AND t."projetoId" = ${input.projetoId}` : sql``}
+          ${input?.status ? sql`AND t.status = ${input.status}` : sql``}
+          ${input?.responsavelId ? sql`AND t."responsavelId" = ${input.responsavelId}` : sql``}
+          ${input?.sprint ? sql`AND t.sprint = ${input.sprint}` : sql``}
+        ORDER BY t."createdAt" DESC
+        LIMIT 500
+      `;
+      let rows: any;
+      try {
+        rows = await db.execute(queryWithSoftDelete);
+      } catch {
+        rows = await db.execute(legacyQuery);
+      }
 
       return (rows as unknown as any[]).map((row) => ({
         ...row,
@@ -81,6 +116,7 @@ export const tarefasRouter = router({
   // ── Criar tarefa ─────────────────────────────────────────────────────────
   create: protectedProcedure
     .input(z.object({
+      empresaId: z.number().optional(),
       titulo: z.string().min(1).max(500),
       descricao: z.string().optional(),
       status: z.enum(STATUS_VALUES).default("backlog"),
@@ -96,6 +132,7 @@ export const tarefasRouter = router({
     .mutation(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
 
       const result = await db.execute(sql`
         INSERT INTO tarefas (
@@ -104,7 +141,7 @@ export const tarefasRouter = router({
           "projetoId", sprint, tags, "criadoPorId"
         )
         VALUES (
-          ${ctx.user.empresaId ?? 1},
+          ${empresaId},
           ${input.titulo},
           ${input.descricao ?? null},
           ${input.status},
@@ -128,6 +165,7 @@ export const tarefasRouter = router({
   // ── Atualizar tarefa ─────────────────────────────────────────────────────
   update: protectedProcedure
     .input(z.object({
+      empresaId: z.number().optional(),
       id: z.number(),
       titulo: z.string().min(1).max(500).optional(),
       descricao: z.string().optional(),
@@ -145,11 +183,24 @@ export const tarefasRouter = router({
     .mutation(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
 
       // Verificar se a tarefa pertence à empresa
-      const existing = await db.execute(sql`
-        SELECT id FROM tarefas WHERE id = ${input.id} AND "empresaId" = ${ctx.user.empresaId ?? 1}
-      `);
+      let existing: any;
+      try {
+        existing = await db.execute(sql`
+          SELECT id FROM tarefas
+          WHERE id = ${input.id}
+            AND "empresaId" = ${empresaId}
+            AND "deletedAt" IS NULL
+        `);
+      } catch {
+        existing = await db.execute(sql`
+          SELECT id FROM tarefas
+          WHERE id = ${input.id}
+            AND "empresaId" = ${empresaId}
+        `);
+      }
       if ((existing as unknown as any[]).length === 0) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Tarefa não encontrada" });
       }
@@ -185,19 +236,31 @@ export const tarefasRouter = router({
   // ── Mover tarefa para outro status (drag & drop) ─────────────────────────
   moveStatus: protectedProcedure
     .input(z.object({
+      empresaId: z.number().optional(),
       id: z.number(),
       status: z.enum(STATUS_VALUES),
     }))
     .mutation(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
 
-      await db.execute(sql`
-        UPDATE tarefas
-        SET status = ${input.status}, "updatedAt" = NOW()
-        WHERE id = ${input.id}
-          AND "empresaId" = ${ctx.user.empresaId ?? 1}
-      `);
+      try {
+        await db.execute(sql`
+          UPDATE tarefas
+          SET status = ${input.status}, "updatedAt" = NOW()
+          WHERE id = ${input.id}
+            AND "empresaId" = ${empresaId}
+            AND "deletedAt" IS NULL
+        `);
+      } catch {
+        await db.execute(sql`
+          UPDATE tarefas
+          SET status = ${input.status}, "updatedAt" = NOW()
+          WHERE id = ${input.id}
+            AND "empresaId" = ${empresaId}
+        `);
+      }
 
       return { success: true };
     }),
@@ -208,12 +271,44 @@ export const tarefasRouter = router({
     .mutation(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      let tarefaRows: any;
+      try {
+        tarefaRows = await db.execute(sql`
+          SELECT id, "empresaId"
+          FROM tarefas
+          WHERE id = ${input.id}
+            AND "deletedAt" IS NULL
+        `);
+      } catch {
+        tarefaRows = await db.execute(sql`
+          SELECT id, "empresaId"
+          FROM tarefas
+          WHERE id = ${input.id}
+        `);
+      }
+      const tarefa = (tarefaRows as unknown as any[])[0];
+      if (!tarefa) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Tarefa não encontrada" });
+      }
+      const empresaId = await resolveAccessibleEmpresaId(ctx, Number(tarefa.empresaId));
 
-      await db.execute(sql`
-        DELETE FROM tarefas
-        WHERE id = ${input.id}
-          AND "empresaId" = ${ctx.user.empresaId ?? 1}
-      `);
+      try {
+        await db.execute(sql`
+          UPDATE tarefas
+          SET "deletedAt" = NOW(),
+              "deletedBy" = ${ctx.user.id},
+              "updatedAt" = NOW()
+          WHERE id = ${input.id}
+            AND "empresaId" = ${empresaId}
+            AND "deletedAt" IS NULL
+        `);
+      } catch {
+        await db.execute(sql`
+          DELETE FROM tarefas
+          WHERE id = ${input.id}
+            AND "empresaId" = ${empresaId}
+        `);
+      }
 
       return { success: true };
     }),
@@ -262,15 +357,21 @@ export const tarefasRouter = router({
     }),
 
   // ── Listar usuários para atribuição ──────────────────────────────────────
-  listUsuarios: protectedProcedure.query(async ({ ctx }) => {
+  listUsuarios: protectedProcedure
+    .input(z.object({ empresaId: z.number().optional() }).optional())
+    .query(async ({ ctx, input }) => {
     const db = await getDb();
     if (!db) return [];
+    const empresaId = await resolveAccessibleEmpresaId(ctx, input?.empresaId);
 
     const rows = await db.execute(sql`
       SELECT id, name, "lastName", email
       FROM users
-      WHERE "empresaId" = ${ctx.user.empresaId ?? 1}
-        OR ${ctx.user.role === "master_admin" ? sql`true` : sql`false`}
+      WHERE "deletedAt" IS NULL
+        AND (
+          "empresaId" = ${empresaId}
+          OR ${ctx.user.role === "master_admin" ? sql`true` : sql`false`}
+        )
       ORDER BY name
       LIMIT 100
     `);

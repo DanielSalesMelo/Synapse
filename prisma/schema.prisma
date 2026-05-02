@@ -1,467 +1,586 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL" )
-}
-
 generator client {
   provider = "prisma-client-js"
 }
 
-// =========================================
-// CORE MODELS: Tenant, User, Auth
-// =========================================
+datasource db {
+  provider = "postgresql"
+}
 
-model Tenant {
-  id          String   @id @default(cuid())
-  name        String
-  slug        String   @unique
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  // Relations
-  users       User[]
-  companies   Company[]
-  roles       Role[]
-  pipelines   Pipeline[]
-  funnels     Funnel[]
-  deals       Deal[]
-  contacts    Contact[]
-  activities  Activity[]
-  tickets     Ticket[]
-  employees   Employee[]
-  leaveRequests LeaveRequest[]
-  invoices    Invoice[]
-  expenses    Expense[]
-  assets      Asset[]
-  products    Product[]
-  productionOrders ProductionOrder[]
-  inventoryMovements InventoryMovement[]
+enum UserRole {
+  user
+  admin
+  master_admin
+  monitor
+  dispatcher
 
-  @@map("tenants")
+  @@map("user_role")
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String?
-  passwordHash  String
-  avatarUrl     String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  isMasterAdmin Boolean   @default(false)
-  isDeleted     Boolean   @default(false)
-  deletedAt     DateTime?
+  id           Int       @id @default(autoincrement())
+  openId       String    @unique @db.VarChar(64)
+  name         String?
+  lastName     String?
+  email        String?   @db.VarChar(320)
+  phone        String?   @db.VarChar(20)
+  loginMethod  String?   @db.VarChar(64)
+  password     String?   @db.VarChar(255)
+  role         UserRole  @default(user)
+  status       String    @default("pending") @db.VarChar(20)
+  empresaId    Int?
+  avatarUrl    String?
+  bio          String?
+  cargo        String?
+  departamento String?
+  idioma       String?
+  tema         String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  lastSignedIn DateTime  @default(now())
+  deletedAt    DateTime?
+  deletedBy    Int?
+  deleteReason String?
 
-  // Relations
-  tenantId      String
-  tenant        Tenant    @relation(fields: [tenantId], references: [id])
-  memberships   Membership[]
-  passwordResetRequests PasswordResetRequest[]
-  
-  // CRM Relations
-  ownedDeals    Deal[]     @relation("OwnedDeals")
-  activities    Activity[] @relation("UserActivities")
-
-  // TI Relations
-  assignedTickets Ticket[] @relation("AssignedTickets")
-  createdTickets  Ticket[] @relation("CreatedTickets")
-
-  // RH Relations
-  employeeProfile Employee?
+  empresaPrincipal Empresa?             @relation("UserEmpresaPrincipal", fields: [empresaId], references: [id])
+  companyAccess    UserCompanyAccess[]
+  userPermissoes   UserPermissao[]
+  auditLogs        AuditLog[]
+  auditoriaDetalhe AuditoriaDetalhada[]
+  masterClients    MasterClient[]                @relation("MasterClientsOwner")
+  masterTasks      MasterTask[]                  @relation("MasterTasksOwner")
+  masterFinancial  MasterFinancialTransaction[]  @relation("MasterFinancialOwner")
+  masterEvents     MasterCalendarEvent[]         @relation("MasterCalendarOwner")
+  masterReminders  MasterReminder[]              @relation("MasterRemindersOwner")
 
   @@map("users")
 }
 
-model Role {
-  id          String   @id @default(cuid())
-  name        String   // e.g., "Admin", "Sales Rep", "IT Support"
-  permissions String[] // e.g., ["deal:create", "deal:delete", "user:invite"]
+model Empresa {
+  id            Int      @id @default(autoincrement())
+  nome          String   @db.VarChar(255)
+  cnpj          String?  @db.VarChar(18)
+  telefone      String?  @db.VarChar(20)
+  email         String?  @db.VarChar(320)
+  endereco      String?
+  cidade        String?  @db.VarChar(100)
+  estado        String?  @db.VarChar(2)
+  ativo         Boolean  @default(true)
+  agentToken    String?
+  codigoConvite String?  @unique @db.VarChar(50)
+  tipoEmpresa   String   @default("independente") @db.VarChar(20)
+  matrizId      Int?
+  parentId      Int?     @map("parent_id")
+  grupoId       Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  deletedAt     DateTime?
+  deletedBy     Int?
+  deleteReason  String?
+
+  usuariosPrincipais User[]              @relation("UserEmpresaPrincipal")
+  companyAccess      UserCompanyAccess[]
+  rolePermissoes     ModuloPermissao[]
+  userPermissoes     UserPermissao[]
+  grupoVinculos      GrupoEmpresa[]
+  grupo              GrupoEmpresarial?   @relation(fields: [grupoId], references: [id])
+  auditLogs          AuditLog[]
+  auditoriaDetalhe   AuditoriaDetalhada[]
+  notifications      Notification[]
+  veiculos           Veiculo[]
+  funcionarios       Funcionario[]
+  contasPagar        ContaPagar[]
+  contasReceber      ContaReceber[]
+  viagens            Viagem[]
+  ticketsTi          TicketTi[]
+  omnichannelConversations OmnichannelConversation[]
+
+  @@map("empresas")
+}
+
+model GrupoEmpresarial {
+  id           Int       @id @default(autoincrement())
+  nome         String    @db.VarChar(255)
+  cnpj         String?   @db.VarChar(18)
+  descricao    String?
+  adminUserId  Int?
+  ativo        Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+  deletedBy    Int?
+  deleteReason String?
+
+  empresas Empresa[]
+  vinculos GrupoEmpresa[]
+
+  @@map("grupos_empresariais")
+}
+
+model GrupoEmpresa {
+  id        Int      @id @default(autoincrement())
+  grupoId   Int
+  empresaId Int
+  papel     String   @default("filial") @db.VarChar(20)
+  createdAt DateTime @default(now())
+
+  grupo   GrupoEmpresarial @relation(fields: [grupoId], references: [id])
+  empresa Empresa          @relation(fields: [empresaId], references: [id])
+
+  @@map("grupo_empresas")
+}
+
+model UserCompanyAccess {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  empresaId    Int
+  roleCode     String   @db.VarChar(50)
+  canViewGroup Boolean  @default(false)
+  isDefault    Boolean  @default(false)
+  ativo        Boolean  @default(true)
+  createdBy    Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  deletedAt    DateTime?
+  deletedBy    Int?
+  deleteReason String?
+
+  user    User    @relation(fields: [userId], references: [id])
+  empresa Empresa @relation(fields: [empresaId], references: [id])
+
+  @@map("user_company_access")
+}
+
+model ModuloPermissao {
+  id          Int      @id @default(autoincrement())
+  empresaId   Int
+  roleCode    String   @db.VarChar(50)
+  modulo      String   @db.VarChar(100)
+  podeVer     Boolean  @default(false)
+  podeCriar   Boolean  @default(false)
+  podeEditar  Boolean  @default(false)
+  podeDeletar Boolean  @default(false)
+  podeExportar Boolean @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // Relations
-  tenantId    String
-  tenant      Tenant     @relation(fields: [tenantId], references: [id])
-  memberships Membership[]
+  empresa Empresa @relation(fields: [empresaId], references: [id])
 
-  @@unique([tenantId, name])
-  @@map("roles")
+  @@unique([empresaId, roleCode, modulo])
+  @@map("modulo_permissoes")
 }
 
-model Membership {
-  id      String @id @default(cuid())
-  userId  String
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  roleId  String
-  role    Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+model UserPermissao {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  empresaId    Int
+  modulo       String   @db.VarChar(100)
+  podeVer      Boolean  @default(false)
+  podeCriar    Boolean  @default(false)
+  podeEditar   Boolean  @default(false)
+  podeDeletar  Boolean  @default(false)
+  podeExportar Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  @@unique([userId, roleId])
-  @@map("memberships")
+  user    User    @relation(fields: [userId], references: [id])
+  empresa Empresa @relation(fields: [empresaId], references: [id])
+
+  @@map("user_permissoes")
 }
 
-model PasswordResetRequest {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  token     String   @unique
-  expiresAt DateTime
-  createdAt DateTime @default(now())
+model AuditLog {
+  id         BigInt    @id @default(autoincrement())
+  empresaId  Int?
+  userId     Int
+  userName   String?   @db.VarChar(255)
+  acao       String    @db.VarChar(50)
+  tabela     String    @db.VarChar(100)
+  registroId Int
+  dadosAntes String?
+  dadosDepois String?
+  ip         String?   @db.VarChar(45)
+  userAgent  String?
+  createdAt  DateTime  @default(now())
 
-  @@map("password_reset_requests")
+  empresa Empresa? @relation(fields: [empresaId], references: [id])
+  user    User     @relation(fields: [userId], references: [id])
+
+  @@map("audit_log")
 }
 
-// =========================================
-// CRM & SALES MODELS
-// =========================================
-
-model Company {
-  id        String   @id @default(cuid())
-  name      String
-  domain    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  isDeleted Boolean  @default(false)
-  deletedAt DateTime?
-
-  // Relations
-  tenantId  String
-  tenant    Tenant    @relation(fields: [tenantId], references: [id])
-  contacts  Contact[]
-  deals     Deal[]
-
-  @@map("companies")
-}
-
-model Contact {
-  id        String   @id @default(cuid())
-  name      String
-  email     String?
-  phone     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  isDeleted Boolean  @default(false)
-  deletedAt DateTime?
-
-  // Relations
-  tenantId  String
-  tenant    Tenant  @relation(fields: [tenantId], references: [id])
-  companyId String
-  company   Company @relation(fields: [companyId], references: [id])
-  deals     Deal[]
-
-  @@unique([tenantId, email])
-  @@map("contacts")
-}
-
-model Pipeline {
-  id        String   @id @default(cuid())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  tenantId  String
-  tenant    Tenant   @relation(fields: [tenantId], references: [id])
-  stages    PipelineStage[]
-  deals     Deal[]
-
-  @@map("pipelines")
-}
-
-model PipelineStage {
-  id        String   @id @default(cuid())
-  name      String
-  order     Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  pipelineId String
-  pipeline   Pipeline @relation(fields: [pipelineId], references: [id])
-  deals      Deal[]
-
-  @@map("pipeline_stages")
-}
-
-model Deal {
-  id                String    @id @default(cuid())
-  title             String
-  value             Decimal
-  expectedCloseDate DateTime?
-  status            String    @default("Open") // Open, Won, Lost
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-  isDeleted         Boolean   @default(false)
-  deletedAt         DateTime?
-
-  // Relations
-  tenantId          String
-  tenant            Tenant        @relation(fields: [tenantId], references: [id])
-  pipelineId        String
-  pipeline          Pipeline      @relation(fields: [pipelineId], references: [id])
-  stageId           String
-  stage             PipelineStage @relation(fields: [stageId], references: [id])
-  companyId         String
-  company           Company       @relation(fields: [companyId], references: [id])
-  contactId         String
-  contact           Contact       @relation(fields: [contactId], references: [id])
-  ownerId           String
-  owner             User          @relation("OwnedDeals", fields: [ownerId], references: [id])
-  activities        Activity[]
-  funnelId          String?
-  funnel            Funnel?       @relation(fields: [funnelId], references: [id])
-  funnelStageId     String?
-  funnelStage       Stage?        @relation(fields: [funnelStageId], references: [id])
-
-  @@map("deals")
-}
-
-model Activity {
-  id        String    @id @default(cuid())
-  type      String    // "call", "meeting", "email", "task"
-  subject   String
-  dueDate   DateTime
-  isDone    Boolean   @default(false)
-  notes     String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  isDeleted Boolean   @default(false)
-  deletedAt DateTime?
-
-  // Relations
-  tenantId  String
-  tenant    Tenant @relation(fields: [tenantId], references: [id])
-  dealId    String
-  deal      Deal   @relation(fields: [dealId], references: [id])
-  userId    String
-  user      User   @relation("UserActivities", fields: [userId], references: [id])
-
-  @@map("activities")
-}
-
-// =========================================
-// IT & SUPPORT MODELS
-// =========================================
-
-model Ticket {
-  id          String    @id @default(cuid())
-  subject     String
-  description String
-  status      String    @default("Open") // Open, In Progress, Closed
-  priority    String    @default("Medium") // Low, Medium, High, Critical
+model AuditoriaDetalhada {
+  id          BigInt    @id @default(autoincrement())
+  empresaId   Int?
+  userId      Int
+  userName    String?   @db.VarChar(255)
+  userRole    String?   @db.VarChar(50)
+  tipoEvento  String    @db.VarChar(50)
+  modulo      String?   @db.VarChar(100)
+  tabela      String?   @db.VarChar(100)
+  registroId  Int?
+  descricao   String
+  dadosAntes  String?
+  dadosDepois String?
+  ip          String?   @db.VarChar(45)
+  userAgent   String?
+  sessionId   String?   @db.VarChar(100)
+  risco       String?   @default("baixo") @db.VarChar(20)
   createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  isDeleted   Boolean   @default(false)
-  deletedAt   DateTime?
 
-  // Relations
-  tenantId    String
-  tenant      Tenant @relation(fields: [tenantId], references: [id])
-  creatorId   String
-  creator     User   @relation("CreatedTickets", fields: [creatorId], references: [id])
-  assigneeId  String?
-  assignee    User?  @relation("AssignedTickets", fields: [assigneeId], references: [id])
-  assetId     String?
-  asset       Asset? @relation(fields: [assetId], references: [id])
+  empresa Empresa? @relation(fields: [empresaId], references: [id])
+  user    User     @relation(fields: [userId], references: [id])
 
-  @@map("tickets")
+  @@map("auditoria_detalhada")
 }
 
-model Asset {
-  id              String    @id @default(cuid())
-  name            String    // e.g., "Notebook Dell-01"
-  type            String    // "Notebook", "Server", "Printer"
-  serialNumber    String?   @unique
-  purchaseDate    DateTime?
-  warrantyExpires DateTime?
-  status          String    // "In Use", "In Stock", "In Repair", "Retired"
+model Notification {
+  id        BigInt    @id @default(autoincrement())
+  empresaId Int?
+  userId    Int?
+  tipo      String    @db.VarChar(50)
+  titulo    String    @db.VarChar(255)
+  mensagem  String
+  payload   Json?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+
+  empresa Empresa? @relation(fields: [empresaId], references: [id])
+
+  @@map("notifications")
+}
+
+model Veiculo {
+  id               Int       @id @default(autoincrement())
+  empresaId        Int
+  placa            String    @db.VarChar(10)
+  tipo             String    @db.VarChar(30)
+  ativo            Boolean   @default(true)
+  kmAtual          Int?
+  vencimentoCrlv   DateTime?
+  vencimentoSeguro DateTime?
+  deletedAt        DateTime?
+  deletedBy        Int?
+  deleteReason     String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  empresa Empresa @relation(fields: [empresaId], references: [id])
+
+  @@map("veiculos")
+}
+
+model Funcionario {
+  id              Int       @id @default(autoincrement())
+  empresaId       Int
+  nome            String    @db.VarChar(255)
+  funcao          String?   @db.VarChar(50)
+  tipoContrato    String?   @db.VarChar(30)
+  cpf             String?   @db.VarChar(14)
+  rg              String?   @db.VarChar(20)
+  pis             String?   @db.VarChar(20)
+  telefone        String?   @db.VarChar(20)
+  email           String?   @db.VarChar(320)
+  salario         Decimal?  @db.Decimal(12, 2)
+  dataAdmissao    DateTime?
+  dataNascimento  DateTime?
+  cnh             String?   @db.VarChar(20)
+  ativo           Boolean   @default(true)
+  diaPagamento    Int?
+  vencimentoCnh   DateTime?
+  vencimentoAso   DateTime?
+  vencimentoMopp  DateTime?
+  temPlanoSaude   Boolean   @default(false)
+  temValeRefeicao Boolean   @default(false)
+  temValeTransporte Boolean @default(false)
+  valorValeRefeicao Decimal? @db.Decimal(12, 2)
+  deletedAt       DateTime?
+  deletedBy       Int?
+  deleteReason    String?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
-  isDeleted       Boolean   @default(false)
-  deletedAt       DateTime?
 
-  // Relations
-  tenantId        String
-  tenant          Tenant   @relation(fields: [tenantId], references: [id])
-  tickets         Ticket[]
+  empresa Empresa @relation(fields: [empresaId], references: [id])
 
-  @@map("assets")
+  @@map("funcionarios")
 }
 
-// =========================================
-// HR MODELS
-// =========================================
-
-model Employee {
-  id             String    @id @default(cuid())
-  jobTitle       String
-  department     String
-  startDate      DateTime
-  endDate        DateTime?
+model ContaPagar {
+  id             Int       @id @default(autoincrement())
+  empresaId      Int
+  descricao      String    @db.VarChar(255)
+  categoria      String    @db.VarChar(50)
+  valor          Decimal   @db.Decimal(10, 2)
+  dataVencimento DateTime
+  dataPagamento  DateTime?
+  status         String    @db.VarChar(20)
+  fornecedor     String?   @db.VarChar(255)
+  funcionarioId  Int?
+  observacoes    String?
+  deletedAt      DateTime?
+  deletedBy      Int?
+  deleteReason   String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
-  isDeleted      Boolean   @default(false)
+
+  empresa Empresa @relation(fields: [empresaId], references: [id])
+
+  @@map("contas_pagar")
+}
+
+model ContaReceber {
+  id              Int       @id @default(autoincrement())
+  empresaId       Int
+  descricao       String    @db.VarChar(255)
+  categoria       String    @db.VarChar(50)
+  valor           Decimal   @db.Decimal(10, 2)
+  dataVencimento  DateTime
+  dataRecebimento DateTime?
+  status          String    @db.VarChar(20)
+  deletedAt       DateTime?
+  deletedBy       Int?
+  deleteReason    String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  empresa Empresa @relation(fields: [empresaId], references: [id])
+
+  @@map("contas_receber")
+}
+
+model OmnichannelConversation {
+  id             Int       @id @default(autoincrement())
+  empresaId      Int
+  provider       String    @db.VarChar(30)
+  externalId     String    @db.VarChar(255)
+  displayName    String?   @db.VarChar(255)
+  phone          String?   @db.VarChar(30)
+  username       String?   @db.VarChar(255)
+  status         String    @default("ativa") @db.VarChar(20)
+  assignedUserId Int?
+  metadata       Json?
+  lastMessageAt  DateTime  @default(now())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
   deletedAt      DateTime?
 
-  // Relations
-  tenantId       String
-  tenant         Tenant         @relation(fields: [tenantId], references: [id])
-  userId         String         @unique // Link to the User model
-  user           User           @relation(fields: [userId], references: [id])
-  leaveRequests  LeaveRequest[]
+  empresa  Empresa               @relation(fields: [empresaId], references: [id])
+  messages OmnichannelMessage[]
 
-  @@map("employees")
+  @@unique([empresaId, provider, externalId])
+  @@map("omnichannel_conversations")
 }
 
-model LeaveRequest {
-  id        String    @id @default(cuid())
-  type      String    // "Vacation", "Sick Leave", "Personal"
-  startDate DateTime
-  endDate   DateTime
-  reason    String?
-  status    String    @default("Pending") // Pending, Approved, Rejected
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  isDeleted Boolean   @default(false)
-  deletedAt DateTime?
-
-  // Relations
-  tenantId   String
-  tenant     Tenant   @relation(fields: [tenantId], references: [id])
-  employeeId String
-  employee   Employee @relation(fields: [employeeId], references: [id])
-
-  @@map("leave_requests")
-}
-
-// =========================================
-// FINANCE MODELS
-// =========================================
-
-model Invoice {
-  id          String    @id @default(cuid())
-  number      String
-  issueDate   DateTime
-  dueDate     DateTime
-  totalAmount Decimal
-  status      String    @default("Draft") // Draft, Sent, Paid, Overdue
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  isDeleted   Boolean   @default(false)
-  deletedAt   DateTime?
-
-  // Relations
-  tenantId    String
-  tenant      Tenant @relation(fields: [tenantId], references: [id])
-
-  @@map("invoices")
-}
-
-model Expense {
-  id          String    @id @default(cuid())
-  description String
-  amount      Decimal
-  date        DateTime
-  category    String
-  status      String    @default("Pending") // Pending, Approved, Reimbursed
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  isDeleted   Boolean   @default(false)
-  deletedAt   DateTime?
-
-  // Relations
-  tenantId    String
-  tenant      Tenant @relation(fields: [tenantId], references: [id])
-
-  @@map("expenses")
-}
-
-// =========================================
-// PRODUCTION & INVENTORY (BASIC MODELS)
-// =========================================
-
-model Product {
-  id          String    @id @default(cuid())
-  name        String
-  sku         String    @unique
-  description String?
-  price       Decimal
-  quantityInStock Int   @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  isDeleted   Boolean   @default(false)
-  deletedAt   DateTime?
-
-  // Relations
-  tenantId    String
-  tenant      Tenant @relation(fields: [tenantId], references: [id])
-
-  @@map("products")
-}
-
-model ProductionOrder {
-  id                String    @id @default(cuid())
-  productId         String
-  quantityToProduce Int
-  status            String    @default("Pending") // Pending, In Progress, Completed
+model OmnichannelMessage {
+  id                Int       @id @default(autoincrement())
+  conversationId    Int
+  provider          String    @db.VarChar(30)
+  direction         String    @db.VarChar(10)
+  externalMessageId String?   @db.VarChar(255)
+  senderName        String?   @db.VarChar(255)
+  content           String?
+  messageType       String    @default("text") @db.VarChar(20)
+  mediaUrl          String?
+  status            String    @default("recebida") @db.VarChar(20)
+  payload           Json?
   createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-  isDeleted         Boolean   @default(false)
-  deletedAt         DateTime?
 
-  // Relations
-  tenantId          String
-  tenant            Tenant @relation(fields: [tenantId], references: [id])
+  conversation OmnichannelConversation @relation(fields: [conversationId], references: [id])
 
-  @@map("production_orders")
+  @@map("omnichannel_messages")
 }
 
-model InventoryMovement {
-  id        String   @id @default(cuid())
-  productId String
-  type      String   // "In" (from production/purchase), "Out" (from sale)
-  quantity  Int
-  reason    String?
-  createdAt DateTime @default(now())
+model CompraTi {
+  id                  Int       @id @default(autoincrement())
+  empresaId           Int
+  solicitanteId       Int
+  aprovadorId         Int?
+  item                String    @db.VarChar(255)
+  fornecedor          String?   @db.VarChar(255)
+  quantidade          Int?
+  valorUnitario       Decimal?  @db.Decimal(12, 2)
+  valorTotal          Decimal?  @db.Decimal(12, 2)
+  status              String    @db.VarChar(30)
+  justificativa       String?
+  observacoes         String?
+  observacaoAprovacao String?
+  nivelAlcada         Int?      @default(1)
+  aprovadoEm          DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  deletedAt           DateTime?
 
-  // Relations
-  tenantId  String
-  tenant    Tenant @relation(fields: [tenantId], references: [id])
+  historico CompraTiHistorico[]
 
-  @@map("inventory_movements")
+  @@map("compras_ti")
 }
 
-//============== SALES & CRM MODELS ==============
+model CompraTiHistorico {
+  id            Int       @id @default(autoincrement())
+  compraId      Int
+  empresaId     Int
+  userId        Int?
+  acao          String    @db.VarChar(50)
+  statusAnterior String?  @db.VarChar(30)
+  statusNovo    String?   @db.VarChar(30)
+  observacao    String?
+  createdAt     DateTime  @default(now())
 
-// Representa um funil de vendas (ex: "Vendas 2024", "Prospecção de Grandes Contas")
-model Funnel {
-  id          String  @id @default(cuid())
-  name        String
-  description String?
-  tenantId    String
-  tenant      Tenant  @relation(fields: [tenantId], references: [id])
-  stages      Stage[]
-  deals       Deal[]
+  compra CompraTi @relation(fields: [compraId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@map("compras_ti_historico")
 }
 
-// Representa uma etapa dentro de um funil (ex: "Contato Inicial", "Proposta Enviada", "Negociação")
-model Stage {
-  id       String  @id @default(cuid())
-  name     String
-  order    Int     // Ordem da etapa no funil (1, 2, 3...)
-  funnelId String
-  funnel   Funnel  @relation(fields: [funnelId], references: [id])
-  deals    Deal[]
+model Viagem {
+  id            Int       @id @default(autoincrement())
+  empresaId     Int
+  status        String    @db.VarChar(30)
+  freteTotal    Decimal?  @db.Decimal(10, 2)
+  totalDespesas Decimal?  @db.Decimal(10, 2)
+  saldoViagem   Decimal?  @db.Decimal(10, 2)
+  dataChegada   DateTime?
+  kmSaida       Int?
+  kmChegada     Int?
+  veiculoId     Int?
+  deletedAt     DateTime?
+  deletedBy     Int?
+  deleteReason  String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  empresa Empresa @relation(fields: [empresaId], references: [id])
 
-  @@index([funnelId, order])
+  @@map("viagens")
 }
 
+model TicketTi {
+  id            Int       @id @default(autoincrement())
+  empresaId     Int
+  protocolo     String    @db.VarChar(20)
+  solicitanteId Int
+  titulo        String    @db.VarChar(255)
+  descricao     String
+  categoria     String    @db.VarChar(50)
+  prioridade    String    @db.VarChar(20)
+  status        String    @db.VarChar(30)
+  responsavelId Int?
+  resolucao     String?
+  resolvidoEm   DateTime?
+  deletedAt     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  empresa Empresa @relation(fields: [empresaId], references: [id])
+
+  @@map("tickets_ti")
+}
+
+model MasterClient {
+  id          Int       @id @default(autoincrement())
+  ownerUserId Int
+  nome        String    @db.VarChar(255)
+  empresa     String?   @db.VarChar(255)
+  contato     String?   @db.VarChar(255)
+  whatsapp    String?   @db.VarChar(30)
+  email       String?   @db.VarChar(320)
+  servicos    String?
+  valorMensal Decimal?  @db.Decimal(12, 2)
+  status      String    @default("lead") @db.VarChar(30)
+  dataInicio  DateTime? @db.Date
+  proximaAcao String?
+  observacoes String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  owner      User                           @relation("MasterClientsOwner", fields: [ownerUserId], references: [id])
+  tasks      MasterTask[]
+  financeiro MasterFinancialTransaction[]
+  eventos    MasterCalendarEvent[]
+
+  @@map("master_clients")
+}
+
+model MasterTask {
+  id          Int       @id @default(autoincrement())
+  ownerUserId Int
+  clientId    Int?
+  titulo      String    @db.VarChar(255)
+  descricao   String?
+  area        String    @default("synapse") @db.VarChar(30)
+  status      String    @default("a_fazer") @db.VarChar(30)
+  prioridade  String    @default("media") @db.VarChar(20)
+  periodo     String    @default("manha") @db.VarChar(20)
+  dataLimite  DateTime?
+  concluidaEm DateTime?
+  ordem       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  owner  User         @relation("MasterTasksOwner", fields: [ownerUserId], references: [id])
+  client MasterClient? @relation(fields: [clientId], references: [id])
+
+  @@map("master_tasks")
+}
+
+model MasterFinancialTransaction {
+  id             Int       @id @default(autoincrement())
+  ownerUserId    Int
+  clientId       Int?
+  tipo           String    @db.VarChar(20)
+  categoria      String?   @db.VarChar(100)
+  descricao      String    @db.VarChar(255)
+  valor          Decimal   @db.Decimal(12, 2)
+  status         String    @default("pendente") @db.VarChar(20)
+  vencimento     DateTime? @db.Date
+  pagoEm         DateTime?
+  formaPagamento String?   @map("formaPagamento") @db.VarChar(50)
+  observacoes    String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  owner  User         @relation("MasterFinancialOwner", fields: [ownerUserId], references: [id])
+  client MasterClient? @relation(fields: [clientId], references: [id])
+
+  @@map("master_financial_transactions")
+}
+
+model MasterCalendarEvent {
+  id               Int       @id @default(autoincrement())
+  ownerUserId      Int
+  clientId         Int?
+  titulo           String    @db.VarChar(255)
+  descricao        String?
+  area             String    @default("vida") @db.VarChar(30)
+  tipo             String    @default("compromisso") @db.VarChar(50)
+  inicio           DateTime
+  fim              DateTime?
+  local            String?   @db.VarChar(255)
+  lembreteMinutos  Int?      @default(30)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
+
+  owner  User         @relation("MasterCalendarOwner", fields: [ownerUserId], references: [id])
+  client MasterClient? @relation(fields: [clientId], references: [id])
+
+  @@map("master_calendar_events")
+}
+
+model MasterReminder {
+  id          Int       @id @default(autoincrement())
+  ownerUserId Int
+  titulo      String    @db.VarChar(255)
+  descricao   String?
+  status      String    @default("pendente") @db.VarChar(20)
+  lembrarEm   DateTime
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  owner User @relation("MasterRemindersOwner", fields: [ownerUserId], references: [id])
+
+  @@map("master_reminders")
+}

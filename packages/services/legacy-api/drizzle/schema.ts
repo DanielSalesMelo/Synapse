@@ -59,6 +59,9 @@ export const users = pgTable("users", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().$onUpdateFn(() => new Date()).notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+  deletedBy: integer("deletedBy"),
+  deleteReason: text("deleteReason"),
 });
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
@@ -1398,7 +1401,7 @@ export type Comissao = typeof comissoes.$inferSelect;
 export const moduloPermissoes = pgTable("modulo_permissoes", {
   id: serial("id").primaryKey(),
   empresaId: integer("empresaId").notNull(),
-  role: userRoleEnum("role").notNull(),
+  roleCode: varchar("roleCode", { length: 50 }).notNull(),
   modulo: varchar("modulo", { length: 100 }).notNull(),
   podeVer: boolean("podeVer").default(false).notNull(),
   podeCriar: boolean("podeCriar").default(false).notNull(),
@@ -1576,6 +1579,9 @@ export const gruposEmpresariais = pgTable("grupos_empresariais", {
   ativo: boolean("ativo").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+  deletedBy: integer("deletedBy"),
+  deleteReason: text("deleteReason"),
 });
 export type GrupoEmpresarial = typeof gruposEmpresariais.$inferSelect;
 
@@ -1587,6 +1593,23 @@ export const grupoEmpresas = pgTable("grupo_empresas", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 export type GrupoEmpresa = typeof grupoEmpresas.$inferSelect;
+
+export const userCompanyAccess = pgTable("user_company_access", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  empresaId: integer("empresaId").notNull(),
+  roleCode: varchar("roleCode", { length: 50 }).notNull(),
+  canViewGroup: boolean("canViewGroup").default(false).notNull(),
+  isDefault: boolean("isDefault").default(false).notNull(),
+  ativo: boolean("ativo").default(true).notNull(),
+  createdBy: integer("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+  deletedBy: integer("deletedBy"),
+  deleteReason: text("deleteReason"),
+});
+export type UserCompanyAccess = typeof userCompanyAccess.$inferSelect;
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // MÓDULO: SESSÕES DE SEGURANÇA
@@ -1976,3 +1999,94 @@ export const assets = pgTable("assets", {
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 export type Asset = typeof assets.$inferSelect;
+
+// ─── CENTRAL MASTER DO DANIEL ────────────────────────────────────────────────
+
+export const masterClients = pgTable("master_clients", {
+  id: serial("id").primaryKey(),
+  ownerUserId: integer("ownerUserId").notNull(),
+  nome: varchar("nome", { length: 255 }).notNull(),
+  empresa: varchar("empresa", { length: 255 }),
+  contato: varchar("contato", { length: 255 }),
+  whatsapp: varchar("whatsapp", { length: 30 }),
+  email: varchar("email", { length: 320 }),
+  servicos: text("servicos"),
+  valorMensal: decimal("valorMensal", { precision: 12, scale: 2 }),
+  status: varchar("status", { length: 30 }).default("lead").notNull(),
+  dataInicio: date("dataInicio"),
+  proximaAcao: text("proximaAcao"),
+  observacoes: text("observacoes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type MasterClient = typeof masterClients.$inferSelect;
+
+export const masterTasks = pgTable("master_tasks", {
+  id: serial("id").primaryKey(),
+  ownerUserId: integer("ownerUserId").notNull(),
+  clientId: integer("clientId"),
+  titulo: varchar("titulo", { length: 255 }).notNull(),
+  descricao: text("descricao"),
+  area: varchar("area", { length: 30 }).default("synapse").notNull(),
+  status: varchar("status", { length: 30 }).default("a_fazer").notNull(),
+  prioridade: varchar("prioridade", { length: 20 }).default("media").notNull(),
+  periodo: varchar("periodo", { length: 20 }).default("manha").notNull(),
+  dataLimite: timestamp("dataLimite"),
+  concluidaEm: timestamp("concluidaEm"),
+  ordem: integer("ordem").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type MasterTask = typeof masterTasks.$inferSelect;
+
+export const masterFinancialTransactions = pgTable("master_financial_transactions", {
+  id: serial("id").primaryKey(),
+  ownerUserId: integer("ownerUserId").notNull(),
+  clientId: integer("clientId"),
+  tipo: varchar("tipo", { length: 20 }).notNull(),
+  categoria: varchar("categoria", { length: 100 }),
+  descricao: varchar("descricao", { length: 255 }).notNull(),
+  valor: decimal("valor", { precision: 12, scale: 2 }).notNull(),
+  status: varchar("status", { length: 20 }).default("pendente").notNull(),
+  vencimento: date("vencimento"),
+  pagoEm: timestamp("pagoEm"),
+  formaPagamento: varchar("formaPagamento", { length: 50 }),
+  observacoes: text("observacoes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type MasterFinancialTransaction = typeof masterFinancialTransactions.$inferSelect;
+
+export const masterCalendarEvents = pgTable("master_calendar_events", {
+  id: serial("id").primaryKey(),
+  ownerUserId: integer("ownerUserId").notNull(),
+  clientId: integer("clientId"),
+  titulo: varchar("titulo", { length: 255 }).notNull(),
+  descricao: text("descricao"),
+  area: varchar("area", { length: 30 }).default("vida").notNull(),
+  tipo: varchar("tipo", { length: 50 }).default("compromisso").notNull(),
+  inicio: timestamp("inicio").notNull(),
+  fim: timestamp("fim"),
+  local: varchar("local", { length: 255 }),
+  lembreteMinutos: integer("lembreteMinutos").default(30),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type MasterCalendarEvent = typeof masterCalendarEvents.$inferSelect;
+
+export const masterReminders = pgTable("master_reminders", {
+  id: serial("id").primaryKey(),
+  ownerUserId: integer("ownerUserId").notNull(),
+  titulo: varchar("titulo", { length: 255 }).notNull(),
+  descricao: text("descricao"),
+  status: varchar("status", { length: 20 }).default("pendente").notNull(),
+  lembrarEm: timestamp("lembrarEm").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+export type MasterReminder = typeof masterReminders.$inferSelect;

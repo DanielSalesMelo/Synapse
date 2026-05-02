@@ -21,7 +21,7 @@ import {
   Building2, Receipt, Banknote, PieChart, UserPlus, GraduationCap,
   HeartHandshake, Award, Clipboard, Microscope, Thermometer, Leaf,
   Globe, Plug, Zap, Search, ChevronDown, ChevronUp, X, CheckCircle,
-  Info, Ticket, Wrench as WrenchIcon,
+  Info, Ticket, Crown, Wrench as WrenchIcon,
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useViewAs } from "@/contexts/ViewAsContext";
@@ -55,10 +55,23 @@ const getMenuGroups = (t: any): MenuGroup[] => [
       { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
       { icon: Brain, label: "IA Synapse", path: "/ia" },
       { icon: MessageSquare, label: "Chat", path: "/chat" },
+      { icon: Globe, label: "Omnichannel", path: "/omnichannel" },
       { icon: Bell, label: "Alertas", path: "/gestao/alertas" },
       { icon: Calendar, label: "Calendário", path: "/gestao/calendario" },
       { icon: CheckCircle, label: "Tarefas & Projetos", path: "/tarefas" },
       { icon: BookOpen, label: "Bloco de Notas", path: "/notas" },
+    ],
+  },
+
+  {
+    label: "Pessoal",
+    icon: Crown,
+    requiredRole: "master_admin",
+    items: [
+      { icon: Crown, label: "Meu Workspace", path: "/pessoal" },
+      { icon: Calendar, label: "Agenda Pessoal", path: "/pessoal/calendario" },
+      { icon: Star, label: "Central do Daniel", path: "/master/painel" },
+      { icon: Brain, label: "IA Executiva", path: "/ia" },
     ],
   },
 
@@ -250,11 +263,14 @@ function Sidebar({
     items.some((item) => isActive(item.path));
 
   // Badges de notificação por rota — dados reais do backend
-  const chatUnreadQ = trpc.chat.listConversas.useQuery(undefined, { refetchInterval: 15000 });
-  const tiDashQ = trpc.ti.dashboard.useQuery(undefined, { refetchInterval: 30000 });
-  const chatUnread = (chatUnreadQ.data ?? []).reduce((acc: number, c: any) => acc + (c.unreadCount ?? 0), 0);
-  const tiOpen = (tiDashQ.data as any)?.abertos ?? 0;
-  const totalNotifs = chatUnread + tiOpen;
+  const conversationsQ = trpc.chat.listConversations.useQuery(undefined, { refetchInterval: 15000 });
+  const tiUnreadQ = trpc.ti.getUnreadCount.useQuery(undefined, { refetchInterval: 30000 });
+  const tiAlertsQ = trpc.ti.listAlertas.useQuery({ limit: 10 }, { refetchInterval: 30000 });
+  const persistedNotifsQ = trpc.notifications.unreadCount.useQuery(undefined, { refetchInterval: 15000 });
+  const chatUnread = (conversationsQ.data ?? []).length;
+  const tiOpen = Number(tiUnreadQ.data?.tickets ?? 0);
+  const tiCritical = (tiAlertsQ.data ?? []).filter((a: any) => a.severidade === "critico").length;
+  const totalNotifs = Number(persistedNotifsQ.data?.total ?? 0) || (chatUnread + tiOpen + tiCritical);
 
   // Atualiza título da aba com contador de notificações
   useEffect(() => {
@@ -264,7 +280,7 @@ function Sidebar({
 
   const BADGES: Record<string, number> = {
     "/chat": chatUnread,
-    "/ti": tiOpen,
+    "/ti": tiOpen + tiCritical,
   };
 
   const initials = user?.name
@@ -317,21 +333,18 @@ function Sidebar({
 
   // Mapa de acesso por grupo: quais roles podem ver cada grupo
   const GROUP_ACCESS: Record<string, string[]> = {
-    "INÍCIO":               [...FULL_ACCESS_ROLES, "financeiro", "comercial", "dispatcher", "motorista", "wms_operator", "rh", "ti", "monitor", "user"],
-    "FROTA & OPERAÇÕES":   [...FULL_ACCESS_ROLES, "dispatcher", "motorista"],
-    "CRM & VENDAS":         [...FULL_ACCESS_ROLES, "comercial"],
-    "MARKETING":            [...FULL_ACCESS_ROLES, "comercial"],
-    "WMS / ARMÁZEM":       [...FULL_ACCESS_ROLES, "wms_operator"],
-    "LOGÍSTICA":            [...FULL_ACCESS_ROLES, "wms_operator", "dispatcher"],
-    "FINANCEIRO":           [...FULL_ACCESS_ROLES, "financeiro"],
-    "RH / PESSOAS":         [...FULL_ACCESS_ROLES, "rh"],
-    "TI / INFRAESTRUTURA":  [...FULL_ACCESS_ROLES, "ti"],
-    "RECEPÇÃO":            [...FULL_ACCESS_ROLES, "user"],
-    "QUALIDADE (QMS)":      [...FULL_ACCESS_ROLES],
-    "BI & RELATÓRIOS":     [...FULL_ACCESS_ROLES, "financeiro", "monitor"],
-    "SISTEMA":              [...FULL_ACCESS_ROLES, "ti"],
-    "INTEGRAÇÕES":         [...FULL_ACCESS_ROLES, "ti"],
-    "MASTER ADMIN":         ["master_admin", "ti_master"],
+    "Início": [...FULL_ACCESS_ROLES, "financeiro", "comercial", "dispatcher", "motorista", "wms_operator", "rh", "ti", "monitor", "user"],
+    "Pessoal": ["master_admin", "ti_master"],
+    "Frota & Operações": [...FULL_ACCESS_ROLES, "dispatcher", "motorista"],
+    "Despachante": [...FULL_ACCESS_ROLES, "dispatcher"],
+    "Comercial": [...FULL_ACCESS_ROLES, "comercial"],
+    "Estoque & Logística": [...FULL_ACCESS_ROLES, "wms_operator", "dispatcher"],
+    "Financeiro": [...FULL_ACCESS_ROLES, "financeiro"],
+    "Pessoas": [...FULL_ACCESS_ROLES, "rh"],
+    "TI": [...FULL_ACCESS_ROLES, "ti"],
+    "Relatórios & BI": [...FULL_ACCESS_ROLES, "financeiro", "monitor"],
+    "Sistema": [...FULL_ACCESS_ROLES, "ti"],
+    "Master Admin": ["master_admin", "ti_master"],
   };
 
   const canSeeGroup = (groupLabel: string): boolean => {
@@ -635,20 +648,73 @@ type Notification = {
 };
 
 function NotificationBell() {
+  const [, navigate] = useLocation();
   const [open, setOpen] = useState(false);
-  const [notifs, setNotifs] = useState<Notification[]>([
-    { id: 1, tipo: "mensagem", titulo: "Nova mensagem", descricao: "Carlos enviou uma mensagem no chat", lido: false, createdAt: new Date(Date.now() - 2 * 60000) },
-    { id: 2, tipo: "chamado", titulo: "Chamado SAC #0042", descricao: "Cliente BSB Transportes aguardando resposta", lido: false, createdAt: new Date(Date.now() - 15 * 60000) },
-    { id: 3, tipo: "ti", titulo: "Ticket TI #0018", descricao: "Impressora do setor fiscal sem papel", lido: false, createdAt: new Date(Date.now() - 30 * 60000) },
-    { id: 4, tipo: "alerta", titulo: "Estoque crítico", descricao: "Produto DIESEL S10 abaixo do mínimo", lido: true, createdAt: new Date(Date.now() - 60 * 60000) },
-    { id: 5, tipo: "sistema", titulo: "Backup concluído", descricao: "Backup automático realizado com sucesso", lido: true, createdAt: new Date(Date.now() - 120 * 60000) },
-  ]);
+  const [dismissedIds, setDismissedIds] = useState<number[]>([]);
+  const notificationsQ = trpc.notifications.list.useQuery({ limit: 20 }, { refetchInterval: 15000 });
+  const unreadQ = trpc.notifications.unreadCount.useQuery(undefined, { refetchInterval: 15000 });
+  const markReadMutation = trpc.notifications.markRead.useMutation();
+  const markAllReadMutation = trpc.notifications.markAllRead.useMutation();
+  const utils = trpc.useUtils();
+  const conversationsQ = trpc.chat.listConversations.useQuery(undefined, { refetchInterval: 15000 });
+  const ticketsQ = trpc.ti.listTickets.useQuery({ status: "aberto" }, { refetchInterval: 15000 });
+  const alertasQ = trpc.ti.listAlertas.useQuery({ limit: 10 }, { refetchInterval: 15000 });
 
-  const unread = notifs.filter((n) => !n.lido).length;
+  const persistedNotifs: Notification[] = ((notificationsQ.data ?? []) as any[]).map((n: any) => ({
+    id: Number(n.id),
+    tipo: n.tipo?.includes("financeiro") ? "sistema" : n.tipo?.includes("agenda") || n.tipo?.includes("lembrete") ? "sistema" : "sistema",
+    titulo: n.titulo,
+    descricao: n.mensagem,
+    lido: !!n.readAt,
+    createdAt: new Date(n.createdAt || Date.now()),
+  }));
 
-  const markAllRead = () => setNotifs((prev) => prev.map((n) => ({ ...n, lido: true })));
-  const markRead = (id: number) => setNotifs((prev) => prev.map((n) => n.id === id ? { ...n, lido: true } : n));
-  const removeNotif = (id: number) => setNotifs((prev) => prev.filter((n) => n.id !== id));
+  const fallbackNotifs: Notification[] = [
+    ...(alertasQ.data ?? []).map((alerta: any) => ({
+      id: Number(`1${alerta.id}`),
+      tipo: alerta.severidade === "critico" ? "alerta" : "ti",
+      titulo: alerta.hostname ? `Alerta em ${alerta.hostname}` : "Alerta de monitoramento",
+      descricao: alerta.descricao || alerta.mensagem || alerta.tipo || "Evento registrado no monitoramento",
+      lido: false,
+      createdAt: new Date(alerta.ocorridoEm || alerta.criadoEm || Date.now()),
+    })),
+    ...(ticketsQ.data ?? []).slice(0, 5).map((ticket: any) => ({
+      id: Number(`2${ticket.id}`),
+      tipo: "chamado",
+      titulo: ticket.protocolo ? `Chamado ${ticket.protocolo}` : `Chamado #${ticket.id}`,
+      descricao: ticket.titulo || ticket.descricao || "Chamado em aberto",
+      lido: false,
+      createdAt: new Date(ticket.updatedAt || ticket.createdAt || Date.now()),
+    })),
+    ...(conversationsQ.data ?? []).slice(0, 5).map((conv: any) => ({
+      id: Number(`3${conv.id}`),
+      tipo: "mensagem",
+      titulo: conv.displayName || "Conversa recente",
+      descricao: conv.isGroup ? "Grupo com atividade recente" : "Conversa disponível no chat",
+      lido: false,
+      createdAt: new Date(conv.lastMessageAt || Date.now()),
+    })),
+  ];
+
+  const notifs: Notification[] = (persistedNotifs.length > 0 ? persistedNotifs : fallbackNotifs)
+    .filter((notif) => !dismissedIds.includes(notif.id))
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    .slice(0, 12);
+
+  const unread = Number(unreadQ.data?.total ?? 0) || notifs.filter((n) => !n.lido).length;
+
+  const markAllRead = async () => {
+    await markAllReadMutation.mutateAsync();
+    await utils.notifications.list.invalidate();
+    await utils.notifications.unreadCount.invalidate();
+  };
+  const markRead = async (id: number) => {
+    if (String(id).startsWith("1") || String(id).startsWith("2") || String(id).startsWith("3")) return;
+    await markReadMutation.mutateAsync({ id });
+    await utils.notifications.list.invalidate();
+    await utils.notifications.unreadCount.invalidate();
+  };
+  const removeNotif = (id: number) => setDismissedIds((prev) => [...prev, id]);
 
   const iconMap = {
     mensagem: <MessageSquare className="h-4 w-4 text-blue-500" />,
@@ -716,7 +782,13 @@ function NotificationBell() {
                 notifs.map((n) => (
                   <div
                     key={n.id}
-                    onClick={() => markRead(n.id)}
+                    onClick={async () => {
+                      await markRead(n.id);
+                      if (n.tipo === "mensagem") navigate("/chat");
+                      if (n.tipo === "chamado" || n.tipo === "ti" || n.tipo === "alerta") navigate("/ti/dashboard");
+                      if (n.tipo === "sistema") navigate("/master/painel");
+                      setOpen(false);
+                    }}
                     className={`flex items-start gap-3 px-4 py-3 border-b border-border/50 cursor-pointer transition-colors hover:bg-accent/50 ${
                       !n.lido ? "bg-primary/5" : ""
                     }`}

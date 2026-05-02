@@ -11,7 +11,7 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-const DEFAULT_SERVER = "https://synapse-backend.railway.app";
+const DEFAULT_SERVER = "https://synapse-backend-ds2026.azurewebsites.net";
 const CONFIG_DIR = path.join(os.homedir(), ".synapse_agent");
 const CONFIG_FILE = path.join(CONFIG_DIR, "config.json");
 

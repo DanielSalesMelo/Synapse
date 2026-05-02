@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { invoke } from '@tauri_apps/api/tauri';
+import { invoke } from '@tauri-apps/api/core';
 import './App.css';
 
 interface TicketPayload {
@@ -11,7 +11,7 @@ interface TicketPayload {
 function App() {
   const [description, setDescription] = useState('');
   const [screenshots, setScreenshots] = useState<string[]>([]);
-  const [status, setStatus] = useState('Conectado');
+  const [status] = useState('Conectado');
   const [hostname, setHostname] = useState('Carregando...');
   const [assetId, setAssetId] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);

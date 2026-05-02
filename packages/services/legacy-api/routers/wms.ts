@@ -6,16 +6,18 @@ import {
 } from "../drizzle/schema";
 import { eq, and, desc, ilike, isNull, sql, lt, lte } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
+import { resolveAccessibleEmpresaId } from "../_core/access";
 
 export const wmsRouter = router({
 
   // ─── ARMAZÉNS ──────────────────────────────────────────────────────────────
 
-  listArmazens: protectedProcedure.query(async ({ ctx }) => {
+  listArmazens: protectedProcedure.input(z.object({ empresaId: z.number() })).query(async ({ ctx, input }) => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
     return db.select().from(armazens)
-      .where(and(eq(armazens.empresaId, ctx.user.empresaId!), isNull(armazens.deletedAt)));
+      .where(and(eq(armazens.empresaId, empresaId), isNull(armazens.deletedAt)));
   }),
 
   createArmazem: adminProcedure
@@ -26,12 +28,14 @@ export const wmsRouter = router({
       endereco: z.string().optional(),
       capacidadeTotal: z.string().optional(),
       unidadeCapacidade: z.string().optional(),
+      empresaId: z.number(),
     }))
     .mutation(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
       const [arm] = await db.insert(armazens).values({
-        empresaId: ctx.user.empresaId!,
+        empresaId,
         ...input,
       }).returning();
       return arm;
@@ -40,11 +44,11 @@ export const wmsRouter = router({
   // ─── LOCALIZAÇÕES ──────────────────────────────────────────────────────────
 
   listLocalizacoes: protectedProcedure
-    .input(z.object({ armazemId: z.number().optional() }))
+    .input(z.object({ armazemId: z.number().optional(), empresaId: z.number() }))
     .query(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-      const empresaId = ctx.user.empresaId!;
+      const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
 
       const conditions = [eq(localizacoes.empresaId, empresaId), eq(localizacoes.ativo, true)];
       if (input.armazemId) conditions.push(eq(localizacoes.armazemId, input.armazemId));
@@ -62,12 +66,14 @@ export const wmsRouter = router({
       posicao: z.string().optional(),
       tipo: z.enum(["padrao", "picking", "bulk", "refrigerado"]).default("padrao"),
       capacidade: z.string().optional(),
+      empresaId: z.number(),
     }))
     .mutation(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
       const [loc] = await db.insert(localizacoes).values({
-        empresaId: ctx.user.empresaId!,
+        empresaId,
         ...input,
       }).returning();
       return loc;
@@ -81,11 +87,12 @@ export const wmsRouter = router({
       categoria: z.string().optional(),
       limit: z.number().default(50),
       offset: z.number().default(0),
+      empresaId: z.number(),
     }))
     .query(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-      const empresaId = ctx.user.empresaId!;
+      const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
 
       const conditions = [eq(produtos.empresaId, empresaId), isNull(produtos.deletedAt), eq(produtos.ativo, true)];
       if (input.search) conditions.push(ilike(produtos.descricao, `%${input.search}%`));
@@ -111,11 +118,12 @@ export const wmsRouter = router({
       estoqueMinimo: z.string().optional(),
       estoqueMaximo: z.string().optional(),
       localizacaoPadrao: z.string().optional(),
+      empresaId: z.number(),
     }))
     .mutation(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-      const empresaId = ctx.user.empresaId!;
+      const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
 
       const [existing] = await db.select().from(produtos)
         .where(and(eq(produtos.empresaId, empresaId), eq(produtos.codigo, input.codigo), isNull(produtos.deletedAt)))
@@ -152,11 +160,12 @@ export const wmsRouter = router({
       armazemId: z.number().optional(),
       search: z.string().optional(),
       apenasAbaixoMinimo: z.boolean().optional(),
+      empresaId: z.number(),
     }))
     .query(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-      const empresaId = ctx.user.empresaId!;
+      const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
 
       const rows = await db
         .select({
@@ -203,11 +212,12 @@ export const wmsRouter = router({
       documento: z.string().optional(),
       recebimentoId: z.number().optional(),
       observacoes: z.string().optional(),
+      empresaId: z.number(),
     }))
     .mutation(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-      const empresaId = ctx.user.empresaId!;
+      const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
       const qtd = parseFloat(input.quantidade);
 
       // Buscar saldo atual
@@ -269,11 +279,12 @@ export const wmsRouter = router({
       produtoId: z.number().optional(),
       armazemId: z.number().optional(),
       limit: z.number().default(50),
+      empresaId: z.number(),
     }))
     .query(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-      const empresaId = ctx.user.empresaId!;
+      const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
 
       const conditions = [eq(movimentacoesEstoque.empresaId, empresaId)];
       if (input.produtoId) conditions.push(eq(movimentacoesEstoque.produtoId, input.produtoId));
@@ -287,10 +298,10 @@ export const wmsRouter = router({
 
   // ─── DASHBOARD WMS ─────────────────────────────────────────────────────────
 
-  dashboard: protectedProcedure.query(async ({ ctx }) => {
+  dashboard: protectedProcedure.input(z.object({ empresaId: z.number() })).query(async ({ ctx, input }) => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    const empresaId = ctx.user.empresaId!;
+    const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
 
     const [totaisProdutos] = await db.select({
       total: sql<number>`count(distinct ${produtos.id})`,

@@ -39,6 +39,7 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { format, isValid, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
 type Priority = "critica" | "alta" | "media" | "baixa";
 type Status = "backlog" | "a_fazer" | "em_andamento" | "revisao" | "concluido";
@@ -167,8 +168,8 @@ function KanbanColumn({ column, tarefas, onEdit, onDelete, onAddNew }: {
   );
 }
 
-function TaskFormDialog({ open, onClose, initialStatus, editTarefa, onSuccess }: {
-  open: boolean; onClose: () => void; initialStatus?: Status; editTarefa?: Tarefa | null; onSuccess: () => void;
+function TaskFormDialog({ open, onClose, initialStatus, editTarefa, onSuccess, empresaId }: {
+  open: boolean; onClose: () => void; initialStatus?: Status; editTarefa?: Tarefa | null; onSuccess: () => void; empresaId: number;
 }) {
   const [titulo, setTitulo] = useState(editTarefa?.titulo || "");
   const [descricao, setDescricao] = useState(editTarefa?.descricao || "");
@@ -177,22 +178,49 @@ function TaskFormDialog({ open, onClose, initialStatus, editTarefa, onSuccess }:
   const [prazo, setPrazo] = useState(editTarefa?.prazo ? editTarefa.prazo.slice(0, 10) : "");
   const [tagsInput, setTagsInput] = useState((editTarefa?.tags || []).join(", "));
   const [sprint, setSprint] = useState(editTarefa?.sprint || "");
+  const [projetoId, setProjetoId] = useState<string>(editTarefa?.projetoNome ? String((editTarefa as any).projetoId ?? "") : String((editTarefa as any)?.projetoId ?? ""));
+  const [responsavelId, setResponsavelId] = useState<string>(String((editTarefa as any)?.responsavelId ?? ""));
   const utils = trpc.useUtils();
+  const { data: projetos = [] } = trpc.tarefas.listProjetos.useQuery({ empresaId }, { enabled: open });
+  const { data: usuarios = [] } = trpc.tarefas.listUsuarios.useQuery({ empresaId }, { enabled: open });
   const createMutation = trpc.tarefas.create.useMutation({
-    onSuccess: () => { toast.success("Tarefa criada!"); utils.tarefas.list.invalidate(); onSuccess(); onClose(); },
+    onSuccess: () => { toast.success("Tarefa criada!"); utils.tarefas.list.invalidate({ empresaId }); onSuccess(); onClose(); },
     onError: (e) => toast.error(e.message),
   });
   const updateMutation = trpc.tarefas.update.useMutation({
-    onSuccess: () => { toast.success("Tarefa atualizada!"); utils.tarefas.list.invalidate(); onSuccess(); onClose(); },
+    onSuccess: () => { toast.success("Tarefa atualizada!"); utils.tarefas.list.invalidate({ empresaId }); onSuccess(); onClose(); },
     onError: (e) => toast.error(e.message),
   });
   const handleSubmit = () => {
     if (!titulo.trim()) { toast.error("Informe o titulo"); return; }
     const tags = tagsInput.split(",").map((t) => t.trim()).filter(Boolean);
     if (editTarefa) {
-      updateMutation.mutate({ id: editTarefa.id, titulo, descricao, status, prioridade, prazo: prazo || null, tags, sprint: sprint || undefined });
+      updateMutation.mutate({
+        empresaId,
+        id: editTarefa.id,
+        titulo,
+        descricao,
+        status,
+        prioridade,
+        prazo: prazo || null,
+        tags,
+        sprint: sprint || undefined,
+        projetoId: projetoId ? Number(projetoId) : null,
+        responsavelId: responsavelId ? Number(responsavelId) : null,
+      });
     } else {
-      createMutation.mutate({ titulo, descricao, status, prioridade, prazo: prazo || undefined, tags, sprint: sprint || undefined });
+      createMutation.mutate({
+        empresaId,
+        titulo,
+        descricao,
+        status,
+        prioridade,
+        prazo: prazo || undefined,
+        tags,
+        sprint: sprint || undefined,
+        projetoId: projetoId ? Number(projetoId) : undefined,
+        responsavelId: responsavelId ? Number(responsavelId) : undefined,
+      });
     }
   };
   const isPending = createMutation.isPending || updateMutation.isPending;
@@ -233,6 +261,32 @@ function TaskFormDialog({ open, onClose, initialStatus, editTarefa, onSuccess }:
             <div>
               <label className="text-xs font-medium text-muted-foreground mb-1 block">Sprint</label>
               <Input placeholder="Sprint 3..." value={sprint} onChange={(e) => setSprint(e.target.value)} className="h-9 text-xs" />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">Projeto</label>
+              <Select value={projetoId || "none"} onValueChange={(v) => setProjetoId(v === "none" ? "" : v)}>
+                <SelectTrigger className="h-9 text-xs"><SelectValue placeholder="Selecione" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none" className="text-xs">Sem projeto</SelectItem>
+                  {projetos.map((projeto: any) => (
+                    <SelectItem key={projeto.id} value={String(projeto.id)} className="text-xs">{projeto.nome}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">Responsável</label>
+              <Select value={responsavelId || "none"} onValueChange={(v) => setResponsavelId(v === "none" ? "" : v)}>
+                <SelectTrigger className="h-9 text-xs"><SelectValue placeholder="Selecione" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none" className="text-xs">Sem responsável</SelectItem>
+                  {usuarios.map((usuario: any) => (
+                    <SelectItem key={usuario.id} value={String(usuario.id)} className="text-xs">{usuario.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <div>
@@ -284,6 +338,7 @@ function ListView({ tarefas, onEdit, onDelete }: { tarefas: Tarefa[]; onEdit: (t
 }
 
 export default function Tarefas() {
+  const { effectiveEmpresaId } = useViewAs();
   const [viewMode, setViewMode] = useState<ViewMode>("kanban");
   const [search, setSearch] = useState("");
   const [filterPriority, setFilterPriority] = useState<Priority | "all">("all");
@@ -295,13 +350,13 @@ export default function Tarefas() {
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
   const utils = trpc.useUtils();
-  const { data: tarefasRaw = [], isLoading } = trpc.tarefas.list.useQuery({});
+  const { data: tarefasRaw = [], isLoading } = trpc.tarefas.list.useQuery({ empresaId: effectiveEmpresaId });
   const deleteMutation = trpc.tarefas.delete.useMutation({
-    onSuccess: () => { toast.success("Tarefa excluida"); utils.tarefas.list.invalidate(); },
+    onSuccess: () => { toast.success("Tarefa arquivada"); utils.tarefas.list.invalidate({ empresaId: effectiveEmpresaId }); },
     onError: (e) => toast.error(e.message),
   });
   const moveStatusMutation = trpc.tarefas.moveStatus.useMutation({
-    onSuccess: () => utils.tarefas.list.invalidate(),
+    onSuccess: () => utils.tarefas.list.invalidate({ empresaId: effectiveEmpresaId }),
     onError: (e) => toast.error("Erro ao mover: " + e.message),
   });
 
@@ -336,11 +391,11 @@ export default function Tarefas() {
     if (!targetStatus) return;
     const currentTask = tarefas.find((t) => t.id === taskId);
     if (!currentTask || currentTask.status === targetStatus) return;
-    moveStatusMutation.mutate({ id: taskId, status: targetStatus });
-  }, [tarefas, moveStatusMutation]);
+    moveStatusMutation.mutate({ empresaId: effectiveEmpresaId, id: taskId, status: targetStatus });
+  }, [tarefas, moveStatusMutation, effectiveEmpresaId]);
 
   const handleEdit = useCallback((t: Tarefa) => { setEditTarefa(t); setDialogOpen(true); }, []);
-  const handleDelete = useCallback((id: number) => { if (confirm("Excluir esta tarefa?")) deleteMutation.mutate({ id }); }, [deleteMutation]);
+  const handleDelete = useCallback((id: number) => { if (confirm("Arquivar esta tarefa?")) deleteMutation.mutate({ id }); }, [deleteMutation]);
   const handleAddNew = useCallback((status: Status) => { setEditTarefa(null); setNewTaskStatus(status); setDialogOpen(true); }, []);
 
   const stats = useMemo(() => ({
@@ -421,7 +476,7 @@ export default function Tarefas() {
       )}
 
       {dialogOpen && (
-        <TaskFormDialog open={dialogOpen} onClose={() => { setDialogOpen(false); setEditTarefa(null); }} initialStatus={newTaskStatus} editTarefa={editTarefa} onSuccess={() => {}} />
+        <TaskFormDialog open={dialogOpen} onClose={() => { setDialogOpen(false); setEditTarefa(null); }} initialStatus={newTaskStatus} editTarefa={editTarefa} onSuccess={() => {}} empresaId={effectiveEmpresaId} />
       )}
     </div>
   );

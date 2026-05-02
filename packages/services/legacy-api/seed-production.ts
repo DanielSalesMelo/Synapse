@@ -17,9 +17,14 @@ async function seed() {
     process.exit(1);
   }
 
-  const email = process.env.MASTER_EMAIL || "danielmoraessales@outlook.com.br";
-  const password = process.env.MASTER_PASSWORD || "Dan124578@#";
-  const name = "Daniel Sales";
+  const email = process.env.MASTER_EMAIL;
+  const password = process.env.MASTER_PASSWORD;
+  const name = process.env.MASTER_NAME || "Daniel Sales";
+
+  if (!email || !password) {
+    console.error("MASTER_EMAIL e MASTER_PASSWORD são obrigatórios para o seed de produção.");
+    process.exit(1);
+  }
   
   console.log(`Iniciando seed para o usuário: ${email}`);
   

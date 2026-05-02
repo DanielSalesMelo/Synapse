@@ -4,27 +4,32 @@ import { getDb } from "../db";
 import { moduloPermissoes, userPermissoes } from "../drizzle/schema";
 import { eq, and } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
+import {
+  ACCESS_MODULES,
+  COMPANY_ROLE_CODES,
+  getPermissionsForModule,
+  resolveAccessibleEmpresaId,
+  resolveRoleCodeForCompany,
+} from "../_core/access";
 
-const MODULOS = [
-  "dashboard", "frota", "viagens", "funcionarios", "financeiro", "wms",
-  "recepcionista", "logistica", "crm", "vendas", "auditoria", "bi", "ti",
-  "ponto", "conferencia", "integracoes", "chat", "ia", "empresas", "usuarios",
-];
+const MODULOS = [...ACCESS_MODULES];
 
 export const permissoesRouter = router({
   // Listar permissões por role
-  listByRole: protectedProcedure.input(z.object({ role: z.string() })).query(async ({ input, ctx }) => {
+  listByRole: protectedProcedure.input(z.object({ roleCode: z.enum(COMPANY_ROLE_CODES), empresaId: z.number().optional() })).query(async ({ input, ctx }) => {
     const db = await getDb(); if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     if (ctx.user.role !== "admin" && ctx.user.role !== "master_admin") throw new TRPCError({ code: "FORBIDDEN" });
+    const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId ?? ctx.user.empresaId ?? undefined);
     return db.select().from(moduloPermissoes).where(and(
-      eq(moduloPermissoes.empresaId, ctx.user.empresaId!),
-      eq(moduloPermissoes.role, input.role as any),
+      eq(moduloPermissoes.empresaId, empresaId),
+      eq(moduloPermissoes.roleCode, input.roleCode),
     ));
   }),
 
   // Salvar permissões por role
   saveByRole: protectedProcedure.input(z.object({
-    role: z.string(),
+    roleCode: z.enum(COMPANY_ROLE_CODES),
+    empresaId: z.number().optional(),
     permissoes: z.array(z.object({
       modulo: z.string(), podeVer: z.boolean(), podeCriar: z.boolean(),
       podeEditar: z.boolean(), podeDeletar: z.boolean(), podeExportar: z.boolean(),
@@ -32,12 +37,12 @@ export const permissoesRouter = router({
   })).mutation(async ({ input, ctx }) => {
     const db = await getDb(); if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     if (ctx.user.role !== "admin" && ctx.user.role !== "master_admin") throw new TRPCError({ code: "FORBIDDEN" });
-    const empresaId = ctx.user.empresaId!;
+    const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId ?? ctx.user.empresaId ?? undefined);
     // Deletar permissões antigas
-    await db.delete(moduloPermissoes).where(and(eq(moduloPermissoes.empresaId, empresaId), eq(moduloPermissoes.role, input.role as any)));
+    await db.delete(moduloPermissoes).where(and(eq(moduloPermissoes.empresaId, empresaId), eq(moduloPermissoes.roleCode, input.roleCode)));
     // Inserir novas
     for (const p of input.permissoes) {
-      await db.insert(moduloPermissoes).values({ ...p, empresaId, role: input.role as any });
+      await db.insert(moduloPermissoes).values({ ...p, empresaId, roleCode: input.roleCode });
     }
     return { success: true };
   }),
@@ -73,28 +78,20 @@ export const permissoesRouter = router({
   // Obter minhas permissões (para o frontend renderizar o menu)
   minhasPermissoes: protectedProcedure.query(async ({ ctx }) => {
     const db = await getDb(); if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    // Master admin tem acesso a tudo
-    if (ctx.user.role === "master_admin") {
-      return MODULOS.map(m => ({ modulo: m, podeVer: true, podeCriar: true, podeEditar: true, podeDeletar: true, podeExportar: true }));
-    }
-    // Verificar permissões individuais primeiro
-    const userPerms = await db.select().from(userPermissoes).where(and(
-      eq(userPermissoes.empresaId, ctx.user.empresaId!),
-      eq(userPermissoes.userId, ctx.user.id),
-    ));
-    if (userPerms.length > 0) return userPerms;
-    // Senão, usar permissões da role
-    const rolePerms = await db.select().from(moduloPermissoes).where(and(
-      eq(moduloPermissoes.empresaId, ctx.user.empresaId!),
-      eq(moduloPermissoes.role, ctx.user.role as any),
-    ));
-    if (rolePerms.length > 0) return rolePerms;
-    // Default: acesso total para admin, limitado para outros
-    if (ctx.user.role === "admin") {
-      return MODULOS.map(m => ({ modulo: m, podeVer: true, podeCriar: true, podeEditar: true, podeDeletar: true, podeExportar: true }));
-    }
-    // Usuário comum: ver tudo, criar em alguns
-    return MODULOS.map(m => ({ modulo: m, podeVer: true, podeCriar: true, podeEditar: false, podeDeletar: false, podeExportar: false }));
+    const empresaId = await resolveAccessibleEmpresaId(ctx, ctx.user.empresaId ?? undefined);
+    const roleCode = await resolveRoleCodeForCompany(ctx.user, empresaId);
+    const rows = await Promise.all(
+      MODULOS.map(async modulo => ({
+        modulo,
+        ...(await getPermissionsForModule(ctx.user, empresaId, modulo)),
+      }))
+    );
+
+    return {
+      empresaId,
+      roleCode,
+      permissoes: rows,
+    };
   }),
 
   // Lista de módulos disponíveis

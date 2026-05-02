@@ -4,6 +4,7 @@ import { getDb } from "../db";
 import { iaAgentes, iaSessoes, iaMensagens, iaConhecimento } from "../drizzle/schema";
 import { eq, and, desc, isNull, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
+import { getAccessibleCompanySummary, resolveAccessibleEmpresaId } from "../_core/access";
 
 // ─── Prompts padrão dos agentes ──────────────────────────────────────────────
 const PROMPTS_PADRAO: Record<string, { nome: string; avatar: string; systemPrompt: string; descricao: string }> = {
@@ -148,17 +149,36 @@ function processarMensagemLocal(
   return respostasPadrao[Math.floor(Math.random() * respostasPadrao.length)];
 }
 
+async function resolveIaEmpresaId(ctx: any): Promise<number> {
+  try {
+    return await resolveAccessibleEmpresaId(ctx, ctx.user?.empresaId ?? undefined);
+  } catch {
+    if (ctx.user?.role === "master_admin") {
+      const accessible = await getAccessibleCompanySummary(ctx.user);
+      if (accessible[0]?.empresaId) {
+        return accessible[0].empresaId;
+      }
+    }
+
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "Selecione ou cadastre uma empresa para usar a IA.",
+    });
+  }
+}
+
 // ─── Router de IA ─────────────────────────────────────────────────────────────
 export const iaRouter = router({
 
   listAgentes: protectedProcedure.query(async ({ ctx }) => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    const empresaId = ctx.user.empresaId!;
+    const empresaId = await resolveIaEmpresaId(ctx);
 
     const agentes = await db.select().from(iaAgentes)
       .where(and(eq(iaAgentes.empresaId, empresaId), eq(iaAgentes.ativo, true), isNull(iaAgentes.deletedAt)))
-      .orderBy(iaAgentes.isMaster, iaAgentes.nome);
+      .orderBy(iaAgentes.isMaster, iaAgentes.nome)
+      .catch(() => []);
 
     if (agentes.length === 0) {
       return Object.entries(PROMPTS_PADRAO).map(([setor, info], idx) => ({
@@ -187,7 +207,7 @@ export const iaRouter = router({
   inicializarAgentes: adminProcedure.mutation(async ({ ctx }) => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    const empresaId = ctx.user.empresaId!;
+    const empresaId = await resolveIaEmpresaId(ctx);
 
     const existentes = await db.select({ id: iaAgentes.id }).from(iaAgentes)
       .where(and(eq(iaAgentes.empresaId, empresaId), isNull(iaAgentes.deletedAt)));
@@ -223,7 +243,7 @@ export const iaRouter = router({
     .mutation(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-      const empresaId = ctx.user.empresaId!;
+      const empresaId = await resolveIaEmpresaId(ctx);
 
       if (input.id && input.id > 0) {
         await db.update(iaAgentes).set({
@@ -259,8 +279,9 @@ export const iaRouter = router({
     .mutation(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const empresaId = await resolveIaEmpresaId(ctx);
       const [sessao] = await db.insert(iaSessoes).values({
-        empresaId: ctx.user.empresaId!,
+        empresaId,
         usuarioId: ctx.user.id,
         agenteId: input.agenteId,
         titulo: input.titulo ?? "Nova conversa",
@@ -295,7 +316,7 @@ export const iaRouter = router({
     .mutation(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-      const empresaId = ctx.user.empresaId!;
+      const empresaId = await resolveIaEmpresaId(ctx);
 
       await db.insert(iaMensagens).values({ sessaoId: input.sessaoId, empresaId, role: "user", conteudo: input.mensagem });
 
@@ -390,7 +411,8 @@ export const iaRouter = router({
     .query(async ({ ctx, input }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-      const conditions: any[] = [eq(iaConhecimento.empresaId, ctx.user.empresaId!), isNull(iaConhecimento.deletedAt), eq(iaConhecimento.ativo, true)];
+      const empresaId = await resolveIaEmpresaId(ctx);
+      const conditions: any[] = [eq(iaConhecimento.empresaId, empresaId), isNull(iaConhecimento.deletedAt), eq(iaConhecimento.ativo, true)];
       if (input.agenteId) conditions.push(eq(iaConhecimento.agenteId, input.agenteId));
       return db.select().from(iaConhecimento).where(and(...conditions)).orderBy(desc(iaConhecimento.createdAt));
     }),
@@ -406,8 +428,9 @@ export const iaRouter = router({
     .mutation(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const empresaId = await resolveIaEmpresaId(ctx);
       const [novo] = await db.insert(iaConhecimento).values({
-        empresaId: ctx.user.empresaId!,
+        empresaId,
         agenteId: input.agenteId,
         titulo: input.titulo,
         conteudo: input.conteudo,
@@ -423,15 +446,16 @@ export const iaRouter = router({
     .mutation(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const empresaId = await resolveIaEmpresaId(ctx);
       await db.update(iaConhecimento).set({ deletedAt: new Date() })
-        .where(and(eq(iaConhecimento.id, input.id), eq(iaConhecimento.empresaId, ctx.user.empresaId!)));
+        .where(and(eq(iaConhecimento.id, input.id), eq(iaConhecimento.empresaId, empresaId)));
       return { success: true };
     }),
 
   dashboardUso: adminProcedure.query(async ({ ctx }) => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    const empresaId = ctx.user.empresaId!;
+    const empresaId = await resolveIaEmpresaId(ctx);
     const [s] = await db.select({ total: sql<number>`count(*)` }).from(iaSessoes).where(and(eq(iaSessoes.empresaId, empresaId), isNull(iaSessoes.deletedAt)));
     const [m] = await db.select({ total: sql<number>`count(*)` }).from(iaMensagens).where(eq(iaMensagens.empresaId, empresaId));
     const [c] = await db.select({ total: sql<number>`count(*)` }).from(iaConhecimento).where(and(eq(iaConhecimento.empresaId, empresaId), isNull(iaConhecimento.deletedAt)));

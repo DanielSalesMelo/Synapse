@@ -7,7 +7,9 @@
     "start": "node dist/index.js",
     "serve": "node dist/index.js",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "db:apply-core-saas": "node ./scripts/apply-sql-migration.js ./sql/2026-04-30-core-saas-foundation.sql",
+    "test:core-saas": "tsx ./scripts/verify-core-saas-access.ts"
   },
   "dependencies": {
     "@trpc/server": "^11.15.0",

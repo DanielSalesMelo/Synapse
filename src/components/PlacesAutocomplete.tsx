@@ -3,12 +3,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const API_KEY = import.meta.env.VITE_FRONTEND_FORGE_API_KEY;
-const FORGE_BASE_URL =
-  import.meta.env.VITE_FRONTEND_FORGE_API_URL ||
-  "https://forge.butterfly-effect.dev";
-const MAPS_PROXY_URL = `${FORGE_BASE_URL}/v1/maps/proxy`;
+import { getGoogleMapsApiKey } from "@/lib/backend";
 
 let scriptLoaded = false;
 let scriptLoading: Promise<void> | null = null;
@@ -18,19 +13,24 @@ function ensureMapScript(): Promise<void> {
   if (scriptLoading) return scriptLoading;
 
   scriptLoading = new Promise((resolve, reject) => {
+    const apiKey = getGoogleMapsApiKey();
+    if (!apiKey) {
+      reject(new Error("Google Maps API key não configurada"));
+      return;
+    }
+
     if (window.google?.maps) {
       scriptLoaded = true;
       resolve();
       return;
     }
     const script = document.createElement("script");
-    script.src = `${MAPS_PROXY_URL}/maps/api/js?key=${API_KEY}&v=weekly&libraries=marker,places,geocoding,geometry,routes`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&v=weekly&libraries=marker,places,geocoding,geometry,routes`;
     script.async = true;
     script.crossOrigin = "anonymous";
     script.onload = () => {
       scriptLoaded = true;
       resolve();
-      script.remove();
     };
     script.onerror = () => {
       scriptLoading = null;

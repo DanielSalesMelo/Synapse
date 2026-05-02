@@ -13,25 +13,16 @@ export default defineConfig({
       registerType: 'autoUpdate', // Atualiza o SW automaticamente sem perguntar
       injectRegister: 'auto',
       workbox: {
-        // Estratégia: cache first para assets estáticos, network first para API
+        // Mantém apenas o precache do build para evitar versões misturadas
+        // entre HTML novo e bundles antigos durante deploys.
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        cleanupOutdatedCaches: true,
+        navigateFallbackDenylist: [/^\/api\//],
         runtimeCaching: [
           {
             // Chamadas de API: sempre busca na rede, sem cache
             urlPattern: /^https?:\/\/.*\/api\/.*/i,
             handler: 'NetworkOnly',
-          },
-          {
-            // Assets estáticos: cache first com revalidação em background
-            urlPattern: /^https?:\/\/.*\.(js|css|png|jpg|jpeg|svg|ico|woff2)$/i,
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'synapse-assets',
-              expiration: {
-                maxEntries: 200,
-                maxAgeSeconds: 60 * 60 * 24 * 7, // 7 dias
-              },
-            },
           },
         ],
         // Pula a fase de "waiting" — aplica a nova versão imediatamente

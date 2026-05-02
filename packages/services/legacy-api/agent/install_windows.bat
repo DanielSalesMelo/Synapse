@@ -1,103 +1,110 @@
 @echo off
-title Instalador do Agente Synapse
+setlocal
+title Synapse Agent Installer
 color 0A
-echo.
-echo  =====================================================
-echo   SYNAPSE - Agente de Monitoramento - Instalador
-echo  =====================================================
-echo.
 
-:: Verifica se Python esta instalado
-python --version >nul 2>&1
-if errorlevel 1 (
-    echo [ERRO] Python nao encontrado. Instalando Python...
-    echo Baixando Python 3.11...
-    powershell -Command "Invoke-WebRequest -Uri 'https://www.python.org/ftp/python/3.11.9/python-3.11.9-amd64.exe' -OutFile '%TEMP%\python_installer.exe'"
-    echo Instalando Python silenciosamente...
-    %TEMP%\python_installer.exe /quiet InstallAllUsers=1 PrependPath=1
-    echo Python instalado com sucesso!
-    echo Por favor, reinicie este script apos a instalacao do Python.
-    pause
-    exit /b
-)
+set "DEFAULT_SERVER=https://synapse-backend-ds2026.azurewebsites.net"
+set "INSTALL_DIR=%LocalAppData%\SynapseAgent"
+set "AGENT_EXE=%INSTALL_DIR%\synapse-agent.exe"
+set "TEMP_EXE=%TEMP%\synapse-agent.exe"
+set "PAIR_CODE="
+set "DESKTOP_DIR="
+set "STARTUP_DIR="
+set "SHORTCUT_CREATED=0"
 
-echo [OK] Python encontrado.
+echo.
+echo =====================================================
+echo  SYNAPSE - Instalador do Agente Windows
+echo =====================================================
 echo.
 
-:: Instala dependencias
-echo Instalando dependencias (psutil, requests)...
-pip install psutil requests --quiet
-if errorlevel 1 (
-    echo [ERRO] Falha ao instalar dependencias. Verifique sua conexao com a internet.
-    pause
-    exit /b
-)
-echo [OK] Dependencias instaladas.
-echo.
-
-:: Pergunta o codigo de pareamento
-set /p PAIR_CODE="Digite o codigo de pareamento gerado no Synapse (ex: SYNC-XXXX-XXXX): "
+set /p PAIR_CODE=Digite o codigo de pareamento (SYNC-XXXX-XXXX):
 if "%PAIR_CODE%"=="" (
-    echo [ERRO] Codigo de pareamento nao pode ser vazio.
-    pause
-    exit /b
+  echo [ERRO] Codigo invalido.
+  pause
+  exit /b 1
 )
 
-:: Pergunta a URL do servidor
-set /p SERVER_URL="URL do servidor Synapse (ex: https://seu-servidor.com): "
-if "%SERVER_URL%"=="" (
-    echo [ERRO] URL do servidor nao pode ser vazia.
-    pause
-    exit /b
+set /p SERVER_URL=URL do servidor Synapse [%DEFAULT_SERVER%]:
+if "%SERVER_URL%"=="" set "SERVER_URL=%DEFAULT_SERVER%"
+
+if not exist "%INSTALL_DIR%" (
+  mkdir "%INSTALL_DIR%" >nul 2>&1
 )
 
-:: Cria pasta de instalacao
-set INSTALL_DIR=%ProgramFiles%\SynapseAgent
-if not exist "%INSTALL_DIR%" mkdir "%INSTALL_DIR%"
+if not exist "%INSTALL_DIR%" (
+  echo [ERRO] Nao foi possivel criar a pasta de instalacao.
+  pause
+  exit /b 1
+)
 
-:: Copia o agente
-echo Copiando arquivos...
-copy /Y "%~dp0synapse_agent.py" "%INSTALL_DIR%\synapse_agent.py" >nul
+echo Baixando agente...
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+  "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri '%SERVER_URL%/api/agent/download/windows' -OutFile '%TEMP_EXE%'"
+if errorlevel 1 (
+  echo [ERRO] Falha ao baixar o agente .exe.
+  pause
+  exit /b 1
+)
 
-:: Cria arquivo de configuracao
-echo Criando configuracao...
-(
-echo SERVER_URL=%SERVER_URL%
-echo PAIR_CODE=%PAIR_CODE%
-) > "%INSTALL_DIR%\synapse_agent.conf"
+copy /Y "%TEMP_EXE%" "%AGENT_EXE%" >nul 2>&1
+if errorlevel 1 (
+  echo [ERRO] Falha ao copiar o agente para "%INSTALL_DIR%".
+  echo [INFO] Tente executar este instalador como Administrador ou use a pasta do usuario atual.
+  pause
+  exit /b 1
+)
 
-:: Cria o script de inicializacao
-(
-echo @echo off
-echo python "%INSTALL_DIR%\synapse_agent.py" --config "%INSTALL_DIR%\synapse_agent.conf"
-) > "%INSTALL_DIR%\start_agent.bat"
+echo Pareando dispositivo...
+"%AGENT_EXE%" --pair "%PAIR_CODE%" --server "%SERVER_URL%" --pair-only
+if errorlevel 1 (
+  echo [ERRO] Falha no pareamento.
+  pause
+  exit /b 1
+)
 
-:: Registra como servico de inicializacao automatica via Task Scheduler
 echo Registrando inicializacao automatica...
-schtasks /create /tn "SynapseAgent" /tr "\"%INSTALL_DIR%\start_agent.bat\"" /sc onlogon /ru "%USERNAME%" /f >nul 2>&1
+schtasks /create /tn "SynapseAgent" /tr "\"%AGENT_EXE%\"" /sc onlogon /f >nul 2>&1
 if errorlevel 1 (
-    echo [AVISO] Nao foi possivel registrar inicializacao automatica. Execute manualmente.
+  echo [AVISO] Nao foi possivel criar a tarefa automatica. Inicie manualmente por %AGENT_EXE%
 ) else (
-    echo [OK] Agente registrado para iniciar automaticamente.
+  echo [OK] Tarefa automatica criada.
 )
 
-:: Executa o pareamento inicial
-echo.
-echo Realizando pareamento com o servidor Synapse...
-python "%INSTALL_DIR%\synapse_agent.py" --config "%INSTALL_DIR%\synapse_agent.conf" --pair-only
-if errorlevel 1 (
-    echo [AVISO] Pareamento nao foi concluido. O agente tentara novamente ao iniciar.
-) else (
-    echo [OK] Pareamento realizado com sucesso!
+for /f "usebackq delims=" %%i in (`powershell -NoProfile -ExecutionPolicy Bypass -Command "[Environment]::GetFolderPath('Desktop')"`) do set "DESKTOP_DIR=%%i"
+for /f "usebackq delims=" %%i in (`powershell -NoProfile -ExecutionPolicy Bypass -Command "[Environment]::GetFolderPath('Startup')"`) do set "STARTUP_DIR=%%i"
+
+if "%DESKTOP_DIR%"=="" if exist "%USERPROFILE%\Desktop" set "DESKTOP_DIR=%USERPROFILE%\Desktop"
+if "%DESKTOP_DIR%"=="" if exist "%OneDrive%\Desktop" set "DESKTOP_DIR=%OneDrive%\Desktop"
+
+if not "%DESKTOP_DIR%"=="" (
+  echo Criando atalho de suporte na area de trabalho...
+  powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+    "$WshShell = New-Object -ComObject WScript.Shell; $Shortcut = $WshShell.CreateShortcut('%DESKTOP_DIR%\Synapse Suporte.lnk'); $Shortcut.TargetPath = '%AGENT_EXE%'; $Shortcut.Arguments = '--support'; $Shortcut.WorkingDirectory = '%INSTALL_DIR%'; $Shortcut.IconLocation = '%AGENT_EXE%,0'; $Shortcut.Save()"
+  if exist "%DESKTOP_DIR%\Synapse Suporte.lnk" (
+    set "SHORTCUT_CREATED=1"
+  ) else (
+    echo [AVISO] Nao foi possivel criar o atalho na area de trabalho.
+  )
 )
 
+if not "%STARTUP_DIR%"=="" (
+  powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+    "$WshShell = New-Object -ComObject WScript.Shell; $Shortcut = $WshShell.CreateShortcut('%STARTUP_DIR%\Synapse Agent.lnk'); $Shortcut.TargetPath = '%AGENT_EXE%'; $Shortcut.WorkingDirectory = '%INSTALL_DIR%'; $Shortcut.IconLocation = '%AGENT_EXE%,0'; $Shortcut.Save()"
+)
+
+start "" "%AGENT_EXE%"
+
 echo.
-echo  =====================================================
-echo   Instalacao concluida!
-echo   O agente sera iniciado automaticamente no proximo
-echo   login do Windows.
-echo.
-echo   Para iniciar agora: %INSTALL_DIR%\start_agent.bat
-echo  =====================================================
+echo =====================================================
+echo  Instalacao concluida
+echo  Pasta: %INSTALL_DIR%
+echo  Servidor: %SERVER_URL%
+if "%SHORTCUT_CREATED%"=="1" (
+  echo  Atalho de suporte: %DESKTOP_DIR%\Synapse Suporte.lnk
+) else (
+  echo  Abra manualmente: "%AGENT_EXE%" --support
+)
+echo =====================================================
 echo.
 pause

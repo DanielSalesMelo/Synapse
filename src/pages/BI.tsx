@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3, TrendingUp, Truck, DollarSign, Users, Package, Target, Activity } from "lucide-react";
 import { trpc } from "@/lib/trpc";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
 function formatCurrency(v: any) {
   if (!v && v !== 0) return "R$ 0,00";
@@ -9,8 +10,9 @@ function formatCurrency(v: any) {
 }
 
 export default function BI() {
-  const metricas = trpc.bi.metricas.useQuery();
-  const tendencias = trpc.bi.tendencias.useQuery();
+  const { effectiveEmpresaId } = useViewAs();
+  const metricas = trpc.bi.metricas.useQuery({ empresaId: effectiveEmpresaId });
+  const tendencias = trpc.bi.tendencias.useQuery({ empresaId: effectiveEmpresaId });
 
   const m = metricas.data;
 
@@ -22,6 +24,8 @@ export default function BI() {
 
       {metricas.isLoading ? (
         <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>
+      ) : metricas.error ? (
+        <Card><CardContent className="py-10 text-center text-muted-foreground">Não foi possível carregar o BI agora.</CardContent></Card>
       ) : (
         <>
           {/* Seção: Operações */}

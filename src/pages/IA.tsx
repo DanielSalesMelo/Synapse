@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 type Mensagem = { role: "user" | "assistant"; conteudo: string; tokens?: number; modoLocal?: boolean };
 
@@ -54,6 +54,37 @@ const SUGESTOES: Record<string, string[]> = {
   wms: ["Como fazer um inventário?", "Quais produtos estão abaixo do mínimo?", "Como registrar uma entrada?"],
 };
 
+const LOCAL_AGENTES = [
+  { id: -1, setor: "master", nome: "Synapse Master", avatar: "🧠", descricao: "IA central do sistema", isMaster: true, usarIaExterna: false },
+  { id: -2, setor: "financeiro", nome: "Analista Financeiro", avatar: "📊", descricao: "Custos, contas e margem", isMaster: false, usarIaExterna: false },
+  { id: -3, setor: "frota", nome: "Gestor de Frota", avatar: "🚛", descricao: "Veículos, operação e rotas", isMaster: false, usarIaExterna: false },
+  { id: -4, setor: "motorista", nome: "Suporte ao Motorista", avatar: "👨‍✈️", descricao: "Procedimentos e documentação", isMaster: false, usarIaExterna: false },
+  { id: -5, setor: "manutencao", nome: "Especialista em Manutenção", avatar: "🔧", descricao: "Preventiva, corretiva e revisão", isMaster: false, usarIaExterna: false },
+  { id: -6, setor: "juridico", nome: "Assistente Jurídico", avatar: "⚖️", descricao: "Compliance, multas e transporte", isMaster: false, usarIaExterna: false },
+  { id: -7, setor: "recepcao", nome: "Assistente de Recepção", avatar: "📦", descricao: "Recebimento e conferência", isMaster: false, usarIaExterna: false },
+  { id: -8, setor: "wms", nome: "Gestor de Armazém", avatar: "🏭", descricao: "Estoque, WMS e inventário", isMaster: false, usarIaExterna: false },
+];
+
+function gerarRespostaLocal(texto: string, setor: string) {
+  const msg = texto.toLowerCase();
+  if (setor === "financeiro" && (msg.includes("custo") || msg.includes("margem"))) {
+    return "Para analisar custos e margem, use Financeiro e Relatórios Avançados. Se quiser, eu posso te orientar no custo por km, contas a pagar/receber e visão de caixa.";
+  }
+  if (setor === "frota" && (msg.includes("rota") || msg.includes("veículo") || msg.includes("veiculo"))) {
+    return "Na operação de frota, priorize veículos ativos, checklists e viagens com custo consolidado. Se me disser qual placa ou rota você quer avaliar, eu organizo a análise.";
+  }
+  if (setor === "manutencao" && (msg.includes("revis") || msg.includes("manuten"))) {
+    return "Para manutenção, concentre revisões preventivas, custo por veículo e pendências críticas. Posso te ajudar a montar um plano simples de manutenção preventiva.";
+  }
+  if (setor === "wms" && (msg.includes("estoque") || msg.includes("invent"))) {
+    return "No WMS, o ideal é acompanhar produtos, saldo, movimentações e inventário. Se você me disser o problema, eu te digo onde operar dentro do Synapse.";
+  }
+  if (msg.includes("olá") || msg.includes("ola") || msg.includes("oi")) {
+    return "Olá. Estou pronto para ajudar no Synapse com operação, financeiro, RH, TI, logística e gestão.";
+  }
+  return "Recebi sua pergunta e estou em modo local de contingência. Posso te orientar pelo módulo correto, organizar próximos passos e estruturar a ação dentro do Synapse mesmo sem depender da IA externa.";
+}
+
 export default function IA() {
   const { user } = useAuth();
   
@@ -67,7 +98,8 @@ export default function IA() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { data: agentes = [] } = trpc.ia.listAgentes.useQuery();
+  const agentesQ = trpc.ia.listAgentes.useQuery();
+  const agentes = (agentesQ.data && agentesQ.data.length > 0 ? agentesQ.data : LOCAL_AGENTES) as any[];
   const criarSessao = trpc.ia.criarSessao.useMutation();
   const enviarMsg = trpc.ia.enviarMensagem.useMutation();
   const { data: conhecimentos = [], refetch: refetchConhecimento } = trpc.ia.listConhecimento.useQuery({});
@@ -83,7 +115,8 @@ export default function IA() {
     onSuccess: () => { toast.success("Removido!"); refetchConhecimento(); },
   });
   const inicializar = trpc.ia.inicializarAgentes.useMutation({
-    onSuccess: (r) => toast({ title: r.message }),
+    onSuccess: (r) => toast.success(r.message),
+    onError: (e) => toast.error(e.message),
   });
 
   // Selecionar primeiro agente automaticamente
@@ -91,7 +124,7 @@ export default function IA() {
     if (agentes.length > 0 && !agenteAtivo) {
       selecionarAgente(agentes[0]);
     }
-  }, [agentes]);
+  }, [agentes, agenteAtivo]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -132,7 +165,15 @@ export default function IA() {
       const res = await enviarMsg.mutateAsync({ sessaoId: sid, agenteId: agenteAtivo.id, mensagem: texto });
       setMensagens(prev => [...prev, { role: "assistant", conteudo: res.resposta, tokens: res.tokens, modoLocal: res.modoLocal }]);
     } catch (e: any) {
-      setMensagens(prev => [...prev, { role: "assistant", conteudo: "Desculpe, ocorreu um erro. Tente novamente." }]);
+      setMensagens(prev => [
+        ...prev,
+        {
+          role: "assistant",
+          conteudo: gerarRespostaLocal(texto, agenteAtivo?.setor ?? "master"),
+          modoLocal: true,
+        },
+      ]);
+      toast.error("IA online indisponível no momento. Respondi em modo local para você não ficar sem atendimento.");
     } finally {
       setEnviando(false);
       inputRef.current?.focus();
@@ -147,18 +188,49 @@ export default function IA() {
 
   return (
     <div className="space-y-4">
+        <div className="relative overflow-hidden rounded-3xl border border-border bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.14),_transparent_30%),radial-gradient(circle_at_top_right,_rgba(168,85,247,0.16),_transparent_32%),linear-gradient(180deg,rgba(15,23,42,0.98),rgba(15,23,42,0.9))] p-6 text-white shadow-2xl">
+          <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,rgba(255,255,255,0.05)_35%,transparent_70%)]" />
+          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="mb-2 flex items-center gap-2">
+                <Badge variant="outline" className="border-white/20 bg-white/10 text-white">
+                  <Sparkles className="mr-1 h-3 w-3" />
+                  IA conectada ao Synapse
+                </Badge>
+                <Badge variant="outline" className="border-emerald-400/30 bg-emerald-500/10 text-emerald-200">
+                  Resposta local garantida
+                </Badge>
+              </div>
+              <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Synapse AI</h1>
+              <p className="mt-2 max-w-2xl text-sm text-slate-200">
+                Assistentes por setor com fallback local para você nunca ficar sem resposta, mesmo quando a IA externa ou a persistência do banco estiverem indisponíveis.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:w-[320px]">
+              <div className="rounded-2xl border border-white/10 bg-white/10 p-3 backdrop-blur">
+                <p className="text-[11px] uppercase tracking-wide text-slate-200">Agentes</p>
+                <p className="mt-2 text-lg font-semibold">{agentes.length}</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/10 p-3 backdrop-blur">
+                <p className="text-[11px] uppercase tracking-wide text-slate-200">Sessão</p>
+                <p className="mt-2 text-lg font-semibold">{agenteAtivo?.nome ?? "Escolha um agente"}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
               <Brain className="h-6 w-6 text-primary" />
-              Synapse AI
+              Assistentes por contexto
               <Badge variant="outline" className="text-xs text-primary border-primary/30 bg-primary/5">
-                <Zap className="h-3 w-3 mr-1" /> Beta
+                <Zap className="h-3 w-3 mr-1" /> Pronto para uso
               </Badge>
-            </h1>
+            </h2>
             <p className="text-muted-foreground text-sm mt-1">
-              Assistentes inteligentes para cada setor do seu negócio
+              Faça perguntas operacionais, financeiras, de frota, manutenção ou gestão e receba retorno direto na conversa.
             </p>
           </div>
           {isAdmin && (
@@ -185,6 +257,11 @@ export default function IA() {
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Agentes</p>
                 </div>
                 <div className="flex-1 overflow-y-auto p-2 space-y-1">
+                  {agentes.length === 0 && (
+                    <div className="rounded-lg border border-dashed p-3 text-center text-xs text-muted-foreground">
+                      Nenhum agente disponível ainda. Clique em <strong>Inicializar Agentes</strong>.
+                    </div>
+                  )}
                   {agentes.map((ag: any) => (
                     <button
                       key={ag.id}

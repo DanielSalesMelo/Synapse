@@ -1,10 +1,11 @@
 import { protectedProcedure, router, adminProcedure } from "../_core/trpc";
 import { getDb } from "../db";
-import { funcionarios } from "../drizzle/schema";
-import { eq, and, isNull, isNotNull, desc } from "drizzle-orm";
+import { contasPagar, funcionarios } from "../drizzle/schema";
+import { eq, and, isNull, isNotNull, desc, sql } from "drizzle-orm";
 import { z } from "zod";
 import { safeDb, requireDb } from "../helpers/errorHandler";
 import { createAuditLog } from "../_core/audit";
+import { resolveAccessibleEmpresaId } from "../_core/access";
 
 // Apenas nome e função são obrigatórios — todo o resto é opcional
 const funcionarioInput = z.object({
@@ -67,18 +68,150 @@ function parseDate(d: string | null | undefined): Date | null {
 }
 
 export const funcionariosRouter = router({
+  dashboard: protectedProcedure
+    .input(z.object({ empresaId: z.number() }))
+    .query(async ({ input, ctx }) => {
+      return safeDb(async () => {
+        const db = requireDb(await getDb(), "funcionarios.dashboard");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
+
+        const [stats] = await db.select({
+          total: sql<number>`count(*)`,
+          ativos: sql<number>`count(*) filter (where ${funcionarios.ativo} = true and ${funcionarios.deletedAt} is null)`,
+          inativos: sql<number>`count(*) filter (where ${funcionarios.ativo} = false and ${funcionarios.deletedAt} is null)`,
+          motoristas: sql<number>`count(*) filter (where ${funcionarios.funcao} = 'motorista' and ${funcionarios.deletedAt} is null)`,
+          ajudantes: sql<number>`count(*) filter (where ${funcionarios.funcao} = 'ajudante' and ${funcionarios.deletedAt} is null)`,
+          folhaAtiva: sql<number>`coalesce(sum(${funcionarios.salario}) filter (where ${funcionarios.ativo} = true and ${funcionarios.deletedAt} is null), 0)`,
+          alertasDocumentos: sql<number>`count(*) filter (
+            where ${funcionarios.deletedAt} is null and (
+              (${funcionarios.vencimentoCnh} is not null and ${funcionarios.vencimentoCnh} <= current_date + interval '30 days')
+              or (${funcionarios.vencimentoAso} is not null and ${funcionarios.vencimentoAso} <= current_date + interval '30 days')
+              or (${funcionarios.vencimentoMopp} is not null and ${funcionarios.vencimentoMopp} <= current_date + interval '30 days')
+            )
+          )`,
+          bloqueadosOperacionalmente: sql<number>`count(*) filter (
+            where ${funcionarios.deletedAt} is null and ${funcionarios.funcao} in ('motorista', 'ajudante') and (
+              (${funcionarios.vencimentoCnh} is not null and ${funcionarios.vencimentoCnh} < current_date)
+              or (${funcionarios.vencimentoAso} is not null and ${funcionarios.vencimentoAso} < current_date)
+              or (${funcionarios.vencimentoMopp} is not null and ${funcionarios.vencimentoMopp} < current_date)
+            )
+          )`,
+        }).from(funcionarios).where(eq(funcionarios.empresaId, empresaId));
+
+        const distribuicaoFuncao = await db.select({
+          funcao: funcionarios.funcao,
+          total: sql<number>`count(*)`,
+        }).from(funcionarios)
+          .where(and(eq(funcionarios.empresaId, empresaId), isNull(funcionarios.deletedAt)))
+          .groupBy(funcionarios.funcao)
+          .orderBy(funcionarios.funcao);
+
+        const vencimentos = await db.select({
+          id: funcionarios.id,
+          nome: funcionarios.nome,
+          funcao: funcionarios.funcao,
+          vencimentoCnh: funcionarios.vencimentoCnh,
+          vencimentoAso: funcionarios.vencimentoAso,
+          vencimentoMopp: funcionarios.vencimentoMopp,
+        }).from(funcionarios)
+          .where(and(eq(funcionarios.empresaId, empresaId), isNull(funcionarios.deletedAt)))
+          .orderBy(funcionarios.nome);
+
+        return {
+          ...stats,
+          folhaAtiva: Number(stats?.folhaAtiva || 0),
+          distribuicaoFuncao,
+          vencimentos,
+        };
+      }, "funcionarios.dashboard");
+    }),
+
+  folhaResumo: protectedProcedure
+    .input(z.object({ empresaId: z.number(), limit: z.number().min(1).max(24).default(12) }))
+    .query(async ({ input, ctx }) => {
+      return safeDb(async () => {
+        const db = requireDb(await getDb(), "funcionarios.folhaResumo");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
+        return db.select({
+          competencia: sql<string>`to_char(date_trunc('month', ${contasPagar.dataVencimento}), 'MM/YYYY')`,
+          referencia: sql<string>`to_char(date_trunc('month', ${contasPagar.dataVencimento}), 'YYYY-MM-01')`,
+          funcionarios: sql<number>`count(distinct ${contasPagar.funcionarioId})`,
+          totalBruto: sql<number>`coalesce(sum(${contasPagar.valor}), 0)`,
+          pagos: sql<number>`count(*) filter (where ${contasPagar.status} = 'pago')`,
+          pendentes: sql<number>`count(*) filter (where ${contasPagar.status} in ('pendente', 'vencido'))`,
+        }).from(contasPagar)
+          .where(and(
+            eq(contasPagar.empresaId, empresaId),
+            eq(contasPagar.categoria, "salario"),
+            isNull(contasPagar.deletedAt),
+          ))
+          .groupBy(sql`date_trunc('month', ${contasPagar.dataVencimento})`)
+          .orderBy(sql`date_trunc('month', ${contasPagar.dataVencimento}) desc`)
+          .limit(input.limit);
+      }, "funcionarios.folhaResumo");
+    }),
+
+  beneficiosResumo: protectedProcedure
+    .input(z.object({ empresaId: z.number() }))
+    .query(async ({ input, ctx }) => {
+      return safeDb(async () => {
+        const db = requireDb(await getDb(), "funcionarios.beneficiosResumo");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
+        const [stats] = await db.select({
+          planoSaude: sql<number>`count(*) filter (where ${funcionarios.temPlanoSaude} = true and ${funcionarios.deletedAt} is null and ${funcionarios.ativo} = true)`,
+          valeRefeicao: sql<number>`count(*) filter (where ${funcionarios.temValeRefeicao} = true and ${funcionarios.deletedAt} is null and ${funcionarios.ativo} = true)`,
+          valeTransporte: sql<number>`count(*) filter (where ${funcionarios.temValeTransporte} = true and ${funcionarios.deletedAt} is null and ${funcionarios.ativo} = true)`,
+          totalValeRefeicao: sql<number>`coalesce(sum(${funcionarios.valorValeRefeicao}) filter (where ${funcionarios.temValeRefeicao} = true and ${funcionarios.deletedAt} is null and ${funcionarios.ativo} = true), 0)`,
+        }).from(funcionarios).where(eq(funcionarios.empresaId, empresaId));
+        return {
+          planoSaude: Number(stats?.planoSaude) || 0,
+          valeRefeicao: Number(stats?.valeRefeicao) || 0,
+          valeTransporte: Number(stats?.valeTransporte) || 0,
+          totalValeRefeicao: Number(stats?.totalValeRefeicao) || 0,
+        };
+      }, "funcionarios.beneficiosResumo");
+    }),
+
+  previsaoFolha: protectedProcedure
+    .input(z.object({ empresaId: z.number() }))
+    .query(async ({ input, ctx }) => {
+      return safeDb(async () => {
+        const db = requireDb(await getDb(), "funcionarios.previsaoFolha");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
+        const [stats] = await db.select({
+          totalSalarios: sql<number>`coalesce(sum(${funcionarios.salario}) filter (where ${funcionarios.deletedAt} is null and ${funcionarios.ativo} = true), 0)`,
+          totalValeRefeicao: sql<number>`coalesce(sum(${funcionarios.valorValeRefeicao}) filter (where ${funcionarios.deletedAt} is null and ${funcionarios.ativo} = true and ${funcionarios.temValeRefeicao} = true), 0)`,
+          headcount: sql<number>`count(*) filter (where ${funcionarios.deletedAt} is null and ${funcionarios.ativo} = true)`,
+        }).from(funcionarios).where(eq(funcionarios.empresaId, empresaId));
+
+        const totalSalarios = Number(stats?.totalSalarios) || 0;
+        const totalValeRefeicao = Number(stats?.totalValeRefeicao) || 0;
+        const encargosEstimados = totalSalarios * 0.28;
+        const custoTotal = totalSalarios + totalValeRefeicao + encargosEstimados;
+
+        return {
+          headcount: Number(stats?.headcount) || 0,
+          totalSalarios,
+          totalValeRefeicao,
+          encargosEstimados,
+          custoTotal,
+        };
+      }, "funcionarios.previsaoFolha");
+    }),
+
   list: protectedProcedure
     .input(z.object({
       empresaId: z.number(),
       funcao: z.enum(["motorista", "ajudante", "despachante", "gerente", "admin", "outro"]).optional(),
       tipoContrato: z.enum(["clt", "freelancer", "terceirizado", "estagiario"]).optional(),
     }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "funcionarios.list");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         return db.select().from(funcionarios)
           .where(and(
-            eq(funcionarios.empresaId, input.empresaId),
+            eq(funcionarios.empresaId, empresaId),
             isNull(funcionarios.deletedAt),
             input.funcao ? eq(funcionarios.funcao, input.funcao) : undefined,
             input.tipoContrato ? eq(funcionarios.tipoContrato, input.tipoContrato) : undefined,
@@ -89,12 +222,13 @@ export const funcionariosRouter = router({
 
   listMotoristas: protectedProcedure
     .input(z.object({ empresaId: z.number() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "funcionarios.listMotoristas");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         return db.select().from(funcionarios)
           .where(and(
-            eq(funcionarios.empresaId, input.empresaId),
+            eq(funcionarios.empresaId, empresaId),
             eq(funcionarios.funcao, "motorista"),
             isNull(funcionarios.deletedAt),
           ))
@@ -104,12 +238,13 @@ export const funcionariosRouter = router({
 
   listAjudantes: protectedProcedure
     .input(z.object({ empresaId: z.number() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "funcionarios.listAjudantes");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         return db.select().from(funcionarios)
           .where(and(
-            eq(funcionarios.empresaId, input.empresaId),
+            eq(funcionarios.empresaId, empresaId),
             eq(funcionarios.funcao, "ajudante"),
             isNull(funcionarios.deletedAt),
           ))
@@ -135,13 +270,14 @@ export const funcionariosRouter = router({
 
   freelancersPendentes: protectedProcedure
     .input(z.object({ empresaId: z.number() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "funcionarios.freelancersPendentes");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         const hoje = new Date();
         const rows = await db.select().from(funcionarios)
           .where(and(
-            eq(funcionarios.empresaId, input.empresaId),
+            eq(funcionarios.empresaId, empresaId),
             eq(funcionarios.tipoContrato, "freelancer"),
             isNull(funcionarios.deletedAt),
           ));
@@ -159,7 +295,7 @@ export const funcionariosRouter = router({
     .mutation(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "funcionarios.create");
-        const empresaId = ctx.user.role !== "master_admin" ? ctx.user.empresaId! : input.empresaId;
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         const results = await db.insert(funcionarios).values({
           ...input,
           empresaId,
@@ -246,20 +382,29 @@ export const funcionariosRouter = router({
       return safeDb(async () => {
         const db = requireDb(await getDb(), "funcionarios.lancarFolha");
         const { contasPagar } = await import("../drizzle/schema");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
 
         // Buscar todos os funcionários ativos da empresa que têm salário definido
         const funcs = await db.select().from(funcionarios)
           .where(and(
-            eq(funcionarios.empresaId, input.empresaId),
+            eq(funcionarios.empresaId, empresaId),
             eq(funcionarios.ativo, true),
             isNull(funcionarios.deletedAt),
             isNotNull(funcionarios.salario)
           ));
 
         let lancados = 0;
+        let beneficiosLancados = 0;
+        let encargosLancados = 0;
         for (const f of funcs) {
+          const salario = Number(f.salario ?? 0);
+          const vr = f.temValeRefeicao ? Number(f.valorValeRefeicao ?? 0) : 0;
+          const vt = f.temValeTransporte ? Math.round((salario * 0.06) * 100) / 100 : 0;
+          const planoSaude = f.temPlanoSaude ? 350 : 0;
+          const encargos = Math.round((salario * 0.28) * 100) / 100;
+
           await db.insert(contasPagar).values({
-            empresaId: input.empresaId,
+            empresaId,
             descricao: `Salário ${f.nome} - Ref: ${input.mes}/${input.ano}`,
             categoria: "salario",
             valor: f.salario!,
@@ -268,16 +413,84 @@ export const funcionariosRouter = router({
             funcionarioId: f.id,
           });
           lancados++;
+
+          if (vr > 0) {
+            await db.insert(contasPagar).values({
+              empresaId,
+              descricao: `Vale refeição ${f.nome} - Ref: ${input.mes}/${input.ano}`,
+              categoria: "outro",
+              valor: String(vr),
+              dataVencimento: input.dataVencimento,
+              status: "pendente",
+              funcionarioId: f.id,
+              observacoes: "Benefício automático de folha",
+            });
+            beneficiosLancados++;
+          }
+
+          if (vt > 0) {
+            await db.insert(contasPagar).values({
+              empresaId,
+              descricao: `Vale transporte ${f.nome} - Ref: ${input.mes}/${input.ano}`,
+              categoria: "outro",
+              valor: String(vt),
+              dataVencimento: input.dataVencimento,
+              status: "pendente",
+              funcionarioId: f.id,
+              observacoes: "Benefício automático de folha",
+            });
+            beneficiosLancados++;
+          }
+
+          if (planoSaude > 0) {
+            await db.insert(contasPagar).values({
+              empresaId,
+              descricao: `Plano de saúde ${f.nome} - Ref: ${input.mes}/${input.ano}`,
+              categoria: "seguro",
+              valor: String(planoSaude),
+              dataVencimento: input.dataVencimento,
+              status: "pendente",
+              funcionarioId: f.id,
+              observacoes: "Benefício automático de folha",
+            });
+            beneficiosLancados++;
+          }
+
+          if (encargos > 0) {
+            await db.insert(contasPagar).values({
+              empresaId,
+              descricao: `Encargos estimados ${f.nome} - Ref: ${input.mes}/${input.ano}`,
+              categoria: "outro",
+              valor: String(encargos),
+              dataVencimento: input.dataVencimento,
+              status: "pendente",
+              funcionarioId: f.id,
+              observacoes: "Encargo estimado automático de folha (28%)",
+            });
+            encargosLancados++;
+          }
         }
 
         await createAuditLog(ctx, {
           acao: "CREATE",
           tabela: "contas_pagar",
           registroId: 0,
-          dadosDepois: { mes: input.mes, ano: input.ano, totalLancados: lancados },
+          dadosDepois: {
+            mes: input.mes,
+            ano: input.ano,
+            totalLancados: lancados,
+            beneficiosLancados,
+            encargosLancados,
+          },
         });
 
-        return { success: true, totalLancados: lancados };
+        return {
+          success: true,
+          totalLancados: lancados,
+          beneficiosLancados,
+          encargosLancados,
+          totalRegistros: lancados + beneficiosLancados + encargosLancados,
+        };
       }, "funcionarios.lancarFolha");
     }),
 
@@ -313,12 +526,13 @@ export const funcionariosRouter = router({
 
   listDeleted: protectedProcedure
     .input(z.object({ empresaId: z.number() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "funcionarios.listDeleted");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         return db.select().from(funcionarios)
           .where(and(
-            eq(funcionarios.empresaId, input.empresaId),
+            eq(funcionarios.empresaId, empresaId),
             isNotNull(funcionarios.deletedAt),
           ))
           .orderBy(desc(funcionarios.deletedAt));

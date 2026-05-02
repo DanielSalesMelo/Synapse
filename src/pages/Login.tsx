@@ -6,7 +6,7 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Mail, Lock, LogIn, Building2, Key, CheckCircle, AlertCircle, Zap } from "lucide-react";
+import { Mail, Lock, LogIn, Building2, Key, CheckCircle, AlertCircle, Zap, Eye, EyeOff, RefreshCcw } from "lucide-react";
 
 const AUTH_TOKEN_KEY = "synapse-auth-token";
 const USER_INFO_KEY = "app-user-info";
@@ -17,6 +17,7 @@ export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
   const [companyCode, setCompanyCode] = useState("");
   const [empresaValidada, setEmpresaValidada] = useState<{ id: number; nome: string; codigoConvite: string | null } | null>(null);
@@ -104,6 +105,14 @@ export default function Login() {
   };
 
   const isLoading = loginMutation.isPending || registerMutation.isPending;
+
+  const limparSessaoAntiga = () => {
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    localStorage.removeItem(USER_INFO_KEY);
+    localStorage.removeItem("manus-runtime-user-info");
+    localStorage.removeItem("synapse-user");
+    toast.success("Sessão antiga removida. Tente entrar novamente.");
+  };
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4 relative overflow-hidden">
@@ -219,13 +228,21 @@ export default function Login() {
               <div className="relative">
                 <Lock className="absolute left-3 top-3.5 h-4 w-4 text-white/30" />
                 <Input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
-                  className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/25 focus:border-blue-500/50 h-11"
+                  className="pl-10 pr-11 bg-white/5 border-white/10 text-white placeholder:text-white/25 focus:border-blue-500/50 h-11"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((value) => !value)}
+                  className="absolute right-3 top-3 text-white/40 hover:text-white/70 transition-colors"
+                  aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
               </div>
               {!isLogin && <p className="text-xs text-white/30">Mínimo 6 caracteres</p>}
             </div>
@@ -270,6 +287,19 @@ export default function Login() {
                 {isLogin ? "Cadastre-se" : "Faça login"}
               </button>
             </div>
+
+            {isLogin && (
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={limparSessaoAntiga}
+                  className="inline-flex items-center gap-2 text-xs text-white/40 hover:text-white/70 transition-colors"
+                >
+                  <RefreshCcw className="h-3.5 w-3.5" />
+                  Limpar sessão antiga
+                </button>
+              </div>
+            )}
           </form>
         </div>
 

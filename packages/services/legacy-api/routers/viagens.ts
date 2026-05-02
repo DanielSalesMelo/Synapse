@@ -4,6 +4,7 @@ import { viagens, despesasViagem, funcionarios, veiculos } from "../drizzle/sche
 import { eq, and, isNull, isNotNull, desc, sql } from "drizzle-orm";
 import { z } from "zod";
 import { safeDb, requireDb } from "../helpers/errorHandler";
+import { resolveAccessibleEmpresaId } from "../_core/access";
 
 // Apenas veículo é obrigatório para criar uma viagem — resto pode ser preenchido depois
 const viagemInput = z.object({
@@ -48,9 +49,10 @@ export const viagensRouter = router({
       tipo: z.enum(["entrega", "viagem"]).optional(),
       limit: z.number().default(50),
     }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "viagens.list");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         const rows = await db.select({
           id: viagens.id,
           tipo: viagens.tipo,
@@ -81,7 +83,7 @@ export const viagensRouter = router({
           .leftJoin(funcionarios, eq(viagens.motoristaId, funcionarios.id))
           .leftJoin(veiculos, eq(viagens.veiculoId, veiculos.id))
           .where(and(
-            eq(viagens.empresaId, input.empresaId),
+            eq(viagens.empresaId, empresaId),
             isNull(viagens.deletedAt),
             input.status ? eq(viagens.status, input.status) : undefined,
             input.tipo ? eq(viagens.tipo, input.tipo) : undefined,
@@ -116,7 +118,7 @@ export const viagensRouter = router({
     .mutation(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "viagens.create");
-        const empresaId = ctx.user.role !== "master_admin" ? ctx.user.empresaId! : input.empresaId;
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         const [result] = await db.insert(viagens).values({
           ...input,
           empresaId,
@@ -207,11 +209,12 @@ export const viagensRouter = router({
 
   listDeleted: protectedProcedure
     .input(z.object({ empresaId: z.number() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "viagens.listDeleted");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         return db.select().from(viagens)
-          .where(and(eq(viagens.empresaId, input.empresaId), isNotNull(viagens.deletedAt)))
+          .where(and(eq(viagens.empresaId, empresaId), isNotNull(viagens.deletedAt)))
           .orderBy(desc(viagens.deletedAt));
       }, "viagens.listDeleted");
     }),
@@ -227,11 +230,13 @@ export const viagensRouter = router({
       data: z.string().optional(),
       comprovante: z.string().optional(),
     }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "viagens.addDespesa");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         const [result] = await db.insert(despesasViagem).values({
           ...input,
+          empresaId,
           data: input.data || null,
         }).returning({ id: despesasViagem.id });
         // Atualizar total de despesas na viagem
@@ -249,9 +254,10 @@ export const viagensRouter = router({
   // Veículos em viagem (status em_andamento) com motorista vinculado
   veiculosEmViagem: protectedProcedure
     .input(z.object({ empresaId: z.number() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "viagens.veiculosEmViagem");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         const rows = await db.select({
           veiculoId: viagens.veiculoId,
           motoristaId: viagens.motoristaId,
@@ -263,7 +269,7 @@ export const viagensRouter = router({
           .leftJoin(veiculos, eq(viagens.veiculoId, veiculos.id))
           .leftJoin(funcionarios, eq(viagens.motoristaId, funcionarios.id))
           .where(and(
-            eq(viagens.empresaId, input.empresaId),
+            eq(viagens.empresaId, empresaId),
             eq(viagens.status, "em_andamento"),
             isNull(viagens.deletedAt),
           ));
@@ -274,9 +280,10 @@ export const viagensRouter = router({
   // Resumo financeiro para dashboard
   resumoFinanceiro: protectedProcedure
     .input(z.object({ empresaId: z.number() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       return safeDb(async () => {
         const db = requireDb(await getDb(), "viagens.resumoFinanceiro");
+        const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
         const rows = await db.select({
           status: viagens.status,
           totalFrete: sql<number>`SUM(${viagens.freteTotal})`,
@@ -284,7 +291,7 @@ export const viagensRouter = router({
           totalSaldo: sql<number>`SUM(${viagens.saldoViagem})`,
           quantidade: sql<number>`COUNT(*)`,
         }).from(viagens)
-          .where(and(eq(viagens.empresaId, input.empresaId), isNull(viagens.deletedAt)))
+          .where(and(eq(viagens.empresaId, empresaId), isNull(viagens.deletedAt)))
           .groupBy(viagens.status);
         return rows;
       }, "viagens.resumoFinanceiro");

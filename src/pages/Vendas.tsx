@@ -11,6 +11,7 @@ import { useState } from "react";
 import { Plus, ShoppingCart, FileText, DollarSign, Search, Package } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { useViewAs } from "@/contexts/ViewAsContext";
 
 const STATUS_PEDIDO_COLORS: Record<string, string> = {
   rascunho: "bg-gray-100 text-gray-700", enviado: "bg-blue-100 text-blue-700",
@@ -30,15 +31,16 @@ function formatCurrency(v: any) {
 }
 
 export default function Vendas() {
+  const { effectiveEmpresaId } = useViewAs();
   const [tab, setTab] = useState("pedidos");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("todos");
   const [showNewPedido, setShowNewPedido] = useState(false);
   const [showNewProposta, setShowNewProposta] = useState(false);
 
-  const dashboard = trpc.vendas.dashboard.useQuery();
-  const pedidosQ = trpc.vendas.listPedidos.useQuery({ search, status: statusFilter });
-  const propostasQ = trpc.vendas.listPropostas.useQuery({ search, status: statusFilter });
+  const dashboard = trpc.vendas.dashboard.useQuery({ empresaId: effectiveEmpresaId });
+  const pedidosQ = trpc.vendas.listPedidos.useQuery({ empresaId: effectiveEmpresaId, search, status: statusFilter });
+  const propostasQ = trpc.vendas.listPropostas.useQuery({ empresaId: effectiveEmpresaId, search, status: statusFilter });
 
   const createPedido = trpc.vendas.createPedido.useMutation({ onSuccess: () => { pedidosQ.refetch(); dashboard.refetch(); setShowNewPedido(false); toast.success("Pedido criado!"); } });
   const createProposta = trpc.vendas.createProposta.useMutation({ onSuccess: () => { propostasQ.refetch(); dashboard.refetch(); setShowNewProposta(false); toast.success("Proposta criada!"); } });
@@ -69,7 +71,7 @@ export default function Vendas() {
             <Select value={statusFilter} onValueChange={setStatusFilter}><SelectTrigger className="w-40"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="todos">Todos</SelectItem><SelectItem value="rascunho">Rascunho</SelectItem><SelectItem value="aprovado">Aprovado</SelectItem><SelectItem value="em_separacao">Em Separação</SelectItem><SelectItem value="expedido">Expedido</SelectItem><SelectItem value="entregue">Entregue</SelectItem></SelectContent></Select>
             <Dialog open={showNewPedido} onOpenChange={setShowNewPedido}><DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-2" />Novo Pedido</Button></DialogTrigger>
               <DialogContent><DialogHeader><DialogTitle>Novo Pedido</DialogTitle></DialogHeader>
-                <form onSubmit={e => { e.preventDefault(); createPedido.mutate(pedidoForm); }} className="space-y-3">
+                <form onSubmit={e => { e.preventDefault(); createPedido.mutate({ empresaId: effectiveEmpresaId, ...pedidoForm }); }} className="space-y-3">
                   <div><Label>Cliente *</Label><Input value={pedidoForm.clienteNome} onChange={e => setPedidoForm(p => ({ ...p, clienteNome: e.target.value }))} required /></div>
                   <div><Label>Forma de Pagamento</Label><Input value={pedidoForm.formaPagamento} onChange={e => setPedidoForm(p => ({ ...p, formaPagamento: e.target.value }))} /></div>
                   <div><Label>Observações</Label><Input value={pedidoForm.observacoes} onChange={e => setPedidoForm(p => ({ ...p, observacoes: e.target.value }))} /></div>
@@ -79,10 +81,14 @@ export default function Vendas() {
             </Dialog>
           </div>
           <Card><Table><TableHeader><TableRow><TableHead>Número</TableHead><TableHead>Cliente</TableHead><TableHead>Valor</TableHead><TableHead>Status</TableHead><TableHead>Data</TableHead><TableHead>Ações</TableHead></TableRow></TableHeader>
-            <TableBody>{pedidosQ.data?.map(p => (<TableRow key={p.id}><TableCell className="font-mono text-sm">{p.numero}</TableCell><TableCell className="font-medium">{p.clienteNome}</TableCell><TableCell>{formatCurrency(p.valorTotal)}</TableCell><TableCell><Badge className={STATUS_PEDIDO_COLORS[p.status] || ""}>{p.status.replace("_", " ")}</Badge></TableCell><TableCell className="text-sm text-muted-foreground">{new Date(p.createdAt).toLocaleDateString("pt-BR")}</TableCell>
-              <TableCell>
-                <Select value={p.status} onValueChange={v => updateStatus.mutate({ id: p.id, status: v as any })}><SelectTrigger className="w-32 h-8"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="rascunho">Rascunho</SelectItem><SelectItem value="enviado">Enviado</SelectItem><SelectItem value="aprovado">Aprovado</SelectItem><SelectItem value="em_separacao">Separação</SelectItem><SelectItem value="expedido">Expedido</SelectItem><SelectItem value="entregue">Entregue</SelectItem><SelectItem value="cancelado">Cancelado</SelectItem></SelectContent></Select>
-              </TableCell></TableRow>))}</TableBody>
+            <TableBody>
+              {(pedidosQ.data?.length ?? 0) === 0 ? (
+                <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">Nenhum pedido cadastrado.</TableCell></TableRow>
+              ) : pedidosQ.data?.map(p => (<TableRow key={p.id}><TableCell className="font-mono text-sm">{p.numero}</TableCell><TableCell className="font-medium">{p.clienteNome}</TableCell><TableCell>{formatCurrency(p.valorTotal)}</TableCell><TableCell><Badge className={STATUS_PEDIDO_COLORS[p.status] || ""}>{p.status.replace("_", " ")}</Badge></TableCell><TableCell className="text-sm text-muted-foreground">{new Date(p.createdAt).toLocaleDateString("pt-BR")}</TableCell>
+                <TableCell>
+                  <Select value={p.status} onValueChange={v => updateStatus.mutate({ empresaId: effectiveEmpresaId, id: p.id, status: v as any })}><SelectTrigger className="w-32 h-8"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="rascunho">Rascunho</SelectItem><SelectItem value="enviado">Enviado</SelectItem><SelectItem value="aprovado">Aprovado</SelectItem><SelectItem value="em_separacao">Separação</SelectItem><SelectItem value="expedido">Expedido</SelectItem><SelectItem value="entregue">Entregue</SelectItem><SelectItem value="cancelado">Cancelado</SelectItem></SelectContent></Select>
+                </TableCell></TableRow>))}
+            </TableBody>
           </Table></Card>
         </TabsContent>
 
@@ -91,7 +97,7 @@ export default function Vendas() {
             <div className="relative flex-1"><Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" /><Input placeholder="Buscar propostas..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" /></div>
             <Dialog open={showNewProposta} onOpenChange={setShowNewProposta}><DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-2" />Nova Proposta</Button></DialogTrigger>
               <DialogContent><DialogHeader><DialogTitle>Nova Proposta</DialogTitle></DialogHeader>
-                <form onSubmit={e => { e.preventDefault(); createProposta.mutate(propostaForm); }} className="space-y-3">
+                <form onSubmit={e => { e.preventDefault(); createProposta.mutate({ empresaId: effectiveEmpresaId, ...propostaForm }); }} className="space-y-3">
                   <div><Label>Título *</Label><Input value={propostaForm.titulo} onChange={e => setPropostaForm(p => ({ ...p, titulo: e.target.value }))} required /></div>
                   <div><Label>Valor Total</Label><Input value={propostaForm.valorTotal} onChange={e => setPropostaForm(p => ({ ...p, valorTotal: e.target.value }))} placeholder="0.00" /></div>
                   <div><Label>Descrição</Label><Input value={propostaForm.descricao} onChange={e => setPropostaForm(p => ({ ...p, descricao: e.target.value }))} /></div>
@@ -102,7 +108,11 @@ export default function Vendas() {
             </Dialog>
           </div>
           <Card><Table><TableHeader><TableRow><TableHead>Número</TableHead><TableHead>Título</TableHead><TableHead>Valor</TableHead><TableHead>Status</TableHead><TableHead>Data</TableHead></TableRow></TableHeader>
-            <TableBody>{propostasQ.data?.map(p => (<TableRow key={p.id}><TableCell className="font-mono text-sm">{p.numero}</TableCell><TableCell className="font-medium">{p.titulo}</TableCell><TableCell>{formatCurrency(p.valorTotal)}</TableCell><TableCell><Badge className={STATUS_PROPOSTA_COLORS[p.status] || ""}>{p.status}</Badge></TableCell><TableCell className="text-sm text-muted-foreground">{new Date(p.createdAt).toLocaleDateString("pt-BR")}</TableCell></TableRow>))}</TableBody>
+            <TableBody>
+              {(propostasQ.data?.length ?? 0) === 0 ? (
+                <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Nenhuma proposta cadastrada.</TableCell></TableRow>
+              ) : propostasQ.data?.map(p => (<TableRow key={p.id}><TableCell className="font-mono text-sm">{p.numero}</TableCell><TableCell className="font-medium">{p.titulo}</TableCell><TableCell>{formatCurrency((p as any).valorTotal ?? (p as any).valor)}</TableCell><TableCell><Badge className={STATUS_PROPOSTA_COLORS[p.status] || ""}>{p.status}</Badge></TableCell><TableCell className="text-sm text-muted-foreground">{new Date(p.createdAt).toLocaleDateString("pt-BR")}</TableCell></TableRow>))}
+            </TableBody>
           </Table></Card>
         </TabsContent>
       </Tabs>
