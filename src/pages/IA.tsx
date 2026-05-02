@@ -54,6 +54,37 @@ const SUGESTOES: Record<string, string[]> = {
   wms: ["Como fazer um inventário?", "Quais produtos estão abaixo do mínimo?", "Como registrar uma entrada?"],
 };
 
+const LOCAL_AGENTES = [
+  { id: -1, setor: "master", nome: "Synapse Master", avatar: "🧠", descricao: "IA central do sistema", isMaster: true, usarIaExterna: false },
+  { id: -2, setor: "financeiro", nome: "Analista Financeiro", avatar: "📊", descricao: "Custos, contas e margem", isMaster: false, usarIaExterna: false },
+  { id: -3, setor: "frota", nome: "Gestor de Frota", avatar: "🚛", descricao: "Veículos, operação e rotas", isMaster: false, usarIaExterna: false },
+  { id: -4, setor: "motorista", nome: "Suporte ao Motorista", avatar: "👨‍✈️", descricao: "Procedimentos e documentação", isMaster: false, usarIaExterna: false },
+  { id: -5, setor: "manutencao", nome: "Especialista em Manutenção", avatar: "🔧", descricao: "Preventiva, corretiva e revisão", isMaster: false, usarIaExterna: false },
+  { id: -6, setor: "juridico", nome: "Assistente Jurídico", avatar: "⚖️", descricao: "Compliance, multas e transporte", isMaster: false, usarIaExterna: false },
+  { id: -7, setor: "recepcao", nome: "Assistente de Recepção", avatar: "📦", descricao: "Recebimento e conferência", isMaster: false, usarIaExterna: false },
+  { id: -8, setor: "wms", nome: "Gestor de Armazém", avatar: "🏭", descricao: "Estoque, WMS e inventário", isMaster: false, usarIaExterna: false },
+];
+
+function gerarRespostaLocal(texto: string, setor: string) {
+  const msg = texto.toLowerCase();
+  if (setor === "financeiro" && (msg.includes("custo") || msg.includes("margem"))) {
+    return "Para analisar custos e margem, use Financeiro e Relatórios Avançados. Se quiser, eu posso te orientar no custo por km, contas a pagar/receber e visão de caixa.";
+  }
+  if (setor === "frota" && (msg.includes("rota") || msg.includes("veículo") || msg.includes("veiculo"))) {
+    return "Na operação de frota, priorize veículos ativos, checklists e viagens com custo consolidado. Se me disser qual placa ou rota você quer avaliar, eu organizo a análise.";
+  }
+  if (setor === "manutencao" && (msg.includes("revis") || msg.includes("manuten"))) {
+    return "Para manutenção, concentre revisões preventivas, custo por veículo e pendências críticas. Posso te ajudar a montar um plano simples de manutenção preventiva.";
+  }
+  if (setor === "wms" && (msg.includes("estoque") || msg.includes("invent"))) {
+    return "No WMS, o ideal é acompanhar produtos, saldo, movimentações e inventário. Se você me disser o problema, eu te digo onde operar dentro do Synapse.";
+  }
+  if (msg.includes("olá") || msg.includes("ola") || msg.includes("oi")) {
+    return "Olá. Estou pronto para ajudar no Synapse com operação, financeiro, RH, TI, logística e gestão.";
+  }
+  return "Recebi sua pergunta e estou em modo local de contingência. Posso te orientar pelo módulo correto, organizar próximos passos e estruturar a ação dentro do Synapse mesmo sem depender da IA externa.";
+}
+
 export default function IA() {
   const { user } = useAuth();
   
@@ -67,7 +98,8 @@ export default function IA() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { data: agentes = [] } = trpc.ia.listAgentes.useQuery();
+  const agentesQ = trpc.ia.listAgentes.useQuery();
+  const agentes = (agentesQ.data && agentesQ.data.length > 0 ? agentesQ.data : LOCAL_AGENTES) as any[];
   const criarSessao = trpc.ia.criarSessao.useMutation();
   const enviarMsg = trpc.ia.enviarMensagem.useMutation();
   const { data: conhecimentos = [], refetch: refetchConhecimento } = trpc.ia.listConhecimento.useQuery({});
@@ -92,7 +124,7 @@ export default function IA() {
     if (agentes.length > 0 && !agenteAtivo) {
       selecionarAgente(agentes[0]);
     }
-  }, [agentes]);
+  }, [agentes, agenteAtivo]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -133,7 +165,15 @@ export default function IA() {
       const res = await enviarMsg.mutateAsync({ sessaoId: sid, agenteId: agenteAtivo.id, mensagem: texto });
       setMensagens(prev => [...prev, { role: "assistant", conteudo: res.resposta, tokens: res.tokens, modoLocal: res.modoLocal }]);
     } catch (e: any) {
-      setMensagens(prev => [...prev, { role: "assistant", conteudo: "Desculpe, ocorreu um erro. Tente novamente." }]);
+      setMensagens(prev => [
+        ...prev,
+        {
+          role: "assistant",
+          conteudo: gerarRespostaLocal(texto, agenteAtivo?.setor ?? "master"),
+          modoLocal: true,
+        },
+      ]);
+      toast.error("IA online indisponível no momento. Respondi em modo local para você não ficar sem atendimento.");
     } finally {
       setEnviando(false);
       inputRef.current?.focus();
@@ -163,7 +203,7 @@ export default function IA() {
               </div>
               <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Synapse AI</h1>
               <p className="mt-2 max-w-2xl text-sm text-slate-200">
-                Assistentes por setor com fallback local para você nunca ficar sem resposta, mesmo quando a IA externa não estiver disponível.
+                Assistentes por setor com fallback local para você nunca ficar sem resposta, mesmo quando a IA externa ou a persistência do banco estiverem indisponíveis.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:w-[320px]">

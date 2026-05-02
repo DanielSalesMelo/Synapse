@@ -177,7 +177,8 @@ export const iaRouter = router({
 
     const agentes = await db.select().from(iaAgentes)
       .where(and(eq(iaAgentes.empresaId, empresaId), eq(iaAgentes.ativo, true), isNull(iaAgentes.deletedAt)))
-      .orderBy(iaAgentes.isMaster, iaAgentes.nome);
+      .orderBy(iaAgentes.isMaster, iaAgentes.nome)
+      .catch(() => []);
 
     if (agentes.length === 0) {
       return Object.entries(PROMPTS_PADRAO).map(([setor, info], idx) => ({
