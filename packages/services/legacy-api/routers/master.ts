@@ -18,6 +18,13 @@ const LEAD_STATUS_VALUES = ["novo", "contato", "qualificado", "proposta", "fecha
 const PROPOSAL_STATUS_VALUES = ["rascunho", "enviada", "negociacao", "aprovada", "recusada"] as const;
 const COLLEGE_STATUS_VALUES = ["a_fazer", "em_andamento", "concluida", "atrasada"] as const;
 const PROJECT_STATUS_VALUES = ["planejamento", "execucao", "pausado", "concluido"] as const;
+const MASTER_SERVICE_TYPE_VALUES = ["trafego_pago", "landing_page", "google_meu_negocio", "consultoria", "implantacao", "synapse", "faculdade"] as const;
+const MASTER_SERVICE_STATUS_VALUES = ["ativo", "em_revisao", "pausado", "encerrado"] as const;
+const FOLLOW_UP_CHANNEL_VALUES = ["whatsapp", "telefone", "email", "instagram", "telegram", "reuniao"] as const;
+const FOLLOW_UP_STATUS_VALUES = ["pendente", "feito", "sem_retorno", "reagendado", "cancelado"] as const;
+const PAYMENT_SCHEDULE_STATUS_VALUES = ["pendente", "cobrado", "pago", "atrasado", "cancelado"] as const;
+const PAYMENT_SCHEDULE_RECURRENCE_VALUES = ["mensal", "quinzenal", "semanal", "avulso"] as const;
+const RELEASE_STATUS_VALUES = ["planejada", "em_desenvolvimento", "em_teste", "publicada", "adiada"] as const;
 
 function humanizeArea(area?: string | null) {
   if (area === "vida") return "vida pessoal";
@@ -1056,5 +1063,304 @@ export const masterRouter = router({
         RETURNING *
       `);
       return ((res as any[])[0]) ?? null;
+    }),
+
+  listServices: masterAdminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    return db.execute(sql`
+      SELECT ms.*, mc.nome AS "clienteNome"
+      FROM master_services ms
+      LEFT JOIN master_clients mc ON mc.id = ms."clientId"
+      WHERE ms."ownerUserId" = ${ctx.user.id}
+        AND ms."deletedAt" IS NULL
+      ORDER BY
+        CASE ms.status WHEN 'ativo' THEN 0 WHEN 'em_revisao' THEN 1 WHEN 'pausado' THEN 2 ELSE 3 END,
+        COALESCE(ms."proximaRevisao", CURRENT_DATE + INTERVAL '365 days') ASC,
+        ms.id DESC
+      LIMIT 30
+    `) as unknown as any[];
+  }),
+
+  createService: masterAdminProcedure
+    .input(z.object({
+      nome: z.string().min(2, "Informe o nome do serviço."),
+      tipo: z.enum(MASTER_SERVICE_TYPE_VALUES),
+      status: z.enum(MASTER_SERVICE_STATUS_VALUES).default("ativo"),
+      checklist: z.string().optional(),
+      valorMensal: z.string().optional(),
+      proximaRevisao: z.string().optional(),
+      observacoes: z.string().optional(),
+      clientId: z.number().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_services (
+          "ownerUserId", "clientId", nome, tipo, status, checklist, "valorMensal", "proximaRevisao", observacoes
+        ) VALUES (
+          ${ctx.user.id}, ${input.clientId ?? null}, ${input.nome}, ${input.tipo}, ${input.status},
+          ${input.checklist ?? null}, ${input.valorMensal ?? null},
+          ${input.proximaRevisao ? new Date(input.proximaRevisao) : null}, ${input.observacoes ?? null}
+        )
+        RETURNING *
+      `);
+      const created = ((res as any[])[0]) ?? null;
+      await createNotification({
+        userId: ctx.user.id,
+        tipo: "master_servico",
+        titulo: "Serviço registrado",
+        mensagem: `${input.nome} foi adicionado ao seu portfólio.`,
+        payload: created ? { serviceId: created.id, tipo: input.tipo } : null,
+      });
+      return created;
+    }),
+
+  listGoogleBusinessProfiles: masterAdminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    return db.execute(sql`
+      SELECT mgbp.*, mc.nome AS "clienteNome"
+      FROM master_google_business_profiles mgbp
+      LEFT JOIN master_clients mc ON mc.id = mgbp."clientId"
+      WHERE mgbp."ownerUserId" = ${ctx.user.id}
+        AND mgbp."deletedAt" IS NULL
+      ORDER BY COALESCE(mgbp."ultimaAtualizacao", CURRENT_DATE - INTERVAL '365 days') DESC, mgbp.id DESC
+      LIMIT 30
+    `) as unknown as any[];
+  }),
+
+  createGoogleBusinessProfile: masterAdminProcedure
+    .input(z.object({
+      perfil: z.string().min(2, "Informe o nome do perfil."),
+      linkPerfil: z.string().optional(),
+      ultimaAtualizacao: z.string().optional(),
+      fotosPendentes: z.boolean().default(false),
+      avaliacoesPendentes: z.boolean().default(false),
+      postagemSemanal: z.boolean().default(false),
+      servicosAtualizados: z.boolean().default(false),
+      palavrasChave: z.string().optional(),
+      relatorioMensal: z.boolean().default(false),
+      checklistOtimizacao: z.string().optional(),
+      observacoes: z.string().optional(),
+      clientId: z.number().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_google_business_profiles (
+          "ownerUserId", "clientId", perfil, "linkPerfil", "ultimaAtualizacao", "fotosPendentes",
+          "avaliacoesPendentes", "postagemSemanal", "servicosAtualizados", "palavrasChave",
+          "relatorioMensal", "checklistOtimizacao", observacoes
+        ) VALUES (
+          ${ctx.user.id}, ${input.clientId ?? null}, ${input.perfil}, ${input.linkPerfil ?? null},
+          ${input.ultimaAtualizacao ? new Date(input.ultimaAtualizacao) : null}, ${input.fotosPendentes},
+          ${input.avaliacoesPendentes}, ${input.postagemSemanal}, ${input.servicosAtualizados},
+          ${input.palavrasChave ?? null}, ${input.relatorioMensal}, ${input.checklistOtimizacao ?? null},
+          ${input.observacoes ?? null}
+        )
+        RETURNING *
+      `);
+      const created = ((res as any[])[0]) ?? null;
+      await createNotification({
+        userId: ctx.user.id,
+        tipo: "master_google_business",
+        titulo: "Perfil Google salvo",
+        mensagem: `${input.perfil} foi salvo na gestão de Google Meu Negócio.`,
+        payload: created ? { profileId: created.id } : null,
+      });
+      return created;
+    }),
+
+  listFollowUps: masterAdminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    return db.execute(sql`
+      SELECT mfu.*, mc.nome AS "clienteNome", ml.nome AS "leadNome", mp.titulo AS "propostaTitulo"
+      FROM master_follow_ups mfu
+      LEFT JOIN master_clients mc ON mc.id = mfu."clientId"
+      LEFT JOIN master_leads ml ON ml.id = mfu."leadId"
+      LEFT JOIN master_proposals mp ON mp.id = mfu."proposalId"
+      WHERE mfu."ownerUserId" = ${ctx.user.id}
+        AND mfu."deletedAt" IS NULL
+      ORDER BY
+        CASE mfu.status WHEN 'pendente' THEN 0 WHEN 'reagendado' THEN 1 WHEN 'sem_retorno' THEN 2 WHEN 'feito' THEN 3 ELSE 4 END,
+        COALESCE(mfu."dataPrevista", CURRENT_DATE + INTERVAL '365 days') ASC,
+        mfu.id DESC
+      LIMIT 40
+    `) as unknown as any[];
+  }),
+
+  createFollowUp: masterAdminProcedure
+    .input(z.object({
+      titulo: z.string().min(2, "Informe o título do follow-up."),
+      canal: z.enum(FOLLOW_UP_CHANNEL_VALUES).default("whatsapp"),
+      status: z.enum(FOLLOW_UP_STATUS_VALUES).default("pendente"),
+      dataPrevista: z.string().optional(),
+      resposta: z.string().optional(),
+      observacoes: z.string().optional(),
+      clientId: z.number().optional(),
+      leadId: z.number().optional(),
+      proposalId: z.number().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_follow_ups (
+          "ownerUserId", "clientId", "leadId", "proposalId", titulo, canal, status, "dataPrevista", resposta, observacoes
+        ) VALUES (
+          ${ctx.user.id}, ${input.clientId ?? null}, ${input.leadId ?? null}, ${input.proposalId ?? null},
+          ${input.titulo}, ${input.canal}, ${input.status},
+          ${input.dataPrevista ? new Date(input.dataPrevista) : null},
+          ${input.resposta ?? null}, ${input.observacoes ?? null}
+        )
+        RETURNING *
+      `);
+      const created = ((res as any[])[0]) ?? null;
+      await createNotification({
+        userId: ctx.user.id,
+        tipo: "master_follow_up",
+        titulo: "Follow-up criado",
+        mensagem: `${input.titulo} entrou na sua fila de acompanhamento.`,
+        payload: created ? { followUpId: created.id, canal: input.canal } : null,
+      });
+      return created;
+    }),
+
+  updateFollowUpStatus: masterAdminProcedure
+    .input(z.object({ id: z.number(), status: z.enum(FOLLOW_UP_STATUS_VALUES) }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      await db.execute(sql`
+        UPDATE master_follow_ups
+        SET status = ${input.status}, "updatedAt" = NOW()
+        WHERE id = ${input.id}
+          AND "ownerUserId" = ${ctx.user.id}
+          AND "deletedAt" IS NULL
+      `);
+      return { success: true };
+    }),
+
+  listPaymentSchedules: masterAdminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    return db.execute(sql`
+      SELECT mps.*, mc.nome AS "clienteNome"
+      FROM master_payment_schedules mps
+      LEFT JOIN master_clients mc ON mc.id = mps."clientId"
+      WHERE mps."ownerUserId" = ${ctx.user.id}
+        AND mps."deletedAt" IS NULL
+      ORDER BY
+        CASE mps.status WHEN 'atrasado' THEN 0 WHEN 'pendente' THEN 1 WHEN 'cobrado' THEN 2 WHEN 'pago' THEN 3 ELSE 4 END,
+        COALESCE(mps.vencimento, CURRENT_DATE + INTERVAL '365 days') ASC,
+        mps.id DESC
+      LIMIT 40
+    `) as unknown as any[];
+  }),
+
+  createPaymentSchedule: masterAdminProcedure
+    .input(z.object({
+      descricao: z.string().min(2, "Informe a descrição da cobrança."),
+      valor: z.string().min(1, "Informe o valor."),
+      status: z.enum(PAYMENT_SCHEDULE_STATUS_VALUES).default("pendente"),
+      recorrencia: z.enum(PAYMENT_SCHEDULE_RECURRENCE_VALUES).default("mensal"),
+      vencimento: z.string().optional(),
+      ultimaCobranca: z.string().optional(),
+      observacoes: z.string().optional(),
+      clientId: z.number().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_payment_schedules (
+          "ownerUserId", "clientId", descricao, valor, status, recorrencia, vencimento, "ultimaCobranca", observacoes
+        ) VALUES (
+          ${ctx.user.id}, ${input.clientId ?? null}, ${input.descricao}, ${input.valor}, ${input.status},
+          ${input.recorrencia}, ${input.vencimento ? new Date(input.vencimento) : null},
+          ${input.ultimaCobranca ? new Date(input.ultimaCobranca) : null}, ${input.observacoes ?? null}
+        )
+        RETURNING *
+      `);
+      const created = ((res as any[])[0]) ?? null;
+      await createNotification({
+        userId: ctx.user.id,
+        tipo: "master_cobranca_programada",
+        titulo: "Cobrança programada",
+        mensagem: `${input.descricao} foi adicionada à agenda de cobrança.`,
+        payload: created ? { paymentScheduleId: created.id, status: input.status } : null,
+      });
+      return created;
+    }),
+
+  updatePaymentScheduleStatus: masterAdminProcedure
+    .input(z.object({ id: z.number(), status: z.enum(PAYMENT_SCHEDULE_STATUS_VALUES) }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      await db.execute(sql`
+        UPDATE master_payment_schedules
+        SET status = ${input.status},
+            "ultimaCobranca" = CASE WHEN ${input.status} IN ('cobrado', 'pago') THEN NOW() ELSE "ultimaCobranca" END,
+            "updatedAt" = NOW()
+        WHERE id = ${input.id}
+          AND "ownerUserId" = ${ctx.user.id}
+          AND "deletedAt" IS NULL
+      `);
+      return { success: true };
+    }),
+
+  listSynapseReleases: masterAdminProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+    return db.execute(sql`
+      SELECT *
+      FROM master_synapse_releases
+      WHERE "ownerUserId" = ${ctx.user.id}
+        AND "deletedAt" IS NULL
+      ORDER BY
+        CASE status WHEN 'em_teste' THEN 0 WHEN 'em_desenvolvimento' THEN 1 WHEN 'planejada' THEN 2 WHEN 'publicada' THEN 3 ELSE 4 END,
+        COALESCE("dataPrevista", CURRENT_DATE + INTERVAL '365 days') ASC,
+        id DESC
+      LIMIT 30
+    `) as unknown as any[];
+  }),
+
+  createSynapseRelease: masterAdminProcedure
+    .input(z.object({
+      versao: z.string().min(2, "Informe a versão."),
+      titulo: z.string().min(2, "Informe o título da release."),
+      status: z.enum(RELEASE_STATUS_VALUES).default("planejada"),
+      dataPrevista: z.string().optional(),
+      destaques: z.string().optional(),
+      riscos: z.string().optional(),
+      deployStatus: z.string().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
+      const res = await db.execute(sql`
+        INSERT INTO master_synapse_releases (
+          "ownerUserId", versao, titulo, status, "dataPrevista", destaques, riscos, "deployStatus"
+        ) VALUES (
+          ${ctx.user.id}, ${input.versao}, ${input.titulo}, ${input.status},
+          ${input.dataPrevista ? new Date(input.dataPrevista) : null},
+          ${input.destaques ?? null}, ${input.riscos ?? null}, ${input.deployStatus ?? null}
+        )
+        RETURNING *
+      `);
+      const created = ((res as any[])[0]) ?? null;
+      await createNotification({
+        userId: ctx.user.id,
+        tipo: "master_synapse_release",
+        titulo: "Release do Synapse salva",
+        mensagem: `${input.versao} · ${input.titulo} foi adicionada ao roadmap do produto.`,
+        payload: created ? { releaseId: created.id, status: input.status } : null,
+      });
+      return created;
     }),
 });

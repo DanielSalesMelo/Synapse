@@ -16,6 +16,7 @@ import {
   Package, Calendar, AlertTriangle, DollarSign,
   Clock, Star, Check, X, Edit2, Ban,
   RotateCcw, Receipt, Wallet, Megaphone, GraduationCap, HeartPulse, FolderKanban, NotebookPen, ListTodo,
+  Briefcase, Store, MessageCircleMore, CalendarRange, Rocket,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useViewAs } from "@/contexts/ViewAsContext";
@@ -515,6 +516,16 @@ export default function PainelMaster() {
     trpc.master.listAiNotes.useQuery(undefined, { enabled: isMaster });
   const { data: masterDailyPlans = [], refetch: refetchMasterDailyPlans } =
     trpc.master.listDailyPlans.useQuery(undefined, { enabled: isMaster });
+  const { data: masterServices = [], refetch: refetchMasterServices } =
+    trpc.master.listServices.useQuery(undefined, { enabled: isMaster });
+  const { data: masterGoogleProfiles = [], refetch: refetchMasterGoogleProfiles } =
+    trpc.master.listGoogleBusinessProfiles.useQuery(undefined, { enabled: isMaster });
+  const { data: masterFollowUps = [], refetch: refetchMasterFollowUps } =
+    trpc.master.listFollowUps.useQuery(undefined, { enabled: isMaster });
+  const { data: masterPaymentSchedules = [], refetch: refetchMasterPaymentSchedules } =
+    trpc.master.listPaymentSchedules.useQuery(undefined, { enabled: isMaster });
+  const { data: masterSynapseReleases = [], refetch: refetchMasterSynapseReleases } =
+    trpc.master.listSynapseReleases.useQuery(undefined, { enabled: isMaster });
 
   const criarEmpresaMut = trpc.empresas.criar.useMutation({
         onSuccess: (d) => { toast.success(d.mensagem || "Empresa criada!"); setModalEmpresa(false); setFormEmpresa({ nome: "", cnpj: "", email: "", telefone: "", cidade: "", estado: "", tipoEmpresa: "independente", matrizId: "", grupoId: "" }); refetchEmpresas(); },
@@ -676,6 +687,58 @@ export default function PainelMaster() {
     },
     onError: (e) => toast.error(e.message),
   });
+  const createMasterServiceMut = trpc.master.createService.useMutation({
+    onSuccess: () => {
+      toast.success("Serviço salvo.");
+      setFormServiceMaster({ nome: "", tipo: "trafego_pago", status: "ativo", checklist: "", valorMensal: "", proximaRevisao: "", observacoes: "", clientId: "" });
+      refetchMasterServices();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterGoogleProfileMut = trpc.master.createGoogleBusinessProfile.useMutation({
+    onSuccess: () => {
+      toast.success("Perfil Google salvo.");
+      setFormGoogleProfileMaster({
+        perfil: "", linkPerfil: "", ultimaAtualizacao: "", fotosPendentes: false, avaliacoesPendentes: false,
+        postagemSemanal: false, servicosAtualizados: false, palavrasChave: "", relatorioMensal: false,
+        checklistOtimizacao: "", observacoes: "", clientId: "",
+      });
+      refetchMasterGoogleProfiles();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterFollowUpMut = trpc.master.createFollowUp.useMutation({
+    onSuccess: () => {
+      toast.success("Follow-up salvo.");
+      setFormFollowUpMaster({ titulo: "", canal: "whatsapp", status: "pendente", dataPrevista: "", resposta: "", observacoes: "", clientId: "", leadId: "", proposalId: "" });
+      refetchMasterFollowUps();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const updateMasterFollowUpStatusMut = trpc.master.updateFollowUpStatus.useMutation({
+    onSuccess: () => refetchMasterFollowUps(),
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterPaymentScheduleMut = trpc.master.createPaymentSchedule.useMutation({
+    onSuccess: () => {
+      toast.success("Cobrança programada salva.");
+      setFormPaymentScheduleMaster({ descricao: "", valor: "", status: "pendente", recorrencia: "mensal", vencimento: "", ultimaCobranca: "", observacoes: "", clientId: "" });
+      refetchMasterPaymentSchedules();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+  const updateMasterPaymentScheduleStatusMut = trpc.master.updatePaymentScheduleStatus.useMutation({
+    onSuccess: () => refetchMasterPaymentSchedules(),
+    onError: (e) => toast.error(e.message),
+  });
+  const createMasterSynapseReleaseMut = trpc.master.createSynapseRelease.useMutation({
+    onSuccess: () => {
+      toast.success("Release do Synapse salva.");
+      setFormSynapseReleaseMaster({ versao: "", titulo: "", status: "planejada", dataPrevista: "", destaques: "", riscos: "", deployStatus: "" });
+      refetchMasterSynapseReleases();
+    },
+    onError: (e) => toast.error(e.message),
+  });
 
   const [formEmpresa, setFormEmpresa] = useState({ nome: "", cnpj: "", email: "", telefone: "", cidade: "", estado: "", tipoEmpresa: "independente" as any, matrizId: "", grupoId: "" });
   const [formClienteMaster, setFormClienteMaster] = useState({ nome: "", empresa: "", contato: "", whatsapp: "", email: "", servicos: "", valorMensal: "", status: "lead", proximaAcao: "", observacoes: "" });
@@ -702,6 +765,15 @@ export default function PainelMaster() {
   const [formProjectMaster, setFormProjectMaster] = useState({ titulo: "", area: "synapse", status: "planejamento", progresso: "0", descricao: "", proximaEntrega: "", clientId: "" });
   const [formAiNoteMaster, setFormAiNoteMaster] = useState({ titulo: "", categoria: "", conteudo: "" });
   const [formDailyPlanMaster, setFormDailyPlanMaster] = useState({ referencia: "", focoPrincipal: "", top3: "", manha: "", tarde: "", noite: "", observacoes: "" });
+  const [formServiceMaster, setFormServiceMaster] = useState({ nome: "", tipo: "trafego_pago", status: "ativo", checklist: "", valorMensal: "", proximaRevisao: "", observacoes: "", clientId: "" });
+  const [formGoogleProfileMaster, setFormGoogleProfileMaster] = useState({
+    perfil: "", linkPerfil: "", ultimaAtualizacao: "", fotosPendentes: false, avaliacoesPendentes: false,
+    postagemSemanal: false, servicosAtualizados: false, palavrasChave: "", relatorioMensal: false,
+    checklistOtimizacao: "", observacoes: "", clientId: "",
+  });
+  const [formFollowUpMaster, setFormFollowUpMaster] = useState({ titulo: "", canal: "whatsapp", status: "pendente", dataPrevista: "", resposta: "", observacoes: "", clientId: "", leadId: "", proposalId: "" });
+  const [formPaymentScheduleMaster, setFormPaymentScheduleMaster] = useState({ descricao: "", valor: "", status: "pendente", recorrencia: "mensal", vencimento: "", ultimaCobranca: "", observacoes: "", clientId: "" });
+  const [formSynapseReleaseMaster, setFormSynapseReleaseMaster] = useState({ versao: "", titulo: "", status: "planejada", dataPrevista: "", destaques: "", riscos: "", deployStatus: "" });
 
   useEffect(() => {
     if (!loading && user && (user as any).role !== "master_admin") navigate("/dashboard");
@@ -1590,6 +1662,366 @@ export default function PainelMaster() {
                     <div key={plan.id} className="rounded-lg border p-3">
                       <p className="font-medium text-sm">{plan.focoPrincipal}</p>
                       <p className="text-xs text-muted-foreground mt-1">{fmtData(plan.referencia)}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2"><Briefcase className="w-4 h-4 text-sky-500" /> Serviços e entregas</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><Label>Serviço *</Label><Input value={formServiceMaster.nome} onChange={e => setFormServiceMaster(f => ({ ...f, nome: e.target.value }))} /></div>
+                  <div>
+                    <Label>Tipo</Label>
+                    <Select value={formServiceMaster.tipo} onValueChange={v => setFormServiceMaster(f => ({ ...f, tipo: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="trafego_pago">Tráfego pago</SelectItem>
+                        <SelectItem value="landing_page">Landing page</SelectItem>
+                        <SelectItem value="google_meu_negocio">Google Meu Negócio</SelectItem>
+                        <SelectItem value="consultoria">Consultoria</SelectItem>
+                        <SelectItem value="implantacao">Implantação</SelectItem>
+                        <SelectItem value="synapse">Synapse</SelectItem>
+                        <SelectItem value="faculdade">Faculdade</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <Label>Status</Label>
+                    <Select value={formServiceMaster.status} onValueChange={v => setFormServiceMaster(f => ({ ...f, status: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ativo">Ativo</SelectItem>
+                        <SelectItem value="em_revisao">Em revisão</SelectItem>
+                        <SelectItem value="pausado">Pausado</SelectItem>
+                        <SelectItem value="encerrado">Encerrado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div><Label>Valor mensal</Label><Input value={formServiceMaster.valorMensal} onChange={e => setFormServiceMaster(f => ({ ...f, valorMensal: e.target.value }))} /></div>
+                  <div><Label>Próxima revisão</Label><Input type="date" value={formServiceMaster.proximaRevisao} onChange={e => setFormServiceMaster(f => ({ ...f, proximaRevisao: e.target.value }))} /></div>
+                </div>
+                <div>
+                  <Label>Cliente</Label>
+                  <Select value={formServiceMaster.clientId || "sem_cliente"} onValueChange={v => setFormServiceMaster(f => ({ ...f, clientId: v === "sem_cliente" ? "" : v }))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="sem_cliente">Sem cliente</SelectItem>
+                      {(masterClients as any[]).map((client: any) => <SelectItem key={client.id} value={String(client.id)}>{client.nome}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div><Label>Checklist</Label><Textarea rows={2} value={formServiceMaster.checklist} onChange={e => setFormServiceMaster(f => ({ ...f, checklist: e.target.value }))} /></div>
+                <div><Label>Observações</Label><Textarea rows={2} value={formServiceMaster.observacoes} onChange={e => setFormServiceMaster(f => ({ ...f, observacoes: e.target.value }))} /></div>
+                <div className="flex justify-end">
+                  <Button onClick={() => createMasterServiceMut.mutate({ ...formServiceMaster, clientId: formServiceMaster.clientId ? Number(formServiceMaster.clientId) : undefined } as any)} disabled={createMasterServiceMut.isPending}>
+                    {createMasterServiceMut.isPending ? "Salvando..." : "Salvar serviço"}
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  {(masterServices as any[]).slice(0, 4).map((service: any) => (
+                    <div key={service.id} className="rounded-lg border p-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="font-medium text-sm">{service.nome}</p>
+                        <Badge variant="outline">{service.status}</Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">{service.clienteNome ?? "Sem cliente"} · {service.tipo}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2"><Store className="w-4 h-4 text-orange-500" /> Google Meu Negócio</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><Label>Perfil *</Label><Input value={formGoogleProfileMaster.perfil} onChange={e => setFormGoogleProfileMaster(f => ({ ...f, perfil: e.target.value }))} /></div>
+                  <div><Label>Link do perfil</Label><Input value={formGoogleProfileMaster.linkPerfil} onChange={e => setFormGoogleProfileMaster(f => ({ ...f, linkPerfil: e.target.value }))} /></div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><Label>Última atualização</Label><Input type="date" value={formGoogleProfileMaster.ultimaAtualizacao} onChange={e => setFormGoogleProfileMaster(f => ({ ...f, ultimaAtualizacao: e.target.value }))} /></div>
+                  <div>
+                    <Label>Cliente</Label>
+                    <Select value={formGoogleProfileMaster.clientId || "sem_cliente"} onValueChange={v => setFormGoogleProfileMaster(f => ({ ...f, clientId: v === "sem_cliente" ? "" : v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sem_cliente">Sem cliente</SelectItem>
+                        {(masterClients as any[]).map((client: any) => <SelectItem key={client.id} value={String(client.id)}>{client.nome}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                  <div>
+                    <Label>Fotos</Label>
+                    <Select value={formGoogleProfileMaster.fotosPendentes ? "sim" : "nao"} onValueChange={v => setFormGoogleProfileMaster(f => ({ ...f, fotosPendentes: v === "sim" }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="nao">Ok</SelectItem><SelectItem value="sim">Pendente</SelectItem></SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Avaliações</Label>
+                    <Select value={formGoogleProfileMaster.avaliacoesPendentes ? "sim" : "nao"} onValueChange={v => setFormGoogleProfileMaster(f => ({ ...f, avaliacoesPendentes: v === "sim" }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="nao">Ok</SelectItem><SelectItem value="sim">Pendente</SelectItem></SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Postagem</Label>
+                    <Select value={formGoogleProfileMaster.postagemSemanal ? "sim" : "nao"} onValueChange={v => setFormGoogleProfileMaster(f => ({ ...f, postagemSemanal: v === "sim" }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="nao">Não</SelectItem><SelectItem value="sim">Sim</SelectItem></SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Serviços</Label>
+                    <Select value={formGoogleProfileMaster.servicosAtualizados ? "sim" : "nao"} onValueChange={v => setFormGoogleProfileMaster(f => ({ ...f, servicosAtualizados: v === "sim" }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="nao">Não</SelectItem><SelectItem value="sim">Sim</SelectItem></SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Relatório</Label>
+                    <Select value={formGoogleProfileMaster.relatorioMensal ? "sim" : "nao"} onValueChange={v => setFormGoogleProfileMaster(f => ({ ...f, relatorioMensal: v === "sim" }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="nao">Não</SelectItem><SelectItem value="sim">Sim</SelectItem></SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div><Label>Palavras-chave</Label><Input value={formGoogleProfileMaster.palavrasChave} onChange={e => setFormGoogleProfileMaster(f => ({ ...f, palavrasChave: e.target.value }))} /></div>
+                <div><Label>Checklist de otimização</Label><Textarea rows={2} value={formGoogleProfileMaster.checklistOtimizacao} onChange={e => setFormGoogleProfileMaster(f => ({ ...f, checklistOtimizacao: e.target.value }))} /></div>
+                <div className="flex justify-end">
+                  <Button onClick={() => createMasterGoogleProfileMut.mutate({ ...formGoogleProfileMaster, clientId: formGoogleProfileMaster.clientId ? Number(formGoogleProfileMaster.clientId) : undefined } as any)} disabled={createMasterGoogleProfileMut.isPending}>
+                    {createMasterGoogleProfileMut.isPending ? "Salvando..." : "Salvar perfil"}
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  {(masterGoogleProfiles as any[]).slice(0, 4).map((profile: any) => (
+                    <div key={profile.id} className="rounded-lg border p-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="font-medium text-sm">{profile.perfil}</p>
+                        <Badge variant="outline">{profile.clienteNome ?? "Interno"}</Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">Atualizado em {fmtData(profile.ultimaAtualizacao)}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2"><MessageCircleMore className="w-4 h-4 text-violet-500" /> Follow-ups comerciais</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div><Label>Título *</Label><Input value={formFollowUpMaster.titulo} onChange={e => setFormFollowUpMaster(f => ({ ...f, titulo: e.target.value }))} /></div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <Label>Canal</Label>
+                    <Select value={formFollowUpMaster.canal} onValueChange={v => setFormFollowUpMaster(f => ({ ...f, canal: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="whatsapp">WhatsApp</SelectItem>
+                        <SelectItem value="telefone">Telefone</SelectItem>
+                        <SelectItem value="email">E-mail</SelectItem>
+                        <SelectItem value="instagram">Instagram</SelectItem>
+                        <SelectItem value="telegram">Telegram</SelectItem>
+                        <SelectItem value="reuniao">Reunião</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Status</Label>
+                    <Select value={formFollowUpMaster.status} onValueChange={v => setFormFollowUpMaster(f => ({ ...f, status: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pendente">Pendente</SelectItem>
+                        <SelectItem value="feito">Feito</SelectItem>
+                        <SelectItem value="sem_retorno">Sem retorno</SelectItem>
+                        <SelectItem value="reagendado">Reagendado</SelectItem>
+                        <SelectItem value="cancelado">Cancelado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div><Label>Data prevista</Label><Input type="date" value={formFollowUpMaster.dataPrevista} onChange={e => setFormFollowUpMaster(f => ({ ...f, dataPrevista: e.target.value }))} /></div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <Label>Cliente</Label>
+                    <Select value={formFollowUpMaster.clientId || "sem_cliente"} onValueChange={v => setFormFollowUpMaster(f => ({ ...f, clientId: v === "sem_cliente" ? "" : v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sem_cliente">Sem cliente</SelectItem>
+                        {(masterClients as any[]).map((client: any) => <SelectItem key={client.id} value={String(client.id)}>{client.nome}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Lead</Label>
+                    <Select value={formFollowUpMaster.leadId || "sem_lead"} onValueChange={v => setFormFollowUpMaster(f => ({ ...f, leadId: v === "sem_lead" ? "" : v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sem_lead">Sem lead</SelectItem>
+                        {(masterLeads as any[]).map((lead: any) => <SelectItem key={lead.id} value={String(lead.id)}>{lead.nome}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Proposta</Label>
+                    <Select value={formFollowUpMaster.proposalId || "sem_proposta"} onValueChange={v => setFormFollowUpMaster(f => ({ ...f, proposalId: v === "sem_proposta" ? "" : v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sem_proposta">Sem proposta</SelectItem>
+                        {(masterProposals as any[]).map((proposal: any) => <SelectItem key={proposal.id} value={String(proposal.id)}>{proposal.titulo}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div><Label>Resposta / contexto</Label><Textarea rows={2} value={formFollowUpMaster.resposta} onChange={e => setFormFollowUpMaster(f => ({ ...f, resposta: e.target.value }))} /></div>
+                <div className="flex justify-end">
+                  <Button onClick={() => createMasterFollowUpMut.mutate({
+                    ...formFollowUpMaster,
+                    clientId: formFollowUpMaster.clientId ? Number(formFollowUpMaster.clientId) : undefined,
+                    leadId: formFollowUpMaster.leadId ? Number(formFollowUpMaster.leadId) : undefined,
+                    proposalId: formFollowUpMaster.proposalId ? Number(formFollowUpMaster.proposalId) : undefined,
+                  } as any)} disabled={createMasterFollowUpMut.isPending}>
+                    {createMasterFollowUpMut.isPending ? "Salvando..." : "Salvar follow-up"}
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  {(masterFollowUps as any[]).slice(0, 4).map((follow: any) => (
+                    <div key={follow.id} className="rounded-lg border p-3 flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-medium text-sm">{follow.titulo}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{follow.clienteNome ?? follow.leadNome ?? follow.propostaTitulo ?? "Sem vínculo"} · {follow.canal}</p>
+                      </div>
+                      <Button size="sm" variant="outline" onClick={() => updateMasterFollowUpStatusMut.mutate({ id: follow.id, status: follow.status === "feito" ? "pendente" : "feito" })}>
+                        {follow.status === "feito" ? "Reabrir" : "Concluir"}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2"><CalendarRange className="w-4 h-4 text-amber-500" /> Agenda de cobrança</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div><Label>Descrição *</Label><Input value={formPaymentScheduleMaster.descricao} onChange={e => setFormPaymentScheduleMaster(f => ({ ...f, descricao: e.target.value }))} /></div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div><Label>Valor *</Label><Input value={formPaymentScheduleMaster.valor} onChange={e => setFormPaymentScheduleMaster(f => ({ ...f, valor: e.target.value }))} /></div>
+                  <div>
+                    <Label>Recorrência</Label>
+                    <Select value={formPaymentScheduleMaster.recorrencia} onValueChange={v => setFormPaymentScheduleMaster(f => ({ ...f, recorrencia: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="mensal">Mensal</SelectItem>
+                        <SelectItem value="quinzenal">Quinzenal</SelectItem>
+                        <SelectItem value="semanal">Semanal</SelectItem>
+                        <SelectItem value="avulso">Avulso</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Status</Label>
+                    <Select value={formPaymentScheduleMaster.status} onValueChange={v => setFormPaymentScheduleMaster(f => ({ ...f, status: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pendente">Pendente</SelectItem>
+                        <SelectItem value="cobrado">Cobrado</SelectItem>
+                        <SelectItem value="pago">Pago</SelectItem>
+                        <SelectItem value="atrasado">Atrasado</SelectItem>
+                        <SelectItem value="cancelado">Cancelado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><Label>Vencimento</Label><Input type="date" value={formPaymentScheduleMaster.vencimento} onChange={e => setFormPaymentScheduleMaster(f => ({ ...f, vencimento: e.target.value }))} /></div>
+                  <div>
+                    <Label>Cliente</Label>
+                    <Select value={formPaymentScheduleMaster.clientId || "sem_cliente"} onValueChange={v => setFormPaymentScheduleMaster(f => ({ ...f, clientId: v === "sem_cliente" ? "" : v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sem_cliente">Sem cliente</SelectItem>
+                        {(masterClients as any[]).map((client: any) => <SelectItem key={client.id} value={String(client.id)}>{client.nome}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div><Label>Observações</Label><Textarea rows={2} value={formPaymentScheduleMaster.observacoes} onChange={e => setFormPaymentScheduleMaster(f => ({ ...f, observacoes: e.target.value }))} /></div>
+                <div className="flex justify-end">
+                  <Button onClick={() => createMasterPaymentScheduleMut.mutate({ ...formPaymentScheduleMaster, clientId: formPaymentScheduleMaster.clientId ? Number(formPaymentScheduleMaster.clientId) : undefined } as any)} disabled={createMasterPaymentScheduleMut.isPending}>
+                    {createMasterPaymentScheduleMut.isPending ? "Salvando..." : "Salvar cobrança"}
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  {(masterPaymentSchedules as any[]).slice(0, 4).map((schedule: any) => (
+                    <div key={schedule.id} className="rounded-lg border p-3 flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-medium text-sm">{schedule.descricao}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{schedule.clienteNome ?? "Sem cliente"} · {fmtMoeda(schedule.valor)} · {schedule.recorrencia}</p>
+                      </div>
+                      <Button size="sm" variant="outline" onClick={() => updateMasterPaymentScheduleStatusMut.mutate({ id: schedule.id, status: schedule.status === "pago" ? "pendente" : "pago" })}>
+                        {schedule.status === "pago" ? "Reabrir" : "Marcar pago"}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2"><Rocket className="w-4 h-4 text-cyan-500" /> Releases do Synapse</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><Label>Versão *</Label><Input placeholder="v1.2.0" value={formSynapseReleaseMaster.versao} onChange={e => setFormSynapseReleaseMaster(f => ({ ...f, versao: e.target.value }))} /></div>
+                  <div><Label>Título *</Label><Input value={formSynapseReleaseMaster.titulo} onChange={e => setFormSynapseReleaseMaster(f => ({ ...f, titulo: e.target.value }))} /></div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <Label>Status</Label>
+                    <Select value={formSynapseReleaseMaster.status} onValueChange={v => setFormSynapseReleaseMaster(f => ({ ...f, status: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="planejada">Planejada</SelectItem>
+                        <SelectItem value="em_desenvolvimento">Em desenvolvimento</SelectItem>
+                        <SelectItem value="em_teste">Em teste</SelectItem>
+                        <SelectItem value="publicada">Publicada</SelectItem>
+                        <SelectItem value="adiada">Adiada</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div><Label>Data prevista</Label><Input type="date" value={formSynapseReleaseMaster.dataPrevista} onChange={e => setFormSynapseReleaseMaster(f => ({ ...f, dataPrevista: e.target.value }))} /></div>
+                  <div><Label>Deploy</Label><Input value={formSynapseReleaseMaster.deployStatus} onChange={e => setFormSynapseReleaseMaster(f => ({ ...f, deployStatus: e.target.value }))} /></div>
+                </div>
+                <div><Label>Destaques</Label><Textarea rows={2} value={formSynapseReleaseMaster.destaques} onChange={e => setFormSynapseReleaseMaster(f => ({ ...f, destaques: e.target.value }))} /></div>
+                <div><Label>Riscos</Label><Textarea rows={2} value={formSynapseReleaseMaster.riscos} onChange={e => setFormSynapseReleaseMaster(f => ({ ...f, riscos: e.target.value }))} /></div>
+                <div className="flex justify-end">
+                  <Button onClick={() => createMasterSynapseReleaseMut.mutate(formSynapseReleaseMaster as any)} disabled={createMasterSynapseReleaseMut.isPending}>
+                    {createMasterSynapseReleaseMut.isPending ? "Salvando..." : "Salvar release"}
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  {(masterSynapseReleases as any[]).slice(0, 4).map((release: any) => (
+                    <div key={release.id} className="rounded-lg border p-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="font-medium text-sm">{release.versao} · {release.titulo}</p>
+                        <Badge variant="outline">{release.status}</Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">{release.dataPrevista ? fmtData(release.dataPrevista) : "Sem data"} · {release.deployStatus ?? "Sem deploy"}</p>
                     </div>
                   ))}
                 </div>
