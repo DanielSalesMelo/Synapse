@@ -6,6 +6,8 @@ import { useCallback, useEffect, useMemo } from "react";
 
 const AUTH_TOKEN_KEY = "synapse-auth-token";
 const USER_INFO_KEY = "app-user-info";
+const AUTH_AT_KEY = "synapse-auth-at";
+const SESSION_TTL_MS = 1000 * 60 * 60 * 12;
 
 type UseAuthOptions = {
   redirectOnUnauthenticated?: boolean;
@@ -18,17 +20,33 @@ export function useAuth(options?: UseAuthOptions) {
   const utils = trpc.useUtils();
 
   const token = typeof window !== "undefined" ? localStorage.getItem(AUTH_TOKEN_KEY) : null;
+  const sessionExpired = useMemo(() => {
+    if (typeof window === "undefined") return false;
+    const authAt = Number(localStorage.getItem(AUTH_AT_KEY) || "0");
+    if (!authAt) return false;
+    return Date.now() - authAt > SESSION_TTL_MS;
+  }, []);
+
+  useEffect(() => {
+    if (!sessionExpired) return;
+    localStorage.removeItem(USER_INFO_KEY);
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    localStorage.removeItem(AUTH_AT_KEY);
+    localStorage.removeItem("manus-runtime-user-info");
+    localStorage.removeItem("synapse-user");
+  }, [sessionExpired]);
 
   const meQuery = trpc.auth.me.useQuery(undefined, {
     retry: false,
     refetchOnWindowFocus: false,
-    enabled: !!token,
+    enabled: !!token && !sessionExpired,
   });
 
   const logoutMutation = trpc.auth.logout.useMutation({
     onSuccess: () => {
       localStorage.removeItem(USER_INFO_KEY);
       localStorage.removeItem(AUTH_TOKEN_KEY);
+      localStorage.removeItem(AUTH_AT_KEY);
       localStorage.removeItem("manus-runtime-user-info");
       localStorage.removeItem("synapse-user");
       utils.auth.me.setData(undefined, null);
@@ -50,6 +68,7 @@ export function useAuth(options?: UseAuthOptions) {
     } finally {
       localStorage.removeItem(USER_INFO_KEY);
       localStorage.removeItem(AUTH_TOKEN_KEY);
+      localStorage.removeItem(AUTH_AT_KEY);
       localStorage.removeItem("manus-runtime-user-info");
       localStorage.removeItem("synapse-user");
       utils.auth.me.setData(undefined, null);
@@ -77,11 +96,43 @@ export function useAuth(options?: UseAuthOptions) {
     logoutMutation.isPending,
   ]);
 
+  const hasUnauthorizedError = useMemo(() => {
+    const err = meQuery.error;
+    if (!(err instanceof TRPCClientError)) return false;
+    return (
+      err.data?.code === "UNAUTHORIZED" ||
+      String(err.message || "").includes("Please login (10001)")
+    );
+  }, [meQuery.error]);
+
   useEffect(() => {
-    if (redirectOnUnauthenticated && !state.isAuthenticated && !meQuery.isLoading && !token) {
+    if (!redirectOnUnauthenticated) return;
+    if (state.isAuthenticated) return;
+    if (meQuery.isLoading || meQuery.isFetching || logoutMutation.isPending) return;
+    if (typeof window === "undefined") return;
+
+    if (hasUnauthorizedError) {
+      localStorage.removeItem(USER_INFO_KEY);
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+      localStorage.removeItem(AUTH_AT_KEY);
+      localStorage.removeItem("manus-runtime-user-info");
+      localStorage.removeItem("synapse-user");
+    }
+
+    if (!token || hasUnauthorizedError || sessionExpired) {
       window.location.href = redirectPath;
     }
-  }, [redirectOnUnauthenticated, state.isAuthenticated, meQuery.isLoading, token, redirectPath]);
+  }, [
+    redirectOnUnauthenticated,
+    state.isAuthenticated,
+    meQuery.isLoading,
+    meQuery.isFetching,
+    logoutMutation.isPending,
+    token,
+    sessionExpired,
+    redirectPath,
+    hasUnauthorizedError,
+  ]);
 
   return {
     ...state,

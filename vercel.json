@@ -5,7 +5,11 @@
   "framework": null,
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/:nested*/assets/:asset*",
+      "destination": "/assets/:asset*"
+    },
+    {
+      "source": "/((?!assets/|favicon.ico|robots.txt|manifest.webmanifest).*)",
       "destination": "/index.html"
     }
   ],

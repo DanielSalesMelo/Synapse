@@ -10,6 +10,7 @@ import { Mail, Lock, LogIn, Building2, Key, CheckCircle, AlertCircle, Zap, Eye, 
 
 const AUTH_TOKEN_KEY = "synapse-auth-token";
 const USER_INFO_KEY = "app-user-info";
+const AUTH_AT_KEY = "synapse-auth-at";
 
 export default function Login() {
   const { t } = useTranslation();
@@ -28,6 +29,7 @@ export default function Login() {
     onSuccess: (data) => {
       if (data.token) {
         localStorage.setItem(AUTH_TOKEN_KEY, data.token);
+        localStorage.setItem(AUTH_AT_KEY, String(Date.now()));
       }
       if (data.user) {
         localStorage.setItem(USER_INFO_KEY, JSON.stringify(data.user));

@@ -19,7 +19,7 @@ import {
   Briefcase, Store, MessageCircleMore, CalendarRange, Rocket,
   Home, Repeat, Handshake, FileText, Lightbulb, ClipboardList, CalendarDays, NotebookTabs, UsersRound, Newspaper,
   Target, Bot, Search, LifeBuoy, BarChart3, BookOpen, FolderOpen, Scale, TrendingUp, ShoppingCart, CheckCircle2,
-  Mail, Database, Truck,
+  Mail, Database, Truck, UserPlus, Banknote, Brain, GitMerge,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useViewAs } from "@/contexts/ViewAsContext";
@@ -174,7 +174,51 @@ const GENERIC_MASTER_MODULES = [
   { key: "mapa_processos", title: "Mapa de processos", icon: GitMerge, fieldA: "Área", fieldB: "Etapa", fieldC: "Dono", color: "text-purple-900" },
   { key: "governanca_dados", title: "Governança de dados", icon: Database, fieldA: "Base", fieldB: "Regra", fieldC: "Responsável", color: "text-slate-900" },
   { key: "iniciativas_ia", title: "Iniciativas de IA", icon: Brain, fieldA: "Projeto", fieldB: "Valor", fieldC: "Próximo teste", color: "text-fuchsia-900" },
+  { key: "rotina_manha", title: "Rotina da manhã", icon: Clock, fieldA: "Horário", fieldB: "Bloco", fieldC: "Resultado", color: "text-cyan-700" },
+  { key: "rotina_tarde", title: "Rotina da tarde", icon: Clock, fieldA: "Horário", fieldB: "Bloco", fieldC: "Resultado", color: "text-blue-700" },
+  { key: "rotina_noite", title: "Rotina da noite", icon: Clock, fieldA: "Horário", fieldB: "Bloco", fieldC: "Resultado", color: "text-indigo-700" },
+  { key: "energia_humor", title: "Energia e humor", icon: HeartPulse, fieldA: "Energia", fieldB: "Humor", fieldC: "Gatilho", color: "text-rose-700" },
+  { key: "ansiedade_gatilhos", title: "TAG: gatilhos", icon: AlertTriangle, fieldA: "Gatilho", fieldB: "Intensidade", fieldC: "Resposta", color: "text-orange-700" },
+  { key: "microtarefas", title: "Microtarefas", icon: ListTodo, fieldA: "Tarefa mãe", fieldB: "Micro passo", fieldC: "Tempo", color: "text-emerald-700" },
+  { key: "foco_25", title: "Foco 25 minutos", icon: Target, fieldA: "Tarefa", fieldB: "Início", fieldC: "Fim", color: "text-lime-700" },
+  { key: "controle_distracoes", title: "Controle de distrações", icon: Eye, fieldA: "Distração", fieldB: "Momento", fieldC: "Ajuste", color: "text-violet-700" },
+  { key: "planejamento_semana", title: "Planejamento semanal", icon: CalendarDays, fieldA: "Semana", fieldB: "Foco", fieldC: "Risco", color: "text-sky-700" },
+  { key: "revision_domingo", title: "Revisão de domingo", icon: RotateCcw, fieldA: "Área", fieldB: "Aprendizado", fieldC: "Próxima ação", color: "text-teal-700" },
+  { key: "clientes_reunioes", title: "Reuniões com clientes", icon: UsersRound, fieldA: "Cliente", fieldB: "Data", fieldC: "Decisão", color: "text-purple-700" },
+  { key: "clientes_pendencias", title: "Pendências de clientes", icon: ClipboardList, fieldA: "Cliente", fieldB: "Pendência", fieldC: "Prazo", color: "text-fuchsia-700" },
+  { key: "followup_cobranca", title: "Follow-up de cobrança", icon: DollarSign, fieldA: "Cliente", fieldB: "Valor", fieldC: "Ação", color: "text-red-700" },
+  { key: "reunioes_internas", title: "Reuniões internas", icon: Users, fieldA: "Área", fieldB: "Pauta", fieldC: "Encaminhamento", color: "text-blue-800" },
+  { key: "riscos_caixa", title: "Risco de caixa", icon: Wallet, fieldA: "Período", fieldB: "Exposição", fieldC: "Plano", color: "text-orange-800" },
+  { key: "previsao_receita", title: "Previsão de receita", icon: TrendingUp, fieldA: "Período", fieldB: "Valor", fieldC: "Confiança", color: "text-green-800" },
+  { key: "despesas_fixas", title: "Despesas fixas", icon: Receipt, fieldA: "Categoria", fieldB: "Valor", fieldC: "Vencimento", color: "text-zinc-700" },
+  { key: "despesas_variaveis", title: "Despesas variáveis", icon: CreditCard, fieldA: "Categoria", fieldB: "Valor", fieldC: "Evento", color: "text-amber-800" },
+  { key: "pipeline_vendas_synapse", title: "Pipeline Synapse", icon: Rocket, fieldA: "Lead", fieldB: "Etapa", fieldC: "Probabilidade", color: "text-cyan-800" },
+  { key: "demos_realizadas", title: "Demos realizadas", icon: BarChart3, fieldA: "Cliente", fieldB: "Data", fieldC: "Resultado", color: "text-indigo-800" },
+  { key: "implantacoes", title: "Implantações", icon: Settings, fieldA: "Cliente", fieldB: "Fase", fieldC: "Bloqueio", color: "text-slate-800" },
+  { key: "suporte_pos_venda", title: "Pós-venda", icon: LifeBuoy, fieldA: "Cliente", fieldB: "SLA", fieldC: "NPS", color: "text-pink-800" },
+  { key: "roteiro_produto", title: "Roadmap produto", icon: MapPin, fieldA: "Módulo", fieldB: "Entrega", fieldC: "Impacto", color: "text-sky-900" },
+  { key: "controle_release", title: "Controle de release", icon: GitMerge, fieldA: "Versão", fieldB: "Data", fieldC: "Risco", color: "text-purple-900" },
+  { key: "qa_homologacao", title: "QA e homologação", icon: CheckCircle2, fieldA: "Cenário", fieldB: "Status", fieldC: "Bug", color: "text-lime-900" },
+  { key: "seguranca_backup", title: "Segurança e backup", icon: Shield, fieldA: "Ambiente", fieldB: "Último backup", fieldC: "Status", color: "text-red-900" },
+  { key: "integracoes_status", title: "Status integrações", icon: Database, fieldA: "Integração", fieldB: "Última sync", fieldC: "Saúde", color: "text-cyan-900" },
+  { key: "omnichannel_fluxos", title: "Fluxos omnichannel", icon: MessageCircleMore, fieldA: "Canal", fieldB: "Funil", fieldC: "Conversão", color: "text-green-900" },
+  { key: "benchmark_concorrentes", title: "Benchmark concorrentes", icon: Search, fieldA: "Concorrente", fieldB: "Força", fieldC: "Gap", color: "text-violet-900" },
+  { key: "studio_synapse", title: "Synapse Studio", icon: FolderOpen, fieldA: "Feature", fieldB: "Sprint", fieldC: "Status", color: "text-blue-900" },
 ] as const;
+
+const SYNAPSE_PRODUCT_MODULE_KEYS = new Set([
+  "synapse_bugs",
+  "planos_teste",
+  "clientes_piloto",
+  "checklist_lancamento",
+  "iniciativas_ia",
+  "governanca_dados",
+  "mapa_processos",
+  "base_conhecimento_ti",
+  "indicadores_ti",
+  "contratos_saas",
+  "qualidade_atendimento",
+]);
 
 function GenericMasterModuleCard({
   config,
@@ -681,6 +725,12 @@ export default function PainelMaster() {
   const [modalAtualizarLic, setModalAtualizarLic] = useState<any>(null);
   const [modalPagarCob, setModalPagarCob] = useState<any>(null);
   const [filtroStatus, setFiltroStatus] = useState("todos");
+  const [modoFoco, setModoFoco] = useState(true);
+  const [workspaceArea, setWorkspaceArea] = useState<"pessoal_operacao" | "synapse_produto" | "tudo">("pessoal_operacao");
+  const [limiteDiario, setLimiteDiario] = useState(5);
+  const [checkinAnsiedade, setCheckinAnsiedade] = useState("3");
+  const [checkinEnergia, setCheckinEnergia] = useState("3");
+  const [mostrarWorkspaceCompleto, setMostrarWorkspaceCompleto] = useState(false);
 
   const isMaster = !loading && !!user && (user as any).role === "master_admin";
 
@@ -1220,6 +1270,26 @@ export default function PainelMaster() {
   const empresasAtivas = (empresas as any[]).filter((e: any) => e.ativo).length;
   const totalUsuarios = (allUsers as any[]).length;
   const receitaMensal = (licencas as any[]).filter((l: any) => l.licenca.status === "ativa").reduce((acc: number, l: any) => acc + (parseFloat(l.licenca.valorContratado) || 0), 0);
+  const genericModulesFiltrados = GENERIC_MASTER_MODULES.filter((moduleConfig) => {
+    if (workspaceArea === "tudo") return true;
+    if (workspaceArea === "synapse_produto") return SYNAPSE_PRODUCT_MODULE_KEYS.has(moduleConfig.key);
+    return !SYNAPSE_PRODUCT_MODULE_KEYS.has(moduleConfig.key);
+  });
+  const tarefasAbertasMaster = (masterTasks as any[]).filter((task: any) => task.status !== "concluida");
+  const tarefasTopDoDia = tarefasAbertasMaster.slice(0, limiteDiario);
+  const proximaAcaoMaster = tarefasTopDoDia[0] ?? null;
+  const tarefasPorPeriodo = {
+    manha: tarefasTopDoDia.filter((task: any) => task.periodo === "manha"),
+    tarde: tarefasTopDoDia.filter((task: any) => task.periodo === "tarde"),
+    noite: tarefasTopDoDia.filter((task: any) => task.periodo === "noite"),
+  };
+  const excessoTarefas = tarefasAbertasMaster.length > limiteDiario;
+  const sugestaoTerapia =
+    Number(checkinAnsiedade) >= 4
+      ? "Ansiedade alta: reduza para 1 tarefa principal e micro passos de 25 minutos."
+      : Number(checkinEnergia) <= 2
+        ? "Energia baixa: priorize tarefas curtas e operacionais no período da manhã."
+        : "Estado estável: mantenha até 3 prioridades e avance por blocos de foco.";
 
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
@@ -1258,6 +1328,31 @@ export default function PainelMaster() {
       {/* ═══ CENTRAL DO DANIEL ════════════════════════════════════════════════ */}
       {abaAtiva === "workspace" && (
         <div className="space-y-6">
+          <Card className="border-primary/20">
+            <CardContent className="pt-4 pb-4 space-y-3">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <p className="text-sm font-semibold">Modo foco (TDAH/TAG)</p>
+                  <p className="text-xs text-muted-foreground">Menos ruído visual, uma prioridade por vez e separação clara entre Synapse e vida/operação.</p>
+                </div>
+                <Button size="sm" variant={modoFoco ? "default" : "outline"} onClick={() => setModoFoco(v => !v)}>
+                  {modoFoco ? "Modo foco ativo" : "Ativar modo foco"}
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button size="sm" variant={workspaceArea === "pessoal_operacao" ? "default" : "outline"} onClick={() => setWorkspaceArea("pessoal_operacao")}>
+                  Pessoal & Operação
+                </Button>
+                <Button size="sm" variant={workspaceArea === "synapse_produto" ? "default" : "outline"} onClick={() => setWorkspaceArea("synapse_produto")}>
+                  Synapse Produto
+                </Button>
+                <Button size="sm" variant={workspaceArea === "tudo" ? "default" : "outline"} onClick={() => setWorkspaceArea("tudo")}>
+                  Ver tudo
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
               { label: "Foco do dia", value: String((masterDashboard as any)?.focoHoje?.length ?? 0), sub: "tarefas prioritárias", cor: "text-blue-600", bg: "border-blue-200 bg-blue-50/30", icon: <Check className="w-9 h-9 text-blue-200" /> },
@@ -1295,13 +1390,145 @@ export default function PainelMaster() {
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <Button size="sm">Planejar meu dia</Button>
-                  <Button size="sm" variant="outline">O que faço agora?</Button>
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      if (!tarefasAbertasMaster.length) {
+                        toast.info("Cadastre ao menos uma tarefa para montar o plano.");
+                        return;
+                      }
+                      toast.success(`Plano do dia definido com ${Math.min(tarefasAbertasMaster.length, limiteDiario)} foco(s).`);
+                    }}
+                  >
+                    Planejar meu dia
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      if (!proximaAcaoMaster) {
+                        toast.info("Sem próxima ação definida ainda.");
+                        return;
+                      }
+                      toast.success(`Agora: ${proximaAcaoMaster.titulo}`);
+                    }}
+                  >
+                    O que faço agora?
+                  </Button>
                 </div>
-                {!(masterDashboard as any)?.focoHoje?.length ? (
+                <div className="rounded-xl border p-3 bg-muted/20 space-y-2">
+                  <div className="flex items-center justify-between gap-3 flex-wrap">
+                    <p className="text-sm font-medium">Limite diário anti-sobrecarga</p>
+                    <div className="flex items-center gap-2">
+                      <Label className="text-xs">Tarefas por dia</Label>
+                      <Input
+                        className="w-20 h-8"
+                        type="number"
+                        min={1}
+                        max={10}
+                        value={limiteDiario}
+                        onChange={(e) => setLimiteDiario(Math.max(1, Math.min(10, Number(e.target.value) || 1)))}
+                      />
+                    </div>
+                  </div>
+                  {excessoTarefas ? (
+                    <p className="text-xs text-amber-700">
+                      Você tem {tarefasAbertasMaster.length} tarefas abertas. O painel vai focar só nas {limiteDiario} mais importantes hoje.
+                    </p>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">
+                      Sem excesso de tarefas no momento.
+                    </p>
+                  )}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                    <div className="rounded-lg border p-2">
+                      <p className="text-xs uppercase tracking-wide text-muted-foreground">Manhã</p>
+                      <p className="text-sm font-semibold">{tarefasPorPeriodo.manha.length} foco(s)</p>
+                    </div>
+                    <div className="rounded-lg border p-2">
+                      <p className="text-xs uppercase tracking-wide text-muted-foreground">Tarde</p>
+                      <p className="text-sm font-semibold">{tarefasPorPeriodo.tarde.length} foco(s)</p>
+                    </div>
+                    <div className="rounded-lg border p-2">
+                      <p className="text-xs uppercase tracking-wide text-muted-foreground">Noite</p>
+                      <p className="text-sm font-semibold">{tarefasPorPeriodo.noite.length} foco(s)</p>
+                    </div>
+                  </div>
+                  {proximaAcaoMaster && (
+                    <div className="rounded-lg border border-primary/30 p-3">
+                      <p className="text-xs uppercase tracking-wide text-muted-foreground">Uma coisa por vez</p>
+                      <p className="text-sm font-semibold mt-1">{proximaAcaoMaster.titulo}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {proximaAcaoMaster.area} · {proximaAcaoMaster.prioridade} · {proximaAcaoMaster.periodo}
+                      </p>
+                    </div>
+                  )}
+                </div>
+                <div className="rounded-xl border border-blue-200 bg-blue-50/30 p-3 space-y-3">
+                  <div>
+                    <p className="text-sm font-semibold">Modo terapêutico guiado</p>
+                    <p className="text-xs text-muted-foreground">Check-in rápido para TDAH/TAG + replanejamento automático em 1 clique.</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <Label className="text-xs">Ansiedade (1-5)</Label>
+                      <Input
+                        type="number"
+                        min={1}
+                        max={5}
+                        value={checkinAnsiedade}
+                        onChange={(e) => setCheckinAnsiedade(String(Math.max(1, Math.min(5, Number(e.target.value) || 1))))}
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs">Energia (1-5)</Label>
+                      <Input
+                        type="number"
+                        min={1}
+                        max={5}
+                        value={checkinEnergia}
+                        onChange={(e) => setCheckinEnergia(String(Math.max(1, Math.min(5, Number(e.target.value) || 1))))}
+                      />
+                    </div>
+                  </div>
+                  <div className="rounded-lg border p-2 bg-white/70">
+                    <p className="text-xs text-muted-foreground">Sugestão da IA pessoal</p>
+                    <p className="text-sm mt-1">{sugestaoTerapia}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        createMasterHealthLogMut.mutate({
+                          referencia: new Date().toISOString().split("T")[0],
+                          humor: Number(checkinAnsiedade) >= 4 ? 2 : 4,
+                          energia: Number(checkinEnergia),
+                          observacoes: `Check-in terapêutico: ansiedade ${checkinAnsiedade}/5, energia ${checkinEnergia}/5.`,
+                        } as any);
+                      }}
+                      disabled={createMasterHealthLogMut.isPending}
+                    >
+                      {createMasterHealthLogMut.isPending ? "Salvando..." : "Salvar check-in"}
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        const ansiedadeAlta = Number(checkinAnsiedade) >= 4;
+                        const energiaBaixa = Number(checkinEnergia) <= 2;
+                        const novoLimite = ansiedadeAlta ? 1 : energiaBaixa ? 2 : 3;
+                        setLimiteDiario(novoLimite);
+                        toast.success(`Plano ajustado: foco em ${novoLimite} tarefa(s) para hoje.`);
+                      }}
+                    >
+                      Replanejar em 1 clique
+                    </Button>
+                  </div>
+                </div>
+                {!tarefasTopDoDia.length ? (
                   <p className="text-sm text-muted-foreground">Nenhuma tarefa priorizada ainda. Cadastre a primeira tarefa abaixo.</p>
                 ) : (
-                  (masterDashboard as any).focoHoje.map((task: any) => (
+                  tarefasTopDoDia.map((task: any) => (
                     <div key={task.id} className="flex items-start justify-between gap-3 rounded-xl border p-3">
                       <div>
                         <p className="font-medium">{task.titulo}</p>
@@ -1361,6 +1588,26 @@ export default function PainelMaster() {
             </Card>
           </div>
 
+          <Card className="border-dashed">
+            <CardContent className="pt-4 flex items-center justify-between gap-3 flex-wrap">
+              <div>
+                <p className="text-sm font-semibold">Workspace completo (formulários detalhados)</p>
+                <p className="text-xs text-muted-foreground">
+                  No modo foco, deixe fechado para reduzir sobrecarga. Abra somente quando for cadastrar em massa.
+                </p>
+              </div>
+              <Button
+                size="sm"
+                variant={mostrarWorkspaceCompleto ? "default" : "outline"}
+                onClick={() => setMostrarWorkspaceCompleto((v) => !v)}
+              >
+                {mostrarWorkspaceCompleto ? "Ocultar formulários" : "Mostrar formulários"}
+              </Button>
+            </CardContent>
+          </Card>
+
+          {(!modoFoco || mostrarWorkspaceCompleto) && (
+          <>
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             <Card>
               <CardHeader className="pb-3">
@@ -2852,6 +3099,8 @@ export default function PainelMaster() {
               </CardContent>
             </Card>
           </div>
+          </>
+          )}
 
           <div className="space-y-4">
             <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -2862,19 +3111,28 @@ export default function PainelMaster() {
                 </p>
               </div>
               <Badge variant="outline" className="text-xs px-3 py-1">
-                {GENERIC_MASTER_MODULES.length} módulos adicionais
+                {genericModulesFiltrados.length} módulos adicionais
               </Badge>
             </div>
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-              {GENERIC_MASTER_MODULES.map((config) => (
-                <GenericMasterModuleSection
-                  key={config.key}
-                  config={config}
-                  clients={masterClients as any[]}
-                  onSaved={() => refetchMasterDashboard()}
-                />
-              ))}
-            </div>
+            {modoFoco ? (
+              <div className="rounded-xl border border-dashed p-4 bg-muted/20">
+                <p className="text-sm text-muted-foreground">
+                  O modo foco está ativo. Para reduzir ansiedade e sobrecarga, os módulos expandidos ficam ocultos.
+                  Quando quiser abrir tudo, desative o modo foco acima.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                {genericModulesFiltrados.map((config) => (
+                  <GenericMasterModuleSection
+                    key={config.key}
+                    config={config}
+                    clients={masterClients as any[]}
+                    onSaved={() => refetchMasterDashboard()}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -22,6 +22,7 @@ import {
   HeartHandshake, Award, Clipboard, Microscope, Thermometer, Leaf,
   Globe, Plug, Zap, Search, ChevronDown, ChevronUp, X, CheckCircle,
   Info, Ticket, Crown, Wrench as WrenchIcon,
+  UsersRound, Rocket,
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useViewAs } from "@/contexts/ViewAsContext";
@@ -31,6 +32,7 @@ import { trpc } from "@/lib/trpc";
 import { DashboardLayoutSkeleton } from "./DashboardLayoutSkeleton";
 import { Button } from "./ui/button";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TIPOS
@@ -64,14 +66,15 @@ const getMenuGroups = (t: any): MenuGroup[] => [
   },
 
   {
-    label: "Pessoal",
+    label: "Master Workspace",
     icon: Crown,
     requiredRole: "master_admin",
     items: [
-      { icon: Crown, label: "Meu Workspace", path: "/pessoal" },
-      { icon: Calendar, label: "Agenda Pessoal", path: "/pessoal/calendario" },
-      { icon: Star, label: "Central do Daniel", path: "/master/painel" },
-      { icon: Brain, label: "IA Executiva", path: "/ia" },
+      { icon: Crown, label: "Painel Pessoal (TDAH/TAG)", path: "/pessoal" },
+      { icon: Calendar, label: "Agenda Integrada", path: "/pessoal/calendario" },
+      { icon: UsersRound, label: "Clientes & Trabalho", path: "/master/painel" },
+      { icon: Rocket, label: "Synapse Empresa", path: "/master/painel" },
+      { icon: Brain, label: "IA de Prioridades", path: "/ia" },
     ],
   },
 
@@ -301,6 +304,22 @@ function Sidebar({
     user?.role === "monitor"      ? "Monitor" : "Usuário";
 
   const handleNav = (path: string) => {
+    const validPrefixes = [
+      "/dashboard", "/ia", "/chat", "/omnichannel", "/gestao/", "/tarefas", "/notas",
+      "/pessoal", "/master/", "/veiculos", "/funcionarios", "/viagens", "/abastecimentos",
+      "/simulador-viagem", "/manutencoes", "/plano-manutencao", "/conferencia-veiculos",
+      "/despachante/", "/notas-fiscais", "/acerto-carga", "/carregamento",
+      "/crm", "/vendas", "/marketing", "/recepcao", "/wms/", "/logistica/",
+      "/financeiro", "/custos", "/rh", "/ponto", "/recepcionista", "/ti/",
+      "/bi", "/relatorios", "/relatorios-avancados", "/qualidade/", "/import-export",
+      "/usuarios", "/configuracoes", "/integracoes", "/ajuda",
+    ];
+    const isValidTarget = validPrefixes.some((prefix) => path === prefix || path.startsWith(prefix));
+    if (!isValidTarget) {
+      toast.warning("Este item ainda está em implantação.");
+      return;
+    }
+
     const scrollTop = navRef.current?.scrollTop ?? 0;
     navigate(path);
     requestAnimationFrame(() => {
@@ -395,7 +414,7 @@ function Sidebar({
               placeholder="Buscar no menu..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 text-xs rounded-md bg-muted border-0 outline-none focus:ring-1 focus:ring-primary/50 placeholder:text-muted-foreground/60"
+              className="w-full pl-8 pr-3 py-2 text-sm rounded-md bg-muted border-0 outline-none focus:ring-1 focus:ring-primary/50 placeholder:text-muted-foreground/60"
             />
           </div>
         </div>
@@ -415,10 +434,10 @@ function Sidebar({
                 /* Cabeçalho do grupo — linha separadora + label discreto */
                 <button
                   onClick={() => toggleGroup(group.label)}
-                  className={`w-full flex items-center gap-2 px-3 pt-3 pb-1 text-[10px] font-semibold uppercase tracking-widest transition-colors ${
+                  className={`w-full flex items-center gap-2 px-3 pt-3 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] transition-colors ${
                     isGroupActive(group.items)
                       ? "text-primary"
-                      : "text-sidebar-foreground/40 hover:text-sidebar-foreground/70"
+                      : "text-sidebar-foreground/70 hover:text-sidebar-foreground"
                   }`}
                 >
                   {GroupIcon && <GroupIcon className="h-3 w-3 shrink-0" />}
@@ -448,10 +467,10 @@ function Sidebar({
                       key={item.path}
                       onClick={() => handleNav(item.path)}
                       title={collapsed ? item.label : undefined}
-                      className={`relative w-full flex items-center gap-2.5 py-1.5 text-xs transition-all ${
+                      className={`relative w-full flex items-center gap-2.5 py-2 text-sm transition-all ${
                         active
                           ? "bg-sidebar-accent text-sidebar-foreground font-medium"
-                          : "text-sidebar-foreground/55 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                          : "text-sidebar-foreground/85 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
                       } ${collapsed ? "justify-center px-0 mx-0 rounded-none" : "pl-7 pr-3 rounded-md mx-1.5"}`}
                       style={collapsed ? {} : { width: "calc(100% - 12px)" }}
                     >
@@ -556,8 +575,7 @@ function Sidebar({
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { loading, user, isAuthenticated } = useAuth();
   const [, setLocation] = useLocation();
-  const token = typeof window !== "undefined" ? localStorage.getItem("synapse-auth-token") : null;
-  const isEmergency = token === "local-master-token";
+  const isEmergency = false;
 
   if (loading && !isEmergency) return <DashboardLayoutSkeleton />;
 

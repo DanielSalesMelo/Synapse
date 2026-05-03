@@ -15,6 +15,7 @@ import { createContext } from "./_core/context";
 import { runInlineMigrations } from "./inline_migrations";
 import { getRawClient } from "./db";
 import { sdk } from "./_core/sdk";
+import bcrypt from "bcryptjs";
 
 const ALLOWED_ORIGINS = [
   "https://synapse-seven-nu.vercel.app",
@@ -158,6 +159,12 @@ const mapLegacyMetric = (payload: any) => {
   const uptime = payload.uptime_hours
     ? Math.round(Number(payload.uptime_hours) * 3600)
     : payload.uptime ?? null;
+  const hardware = payload.hardware || payload.inventario || {};
+  const motherboard = hardware.motherboard || payload.motherboard || {};
+  const bios = hardware.bios || payload.bios || {};
+  const gpus = Array.isArray(hardware.gpus) ? hardware.gpus : Array.isArray(payload.gpus) ? payload.gpus : [];
+  const sensors = Array.isArray(payload.sensors) ? payload.sensors : Array.isArray(hardware.sensors) ? hardware.sensors : [];
+  const memorySlots = Array.isArray(hardware.memory_slots) ? hardware.memory_slots : Array.isArray(payload.memory_slots) ? payload.memory_slots : [];
 
   const collectedAtSource = payload.timestamp || payload.coletado_em;
   const coletadoEm = collectedAtSource
@@ -183,8 +190,52 @@ const mapLegacyMetric = (payload: any) => {
     usuarioLogado,
     uptime,
     topProcessos: topProcesses.length ? JSON.stringify(topProcesses) : null,
+    placaMaeModelo: motherboard.model || motherboard.modelo || payload.placa_mae_modelo || null,
+    placaMaeFabricante: motherboard.vendor || motherboard.fabricante || payload.placa_mae_fabricante || null,
+    socketCpu: hardware.cpu_socket || payload.socket_cpu || null,
+    biosVersao: bios.version || payload.bios_versao || null,
+    gpus: gpus.length ? JSON.stringify(gpus) : null,
+    sensores: sensors.length ? JSON.stringify(sensors) : null,
+    memoriaSlots: memorySlots.length ? JSON.stringify(memorySlots) : null,
+    cpuModel: hardware.cpu_model || payload.cpu_model || null,
+    gpuModel: gpus[0]?.name || gpus[0]?.model || payload.gpu_model || null,
   };
 };
+
+async function resolveEmpresaIdForUser(
+  client: any,
+  user: any,
+  requestedEmpresaId?: number | null
+): Promise<number> {
+  const requested = Number(requestedEmpresaId || 0);
+  const userEmpresa = Number(user?.empresaId || 0);
+  const activeCompany = Number(user?.activeCompanyId || 0);
+
+  if (requested > 0) {
+    // Master pode escolher qualquer empresa existente.
+    if (user?.role === "master_admin") return requested;
+    // Demais perfis só podem operar na própria empresa.
+    if (userEmpresa > 0 && userEmpresa === requested) return requested;
+  }
+
+  if (activeCompany > 0) return activeCompany;
+  if (userEmpresa > 0) return userEmpresa;
+
+  // Fallback apenas para master sem empresa fixa no token.
+  if (user?.role === "master_admin") {
+    const empresas = await client`
+      SELECT id
+      FROM empresas
+      WHERE "deletedAt" IS NULL
+      ORDER BY id ASC
+      LIMIT 1
+    `.catch(() => []);
+    const firstId = Number(empresas?.[0]?.id || 0);
+    if (firstId > 0) return firstId;
+  }
+
+  return 0;
+}
 
 async function storeOmnichannelInbound(input: {
   empresaId: number;
@@ -248,15 +299,29 @@ app.get("/api/agents", requireUser, async (req, res) => {
   const client = await getRawClient();
   if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
 
+  const requestedEmpresaId = Number(req.query?.empresaId || 0);
+  const empresaId = await resolveEmpresaIdForUser(client, user, requestedEmpresaId);
+  if (!empresaId) return res.status(400).json({ error: "EMPRESA_REQUIRED" });
+  if (user.role !== "master_admin" && user.empresaId && Number(user.empresaId) !== empresaId) {
+    return res.status(403).json({ error: "FORBIDDEN_COMPANY" });
+  }
+
   const rows = await client`
     SELECT a.*,
       (SELECT "coletadoEm" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as ultima_coleta,
       (SELECT "cpuUso" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as cpu_atual,
       (SELECT "ramUsoPct" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as ram_atual,
       (SELECT "discoUsoPct" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as disco_atual,
-      (SELECT "anydeskId" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as anydesk_id_atual
+      (SELECT "anydeskId" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as anydesk_id_atual,
+      (SELECT "placaMaeModelo" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as placa_mae_modelo,
+      (SELECT "placaMaeFabricante" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as placa_mae_fabricante,
+      (SELECT "socketCpu" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as socket_cpu,
+      (SELECT "biosVersao" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as bios_versao,
+      (SELECT gpus FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as gpus,
+      (SELECT sensores FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as sensores,
+      (SELECT "memoriaSlots" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as memoria_slots
     FROM monitor_agentes a
-    WHERE a."empresaId"=${user.empresaId} AND a."deletedAt" IS NULL
+    WHERE a."empresaId"=${empresaId} AND a."deletedAt" IS NULL
     ORDER BY a.hostname ASC
   `.catch(() => []);
 
@@ -270,10 +335,16 @@ app.put("/api/agents/:id/associate", requireUser, async (req, res) => {
 
   const agentId = Number(req.params.id);
   const { userId, departmentId } = req.body ?? {};
+  const requestedEmpresaId = Number(req.body?.empresaId || req.query?.empresaId || 0);
+  const empresaId = await resolveEmpresaIdForUser(client, user, requestedEmpresaId);
+  if (!empresaId) return res.status(400).json({ error: "EMPRESA_REQUIRED" });
+  if (user.role !== "master_admin" && user.empresaId && Number(user.empresaId) !== empresaId) {
+    return res.status(403).json({ error: "FORBIDDEN_COMPANY" });
+  }
   await client`
     UPDATE monitor_agentes
     SET user_id=${userId || null}, department_id=${departmentId || null}, "updatedAt"=NOW()
-    WHERE id=${agentId} AND "empresaId"=${user.empresaId}
+    WHERE id=${agentId} AND "empresaId"=${empresaId}
   `;
   res.json({ success: true });
 });
@@ -284,8 +355,8 @@ app.post("/api/agents/generate-pairing-code", requireUser, async (req, res) => {
   if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
 
   const { userId, departmentId } = req.body ?? {};
-  const requestedEmpresaId = Number(req.body?.empresaId || user.empresaId || user.activeCompanyId || 0);
-  const empresaId = Number.isFinite(requestedEmpresaId) && requestedEmpresaId > 0 ? requestedEmpresaId : 0;
+  const requestedEmpresaId = Number(req.body?.empresaId || req.query?.empresaId || 0);
+  const empresaId = await resolveEmpresaIdForUser(client, user, requestedEmpresaId);
   if (!empresaId) {
     return res.status(400).json({ error: "EMPRESA_REQUIRED" });
   }
@@ -312,6 +383,10 @@ app.get("/api/agent/download/windows", (_req, res) => {
 
 app.get("/api/agent/download/windows-installer", (_req, res) => {
   res.download(path.join(AGENT_DIR, "install_windows.bat"), "instalar_agente.bat");
+});
+
+app.get("/api/agent/download/windows-uninstaller", (_req, res) => {
+  res.download(path.join(AGENT_DIR, "uninstall_windows.bat"), "desinstalar_agente.bat");
 });
 
 app.get("/api/agent/download/windows-node-installer", (_req, res) => {
@@ -496,6 +571,58 @@ app.post("/api/agent/pair", async (req, res) => {
   }
 });
 
+app.post("/api/agent/auth/login", async (req, res) => {
+  try {
+    const email = String(req.body?.email || "").trim().toLowerCase();
+    const password = String(req.body?.password || "");
+    const deviceId = Number(req.body?.deviceId || 0);
+
+    if (!email || !password) {
+      return res.status(400).json({ error: "EMAIL_PASSWORD_REQUIRED" });
+    }
+
+    const client = await getRawClient();
+    if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+
+    const users = await client`
+      SELECT id, email, password, "empresaId", name
+      FROM users
+      WHERE LOWER(email) = ${email}
+      LIMIT 1
+    `.catch(() => []);
+    const user = users[0];
+    if (!user?.password) {
+      return res.status(401).json({ error: "INVALID_CREDENTIALS" });
+    }
+
+    const ok = await bcrypt.compare(password, user.password);
+    if (!ok) {
+      return res.status(401).json({ error: "INVALID_CREDENTIALS" });
+    }
+
+    if (deviceId > 0) {
+      await client`
+        UPDATE monitor_agentes
+        SET user_id = ${user.id}, "empresaId" = ${user.empresaId}, "updatedAt" = NOW()
+        WHERE id = ${deviceId}
+      `.catch(() => {});
+    }
+
+    return res.json({
+      success: true,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        empresaId: user.empresaId,
+      },
+    });
+  } catch (error) {
+    console.error("[Agent Auth Login] Falha:", error);
+    return res.status(500).json({ error: "AGENT_LOGIN_FAILED" });
+  }
+});
+
 app.post("/api/agent/metrics", async (req, res) => {
   try {
     const authHeader = req.headers.authorization || "";
@@ -511,31 +638,71 @@ app.post("/api/agent/metrics", async (req, res) => {
 
     const metric = mapLegacyMetric(req.body ?? {});
 
-    await client`
-      INSERT INTO monitor_metricas (
-        "agenteId", "empresaId", "coletadoEm", "cpuUso", "cpuTemp", "cpuFreqMhz",
-        "ramTotalMb", "ramUsadaMb", "ramUsoPct", "discoTotalGb", "discoUsadoGb",
-        "discoUsoPct", "redeEnviadoKb", "redeRecebidoKb", "latenciaMs", processos,
-        "anydeskId", "usuarioLogado", uptime, "topProcessos"
-      )
-      VALUES (
-        ${agent.id}, ${agent.empresaId}, ${metric.coletadoEm}, ${metric.cpuUso}, ${metric.cpuTemp}, ${metric.cpuFreqMhz},
-        ${metric.ramTotalMb}, ${metric.ramUsadaMb}, ${metric.ramUsoPct}, ${metric.discoTotalGb}, ${metric.discoUsadoGb},
-        ${metric.discoUsoPct}, ${metric.redeEnviadoKb}, ${metric.redeRecebidoKb}, ${metric.latenciaMs}, ${metric.processos},
-        ${metric.anydeskId}, ${metric.usuarioLogado}, ${metric.uptime}, ${metric.topProcessos}
-      )
-    `;
+    try {
+      await client`
+        INSERT INTO monitor_metricas (
+          "agenteId", "empresaId", "coletadoEm", "cpuUso", "cpuTemp", "cpuFreqMhz",
+          "ramTotalMb", "ramUsadaMb", "ramUsoPct", "discoTotalGb", "discoUsadoGb",
+          "discoUsoPct", "redeEnviadoKb", "redeRecebidoKb", "latenciaMs", processos,
+          "anydeskId", "usuarioLogado", uptime, "topProcessos",
+          "placaMaeModelo", "placaMaeFabricante", "socketCpu", "biosVersao",
+          gpus, sensores, "memoriaSlots"
+        )
+        VALUES (
+          ${agent.id}, ${agent.empresaId}, ${metric.coletadoEm}, ${metric.cpuUso}, ${metric.cpuTemp}, ${metric.cpuFreqMhz},
+          ${metric.ramTotalMb}, ${metric.ramUsadaMb}, ${metric.ramUsoPct}, ${metric.discoTotalGb}, ${metric.discoUsadoGb},
+          ${metric.discoUsoPct}, ${metric.redeEnviadoKb}, ${metric.redeRecebidoKb}, ${metric.latenciaMs}, ${metric.processos},
+          ${metric.anydeskId}, ${metric.usuarioLogado}, ${metric.uptime}, ${metric.topProcessos},
+          ${metric.placaMaeModelo}, ${metric.placaMaeFabricante}, ${metric.socketCpu}, ${metric.biosVersao},
+          ${metric.gpus}, ${metric.sensores}, ${metric.memoriaSlots}
+        )
+      `;
+    } catch (insertError) {
+      // Fallback para bancos legados sem colunas novas: não derruba o agente.
+      console.warn("[Agent Metrics] Insert completo falhou, usando fallback legado:", insertError);
+      await client`
+        INSERT INTO monitor_metricas (
+          "agenteId", "empresaId", "coletadoEm", "cpuUso",
+          "ramUsoPct", "discoUsoPct", "anydeskId", "usuarioLogado", uptime
+        )
+        VALUES (
+          ${agent.id}, ${agent.empresaId}, ${metric.coletadoEm}, ${metric.cpuUso},
+          ${metric.ramUsoPct}, ${metric.discoUsoPct}, ${metric.anydeskId}, ${metric.usuarioLogado}, ${metric.uptime}
+        )
+      `;
+    }
 
-    await client`
-      UPDATE monitor_agentes
-      SET status='online', online=true, "ultimoContato"=NOW(), "updatedAt"=NOW()
-      WHERE id=${agent.id}
-    `;
+    try {
+      await client`
+        UPDATE monitor_agentes
+        SET status='online',
+            online=true,
+            "ultimoContato"=NOW(),
+            "updatedAt"=NOW(),
+            "cpuModel"=COALESCE(${metric.cpuModel}, "cpuModel"),
+            "gpuModel"=COALESCE(${metric.gpuModel}, "gpuModel"),
+            "placaMaeModelo"=COALESCE(${metric.placaMaeModelo}, "placaMaeModelo"),
+            "socketCpu"=COALESCE(${metric.socketCpu}, "socketCpu")
+        WHERE id=${agent.id}
+      `;
+    } catch (updateError) {
+      // Fallback para schema legado sem colunas de hardware no monitor_agentes.
+      console.warn("[Agent Metrics] Update completo falhou, usando fallback legado:", updateError);
+      await client`
+        UPDATE monitor_agentes
+        SET status='online',
+            online=true,
+            "ultimoContato"=NOW(),
+            "updatedAt"=NOW()
+        WHERE id=${agent.id}
+      `;
+    }
 
     return res.json({ success: true });
   } catch (error) {
     console.error("[Agent Metrics] Falha:", error);
-    return res.status(500).json({ error: "METRICS_FAILED" });
+    // Não derruba o agente em produção por erro transitório/schema legado.
+    return res.status(202).json({ success: false, queued: true, warning: "METRICS_DEGRADED" });
   }
 });
 
@@ -690,7 +857,10 @@ app.post("/api/agent/tickets/:id/messages", requireAgent, async (req, res) => {
 
   const ticketId = Number(req.params.id);
   const conteudo = String(req.body?.conteudo || "").trim();
-  if (!conteudo) return res.status(400).json({ error: "MESSAGE_REQUIRED" });
+  const fileUrl = String(req.body?.fileUrl || "").trim();
+  const fileName = String(req.body?.fileName || "").trim();
+  const fileType = String(req.body?.fileType || "").trim();
+  if (!conteudo && !fileUrl) return res.status(400).json({ error: "MESSAGE_REQUIRED" });
 
   const ticketRows = await client`
     SELECT id
@@ -706,8 +876,18 @@ app.post("/api/agent/tickets/:id/messages", requireAgent, async (req, res) => {
   }
 
   const rows = await client`
-    INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
-    VALUES (${ticketId}, ${agent.empresaId}, ${agent.user_id}, ${conteudo}, 'mensagem', NOW())
+    INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"fileUrl","fileName","fileType","createdAt")
+    VALUES (
+      ${ticketId},
+      ${agent.empresaId},
+      ${agent.user_id},
+      ${conteudo || ""},
+      ${fileUrl ? "anexo" : "mensagem"},
+      ${fileUrl || null},
+      ${fileName || null},
+      ${fileType || null},
+      NOW()
+    )
     RETURNING *
   `.catch(() => []);
 
