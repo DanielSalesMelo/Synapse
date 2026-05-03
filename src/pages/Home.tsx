@@ -124,6 +124,11 @@ export default function Home() {
             <Button onClick={handleAccess} size="lg" className="bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 border-0 shadow-xl shadow-blue-500/30 text-base px-8 h-12">
               {user ? "Acessar o Sistema" : "Entrar no Sistema"} <ArrowRight className="h-5 w-5 ml-2" />
             </Button>
+            {!user && (
+              <Button onClick={() => navigate("/login")} variant="outline" size="lg" className="border-white/20 text-white hover:bg-white/10 h-12 px-8">
+                Login com Google + E-mail corporativo
+              </Button>
+            )}
           </div>
         </div>
       </section>
@@ -239,6 +244,26 @@ export default function Home() {
                 <p className="text-[10px] text-white/30 leading-tight">{p.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* MOBILE APP (PWA) */}
+      <section className="py-16 px-6">
+        <div className="max-w-4xl mx-auto rounded-2xl border border-white/10 bg-white/[0.02] p-6 md:p-8">
+          <h2 className="text-2xl font-bold mb-2">App no iPhone e Android sem App Store</h2>
+          <p className="text-white/40 mb-6">
+            O Synapse pode ser instalado como app (PWA) direto do navegador. Cada usuário entra com a própria conta e vê apenas os módulos liberados por permissão, como TI-only ou Master.
+          </p>
+          <div className="grid md:grid-cols-2 gap-4 text-sm">
+            <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+              <p className="font-semibold mb-2">iPhone (Safari)</p>
+              <p className="text-white/50">Abra o Synapse, toque em Compartilhar e escolha “Adicionar à Tela de Início”.</p>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+              <p className="font-semibold mb-2">Android (Chrome)</p>
+              <p className="text-white/50">Abra o Synapse, toque no menu e escolha “Instalar app” ou “Adicionar à tela inicial”.</p>
+            </div>
           </div>
         </div>
       </section>

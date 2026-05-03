@@ -154,7 +154,10 @@ class SDKServer {
   }
 
   private getSessionSecret() {
-    const secret = ENV.cookieSecret || "synapse-secret-key-prod";
+    const secret = ENV.cookieSecret;
+    if (!secret || secret.length < 32) {
+      throw new Error("JWT_SECRET inválido. Defina um segredo forte com no mínimo 32 caracteres.");
+    }
     return new TextEncoder().encode(secret);
   }
 
@@ -182,7 +185,10 @@ class SDKServer {
     options: { expiresInMs?: number } = {}
   ): Promise<string> {
     const expiresInMs = options.expiresInMs ?? ONE_YEAR_MS;
-    const secret = ENV.cookieSecret || "synapse-secret-key-prod";
+    const secret = ENV.cookieSecret;
+    if (!secret || secret.length < 32) {
+      throw new Error("JWT_SECRET inválido. Defina um segredo forte com no mínimo 32 caracteres.");
+    }
     return jwt.sign(
       { openId: payload.openId, appId: payload.appId, name: payload.name },
       secret,
@@ -198,7 +204,11 @@ class SDKServer {
     }
 
     try {
-      const secret = ENV.cookieSecret || "synapse-secret-key-prod";
+      const secret = ENV.cookieSecret;
+      if (!secret || secret.length < 32) {
+        console.error("[Auth] JWT_SECRET ausente ou fraco.");
+        return null;
+      }
       const payload = jwt.verify(cookieValue, secret, { algorithms: ["HS256"] }) as any;
       const openId = (payload.openId || payload.id) as string;
       const name = (payload.name || "Usuário") as string;

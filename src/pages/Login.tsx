@@ -1,11 +1,12 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { getBackendBaseUrl } from "@/lib/backend";
 import { Mail, Lock, LogIn, Building2, Key, CheckCircle, AlertCircle, Zap, Eye, EyeOff, RefreshCcw } from "lucide-react";
 
 const AUTH_TOKEN_KEY = "synapse-auth-token";
@@ -24,6 +25,13 @@ export default function Login() {
   const [empresaValidada, setEmpresaValidada] = useState<{ id: number; nome: string; codigoConvite: string | null } | null>(null);
   const [validandoEmpresa, setValidandoEmpresa] = useState(false);
   const utils = trpc.useUtils();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const socialError = params.get("social_error");
+    if (!socialError) return;
+    toast.error("Não foi possível entrar com Google no momento.");
+  }, []);
 
   const loginMutation = trpc.auth.login.useMutation({
     onSuccess: (data) => {
@@ -89,6 +97,10 @@ export default function Login() {
   };
 
   const isLoading = loginMutation.isPending || registerMutation.isPending;
+
+  const handleGoogleLogin = () => {
+    window.location.href = `${getBackendBaseUrl()}/api/auth/auth0/start`;
+  };
 
   const limparSessaoAntiga = () => {
     localStorage.removeItem(AUTH_TOKEN_KEY);
@@ -256,6 +268,18 @@ export default function Login() {
                 </span>
               )}
             </Button>
+
+            {isLogin && (
+              <Button
+                type="button"
+                onClick={handleGoogleLogin}
+                disabled={isLoading}
+                variant="outline"
+                className="w-full border-white/15 text-white hover:bg-white/10 h-11 rounded-xl"
+              >
+                Entrar com Google
+              </Button>
+            )}
 
             <div className="text-center text-sm text-white/30">
               {isLogin ? "Não tem conta? " : "Já tem conta? "}

@@ -39,6 +39,7 @@ import Permissoes from "./pages/Permissoes";
 import Chat from "./pages/Chat";
 import Omnichannel from "./pages/Omnichannel";
 import Login from "./pages/Login";
+import AuthCallback from "./pages/AuthCallback";
 import Trial from "./pages/Trial";
 import Integracoes from "./pages/Integracoes";
 import NotasFiscais from "./pages/NotasFiscais";
@@ -69,6 +70,7 @@ import Tarefas from "./pages/Tarefas";
 import Notas from "./pages/Notas";
 import Configuracoes from "./pages/Configuracoes";
 import Pessoal from "./pages/Pessoal";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 function DashboardRoutes() {
   return (
@@ -263,6 +265,7 @@ function Router() {
 
       {/* Login page */}
       <Route path="/login" component={Login} />
+      <Route path="/auth/callback" component={AuthCallback} />
 
       {/* Trial / cadastro público */}
       <Route path="/trial" component={Trial} />
@@ -271,11 +274,27 @@ function Router() {
       <Route path="/404" component={NotFound} />
 
       {/* Todas as outras rotas com DashboardLayout persistente */}
-      <Route>
-        <DashboardRoutes />
-      </Route>
+      <Route component={ProtectedDashboardRoutes} />
     </Switch>
   );
+}
+
+function ProtectedDashboardRoutes() {
+  const { loading, isAuthenticated } = useAuth({
+    redirectOnUnauthenticated: true,
+    redirectPath: "/login",
+  });
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="h-8 w-8 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) return null;
+  return <DashboardRoutes />;
 }
 
 function App() {

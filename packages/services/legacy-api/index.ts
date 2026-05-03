@@ -10,6 +10,8 @@ import helmet from "helmet";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import crypto from "crypto";
+import axios from "axios";
 import { appRouter } from "./routers";
 import { createContext } from "./_core/context";
 import { runInlineMigrations } from "./inline_migrations";
@@ -43,12 +45,31 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage, limits: { fileSize: 15 * 1024 * 1024 } });
+const allowedUploadMimeTypes = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "text/plain",
+]);
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 15 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (!allowedUploadMimeTypes.has(file.mimetype)) {
+      return cb(new Error("Tipo de arquivo não permitido"));
+    }
+    cb(null, true);
+  },
+});
 
 const isOriginAllowed = (origin: string | undefined): boolean => {
   if (!origin) return true;
   if (ALLOWED_ORIGINS.includes(origin)) return true;
-  if (ANY_VERCEL_REGEX.test(origin)) return true;
+  if (process.env.ALLOW_ANY_VERCEL_ORIGIN === "true" && ANY_VERCEL_REGEX.test(origin)) return true;
   if (origin.startsWith("http://localhost")) return true;
   return false;
 };
@@ -56,11 +77,13 @@ const isOriginAllowed = (origin: string | undefined): boolean => {
 const app = express();
 const port = Number(process.env.PORT) || 8080;
 
+app.disable("x-powered-by");
 app.set("trust proxy", true);
 app.use(
   helmet({
     crossOriginEmbedderPolicy: false,
     contentSecurityPolicy: false,
+    referrerPolicy: { policy: "strict-origin-when-cross-origin" },
   })
 );
 
@@ -86,6 +109,159 @@ app.options("*", cors());
 app.use(express.json({ limit: "10mb" }));
 
 const getBaseUrl = (req: Request) => `${req.protocol}://${req.get("host")}`;
+
+const FRONTEND_URL = process.env.FRONTEND_URL || "https://synapse-seven-nu.vercel.app";
+const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN || "";
+const AUTH0_CLIENT_ID = process.env.AUTH0_CLIENT_ID || "";
+const AUTH0_CLIENT_SECRET = process.env.AUTH0_CLIENT_SECRET || "";
+
+const buildAuth0RedirectUri = (req: Request) => {
+  const origin = getBaseUrl(req);
+  return `${origin}/api/auth/auth0/callback`;
+};
+
+const isAuth0Configured = () =>
+  Boolean(AUTH0_DOMAIN && AUTH0_CLIENT_ID && AUTH0_CLIENT_SECRET);
+
+app.get("/api/auth/providers", (_req, res) => {
+  res.json({
+    google: isAuth0Configured(),
+    auth0: isAuth0Configured(),
+  });
+});
+
+app.get("/api/auth/auth0/start", (req, res) => {
+  if (!isAuth0Configured()) {
+    return res.status(503).json({ error: "AUTH0_NOT_CONFIGURED" });
+  }
+
+  const state = crypto.randomBytes(24).toString("hex");
+  res.cookie("synapse-auth0-state", state, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 10 * 60 * 1000,
+    path: "/",
+  });
+
+  const authorizeUrl = new URL(`https://${AUTH0_DOMAIN}/authorize`);
+  authorizeUrl.searchParams.set("response_type", "code");
+  authorizeUrl.searchParams.set("client_id", AUTH0_CLIENT_ID);
+  authorizeUrl.searchParams.set("redirect_uri", buildAuth0RedirectUri(req));
+  authorizeUrl.searchParams.set("scope", "openid profile email");
+  authorizeUrl.searchParams.set("connection", "google-oauth2");
+  authorizeUrl.searchParams.set("state", state);
+  res.redirect(authorizeUrl.toString());
+});
+
+app.get("/api/auth/auth0/callback", async (req, res) => {
+  if (!isAuth0Configured()) {
+    return res.redirect(`${FRONTEND_URL}/login?social_error=config`);
+  }
+
+  const code = String(req.query.code || "");
+  const state = String(req.query.state || "");
+  const cookieHeader = String(req.headers.cookie || "");
+  const savedStateMatch = cookieHeader.match(/(?:^|;\s*)synapse-auth0-state=([^;]+)/);
+  const savedState = savedStateMatch ? decodeURIComponent(savedStateMatch[1]) : "";
+
+  if (!code || !state || !savedState || state !== savedState) {
+    return res.redirect(`${FRONTEND_URL}/login?social_error=state`);
+  }
+
+  try {
+    const tokenResp = await axios.post(
+      `https://${AUTH0_DOMAIN}/oauth/token`,
+      {
+        grant_type: "authorization_code",
+        client_id: AUTH0_CLIENT_ID,
+        client_secret: AUTH0_CLIENT_SECRET,
+        code,
+        redirect_uri: buildAuth0RedirectUri(req),
+      },
+      { timeout: 10000 }
+    );
+
+    const accessToken = tokenResp.data?.access_token as string | undefined;
+    if (!accessToken) {
+      return res.redirect(`${FRONTEND_URL}/login?social_error=token`);
+    }
+
+    const userInfoResp = await axios.get(`https://${AUTH0_DOMAIN}/userinfo`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      timeout: 10000,
+    });
+
+    const profile = userInfoResp.data || {};
+    const email = String(profile.email || "").trim().toLowerCase();
+    const sub = String(profile.sub || "");
+    const name = String(profile.name || profile.nickname || email || "Usuário");
+
+    if (!email || !sub) {
+      return res.redirect(`${FRONTEND_URL}/login?social_error=profile`);
+    }
+
+    const client = await getRawClient();
+    if (!client) return res.redirect(`${FRONTEND_URL}/login?social_error=db`);
+
+    const existingByEmail = await client`
+      SELECT id, "openId", email, role, status, "empresaId", password
+      FROM users
+      WHERE LOWER(email) = LOWER(${email})
+      LIMIT 1
+    `;
+
+    let user = existingByEmail[0];
+    const openId = `auth0_${sub}`.slice(0, 64);
+
+    if (!user) {
+      const inserted = await client`
+        INSERT INTO users ("openId", name, email, "loginMethod", role, status, "empresaId", "createdAt", "updatedAt", "lastSignedIn")
+        VALUES (${openId}, ${name}, ${email}, 'google', 'user', 'approved', NULL, NOW(), NOW(), NOW())
+        RETURNING id, "openId", email, role, status, "empresaId", password
+      `;
+      user = inserted[0];
+    } else {
+      await client`
+        UPDATE users
+        SET "openId"=${openId},
+            name=${name},
+            "loginMethod"='google',
+            "lastSignedIn"=NOW(),
+            "updatedAt"=NOW()
+        WHERE id=${user.id}
+      `;
+    }
+
+    if (user?.status === "pending") {
+      return res.redirect(`${FRONTEND_URL}/login?social_error=pending`);
+    }
+
+    const appToken = await sdk.signSession(
+      {
+        openId,
+        appId: process.env.VITE_APP_ID || "synapse",
+        name,
+      },
+      { expiresInMs: 1000 * 60 * 60 * 24 * 7 }
+    );
+
+    res.cookie("synapse-auth0-state", "", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 0,
+      path: "/",
+    });
+
+    return res.redirect(
+      `${FRONTEND_URL}/auth/callback?token=${encodeURIComponent(appToken)}`
+    );
+  } catch (error) {
+    console.error("[Auth0 Callback] Falha:", error);
+    return res.redirect(`${FRONTEND_URL}/login?social_error=callback`);
+  }
+});
 
 const requireUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
