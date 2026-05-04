@@ -21,6 +21,7 @@ import platform
 import threading
 import subprocess
 import logging
+import webbrowser
 import signal
 import uuid
 from datetime import datetime, timezone
@@ -43,7 +44,7 @@ except ImportError:
     print("[WARN] requests não instalado. Execute: pip install psutil requests")
 
 # ─── Configuração ─────────────────────────────────────────────────────────────
-VERSION = "2.2.0"
+VERSION = "2.2.3"
 AGENT_DIR = Path(os.environ.get("SYNAPSE_AGENT_DIR", Path.home() / ".synapse-agent"))
 CONFIG_FILE = AGENT_DIR / "config.json"
 DB_FILE = AGENT_DIR / "buffer.db"
@@ -58,6 +59,7 @@ DEFAULT_CONFIG = {
     "max_buffer_size": 10000,    # máximo de registros no buffer local
     "retry_interval": 30,        # segundos entre tentativas de reenvio
     "anydesk_path": "",          # caminho do AnyDesk (auto-detectado)
+    "agent_mode": "simple",      # simple=usuário final | ti=avançado
     "debug": False,
 }
 
@@ -229,6 +231,65 @@ def get_anydesk_id() -> Optional[str]:
 _prev_net = None
 _prev_net_time = None
 
+def _collect_windows_hardware_info(metrics: Dict[str, Any]) -> None:
+    """Coleta inventário de hardware via PowerShell/CIM no Windows."""
+    if platform.system() != "Windows":
+        return
+    try:
+        ps_script = r"""
+$ErrorActionPreference = "SilentlyContinue"
+$cpu = Get-CimInstance Win32_Processor | Select-Object -First 1 Name,SocketDesignation
+$mb = Get-CimInstance Win32_BaseBoard | Select-Object -First 1 Manufacturer,Product
+$bios = Get-CimInstance Win32_BIOS | Select-Object -First 1 SMBIOSBIOSVersion
+$gpu = Get-CimInstance Win32_VideoController | Select-Object Name
+$mem = Get-CimInstance Win32_PhysicalMemory | Select-Object Capacity,Speed,Manufacturer,PartNumber
+$obj = [PSCustomObject]@{
+  cpu_model = $cpu.Name
+  socket_cpu = $cpu.SocketDesignation
+  placa_mae_fabricante = $mb.Manufacturer
+  placa_mae_modelo = $mb.Product
+  bios_versao = $bios.SMBIOSBIOSVersion
+  gpus = @($gpu | ForEach-Object { @{ name = $_.Name } })
+  memory_slots = @($mem | ForEach-Object {
+    @{
+      capacidade_gb = [Math]::Round(($_.Capacity / 1GB), 2)
+      velocidade_mhz = $_.Speed
+      fabricante = $_.Manufacturer
+      part_number = $_.PartNumber
+    }
+  })
+}
+$obj | ConvertTo-Json -Depth 6 -Compress
+"""
+        result = subprocess.run(
+            ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", ps_script],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            info = json.loads(result.stdout.strip())
+            metrics["cpu_model"] = info.get("cpu_model")
+            metrics["socket_cpu"] = info.get("socket_cpu")
+            metrics["placa_mae_fabricante"] = info.get("placa_mae_fabricante")
+            metrics["placa_mae_modelo"] = info.get("placa_mae_modelo")
+            metrics["bios_versao"] = info.get("bios_versao")
+            metrics["gpus"] = info.get("gpus") or []
+            metrics["memory_slots"] = info.get("memory_slots") or []
+            metrics["hardware"] = {
+                "cpu_model": metrics.get("cpu_model"),
+                "cpu_socket": metrics.get("socket_cpu"),
+                "motherboard": {
+                    "vendor": metrics.get("placa_mae_fabricante"),
+                    "model": metrics.get("placa_mae_modelo"),
+                },
+                "bios": {"version": metrics.get("bios_versao")},
+                "gpus": metrics.get("gpus") or [],
+                "memory_slots": metrics.get("memory_slots") or [],
+            }
+    except Exception:
+        pass
+
 def collect_metrics(config: Dict) -> Dict:
     global _prev_net, _prev_net_time
 
@@ -255,6 +316,14 @@ def collect_metrics(config: Dict) -> Dict:
         "top_processos": [],
         "discos": [],
         "interfaces_rede": [],
+        "cpu_model": None,
+        "socket_cpu": None,
+        "placa_mae_modelo": None,
+        "placa_mae_fabricante": None,
+        "bios_versao": None,
+        "gpus": [],
+        "memory_slots": [],
+        "hardware": {},
     }
 
     if not HAS_PSUTIL:
@@ -366,6 +435,8 @@ def collect_metrics(config: Dict) -> Dict:
                 metrics["usuario_logado"] = users_logged[0].name
         except Exception:
             pass
+
+        _collect_windows_hardware_info(metrics)
 
     except Exception as e:
         log.error(f"Erro na coleta de métricas: {e}")
@@ -597,6 +668,38 @@ def send_ticket_message(config: Dict, ticket_id: int, conteudo: str) -> Optional
         {"conteudo": conteudo},
     )
 
+def send_ticket_attachment(config: Dict, ticket_id: int, file_name: str, file_type: str, data_url: str, conteudo: str = "") -> Optional[Dict[str, Any]]:
+    return agent_request(
+        config,
+        "POST",
+        f"/api/agent/tickets/{ticket_id}/messages",
+        {
+            "conteudo": conteudo or "",
+            "fileUrl": data_url,
+            "fileName": file_name,
+            "fileType": file_type or "application/octet-stream",
+        },
+    )
+
+def agent_login(config: Dict, email: str, password: str) -> Optional[Dict[str, Any]]:
+    if not HAS_REQUESTS:
+        return None
+    try:
+        url = f"{config['server_url'].rstrip('/')}/api/agent/auth/login"
+        payload = {
+            "email": email.strip().lower(),
+            "password": password,
+            "deviceId": config.get("device_id"),
+        }
+        resp = requests.post(url, json=payload, timeout=20)
+        if resp.status_code >= 400:
+            log.error(f"[Agent Login] {resp.status_code}: {resp.text[:200]}")
+            return None
+        return resp.json()
+    except Exception as e:
+        log.error(f"[Agent Login] Erro: {e}")
+        return None
+
 def launch_support_center():
     config = load_config()
     if not config.get("token"):
@@ -605,14 +708,21 @@ def launch_support_center():
 
     try:
         import tkinter as tk
-        from tkinter import ttk, messagebox, simpledialog, scrolledtext
+        from tkinter import ttk, messagebox, simpledialog, scrolledtext, filedialog
+        import base64
     except Exception as e:
         print(f"Não foi possível abrir a central visual de suporte: {e}")
         return
 
     root = tk.Tk()
     root.title(f"Synapse Support Center v{VERSION}")
-    root.geometry("1080x720")
+    # Tamanho inicial adaptativo para monitores diferentes
+    sw = root.winfo_screenwidth()
+    sh = root.winfo_screenheight()
+    w = max(1024, int(sw * 0.86))
+    h = max(700, int(sh * 0.84))
+    root.geometry(f"{w}x{h}")
+    root.minsize(980, 660)
     root.configure(bg="#0b1020")
 
     style = ttk.Style()
@@ -620,16 +730,25 @@ def launch_support_center():
         style.theme_use("clam")
     except Exception:
         pass
+    style.configure("TButton", font=("Segoe UI", 10), padding=8)
+    style.configure("TLabel", font=("Segoe UI", 10))
 
     header = tk.Frame(root, bg="#0f172a", padx=18, pady=14)
     header.pack(fill="x")
 
     title = tk.Label(header, text="Synapse Support Center", fg="white", bg="#0f172a", font=("Segoe UI", 18, "bold"))
     title.pack(anchor="w")
-    subtitle = tk.Label(header, text="Abrir chamados, conversar com o TI e acompanhar o desempenho deste PC.", fg="#94a3b8", bg="#0f172a", font=("Segoe UI", 10))
+    is_ti_mode = str(config.get("agent_mode") or "simple").lower() == "ti"
+    subtitle_text = "Abra chamados e converse com o TI em tempo real."
+    if is_ti_mode:
+        subtitle_text = "Modo TI avançado: chat/chamados e painel técnico local."
+    subtitle = tk.Label(header, text=subtitle_text, fg="#94a3b8", bg="#0f172a", font=("Segoe UI", 10))
     subtitle.pack(anchor="w", pady=(4, 0))
 
-    info_var = tk.StringVar(value="Carregando perfil do dispositivo...")
+    saved_email = str(config.get("user_email") or "").strip()
+    info_var = tk.StringVar(
+        value=f"Sessão salva: {saved_email}" if saved_email else "Carregando perfil do dispositivo..."
+    )
     info = tk.Label(header, textvariable=info_var, fg="#cbd5e1", bg="#0f172a", font=("Segoe UI", 10))
     info.pack(anchor="w", pady=(8, 0))
 
@@ -639,10 +758,22 @@ def launch_support_center():
     body.grid_columnconfigure(1, weight=3)
     body.grid_rowconfigure(1, weight=1)
 
-    metrics_card = tk.LabelFrame(body, text=" Desempenho do PC ", bg="#111827", fg="white", padx=12, pady=10, font=("Segoe UI", 10, "bold"))
-    metrics_card.grid(row=0, column=0, sticky="nsew", padx=(0, 10), pady=(0, 10))
     metrics_var = tk.StringVar(value="Sem métricas ainda.")
-    tk.Label(metrics_card, textvariable=metrics_var, justify="left", fg="#e5e7eb", bg="#111827", font=("Consolas", 10)).pack(anchor="w")
+    if is_ti_mode:
+        metrics_card = tk.LabelFrame(body, text=" Desempenho do PC (local) ", bg="#111827", fg="white", padx=12, pady=10, font=("Segoe UI", 10, "bold"))
+        metrics_card.grid(row=0, column=0, sticky="nsew", padx=(0, 10), pady=(0, 10))
+        tk.Label(metrics_card, textvariable=metrics_var, justify="left", fg="#e5e7eb", bg="#111827", font=("Consolas", 10)).pack(anchor="w")
+    else:
+        support_card = tk.LabelFrame(body, text=" Atendimento Synapse ", bg="#111827", fg="white", padx=12, pady=10, font=("Segoe UI", 10, "bold"))
+        support_card.grid(row=0, column=0, sticky="nsew", padx=(0, 10), pady=(0, 10))
+        tk.Label(
+            support_card,
+            text="Este app é para abrir chamado e conversar com TI.\nUse “Anexar arquivo” para enviar print/imagem/PDF no chat.",
+            justify="left",
+            fg="#e5e7eb",
+            bg="#111827",
+            font=("Segoe UI", 10),
+        ).pack(anchor="w")
 
     actions_card = tk.LabelFrame(body, text=" Ações rápidas ", bg="#111827", fg="white", padx=12, pady=10, font=("Segoe UI", 10, "bold"))
     actions_card.grid(row=0, column=1, sticky="nsew", pady=(0, 10))
@@ -666,6 +797,10 @@ def launch_support_center():
 
     selected_ticket = {"id": None}
     tickets_cache: List[Dict[str, Any]] = []
+    logged_user = {"name": "", "email": ""}
+    if saved_email:
+        logged_user["email"] = saved_email
+        logged_user["name"] = str(config.get("user_name") or "")
 
     def render_metrics():
         data = get_last_buffered_metrics() or {}
@@ -688,6 +823,9 @@ def launch_support_center():
                 f"Usuário: {profile.get('usuario_nome') or 'não vinculado'}"
             )
             latest = profile.get("ultima_metrica") or {}
+            if profile.get("usuario_nome"):
+                logged_user["name"] = profile.get("usuario_nome") or ""
+                logged_user["email"] = profile.get("usuario_email") or ""
             if latest:
                 metrics_var.set(
                     "\n".join(
@@ -704,6 +842,59 @@ def launch_support_center():
         else:
             info_var.set("Perfil indisponível no momento. O agente continuará coletando dados localmente.")
             render_metrics()
+
+    def login_action():
+        email = simpledialog.askstring("Login Synapse", "E-mail:", parent=root)
+        if not email:
+            return
+        password = simpledialog.askstring("Login Synapse", "Senha:", parent=root, show="*")
+        if not password:
+            return
+        result = agent_login(config, email, password)
+        if not result or not result.get("success"):
+            messagebox.showerror("Synapse", "Não foi possível autenticar. Verifique e-mail e senha.")
+            return
+        user = result.get("user") or {}
+        logged_user["name"] = user.get("name") or ""
+        logged_user["email"] = user.get("email") or ""
+        config["user_email"] = logged_user["email"] or email
+        config["user_name"] = logged_user["name"] or ""
+        save_config(config)
+        messagebox.showinfo("Synapse", f"Login realizado com sucesso: {logged_user['email'] or email}")
+        refresh_profile()
+        refresh_tickets()
+
+    def repair_pairing_action():
+        codigo = simpledialog.askstring("Parear novamente", "Código de pareamento (SYNC-XXXX-XXXX):", parent=root)
+        if not codigo:
+            return
+        codigo = codigo.strip().upper()
+        server_url = simpledialog.askstring(
+            "Servidor Synapse",
+            "URL do servidor:",
+            initialvalue=str(config.get("server_url") or DEFAULT_CONFIG["server_url"]),
+            parent=root,
+        )
+        if not server_url:
+            return
+        server_url = server_url.strip()
+        if not server_url.startswith("http"):
+            server_url = "https://" + server_url
+        config["server_url"] = server_url
+        save_config(config)
+        result = pair_agent(config, codigo)
+        if not result or not result.get("token"):
+            messagebox.showerror("Synapse", "Não foi possível parear com esse código. Gere um novo e tente novamente.")
+            return
+        config["token"] = result.get("token")
+        if result.get("device_id"):
+            config["device_id"] = result.get("device_id")
+        if result.get("empresa_id"):
+            config["empresa_id"] = result.get("empresa_id")
+        save_config(config)
+        messagebox.showinfo("Synapse", "Pareamento atualizado com sucesso.")
+        refresh_profile()
+        refresh_tickets()
 
     def refresh_tickets():
         nonlocal tickets_cache
@@ -754,23 +945,175 @@ def launch_support_center():
         msg_entry.delete(0, tk.END)
         render_messages(int(selected_ticket["id"]))
 
+    def attach_file_action():
+        if not selected_ticket["id"]:
+            messagebox.showwarning("Synapse", "Selecione um chamado antes de anexar arquivo.")
+            return
+        path = filedialog.askopenfilename(
+            title="Selecionar arquivo",
+            filetypes=[
+                ("Arquivos suportados", "*.png;*.jpg;*.jpeg;*.webp;*.bmp;*.pdf;*.doc;*.docx;*.txt;*.zip"),
+                ("Todos os arquivos", "*.*"),
+            ],
+        )
+        if not path:
+            return
+        try:
+            with open(path, "rb") as f:
+                raw = f.read()
+            ext = Path(path).suffix.lower()
+            mime = {
+                ".png": "image/png",
+                ".jpg": "image/jpeg",
+                ".jpeg": "image/jpeg",
+                ".webp": "image/webp",
+                ".bmp": "image/bmp",
+                ".pdf": "application/pdf",
+                ".doc": "application/msword",
+                ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                ".txt": "text/plain",
+                ".zip": "application/zip",
+            }.get(ext, "application/octet-stream")
+            data_url = f"data:{mime};base64,{base64.b64encode(raw).decode('ascii')}"
+            result = send_ticket_attachment(config, int(selected_ticket["id"]), Path(path).name, mime, data_url, f"Arquivo enviado: {Path(path).name}")
+            if not result:
+                messagebox.showerror("Synapse", "Não foi possível anexar arquivo.")
+                return
+            render_messages(int(selected_ticket["id"]))
+        except Exception as e:
+            messagebox.showerror("Synapse", f"Erro ao anexar arquivo: {e}")
+
     def open_ticket_action():
-        title = simpledialog.askstring("Novo chamado", "Título do chamado:", parent=root)
-        if not title:
-            return
-        description = simpledialog.askstring("Novo chamado", "Descreva o problema:", parent=root)
-        if not description:
-            return
-        result = open_support_ticket(config, title, description)
-        if result:
-            messagebox.showinfo("Synapse", f"Chamado aberto com sucesso: {result.get('protocolo') or result.get('id')}")
-            refresh_tickets()
-        else:
-            messagebox.showerror("Synapse", "Não foi possível abrir o chamado.")
+        modal = tk.Toplevel(root)
+        modal.title("Abrir chamado")
+        modal.configure(bg="#0b1020")
+        modal.transient(root)
+        modal.grab_set()
+        modal.geometry("680x520")
+        modal.minsize(620, 460)
+
+        tk.Label(
+            modal,
+            text="Novo chamado para TI",
+            bg="#0b1020",
+            fg="white",
+            font=("Segoe UI", 14, "bold"),
+        ).pack(anchor="w", padx=18, pady=(16, 6))
+        tk.Label(
+            modal,
+            text="Descreva o problema com o máximo de contexto (erro, tela, setor, impacto).",
+            bg="#0b1020",
+            fg="#94a3b8",
+            font=("Segoe UI", 9),
+        ).pack(anchor="w", padx=18, pady=(0, 10))
+
+        tk.Label(modal, text="Título *", bg="#0b1020", fg="white", font=("Segoe UI", 10, "bold")).pack(anchor="w", padx=18)
+        title_var = tk.StringVar()
+        title_entry = tk.Entry(modal, textvariable=title_var, bg="#1f2937", fg="white", insertbackground="white", relief="flat", font=("Segoe UI", 10))
+        title_entry.pack(fill="x", padx=18, pady=(6, 12), ipady=8)
+
+        tk.Label(modal, text="Descrição *", bg="#0b1020", fg="white", font=("Segoe UI", 10, "bold")).pack(anchor="w", padx=18)
+        desc_box = scrolledtext.ScrolledText(modal, bg="#1f2937", fg="white", insertbackground="white", wrap="word", font=("Segoe UI", 10), height=13)
+        desc_box.pack(fill="both", expand=True, padx=18, pady=(6, 12))
+
+        attach_state = {"name": "", "mime": "", "data_url": ""}
+        attach_info = tk.StringVar(value="Sem anexo")
+
+        attach_row = tk.Frame(modal, bg="#0b1020")
+        attach_row.pack(fill="x", padx=18, pady=(0, 8))
+        tk.Label(attach_row, textvariable=attach_info, bg="#0b1020", fg="#94a3b8", font=("Segoe UI", 9)).pack(side="left")
+
+        btns = tk.Frame(modal, bg="#0b1020")
+        btns.pack(fill="x", padx=18, pady=(0, 16))
+
+        def attach_file_modal():
+            path = filedialog.askopenfilename(
+                title="Selecionar anexo do chamado",
+                filetypes=[
+                    ("Arquivos suportados", "*.png;*.jpg;*.jpeg;*.webp;*.bmp;*.pdf;*.doc;*.docx;*.txt;*.zip"),
+                    ("Todos os arquivos", "*.*"),
+                ],
+            )
+            if not path:
+                return
+            try:
+                with open(path, "rb") as f:
+                    raw = f.read()
+                ext = Path(path).suffix.lower()
+                mime = {
+                    ".png": "image/png",
+                    ".jpg": "image/jpeg",
+                    ".jpeg": "image/jpeg",
+                    ".webp": "image/webp",
+                    ".bmp": "image/bmp",
+                    ".pdf": "application/pdf",
+                    ".doc": "application/msword",
+                    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    ".txt": "text/plain",
+                    ".zip": "application/zip",
+                }.get(ext, "application/octet-stream")
+                data_url = f"data:{mime};base64,{base64.b64encode(raw).decode('ascii')}"
+                attach_state["name"] = Path(path).name
+                attach_state["mime"] = mime
+                attach_state["data_url"] = data_url
+                attach_info.set(f"Anexo pronto: {attach_state['name']}")
+            except Exception as e:
+                messagebox.showerror("Synapse", f"Erro ao anexar arquivo: {e}")
+
+        def paste_print_modal():
+            try:
+                from PIL import ImageGrab  # type: ignore
+                img = ImageGrab.grabclipboard()
+                if img is None:
+                    messagebox.showwarning("Synapse", "Nenhuma imagem encontrada na área de transferência.")
+                    return
+                import io
+                buf = io.BytesIO()
+                img.save(buf, format="PNG")
+                raw = buf.getvalue()
+                attach_state["name"] = f"print_{int(time.time())}.png"
+                attach_state["mime"] = "image/png"
+                attach_state["data_url"] = f"data:image/png;base64,{base64.b64encode(raw).decode('ascii')}"
+                attach_info.set(f"Print colado: {attach_state['name']}")
+            except Exception:
+                messagebox.showwarning("Synapse", "Colar print requer Pillow no agente. Use 'Anexar arquivo' por enquanto.")
+
+        def submit_ticket():
+            title = title_var.get().strip()
+            description = desc_box.get("1.0", tk.END).strip()
+            if not title or not description:
+                messagebox.showwarning("Synapse", "Preencha título e descrição do chamado.")
+                return
+            result = open_support_ticket(config, title, description)
+            if result:
+                ticket_id = result.get("id")
+                if ticket_id and attach_state.get("data_url"):
+                    send_ticket_attachment(
+                        config,
+                        int(ticket_id),
+                        attach_state["name"] or "anexo",
+                        attach_state["mime"] or "application/octet-stream",
+                        attach_state["data_url"],
+                        f"Anexo no chamado: {attach_state['name'] or 'arquivo'}",
+                    )
+                messagebox.showinfo("Synapse", f"Chamado aberto com sucesso: {result.get('protocolo') or result.get('id')}")
+                modal.destroy()
+                refresh_tickets()
+            else:
+                messagebox.showerror("Synapse", "Não foi possível abrir o chamado.")
+
+        ttk.Button(btns, text="Anexar arquivo", command=attach_file_modal).pack(side="left")
+        ttk.Button(btns, text="Colar print", command=paste_print_modal).pack(side="left", padx=(8, 0))
+        ttk.Button(btns, text="Cancelar", command=modal.destroy).pack(side="right")
+        ttk.Button(btns, text="Abrir chamado", command=submit_ticket).pack(side="right", padx=(0, 10))
+        title_entry.focus_set()
 
     ttk.Button(actions_card, text="Atualizar agora", command=lambda: [refresh_profile(), refresh_tickets()]).pack(side="left", padx=(0, 8))
+    ttk.Button(actions_card, text="Parear novamente", command=repair_pairing_action).pack(side="left", padx=(0, 8))
+    ttk.Button(actions_card, text="Entrar com Synapse", command=login_action).pack(side="left", padx=(0, 8))
     ttk.Button(actions_card, text="Abrir chamado", command=open_ticket_action).pack(side="left", padx=(0, 8))
-    ttk.Button(actions_card, text="Ver desempenho", command=render_metrics).pack(side="left")
+    if is_ti_mode:
+        ttk.Button(actions_card, text="Ver desempenho", command=render_metrics).pack(side="left")
     ttk.Button(composer, text="Enviar", command=send_message_action).pack(side="right")
 
     tickets_list.bind("<<ListboxSelect>>", on_select_ticket)
@@ -778,7 +1121,8 @@ def launch_support_center():
 
     refresh_profile()
     refresh_tickets()
-    render_metrics()
+    if is_ti_mode:
+        render_metrics()
     root.mainloop()
 
 def get_mac_address() -> str:
@@ -1001,7 +1345,14 @@ if __name__ == "__main__":
                 print("Uso: python synapse_agent.py --pair SYNC-XXXX-XXXX")
                 sys.exit(1)
 
-            if not config.get("server_url") or config["server_url"] == DEFAULT_CONFIG["server_url"]:
+            # Aplica --server antes de qualquer validação para evitar prompt indevido
+            if "--server" in sys.argv:
+                server_idx = sys.argv.index("--server")
+                if len(sys.argv) > server_idx + 1:
+                    config["server_url"] = sys.argv[server_idx + 1].strip()
+                    save_config(config)
+
+            if not config.get("server_url"):
                 # Se já temos a URL no ambiente ou config, não pergunta
                 env_url = os.environ.get("SYNAPSE_SERVER_URL")
                 if env_url:
@@ -1012,12 +1363,6 @@ if __name__ == "__main__":
                         server_url = "https://" + server_url
                     config["server_url"] = server_url
                 save_config(config)
-
-            if "--server" in sys.argv:
-                server_idx = sys.argv.index("--server")
-                if len(sys.argv) > server_idx + 1:
-                    config["server_url"] = sys.argv[server_idx + 1].strip()
-                    save_config(config)
 
             print(f"\nVinculando PC ao Synapse com código: {codigo}")
             print(f"Servidor: {config['server_url']}")
@@ -1081,6 +1426,15 @@ if __name__ == "__main__":
                 print(f"✅ {key} = {value}")
             else:
                 print(json.dumps(config, indent=2))
+        elif cmd == "--mode" and len(sys.argv) > 2:
+            config = load_config()
+            mode = sys.argv[2].strip().lower()
+            if mode not in ["simple", "ti"]:
+                print("Use: --mode simple  ou  --mode ti")
+                sys.exit(1)
+            config["agent_mode"] = mode
+            save_config(config)
+            print(f"✅ Modo do agente definido para: {mode}")
         elif cmd == "--test":
             print("Testando coleta de métricas...")
             config = load_config()

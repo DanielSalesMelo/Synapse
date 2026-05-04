@@ -72,10 +72,15 @@ export default function SimuladorViagem() {
   const [pedagioManual, setPedagioManual] = useState("0");
   const [outrosCustos, setOutrosCustos] = useState("0");
   const [valorFrete, setValorFrete] = useState("");
+  const [diariaMotorista, setDiariaMotorista] = useState("0");
+  const [comissaoPct, setComissaoPct] = useState("0");
+  const [seguroRisco, setSeguroRisco] = useState("0");
   
   const [mapReady, setMapReady] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
   const [salvando, setSalvando] = useState(false);
+  const [distanciaManualKm, setDistanciaManualKm] = useState("");
+  const [tempoManualMin, setTempoManualMin] = useState("");
 
   // Data from TRPC
   const { data: veiculos = [] } = trpc.veiculos.list.useQuery({ empresaId: EMPRESA_ID });
@@ -139,14 +144,33 @@ export default function SimuladorViagem() {
 
   // Calculate routes
   const calcularRotas = useCallback(() => {
-    if (!directionsServiceRef.current || !mapRef.current) {
-      toast.error("Serviço de mapas não disponível");
-      return;
-    }
     const o = origemInputRef.current?.value || origem;
     const d = destinoInputRef.current?.value || destino;
     if (!o || !d) {
       toast.error("Informe origem e destino");
+      return;
+    }
+
+    // Fallback manual quando mapa não estiver disponível.
+    if (!directionsServiceRef.current || !mapRef.current || mapError) {
+      const distKm = Number(distanciaManualKm || 0);
+      const tempoMin = Number(tempoManualMin || 0);
+      if (distKm <= 0 || tempoMin <= 0) {
+        toast.error("Sem mapa ativo: informe distância e tempo manuais.");
+        return;
+      }
+      setRotas([
+        {
+          index: 0,
+          summary: "Rota manual",
+          distanceKm: distKm,
+          durationSec: tempoMin * 60,
+          hasTolls: Number(pedagioManual || 0) > 0,
+          warnings: ["Simulação manual (Google Maps indisponível)"],
+        },
+      ]);
+      setRotaSelecionada(0);
+      toast.success("Rota manual aplicada com sucesso.");
       return;
     }
 
@@ -202,7 +226,7 @@ export default function SimuladorViagem() {
         });
       }
     );
-  }, [origem, destino]);
+  }, [origem, destino, mapError, distanciaManualKm, tempoManualMin, pedagioManual]);
 
   const limpar = () => {
     renderersRef.current.forEach(r => r.setMap(null));
@@ -253,9 +277,25 @@ export default function SimuladorViagem() {
   
   const custoCombustivel = (distanciaTotal / (Number(consumo) || 1)) * (Number(precoCombustivel) || 0);
   const custoPedagio = (Number(pedagioManual) || 0) * (idaVolta ? 2 : 1);
-  const custoTotal = custoCombustivel + custoPedagio + (Number(outrosCustos) || 0);
+  const custoDiaria = Number(diariaMotorista) || 0;
+  const custoComissao = (Number(valorFrete) || 0) * ((Number(comissaoPct) || 0) / 100);
+  const custoSeguro = Number(seguroRisco) || 0;
+  const custoTotal = custoCombustivel + custoPedagio + (Number(outrosCustos) || 0) + custoDiaria + custoComissao + custoSeguro;
   const lucro = (Number(valorFrete) || 0) - custoTotal;
   const margem = (Number(valorFrete) || 0) > 0 ? (lucro / Number(valorFrete)) * 100 : 0;
+  const litrosEstimados = distanciaTotal > 0 ? (distanciaTotal / Math.max(Number(consumo) || 1, 0.1)) : 0;
+  const custoPorKm = distanciaTotal > 0 ? custoTotal / distanciaTotal : 0;
+  const freteMinimoEquilibrio = custoTotal;
+  const lucroPorHora = tempoTotal > 0 ? lucro / Math.max(tempoTotal / 3600, 0.01) : 0;
+  const precoDiesel = Number(precoCombustivel) || 0;
+  const custoCombustivelMais10 = litrosEstimados * (precoDiesel * 1.1);
+  const custoTotalMais10 = custoCombustivelMais10 + custoPedagio + (Number(outrosCustos) || 0);
+  const lucroMais10 = (Number(valorFrete) || 0) - custoTotalMais10;
+  const precoFreteSugerido = custoTotal * 1.2; // margem alvo 20%
+  const scoreViabilidade =
+    margem >= 20 ? "Ótima" :
+    margem >= 10 ? "Boa" :
+    margem >= 0 ? "Atenção" : "Crítica";
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] flex flex-col">
@@ -395,6 +435,35 @@ export default function SimuladorViagem() {
                     />
                   </div>
                 </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-gray-700 font-medium text-xs">Diária (R$)</Label>
+                    <Input
+                      type="number"
+                      value={diariaMotorista}
+                      onChange={e => setDiariaMotorista(e.target.value)}
+                      className="border-gray-200"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-gray-700 font-medium text-xs">Comissão (%)</Label>
+                    <Input
+                      type="number"
+                      value={comissaoPct}
+                      onChange={e => setComissaoPct(e.target.value)}
+                      className="border-gray-200"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-gray-700 font-medium text-xs">Seguro/Risco (R$)</Label>
+                    <Input
+                      type="number"
+                      value={seguroRisco}
+                      onChange={e => setSeguroRisco(e.target.value)}
+                      className="border-gray-200"
+                    />
+                  </div>
+                </div>
 
                 <div className="pt-2">
                   <Label className="text-gray-900 font-bold">Valor do Frete (R$)</Label>
@@ -454,12 +523,38 @@ export default function SimuladorViagem() {
                 />
                 {mapError ? (
                   <div className="absolute inset-0 flex items-center justify-center bg-gray-900/10 backdrop-blur-[2px] z-10 p-6">
-                    <div className="bg-white p-5 rounded-xl shadow-xl max-w-lg text-center space-y-2">
+                    <div className="bg-white p-5 rounded-xl shadow-xl max-w-xl w-full text-center space-y-3">
                       <AlertTriangle className="w-6 h-6 text-amber-600 mx-auto" />
                       <p className="text-gray-900 font-semibold">Serviço de mapas não disponível</p>
                       <p className="text-sm text-gray-600">
                         {mapError}. Você ainda pode preencher os custos manualmente sem quebrar a tela.
                       </p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-left">
+                        <div>
+                          <Label className="text-xs text-gray-600">Distância manual (km)</Label>
+                          <Input
+                            type="number"
+                            value={distanciaManualKm}
+                            onChange={(e) => setDistanciaManualKm(e.target.value)}
+                            placeholder="Ex: 210"
+                            className="h-9"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs text-gray-600">Tempo manual (min)</Label>
+                          <Input
+                            type="number"
+                            value={tempoManualMin}
+                            onChange={(e) => setTempoManualMin(e.target.value)}
+                            placeholder="Ex: 180"
+                            className="h-9"
+                          />
+                        </div>
+                      </div>
+                      <Button onClick={calcularRotas} className="w-full">
+                        <Calculator className="w-4 h-4 mr-2" />
+                        Aplicar simulação manual
+                      </Button>
                     </div>
                   </div>
                 ) : !rotas.length && (
@@ -500,9 +595,9 @@ export default function SimuladorViagem() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-white border-gray-200 shadow-sm">
-                  <CardHeader className="pb-2"><CardTitle className="text-md font-semibold">Resumo Financeiro</CardTitle></CardHeader>
-                  <CardContent className="space-y-3">
+            <Card className="bg-white border-gray-200 shadow-sm">
+              <CardHeader className="pb-2"><CardTitle className="text-md font-semibold">Resumo Financeiro</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-500 flex items-center gap-1"><Fuel className="w-3.5 h-3.5" /> Combustível</span>
                       <span className="font-semibold text-gray-900">{fmt(custoCombustivel)}</span>
@@ -515,6 +610,18 @@ export default function SimuladorViagem() {
                       <span className="text-gray-500 flex items-center gap-1"><AlertTriangle className="w-3.5 h-3.5" /> Outros</span>
                       <span className="font-semibold text-gray-900">{fmt(Number(outrosCustos) || 0)}</span>
                     </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Diária motorista</span>
+                      <span className="font-semibold text-gray-900">{fmt(custoDiaria)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Comissão</span>
+                      <span className="font-semibold text-gray-900">{fmt(custoComissao)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Seguro/Risco</span>
+                      <span className="font-semibold text-gray-900">{fmt(custoSeguro)}</span>
+                    </div>
                     <div className="pt-2 border-t border-gray-100 flex justify-between">
                       <span className="text-gray-900 font-bold">Custo Total</span>
                       <span className="text-gray-900 font-bold">{fmt(custoTotal)}</span>
@@ -522,10 +629,57 @@ export default function SimuladorViagem() {
                     <div className={cn("pt-2 mt-2 rounded-lg p-3 flex justify-between items-center", lucro >= 0 ? "bg-green-50" : "bg-red-50")}>
                       <span className={cn("font-bold", lucro >= 0 ? "text-green-700" : "text-red-700")}>Resultado Líquido</span>
                       <span className={cn("text-xl font-black", lucro >= 0 ? "text-green-700" : "text-red-700")}>{fmt(lucro)}</span>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white border-gray-200 shadow-sm md:col-span-2">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-md font-semibold">Indicadores de Decisão</CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="rounded-lg border border-gray-100 p-3">
+                  <p className="text-xs text-gray-500">Custo por KM</p>
+                  <p className="text-lg font-bold text-gray-900">{fmt(custoPorKm)}</p>
+                </div>
+                <div className="rounded-lg border border-gray-100 p-3">
+                  <p className="text-xs text-gray-500">Frete mínimo (empate)</p>
+                  <p className="text-lg font-bold text-gray-900">{fmt(freteMinimoEquilibrio)}</p>
+                </div>
+                <div className="rounded-lg border border-gray-100 p-3">
+                  <p className="text-xs text-gray-500">Frete sugerido (margem 20%)</p>
+                  <p className="text-lg font-bold text-blue-700">{fmt(precoFreteSugerido)}</p>
+                </div>
+                <div className="rounded-lg border border-gray-100 p-3">
+                  <p className="text-xs text-gray-500">Litros estimados</p>
+                  <p className="text-lg font-bold text-gray-900">{litrosEstimados.toFixed(1)} L</p>
+                </div>
+                <div className="rounded-lg border border-gray-100 p-3">
+                  <p className="text-xs text-gray-500">Lucro por hora</p>
+                  <p className={cn("text-lg font-bold", lucroPorHora >= 0 ? "text-green-700" : "text-red-700")}>
+                    {fmt(lucroPorHora)}/h
+                  </p>
+                </div>
+                <div className="rounded-lg border border-gray-100 p-3">
+                  <p className="text-xs text-gray-500">Viabilidade</p>
+                  <p className={cn(
+                    "text-lg font-bold",
+                    scoreViabilidade === "Ótima" ? "text-green-700" :
+                    scoreViabilidade === "Boa" ? "text-blue-700" :
+                    scoreViabilidade === "Atenção" ? "text-amber-700" : "text-red-700"
+                  )}>
+                    {scoreViabilidade}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-gray-100 p-3 md:col-span-3">
+                  <p className="text-xs text-gray-500">Sensibilidade do Diesel (+10%)</p>
+                  <p className={cn("text-sm font-semibold mt-1", lucroMais10 >= 0 ? "text-amber-700" : "text-red-700")}>
+                    Se o diesel subir 10%, o custo total vai para {fmt(custoTotalMais10)} e o lucro cai para {fmt(lucroMais10)}.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
             )}
 
             <Card className="bg-white border-gray-200 shadow-sm">

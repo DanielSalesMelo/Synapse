@@ -224,10 +224,14 @@ function ContaReceberForm({ onSave, onClose }: { onSave: (d: any) => void; onClo
 }
 
 export default function Financeiro() {
-  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
+  const { effectiveEmpresaId: EMPRESA_ID, viewAs, isSimulating } = useViewAs();
   const [tab, setTab] = useState("visao-geral");
   const [showNovoPagar, setShowNovoPagar] = useState(false);
   const [showNovoReceber, setShowNovoReceber] = useState(false);
+  const [searchPagar, setSearchPagar] = useState("");
+  const [searchReceber, setSearchReceber] = useState("");
+  const [statusPagarFiltro, setStatusPagarFiltro] = useState<"todos" | "pendente" | "pago" | "vencido" | "cancelado">("todos");
+  const [statusReceberFiltro, setStatusReceberFiltro] = useState<"todos" | "pendente" | "recebido" | "vencido" | "cancelado">("todos");
 
   const pagarResumoQ = trpc.financeiro.pagar.resumo.useQuery({ empresaId: EMPRESA_ID }, { enabled: !!EMPRESA_ID }) as any;
   const receberResumoQ = trpc.financeiro.receber.resumo.useQuery({ empresaId: EMPRESA_ID }, { enabled: !!EMPRESA_ID }) as any;
@@ -367,6 +371,14 @@ export default function Financeiro() {
             Financeiro
           </h1>
           <p className="text-muted-foreground text-sm">Contas a pagar, contas a receber, fluxo realizado e DRE por veículo.</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <Badge variant="outline">Empresa ativa: #{EMPRESA_ID}</Badge>
+            {isSimulating && viewAs.empresaNome ? (
+              <Badge className="bg-blue-600 text-white">Visualizando como: {viewAs.empresaNome}</Badge>
+            ) : (
+              <Badge variant="secondary">Visão da empresa do usuário logado</Badge>
+            )}
+          </div>
         </div>
         <div className="flex gap-2">
           <Dialog open={showNovoPagar} onOpenChange={setShowNovoPagar}>
@@ -522,8 +534,22 @@ export default function Financeiro() {
 
         <TabsContent value="pagar" className="mt-4">
           <Card>
+            <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-3 border-b">
+              <Input placeholder="Buscar pagar..." value={searchPagar} onChange={(e) => setSearchPagar(e.target.value)} />
+              <Select value={statusPagarFiltro} onValueChange={(v: any) => setStatusPagarFiltro(v)}>
+                <SelectTrigger><SelectValue placeholder="Status" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos</SelectItem>
+                  <SelectItem value="pendente">Pendente</SelectItem>
+                  <SelectItem value="pago">Pago</SelectItem>
+                  <SelectItem value="vencido">Vencido</SelectItem>
+                  <SelectItem value="cancelado">Cancelado</SelectItem>
+                </SelectContent>
+              </Select>
+              <div className="text-sm text-muted-foreground flex items-center">{pagarFiltrado.length} registro(s)</div>
+            </div>
             <div className="md:hidden space-y-3 p-4">
-              {pagar.map((p: any) => (
+              {pagarFiltrado.map((p: any) => (
                 <div key={p.id} className="rounded-xl border p-4 space-y-2">
                   <div className="flex items-start justify-between gap-2">
                     <div>
@@ -537,7 +563,7 @@ export default function Financeiro() {
                   <div className="text-lg font-bold">{formatCurrency(p.valor)}</div>
                 </div>
               ))}
-              {pagar.length === 0 && <p className="text-center text-muted-foreground py-8">Nenhuma conta a pagar cadastrada.</p>}
+              {pagarFiltrado.length === 0 && <p className="text-center text-muted-foreground py-8">Nenhuma conta a pagar para o filtro atual.</p>}
             </div>
             <div className="hidden md:block">
             <Table>
@@ -551,7 +577,7 @@ export default function Financeiro() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {pagar.map((p: any) => (
+                {pagarFiltrado.map((p: any) => (
                   <TableRow key={p.id}>
                     <TableCell>{new Date(p.dataVencimento).toLocaleDateString("pt-BR")}</TableCell>
                     <TableCell className="font-medium">{p.descricao}</TableCell>
@@ -560,7 +586,7 @@ export default function Financeiro() {
                     <TableCell><Badge className={STATUS_PAGAR_COLORS[p.status]}>{p.status}</Badge></TableCell>
                   </TableRow>
                 ))}
-                {pagar.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Nenhuma conta a pagar cadastrada.</TableCell></TableRow>}
+                {pagarFiltrado.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Nenhuma conta a pagar para o filtro atual.</TableCell></TableRow>}
               </TableBody>
             </Table>
             </div>
@@ -569,8 +595,22 @@ export default function Financeiro() {
 
         <TabsContent value="receber" className="mt-4">
           <Card>
+            <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-3 border-b">
+              <Input placeholder="Buscar receber..." value={searchReceber} onChange={(e) => setSearchReceber(e.target.value)} />
+              <Select value={statusReceberFiltro} onValueChange={(v: any) => setStatusReceberFiltro(v)}>
+                <SelectTrigger><SelectValue placeholder="Status" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos</SelectItem>
+                  <SelectItem value="pendente">Pendente</SelectItem>
+                  <SelectItem value="recebido">Recebido</SelectItem>
+                  <SelectItem value="vencido">Vencido</SelectItem>
+                  <SelectItem value="cancelado">Cancelado</SelectItem>
+                </SelectContent>
+              </Select>
+              <div className="text-sm text-muted-foreground flex items-center">{receberFiltrado.length} registro(s)</div>
+            </div>
             <div className="md:hidden space-y-3 p-4">
-              {receber.map((r: any) => (
+              {receberFiltrado.map((r: any) => (
                 <div key={r.id} className="rounded-xl border p-4 space-y-2">
                   <div className="flex items-start justify-between gap-2">
                     <div>
@@ -584,7 +624,7 @@ export default function Financeiro() {
                   <div className="text-lg font-bold">{formatCurrency(r.valor)}</div>
                 </div>
               ))}
-              {receber.length === 0 && <p className="text-center text-muted-foreground py-8">Nenhuma conta a receber cadastrada.</p>}
+              {receberFiltrado.length === 0 && <p className="text-center text-muted-foreground py-8">Nenhuma conta a receber para o filtro atual.</p>}
             </div>
             <div className="hidden md:block">
             <Table>
@@ -598,7 +638,7 @@ export default function Financeiro() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {receber.map((r: any) => (
+                {receberFiltrado.map((r: any) => (
                   <TableRow key={r.id}>
                     <TableCell>{new Date(r.dataVencimento).toLocaleDateString("pt-BR")}</TableCell>
                     <TableCell className="font-medium">{r.descricao}</TableCell>
@@ -607,7 +647,7 @@ export default function Financeiro() {
                     <TableCell><Badge className={STATUS_RECEBER_COLORS[r.status]}>{r.status}</Badge></TableCell>
                   </TableRow>
                 ))}
-                {receber.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Nenhuma conta a receber cadastrada.</TableCell></TableRow>}
+                {receberFiltrado.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Nenhuma conta a receber para o filtro atual.</TableCell></TableRow>}
               </TableBody>
             </Table>
             </div>
@@ -725,3 +765,24 @@ export default function Financeiro() {
     </div>
   );
 }
+  const pagarFiltrado = useMemo(() => {
+    const term = searchPagar.trim().toLowerCase();
+    return pagar.filter((item: any) => {
+      const statusOk = statusPagarFiltro === "todos" || item.status === statusPagarFiltro;
+      const textOk = !term || [item.descricao, item.categoria, item.fornecedor]
+        .filter(Boolean)
+        .some((v: any) => String(v).toLowerCase().includes(term));
+      return statusOk && textOk;
+    });
+  }, [pagar, searchPagar, statusPagarFiltro]);
+
+  const receberFiltrado = useMemo(() => {
+    const term = searchReceber.trim().toLowerCase();
+    return receber.filter((item: any) => {
+      const statusOk = statusReceberFiltro === "todos" || item.status === statusReceberFiltro;
+      const textOk = !term || [item.descricao, item.cliente, item.categoria, item.cteNumero]
+        .filter(Boolean)
+        .some((v: any) => String(v).toLowerCase().includes(term));
+      return statusOk && textOk;
+    });
+  }, [receber, searchReceber, statusReceberFiltro]);
