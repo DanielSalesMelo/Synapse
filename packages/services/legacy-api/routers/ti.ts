@@ -5,6 +5,7 @@ import { ticketsTi, ativosTi, certificadosTi } from "../drizzle/schema";
 import { eq, and, desc, ilike, isNull, or, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { resolveAccessibleEmpresaId } from "../_core/access";
+import { invokeLLM } from "../_core/llm";
 
 function gerarOS(): string {
   const ano = new Date().getFullYear();
@@ -28,6 +29,11 @@ const TICKET_STATUS_VALUES = [
   "cancelado",
   "reaberto",
 ] as const;
+
+function canManageTi(user: any): boolean {
+  const role = String(user?.role || "").toLowerCase();
+  return ["master_admin", "admin", "administrador", "ti", "supervisor_geral", "supervisor_ti"].includes(role);
+}
 
 export const tiRouter = router({
 
@@ -78,6 +84,9 @@ export const tiRouter = router({
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       const conds: any[] = [eq(ticketsTi.empresaId, ctx.user.empresaId!), isNull(ticketsTi.deletedAt)];
+      if (!canManageTi(ctx.user)) {
+        conds.push(eq(ticketsTi.solicitanteId as any, ctx.user.id as any));
+      }
       if (input.status && input.status !== "todos") conds.push(eq(ticketsTi.status, input.status as any));
       if (input.search) conds.push(or(ilike(ticketsTi.titulo, `%${input.search}%`), ilike(ticketsTi.protocolo, `%${input.search}%`))!);
       return db.select().from(ticketsTi).where(and(...conds)).orderBy(desc(ticketsTi.createdAt));
@@ -100,6 +109,9 @@ export const tiRouter = router({
         WHERE t.id = ${input.id} AND t."empresaId" = ${ctx.user.empresaId!}
       `;
       if (!rows[0]) throw new TRPCError({ code: "NOT_FOUND" });
+      if (!canManageTi(ctx.user) && Number(rows[0]?.solicitante_id || 0) !== Number(ctx.user.id)) {
+        throw new TRPCError({ code: "FORBIDDEN" });
+      }
       return rows[0];
     }),
 
@@ -153,6 +165,122 @@ export const tiRouter = router({
         }
       }
       return ticket;
+    }),
+
+  aiTriage: protectedProcedure
+    .input(
+      z.object({
+        ticketId: z.number().optional(),
+        titulo: z.string().optional(),
+        descricao: z.string().min(4),
+        contextoTecnico: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const client = await getRawClient();
+      if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+
+      let ticket: any = null;
+      if (input.ticketId) {
+        const rows = await client`
+          SELECT id, protocolo, titulo, descricao, categoria, prioridade, status, "solicitanteId"
+          FROM tickets_ti
+          WHERE id = ${input.ticketId}
+            AND "empresaId" = ${ctx.user.empresaId!}
+            AND "deletedAt" IS NULL
+          LIMIT 1
+        `;
+        ticket = rows?.[0] ?? null;
+        if (!ticket) throw new TRPCError({ code: "NOT_FOUND", message: "Chamado não encontrado." });
+        if (!canManageTi(ctx.user) && Number(ticket.solicitanteId || 0) !== Number(ctx.user.id)) {
+          throw new TRPCError({ code: "FORBIDDEN" });
+        }
+      }
+
+      const descricao = (ticket?.descricao || input.descricao || "").trim();
+      const titulo = (ticket?.titulo || input.titulo || "Chamado de TI").trim();
+      const contexto = (input.contextoTecnico || "").trim();
+
+      const prompt = [
+        "Você é um analista de suporte N1/N2 de TI para empresa brasileira.",
+        "Objetivo: reduzir chamados repetitivos com orientação segura e prática.",
+        "Regra: se não souber com confiança, marque precisa_escalar=true e não invente.",
+        "Retorne JSON com campos:",
+        "resumo, causaProvavel, nivelConfianca(0-100), precisaEscalar(boolean), categoriaSugerida, prioridadeSugerida,",
+        "passosUsuario(array de strings), passosTI(array de strings), acaoImediata.",
+        "",
+        `Título: ${titulo}`,
+        `Descrição: ${descricao}`,
+        contexto ? `Contexto técnico adicional: ${contexto}` : "",
+      ].filter(Boolean).join("\n");
+
+      let ai: any = null;
+      try {
+        const llm = await invokeLLM({
+          messages: [
+            { role: "system", content: "Responda somente em JSON válido, sem markdown." },
+            { role: "user", content: prompt },
+          ],
+          response_format: { type: "json_object" },
+        });
+        const raw = llm.choices?.[0]?.message?.content;
+        const text = typeof raw === "string" ? raw : Array.isArray(raw) ? raw.map((p: any) => p?.type === "text" ? p.text : "").join("\n") : "{}";
+        ai = JSON.parse(text || "{}");
+      } catch (error: any) {
+        ai = {
+          resumo: "Não foi possível gerar triagem automática neste momento.",
+          causaProvavel: "Indeterminada",
+          nivelConfianca: 0,
+          precisaEscalar: true,
+          categoriaSugerida: "outro",
+          prioridadeSugerida: "media",
+          passosUsuario: ["Encaminhar para equipe de TI para análise manual."],
+          passosTI: ["Validar logs, print e contexto técnico do usuário."],
+          acaoImediata: "Escalonar para atendimento humano.",
+          erro: String(error?.message || "AI_TRIAGE_FAILED"),
+        };
+      }
+
+      const precisaEscalar = Boolean(ai?.precisaEscalar ?? true);
+      const nivelConfianca = Number(ai?.nivelConfianca ?? 0);
+
+      if (ticket?.id) {
+        const statusTarget = precisaEscalar ? "aguardando_ti" : "aguardando_usuario";
+        await client`
+          UPDATE tickets_ti
+          SET status = ${statusTarget},
+              categoria = COALESCE(${String(ai?.categoriaSugerida || "") || null}, categoria),
+              prioridade = COALESCE(${String(ai?.prioridadeSugerida || "") || null}, prioridade),
+              "updatedAt" = NOW()
+          WHERE id = ${ticket.id} AND "empresaId" = ${ctx.user.empresaId!}
+        `.catch(() => {});
+
+        const conteudoPublico = [
+          `Triagem IA: ${ai?.resumo || "Sem resumo."}`,
+          ai?.acaoImediata ? `Ação imediata: ${ai.acaoImediata}` : "",
+          Array.isArray(ai?.passosUsuario) && ai.passosUsuario.length
+            ? `Passos sugeridos para o usuário:\n- ${ai.passosUsuario.join("\n- ")}`
+            : "",
+          `Confiança: ${nivelConfianca}%`,
+        ].filter(Boolean).join("\n\n");
+
+        await client`
+          INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"isInterno","createdAt")
+          VALUES (${ticket.id},${ctx.user.empresaId!},${ctx.user.id},${conteudoPublico},'sistema',false,NOW())
+        `.catch(() => {});
+
+        await client`
+          INSERT INTO ticket_internal_notes ("ticketId","empresaId","autorId",conteudo,"createdAt")
+          VALUES (${ticket.id},${ctx.user.empresaId!},${ctx.user.id},${`Triagem IA (interno): ${JSON.stringify(ai)}`},NOW())
+        `.catch(() => {});
+      }
+
+      return {
+        ok: true,
+        triagem: ai,
+        precisaEscalar,
+        nivelConfianca,
+      };
     }),
 
   updateTicket: protectedProcedure
@@ -227,6 +355,9 @@ export const tiRouter = router({
   deleteTicket: protectedProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ input, ctx }) => {
+      if (!canManageTi(ctx.user)) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Sem permissão para excluir chamado." });
+      }
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       await db.update(ticketsTi).set({ deletedAt: new Date() }).where(and(eq(ticketsTi.id, input.id), eq(ticketsTi.empresaId, ctx.user.empresaId!)));
@@ -239,6 +370,17 @@ export const tiRouter = router({
     .query(async ({ input, ctx }) => {
       const client = await getRawClient();
       if (!client) return [];
+      if (!canManageTi(ctx.user)) {
+        const own = await client`
+          SELECT id FROM tickets_ti
+          WHERE id = ${input.ticketId}
+            AND "empresaId" = ${ctx.user.empresaId!}
+            AND "solicitanteId" = ${ctx.user.id}
+            AND "deletedAt" IS NULL
+          LIMIT 1
+        `.catch(() => []);
+        if (!own?.[0]) throw new TRPCError({ code: "FORBIDDEN" });
+      }
       return client`
         SELECT m.*, u.name as autor_nome, u.email as autor_email
         FROM ticket_mensagens m
@@ -304,6 +446,17 @@ export const tiRouter = router({
     .mutation(async ({ input, ctx }) => {
       const client = await getRawClient();
       if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      if (!canManageTi(ctx.user)) {
+        const own = await client`
+          SELECT id FROM tickets_ti
+          WHERE id = ${input.ticketId}
+            AND "empresaId" = ${ctx.user.empresaId!}
+            AND "solicitanteId" = ${ctx.user.id}
+            AND "deletedAt" IS NULL
+          LIMIT 1
+        `.catch(() => []);
+        if (!own?.[0]) throw new TRPCError({ code: "FORBIDDEN" });
+      }
       const rows = await client`
         INSERT INTO ticket_internal_notes ("ticketId","empresaId","autorId",conteudo,"createdAt")
         VALUES (${input.ticketId},${ctx.user.empresaId!},${ctx.user.id},${input.conteudo},NOW())
@@ -790,15 +943,30 @@ export const tiRouter = router({
     const client = await getRawClient();
     if (!client) return [];
     const empresaId = await resolveAccessibleEmpresaId(ctx, input?.empresaId);
-    return client`
+    const fullRows = await client`
       SELECT a.*,
         (SELECT "coletadoEm" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as ultima_coleta,
         (SELECT "cpuUso" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as cpu_atual,
         (SELECT "ramUsoPct" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as ram_atual,
         (SELECT "discoUsoPct" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as disco_atual,
-        (SELECT "anydeskId" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as anydesk_id_atual
+        (SELECT "anydeskId" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as anydesk_id_atual,
+        (SELECT "placaMaeModelo" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as placa_mae_modelo,
+        (SELECT "placaMaeFabricante" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as placa_mae_fabricante,
+        (SELECT "socketCpu" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as socket_cpu,
+        (SELECT "biosVersao" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as bios_versao,
+        (SELECT gpus FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as gpus,
+        (SELECT sensores FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as sensores,
+        (SELECT "memoriaSlots" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as memoria_slots
       FROM monitor_agentes a
-      WHERE a."empresaId"=${empresaId} AND a."deletedAt" IS NULL
+      WHERE a."empresaId"=${empresaId}
+      ORDER BY a.hostname ASC
+    `.catch(()=>[]);
+    if (fullRows.length > 0) return fullRows;
+    // Fallback resiliente para schemas parciais: não zera a listagem de agentes.
+    return client`
+      SELECT a.*
+      FROM monitor_agentes a
+      WHERE a."empresaId"=${empresaId}
       ORDER BY a.hostname ASC
     `.catch(()=>[]);
   }),
@@ -902,19 +1070,26 @@ export const tiRouter = router({
 
   // ── Códigos de Pareamento PC↔Synapse ──────────────────────────────────────────────────────────────────────────────
   gerarCodigoPareamento: protectedProcedure
-      .input(z.object({ descricao: z.string().optional(), ativoId: z.number().optional(), empresaId: z.number().optional() }))
+      .input(z.object({
+        descricao: z.string().optional(),
+        ativoId: z.number().optional(),
+        empresaId: z.number().optional(),
+        userId: z.number().optional(),
+        departmentId: z.number().optional(),
+      }))
       .mutation(async ({ input, ctx }) => {
         const client = await getRawClient();
         if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
         const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
+        const userId = input.userId || ctx.user.id;
         // Gera código único no formato SYNC-XXXX-XXXX
         const parte1 = Math.random().toString(36).slice(2,6).toUpperCase();
         const parte2 = Math.random().toString(36).slice(2,6).toUpperCase();
         const codigo = `SYNC-${parte1}-${parte2}`;
         const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // 24h
         const rows = await client`
-          INSERT INTO agent_pairing_codes ("empresaId",codigo,descricao,"ativoId","criadoPor","expiresAt","createdAt")
-          VALUES (${empresaId},${codigo},${input.descricao||null},${input.ativoId||null},${ctx.user.id},${expiresAt},NOW())
+          INSERT INTO agent_pairing_codes ("empresaId",codigo,descricao,"ativoId","criadoPor","expiresAt","createdAt",user_id,department_id)
+          VALUES (${empresaId},${codigo},${input.descricao||null},${input.ativoId||null},${ctx.user.id},${expiresAt},NOW(),${userId},${input.departmentId || null})
           RETURNING *
         `;
         return rows[0];

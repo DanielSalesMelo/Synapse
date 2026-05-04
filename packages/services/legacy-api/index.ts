@@ -523,7 +523,7 @@ app.get("/api/agents", requireUser, async (req, res) => {
     return res.status(403).json({ error: "FORBIDDEN_COMPANY" });
   }
 
-  const rows = await client`
+  const fullRows = await client`
     SELECT a.*,
       (SELECT "coletadoEm" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as ultima_coleta,
       (SELECT "cpuUso" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as cpu_atual,
@@ -541,8 +541,16 @@ app.get("/api/agents", requireUser, async (req, res) => {
     WHERE a."empresaId"=${empresaId} AND a."deletedAt" IS NULL
     ORDER BY a.hostname ASC
   `.catch(() => []);
-
-  res.json(rows);
+  if (fullRows.length > 0) {
+    return res.json(fullRows);
+  }
+  const fallbackRows = await client`
+    SELECT a.*
+    FROM monitor_agentes a
+    WHERE a."empresaId"=${empresaId} AND a."deletedAt" IS NULL
+    ORDER BY a.hostname ASC
+  `.catch(() => []);
+  return res.json(fallbackRows);
 });
 
 app.put("/api/agents/:id/associate", requireUser, async (req, res) => {
@@ -728,6 +736,8 @@ app.post("/api/agent/pair", async (req, res) => {
     }
 
     const token = `agent_${pairing.empresaId}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+    const pairedUserId = pairing.user_id || pairing.criadoPor || null;
+    const pairedDepartmentId = pairing.department_id || null;
     const fingerprint = req.body?.fingerprint || `${hostname}:${req.body?.platform?.machine || ""}:${req.body?.platform?.processor || ""}`;
 
     const existingRows = await client`
@@ -753,6 +763,8 @@ app.post("/api/agent/pair", async (req, res) => {
             online=true,
             ativo=true,
             "ultimoContato"=NOW(),
+            user_id=COALESCE(user_id, ${pairedUserId}),
+            department_id=COALESCE(department_id, ${pairedDepartmentId}),
             "updatedAt"=NOW()
         WHERE id=${deviceId}
       `;
@@ -768,7 +780,7 @@ app.post("/api/agent/pair", async (req, res) => {
           ${req.body?.platform?.os || req.body?.so || null},
           ${req.body?.agentVersion || req.body?.versao_agente || "1.0.0"},
           ${token}, NOW(), true, true, NOW(), NOW(),
-          'online', ${pairCode}, ${fingerprint}, ${pairing.user_id || null}, ${pairing.department_id || null}
+          'online', ${pairCode}, ${fingerprint}, ${pairedUserId}, ${pairedDepartmentId}
         )
         RETURNING id
       `;
@@ -949,8 +961,15 @@ app.get("/api/agent/profile", requireAgent, async (req, res) => {
     WHERE a.id = ${agent.id}
     LIMIT 1
   `.catch(() => []);
-
-  return res.json(profileRows[0] ?? null);
+  if (profileRows[0]) return res.json(profileRows[0]);
+  const fallbackProfileRows = await client`
+    SELECT a.*, e.nome as empresa_nome
+    FROM monitor_agentes a
+    LEFT JOIN empresas e ON e.id = a."empresaId"
+    WHERE a.id = ${agent.id}
+    LIMIT 1
+  `.catch(() => []);
+  return res.json(fallbackProfileRows[0] ?? null);
 });
 
 app.get("/api/agent/tickets", requireAgent, async (req, res) => {

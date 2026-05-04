@@ -260,6 +260,16 @@ function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: ()
   const requestRemoteAccess = trpc.ti.requestRemoteAccess.useMutation({
     onSuccess: () => toast.success("Acesso remoto solicitado!"),
   });
+  const runAiTriage = trpc.ti.aiTriage.useMutation({
+    onSuccess: (r: any) => {
+      toast.success(
+        r?.precisaEscalar
+          ? "IA triou e escalou para TI."
+          : "IA triou e sugeriu autoatendimento ao usuário."
+      );
+    },
+    onError: (e: any) => toast.error(e?.message || "Falha na triagem IA"),
+  });
   const historyQ = trpc.ti.listStatusHistory.useQuery({ ticketId: ticket.id }) as any;
   const notesQ = trpc.ti.listInternalNotes.useQuery({ ticketId: ticket.id }) as any;
   const addNote = trpc.ti.addInternalNote.useMutation({
@@ -461,6 +471,14 @@ function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: ()
               </Button>
               <Button
                 size="sm"
+                variant="outline"
+                disabled={runAiTriage.isPending}
+                onClick={() => runAiTriage.mutate({ ticketId: ticket.id, descricao: ticket.descricao || ticket.titulo })}
+              >
+                {runAiTriage.isPending ? "Triando..." : "Triagem IA"}
+              </Button>
+              <Button
+                size="sm"
                 onClick={() => {
                   if (!internalNote.trim()) return;
                   addNote.mutate({ ticketId: ticket.id, conteudo: internalNote });
@@ -495,7 +513,7 @@ function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: ()
 export default function TI({ params }: { params?: { tab?: string } }) {
   const { user } = useAuth();
   const { effectiveEmpresaId } = useViewAs();
-  const empresaId = effectiveEmpresaId ?? user?.empresaId ?? 0;
+  const empresaId = Number(effectiveEmpresaId || user?.empresaId || 1);
   const backendBaseUrl = getBackendBaseUrl();
   const TAB_ALIASES: Record<string, string> = {
     agente: "agentes",
@@ -713,9 +731,22 @@ export default function TI({ params }: { params?: { tab?: string } }) {
       const res = await fetch(`${baseUrl}/api/agents/generate-pairing-code`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ userId: data.userId, departmentId: data.departmentId, empresaId }),
+        body: JSON.stringify({
+          userId: data.userId,
+          departmentId: data.departmentId,
+          empresaId: empresaId > 0 ? empresaId : undefined,
+        }),
       });
-      if (!res.ok) throw new Error("Erro ao gerar código");
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({} as any));
+        if (payload?.error === "EMPRESA_REQUIRED") {
+          throw new Error("Selecione uma empresa ativa para gerar o código.");
+        }
+        if (payload?.error === "FORBIDDEN_COMPANY") {
+          throw new Error("Você não tem permissão para gerar código nesta empresa.");
+        }
+        throw new Error(payload?.error || "Erro ao gerar código");
+      }
       return res.json();
     }
   };
@@ -724,6 +755,11 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     setAgentes(agentesQ.data ?? []);
     setAgentesLoading(agentesQ.isLoading);
   }, [agentesQ.data, agentesQ.isLoading]);
+  useEffect(() => {
+    if (agentesQ.isError) {
+      toast.error("Falha ao carregar agentes. Clique em Atualizar para tentar novamente.");
+    }
+  }, [agentesQ.isError]);
 
   // Buscar usuários
   useEffect(() => {
@@ -1210,7 +1246,14 @@ export default function TI({ params }: { params?: { tab?: string } }) {
             <p className="text-sm text-muted-foreground">
               {(agentesQ.data ?? []).length} agente(s) · Atualização automática a cada 30s
             </p>
-            <Button variant="outline" size="sm" onClick={() => agentesQ.refetch()}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                const result = await agentesQ.refetch();
+                toast.success(`Atualização concluída: ${(result.data ?? []).length} agente(s) carregado(s).`);
+              }}
+            >
               <RefreshCw className="h-4 w-4 mr-2" />Atualizar
             </Button>
           </div>
@@ -1962,7 +2005,16 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                     <p className="text-muted-foreground"># 1. Baixe o Instalador .bat abaixo</p>
                     <p className="text-muted-foreground"># 2. Execute o instalador e informe o código de pareamento</p>
                     <p className="text-muted-foreground"># 3. A instalação agora usa a pasta do usuário para evitar travas de permissão</p>
-                    <p className="text-muted-foreground"># 4. URL do Servidor: {backendBaseUrl}</p>
+                    <div className="space-y-1">
+                      <p className="text-muted-foreground"># 4. URL do Servidor:</p>
+                      <div className="flex items-center gap-2">
+                        <Input value={backendBaseUrl} readOnly className="h-8 text-xs font-mono" />
+                        <Button type="button" variant="outline" size="sm" onClick={() => copyToClipboard(backendBaseUrl)}>
+                          {copiedCode === backendBaseUrl ? <Check className="h-3.5 w-3.5 mr-1 text-green-600" /> : <Copy className="h-3.5 w-3.5 mr-1" />}
+                          Copiar
+                        </Button>
+                      </div>
+                    </div>
                     <p className="text-muted-foreground"># 5. O instalador tenta criar “Synapse Suporte” na área de trabalho e deixa o agente em {backendBaseUrl}</p>
                     <p className="text-muted-foreground"># 6. Se o atalho não aparecer, rode manualmente: synapse-agent.exe --support</p>
                   </div>
@@ -2003,7 +2055,11 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   <CardTitle className="text-sm flex items-center gap-2">
                     <Link2 className="h-4 w-4" />Códigos de Pareamento
                   </CardTitle>
-                  <Button size="sm" onClick={() => gerarCodigo.mutate({ empresaId })} disabled={gerarCodigo.isPending}>
+                  <Button
+                    size="sm"
+                    onClick={() => gerarCodigo.mutate({ empresaId, userId: Number(user?.id || 0) || undefined })}
+                    disabled={gerarCodigo.isPending}
+                  >
                     <Plus className="h-4 w-4 mr-1" />Gerar Código
                   </Button>
                 </div>
@@ -2057,6 +2113,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                     <TableHead>Hostname</TableHead>
                     <TableHead>IP</TableHead>
                     <TableHead>SO</TableHead>
+                    <TableHead>Hardware</TableHead>
                     <TableHead>AnyDesk</TableHead>
                     <TableHead>Versão</TableHead>
                     <TableHead>Status</TableHead>
@@ -2077,6 +2134,22 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                     </TableCell>
                       <TableCell className="font-mono text-xs">{a.ip}</TableCell>
                       <TableCell className="text-xs">{a.so}</TableCell>
+                      <TableCell className="text-xs max-w-[260px]">
+                        <div className="space-y-0.5">
+                          <p className="truncate" title={a.cpu_model || a.cpuModel || "CPU não identificada"}>
+                            CPU: {a.cpu_model || a.cpuModel || "—"}
+                          </p>
+                          <p className="truncate" title={a.placa_mae_modelo || a.placaMaeModelo || "Placa-mãe não identificada"}>
+                            MB: {a.placa_mae_modelo || a.placaMaeModelo || "—"}
+                          </p>
+                          <p className="truncate" title={a.socket_cpu || a.socketCpu || "Socket não identificado"}>
+                            Socket: {a.socket_cpu || a.socketCpu || "—"}
+                          </p>
+                          <p className="truncate" title={a.gpu_model || a.gpuModel || "GPU não identificada"}>
+                            GPU: {a.gpu_model || a.gpuModel || "—"}
+                          </p>
+                        </div>
+                      </TableCell>
                       <TableCell>
                         {a.anydeskId ? (
                           <a href={`anydesk://${a.anydeskId}`} className="font-mono text-xs text-blue-600 hover:underline flex items-center gap-1">
@@ -2102,7 +2175,14 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                     </TableRow>
                   ))}
                   {(agentesQ.data ?? []).length === 0 && (
-                    <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">Nenhum agente registrado</TableCell></TableRow>
+                    <TableRow>
+                      <TableCell colSpan={9} className="text-center text-muted-foreground py-8 space-y-2">
+                        <p>Nenhum agente registrado.</p>
+                        <p className="text-xs">
+                          Verifique se o código de pareamento foi usado e clique em <strong>Atualizar</strong>.
+                        </p>
+                      </TableCell>
+                    </TableRow>
                   )}
                 </TableBody>
               </Table>
