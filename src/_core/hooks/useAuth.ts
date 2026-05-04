@@ -8,6 +8,7 @@ const AUTH_TOKEN_KEY = "synapse-auth-token";
 const USER_INFO_KEY = "app-user-info";
 const AUTH_AT_KEY = "synapse-auth-at";
 const SESSION_TTL_MS = 1000 * 60 * 60 * 12;
+const MAX_AUTH_WAIT_MS = 10000;
 
 type UseAuthOptions = {
   redirectOnUnauthenticated?: boolean;
@@ -41,6 +42,33 @@ export function useAuth(options?: UseAuthOptions) {
     refetchOnWindowFocus: false,
     enabled: !!token && !sessionExpired,
   });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!token || sessionExpired) return;
+    if (meQuery.isSuccess || meQuery.isError) return;
+
+    const timer = window.setTimeout(() => {
+      const stillPending = meQuery.isLoading || meQuery.isFetching;
+      if (!stillPending) return;
+      localStorage.removeItem(USER_INFO_KEY);
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+      localStorage.removeItem(AUTH_AT_KEY);
+      localStorage.removeItem("manus-runtime-user-info");
+      localStorage.removeItem("synapse-user");
+      window.location.replace(redirectPath);
+    }, MAX_AUTH_WAIT_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [
+    token,
+    sessionExpired,
+    meQuery.isSuccess,
+    meQuery.isError,
+    meQuery.isLoading,
+    meQuery.isFetching,
+    redirectPath,
+  ]);
 
   const logoutMutation = trpc.auth.logout.useMutation({
     onSuccess: () => {

@@ -293,7 +293,16 @@ function ProtectedDashboardRoutes() {
     );
   }
 
-  if (!isAuthenticated) return null;
+  if (!isAuthenticated) {
+    if (typeof window !== "undefined") {
+      window.location.replace("/login");
+    }
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-sm text-muted-foreground">Redirecionando para login...</div>
+      </div>
+    );
+  }
   return <DashboardRoutes />;
 }
 
