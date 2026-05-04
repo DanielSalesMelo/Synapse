@@ -44,7 +44,7 @@ except ImportError:
     print("[WARN] requests não instalado. Execute: pip install psutil requests")
 
 # ─── Configuração ─────────────────────────────────────────────────────────────
-VERSION = "2.2.3"
+VERSION = "2.2.4"
 AGENT_DIR = Path(os.environ.get("SYNAPSE_AGENT_DIR", Path.home() / ".synapse-agent"))
 CONFIG_FILE = AGENT_DIR / "config.json"
 DB_FILE = AGENT_DIR / "buffer.db"
@@ -751,6 +751,8 @@ def launch_support_center():
     )
     info = tk.Label(header, textvariable=info_var, fg="#cbd5e1", bg="#0f172a", font=("Segoe UI", 10))
     info.pack(anchor="w", pady=(8, 0))
+    version_info = tk.Label(header, text=f"Versão do app: {VERSION}", fg="#64748b", bg="#0f172a", font=("Segoe UI", 9))
+    version_info.pack(anchor="w", pady=(2, 0))
 
     body = tk.Frame(root, bg="#0b1020", padx=14, pady=14)
     body.pack(fill="both", expand=True)
@@ -907,6 +909,7 @@ def launch_support_center():
             )
         if not tickets_cache:
             tickets_list.insert(tk.END, "Nenhum chamado associado a este usuário ainda.")
+            selected_ticket["id"] = None
 
     def render_messages(ticket_id: int):
         messages = fetch_ticket_messages(config, ticket_id)
@@ -1062,7 +1065,19 @@ def launch_support_center():
 
         def paste_print_modal():
             try:
-                from PIL import ImageGrab  # type: ignore
+                try:
+                    from PIL import ImageGrab  # type: ignore
+                except Exception:
+                    try:
+                        subprocess.run(
+                            [sys.executable, "-m", "pip", "install", "--user", "Pillow"],
+                            capture_output=True,
+                            text=True,
+                            timeout=35,
+                        )
+                    except Exception:
+                        pass
+                    from PIL import ImageGrab  # type: ignore
                 img = ImageGrab.grabclipboard()
                 if img is None:
                     messagebox.showwarning("Synapse", "Nenhuma imagem encontrada na área de transferência.")
@@ -1076,7 +1091,7 @@ def launch_support_center():
                 attach_state["data_url"] = f"data:image/png;base64,{base64.b64encode(raw).decode('ascii')}"
                 attach_info.set(f"Print colado: {attach_state['name']}")
             except Exception:
-                messagebox.showwarning("Synapse", "Colar print requer Pillow no agente. Use 'Anexar arquivo' por enquanto.")
+                messagebox.showwarning("Synapse", "Não foi possível colar o print agora. Use 'Anexar arquivo' como alternativa.")
 
         def submit_ticket():
             title = title_var.get().strip()
@@ -1123,6 +1138,18 @@ def launch_support_center():
     refresh_tickets()
     if is_ti_mode:
         render_metrics()
+
+    def auto_sync_loop():
+        try:
+            refresh_profile()
+            refresh_tickets()
+            if is_ti_mode:
+                render_metrics()
+        except Exception:
+            pass
+        root.after(15000, auto_sync_loop)
+
+    root.after(15000, auto_sync_loop)
     root.mainloop()
 
 def get_mac_address() -> str:

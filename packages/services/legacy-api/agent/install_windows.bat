@@ -18,6 +18,7 @@ set "RUN_HIDDEN_VBS=%INSTALL_DIR%\run_agent_hidden.vbs"
 set "RUN_SUPPORT_VBS=%INSTALL_DIR%\run_support_hidden.vbs"
 set "LEGACY_DIR1=%AppData%\SynapseAgent"
 set "LEGACY_DIR2=%ProgramData%\SynapseAgent"
+set "DESKTOP_ONEDRIVE=%OneDrive%\Desktop"
 
 echo.
 echo =====================================================
@@ -33,11 +34,13 @@ for /f "usebackq delims=" %%i in (`powershell -NoProfile -ExecutionPolicy Bypass
 if "%DESKTOP_DIR%"=="" if exist "%USERPROFILE%\Desktop" set "DESKTOP_DIR=%USERPROFILE%\Desktop"
 if "%DESKTOP_DIR%"=="" if exist "%OneDrive%\Desktop" set "DESKTOP_DIR=%OneDrive%\Desktop"
 if not "%DESKTOP_DIR%"=="" del /f /q "%DESKTOP_DIR%\Synapse Suporte.lnk" >nul 2>&1
+if exist "%DESKTOP_ONEDRIVE%\Synapse Suporte.lnk" del /f /q "%DESKTOP_ONEDRIVE%\Synapse Suporte.lnk" >nul 2>&1
 if not "%STARTUP_DIR%"=="" del /f /q "%STARTUP_DIR%\Synapse Agent.lnk" >nul 2>&1
 del /f /q "%INSTALL_DIR%\run_agent_hidden.vbs" >nul 2>&1
 del /f /q "%INSTALL_DIR%\run_support_hidden.vbs" >nul 2>&1
 if exist "%LEGACY_DIR1%" rmdir /s /q "%LEGACY_DIR1%" >nul 2>&1
 if exist "%LEGACY_DIR2%" rmdir /s /q "%LEGACY_DIR2%" >nul 2>&1
+if exist "%INSTALL_DIR%" rmdir /s /q "%INSTALL_DIR%" >nul 2>&1
 
 set /p PAIR_CODE=Digite o codigo de pareamento (SYNC-XXXX-XXXX):
 if "%PAIR_CODE%"=="" (
@@ -125,10 +128,17 @@ echo WshShell.Run Chr^(34^) ^& "%AGENT_EXE%" ^& Chr^(34^), 0, False
 
 (
 echo Set WshShell = CreateObject^("WScript.Shell"^)
-echo pywLocal = WshShell.ExpandEnvironmentStrings^("%%LocalAppData%%"^) ^& "\Programs\Python\Python312\pythonw.exe"
 echo fso = CreateObject^("Scripting.FileSystemObject"^)
-echo If fso.FileExists^(pywLocal^) Then
-echo   WshShell.Run Chr^(34^) ^& pywLocal ^& Chr^(34^) ^& " " ^& Chr^(34^) ^& "%AGENT_PY%" ^& Chr^(34^) ^& " --support", 0, False
+echo pyw = ""
+echo pywLocal = WshShell.ExpandEnvironmentStrings^("%%LocalAppData%%"^) ^& "\Programs\Python\Python312\pythonw.exe"
+echo If fso.FileExists^(pywLocal^) Then pyw = pywLocal
+echo If pyw = "" Then
+echo   On Error Resume Next
+echo   pyw = Trim^(WshShell.Exec^("cmd /c where pythonw"^).StdOut.ReadAll^)
+echo   On Error GoTo 0
+echo End If
+echo If pyw ^<^> "" And fso.FileExists^(pyw^) And fso.FileExists^("%AGENT_PY%"^) Then
+echo   WshShell.Run Chr^(34^) ^& pyw ^& Chr^(34^) ^& " " ^& Chr^(34^) ^& "%AGENT_PY%" ^& Chr^(34^) ^& " --support", 0, False
 echo Else
 echo   WshShell.Run Chr^(34^) ^& "%AGENT_EXE% --support" ^& Chr^(34^), 0, False
 echo End If
@@ -141,6 +151,7 @@ echo taskkill /F /IM synapse-agent.exe ^>nul 2^>^&1
 echo schtasks /delete /tn "SynapseAgent" /f ^>nul 2^>^&1
 echo del /f /q "%STARTUP_DIR%\Synapse Agent.lnk" ^>nul 2^>^&1
 echo del /f /q "%DESKTOP_DIR%\Synapse Suporte.lnk" ^>nul 2^>^&1
+echo del /f /q "%DESKTOP_ONEDRIVE%\Synapse Suporte.lnk" ^>nul 2^>^&1
 echo del /f /q "%RUN_HIDDEN_VBS%" ^>nul 2^>^&1
 echo del /f /q "%RUN_SUPPORT_VBS%" ^>nul 2^>^&1
 echo del /f /q "%AGENT_EXE%" ^>nul 2^>^&1

@@ -639,10 +639,10 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     { status: remoteStatusFilter === "todos" ? undefined : remoteStatusFilter },
     { refetchInterval: 15000 }
   ) as any;
-  const agentesQ = trpc.ti.listAgentes.useQuery({ empresaId }, { refetchInterval: 20000 }) as any;
+  const agentesQ = trpc.ti.listAgentes.useQuery({ empresaId }, { refetchInterval: 5000 }) as any;
   const alertasQ = trpc.ti.listAlertas.useQuery({ limit: 20 }, { refetchInterval: 15000 }) as any;
   const manutencoesQ = trpc.ti.listManutencoes.useQuery(undefined, { refetchInterval: 60000 }) as any;
-  const codigosQ = trpc.ti.listCodigosPareamento.useQuery({ empresaId }, { refetchInterval: 30000 }) as any;
+  const codigosQ = trpc.ti.listCodigosPareamento.useQuery({ empresaId }, { refetchInterval: 10000 }) as any;
   const certificadosQ = trpc.ti.listCertificados.useQuery({ search }, { refetchInterval: 60000 }) as any;
   const agenteMetricas = trpc.ti.getAgenteMetricas.useQuery(
     { agenteId: selectedAgente?.id, periodo: "24h", empresaId },
