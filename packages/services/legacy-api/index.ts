@@ -122,6 +122,8 @@ const getAuth0Config = () => ({
 });
 
 const buildAuth0RedirectUri = (req: Request) => {
+  const fixed = String(process.env.AUTH0_REDIRECT_URI || "").trim();
+  if (fixed) return fixed;
   const origin = getBaseUrl(req);
   return `${origin}/api/auth/auth0/callback`;
 };
