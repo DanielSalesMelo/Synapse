@@ -157,6 +157,13 @@ app.get("/api/auth/auth0/start", (req, res) => {
   const connection = providerToConnection[provider] || cfg.connGoogle;
 
   const state = crypto.randomBytes(24).toString("hex");
+  res.cookie("synapse-auth0-provider", provider, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 10 * 60 * 1000,
+    path: "/",
+  });
   res.cookie("synapse-auth0-state", state, {
     httpOnly: true,
     sameSite: "lax",
@@ -176,19 +183,24 @@ app.get("/api/auth/auth0/start", (req, res) => {
 });
 
 app.get("/api/auth/auth0/callback", async (req, res) => {
+  const cookieHeader = String(req.headers.cookie || "");
+  const providerMatch = cookieHeader.match(/(?:^|;\s*)synapse-auth0-provider=([^;]+)/);
+  const provider = providerMatch ? decodeURIComponent(providerMatch[1]) : "google";
+  const socialErrorRedirect = (code: string) =>
+    `${FRONTEND_URL}/login?social_error=${encodeURIComponent(code)}&social_provider=${encodeURIComponent(provider)}`;
+
   if (!isAuth0Configured()) {
-    return res.redirect(`${FRONTEND_URL}/login?social_error=config`);
+    return res.redirect(socialErrorRedirect("config"));
   }
   const cfg = getAuth0Config();
 
   const code = String(req.query.code || "");
   const state = String(req.query.state || "");
-  const cookieHeader = String(req.headers.cookie || "");
   const savedStateMatch = cookieHeader.match(/(?:^|;\s*)synapse-auth0-state=([^;]+)/);
   const savedState = savedStateMatch ? decodeURIComponent(savedStateMatch[1]) : "";
 
   if (!code || !state || !savedState || state !== savedState) {
-    return res.redirect(`${FRONTEND_URL}/login?social_error=state`);
+    return res.redirect(socialErrorRedirect("state"));
   }
 
   try {
@@ -206,7 +218,7 @@ app.get("/api/auth/auth0/callback", async (req, res) => {
 
     const accessToken = tokenResp.data?.access_token as string | undefined;
     if (!accessToken) {
-      return res.redirect(`${FRONTEND_URL}/login?social_error=token`);
+      return res.redirect(socialErrorRedirect("token"));
     }
 
     const userInfoResp = await axios.get(`https://${cfg.domain}/userinfo`, {
@@ -220,11 +232,11 @@ app.get("/api/auth/auth0/callback", async (req, res) => {
     const name = String(profile.name || profile.nickname || email || "Usuário");
 
     if (!email || !sub) {
-      return res.redirect(`${FRONTEND_URL}/login?social_error=profile`);
+      return res.redirect(socialErrorRedirect("profile"));
     }
 
     const client = await getRawClient();
-    if (!client) return res.redirect(`${FRONTEND_URL}/login?social_error=db`);
+    if (!client) return res.redirect(socialErrorRedirect("db"));
 
     const existingByEmail = await client`
       SELECT id, "openId", email, role, status, "empresaId", password
@@ -256,7 +268,7 @@ app.get("/api/auth/auth0/callback", async (req, res) => {
     }
 
     if (user?.status === "pending") {
-      return res.redirect(`${FRONTEND_URL}/login?social_error=pending`);
+      return res.redirect(socialErrorRedirect("pending"));
     }
 
     const appToken = await sdk.signSession(
@@ -275,13 +287,20 @@ app.get("/api/auth/auth0/callback", async (req, res) => {
       maxAge: 0,
       path: "/",
     });
+    res.cookie("synapse-auth0-provider", "", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 0,
+      path: "/",
+    });
 
     return res.redirect(
       `${FRONTEND_URL}/auth/callback?token=${encodeURIComponent(appToken)}`
     );
   } catch (error) {
     console.error("[Auth0 Callback] Falha:", error);
-    return res.redirect(`${FRONTEND_URL}/login?social_error=callback`);
+    return res.redirect(socialErrorRedirect("callback"));
   }
 });
 

@@ -29,8 +29,15 @@ export default function Login() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const socialError = params.get("social_error");
+    const socialProvider = params.get("social_provider") || "google";
     if (!socialError) return;
-    toast.error("Não foi possível entrar com Google no momento.");
+    const providerLabel =
+      socialProvider === "microsoft"
+        ? "Microsoft"
+        : socialProvider === "apple"
+          ? "Apple"
+          : "Google";
+    toast.error(`Não foi possível entrar com ${providerLabel} no momento.`);
   }, []);
 
   const loginMutation = trpc.auth.login.useMutation({
