@@ -114,6 +114,9 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "https://synapse-seven-nu.verce
 const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN || "";
 const AUTH0_CLIENT_ID = process.env.AUTH0_CLIENT_ID || "";
 const AUTH0_CLIENT_SECRET = process.env.AUTH0_CLIENT_SECRET || "";
+const AUTH0_CONNECTION_GOOGLE = process.env.AUTH0_CONNECTION_GOOGLE || "google-oauth2";
+const AUTH0_CONNECTION_MICROSOFT = process.env.AUTH0_CONNECTION_MICROSOFT || "windowslive";
+const AUTH0_CONNECTION_APPLE = process.env.AUTH0_CONNECTION_APPLE || "apple";
 
 const buildAuth0RedirectUri = (req: Request) => {
   const origin = getBaseUrl(req);
@@ -126,6 +129,8 @@ const isAuth0Configured = () =>
 app.get("/api/auth/providers", (_req, res) => {
   res.json({
     google: isAuth0Configured(),
+    microsoft: isAuth0Configured(),
+    apple: isAuth0Configured(),
     auth0: isAuth0Configured(),
   });
 });
@@ -134,6 +139,14 @@ app.get("/api/auth/auth0/start", (req, res) => {
   if (!isAuth0Configured()) {
     return res.status(503).json({ error: "AUTH0_NOT_CONFIGURED" });
   }
+
+  const provider = String(req.query.provider || "google").toLowerCase();
+  const providerToConnection: Record<string, string> = {
+    google: AUTH0_CONNECTION_GOOGLE,
+    microsoft: AUTH0_CONNECTION_MICROSOFT,
+    apple: AUTH0_CONNECTION_APPLE,
+  };
+  const connection = providerToConnection[provider] || AUTH0_CONNECTION_GOOGLE;
 
   const state = crypto.randomBytes(24).toString("hex");
   res.cookie("synapse-auth0-state", state, {
@@ -149,7 +162,7 @@ app.get("/api/auth/auth0/start", (req, res) => {
   authorizeUrl.searchParams.set("client_id", AUTH0_CLIENT_ID);
   authorizeUrl.searchParams.set("redirect_uri", buildAuth0RedirectUri(req));
   authorizeUrl.searchParams.set("scope", "openid profile email");
-  authorizeUrl.searchParams.set("connection", "google-oauth2");
+  authorizeUrl.searchParams.set("connection", connection);
   authorizeUrl.searchParams.set("state", state);
   res.redirect(authorizeUrl.toString());
 });

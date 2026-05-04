@@ -98,8 +98,8 @@ export default function Login() {
 
   const isLoading = loginMutation.isPending || registerMutation.isPending;
 
-  const handleGoogleLogin = () => {
-    window.location.href = `${getBackendBaseUrl()}/api/auth/auth0/start`;
+  const handleSocialLogin = (provider: "google" | "microsoft" | "apple") => {
+    window.location.href = `${getBackendBaseUrl()}/api/auth/auth0/start?provider=${provider}`;
   };
 
   const limparSessaoAntiga = () => {
@@ -270,15 +270,35 @@ export default function Login() {
             </Button>
 
             {isLogin && (
-              <Button
-                type="button"
-                onClick={handleGoogleLogin}
-                disabled={isLoading}
-                variant="outline"
-                className="w-full border-white/15 text-white hover:bg-white/10 h-11 rounded-xl"
-              >
-                Entrar com Google
-              </Button>
+              <div className="grid grid-cols-1 gap-2">
+                <Button
+                  type="button"
+                  onClick={() => handleSocialLogin("google")}
+                  disabled={isLoading}
+                  variant="outline"
+                  className="w-full border-white/15 text-white hover:bg-white/10 h-11 rounded-xl"
+                >
+                  Entrar com Google
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => handleSocialLogin("microsoft")}
+                  disabled={isLoading}
+                  variant="outline"
+                  className="w-full border-white/15 text-white hover:bg-white/10 h-11 rounded-xl"
+                >
+                  Entrar com Microsoft
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => handleSocialLogin("apple")}
+                  disabled={isLoading}
+                  variant="outline"
+                  className="w-full border-white/15 text-white hover:bg-white/10 h-11 rounded-xl"
+                >
+                  Entrar com Apple
+                </Button>
+              </div>
             )}
 
             <div className="text-center text-sm text-white/30">
