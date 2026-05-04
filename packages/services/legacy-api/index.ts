@@ -111,20 +111,25 @@ app.use(express.json({ limit: "10mb" }));
 const getBaseUrl = (req: Request) => `${req.protocol}://${req.get("host")}`;
 
 const FRONTEND_URL = process.env.FRONTEND_URL || "https://synapse-seven-nu.vercel.app";
-const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN || "";
-const AUTH0_CLIENT_ID = process.env.AUTH0_CLIENT_ID || "";
-const AUTH0_CLIENT_SECRET = process.env.AUTH0_CLIENT_SECRET || "";
-const AUTH0_CONNECTION_GOOGLE = process.env.AUTH0_CONNECTION_GOOGLE || "google-oauth2";
-const AUTH0_CONNECTION_MICROSOFT = process.env.AUTH0_CONNECTION_MICROSOFT || "windowslive";
-const AUTH0_CONNECTION_APPLE = process.env.AUTH0_CONNECTION_APPLE || "apple";
+
+const getAuth0Config = () => ({
+  domain: String(process.env.AUTH0_DOMAIN || "").trim(),
+  clientId: String(process.env.AUTH0_CLIENT_ID || "").trim(),
+  clientSecret: String(process.env.AUTH0_CLIENT_SECRET || "").trim(),
+  connGoogle: String(process.env.AUTH0_CONNECTION_GOOGLE || "google-oauth2").trim(),
+  connMicrosoft: String(process.env.AUTH0_CONNECTION_MICROSOFT || "windowslive").trim(),
+  connApple: String(process.env.AUTH0_CONNECTION_APPLE || "apple").trim(),
+});
 
 const buildAuth0RedirectUri = (req: Request) => {
   const origin = getBaseUrl(req);
   return `${origin}/api/auth/auth0/callback`;
 };
 
-const isAuth0Configured = () =>
-  Boolean(AUTH0_DOMAIN && AUTH0_CLIENT_ID && AUTH0_CLIENT_SECRET);
+const isAuth0Configured = () => {
+  const cfg = getAuth0Config();
+  return Boolean(cfg.domain && cfg.clientId && cfg.clientSecret);
+};
 
 app.get("/api/auth/providers", (_req, res) => {
   res.json({
@@ -139,14 +144,15 @@ app.get("/api/auth/auth0/start", (req, res) => {
   if (!isAuth0Configured()) {
     return res.status(503).json({ error: "AUTH0_NOT_CONFIGURED" });
   }
+  const cfg = getAuth0Config();
 
   const provider = String(req.query.provider || "google").toLowerCase();
   const providerToConnection: Record<string, string> = {
-    google: AUTH0_CONNECTION_GOOGLE,
-    microsoft: AUTH0_CONNECTION_MICROSOFT,
-    apple: AUTH0_CONNECTION_APPLE,
+    google: cfg.connGoogle,
+    microsoft: cfg.connMicrosoft,
+    apple: cfg.connApple,
   };
-  const connection = providerToConnection[provider] || AUTH0_CONNECTION_GOOGLE;
+  const connection = providerToConnection[provider] || cfg.connGoogle;
 
   const state = crypto.randomBytes(24).toString("hex");
   res.cookie("synapse-auth0-state", state, {
@@ -157,9 +163,9 @@ app.get("/api/auth/auth0/start", (req, res) => {
     path: "/",
   });
 
-  const authorizeUrl = new URL(`https://${AUTH0_DOMAIN}/authorize`);
+  const authorizeUrl = new URL(`https://${cfg.domain}/authorize`);
   authorizeUrl.searchParams.set("response_type", "code");
-  authorizeUrl.searchParams.set("client_id", AUTH0_CLIENT_ID);
+  authorizeUrl.searchParams.set("client_id", cfg.clientId);
   authorizeUrl.searchParams.set("redirect_uri", buildAuth0RedirectUri(req));
   authorizeUrl.searchParams.set("scope", "openid profile email");
   authorizeUrl.searchParams.set("connection", connection);
@@ -171,6 +177,7 @@ app.get("/api/auth/auth0/callback", async (req, res) => {
   if (!isAuth0Configured()) {
     return res.redirect(`${FRONTEND_URL}/login?social_error=config`);
   }
+  const cfg = getAuth0Config();
 
   const code = String(req.query.code || "");
   const state = String(req.query.state || "");
@@ -184,11 +191,11 @@ app.get("/api/auth/auth0/callback", async (req, res) => {
 
   try {
     const tokenResp = await axios.post(
-      `https://${AUTH0_DOMAIN}/oauth/token`,
+      `https://${cfg.domain}/oauth/token`,
       {
         grant_type: "authorization_code",
-        client_id: AUTH0_CLIENT_ID,
-        client_secret: AUTH0_CLIENT_SECRET,
+        client_id: cfg.clientId,
+        client_secret: cfg.clientSecret,
         code,
         redirect_uri: buildAuth0RedirectUri(req),
       },
@@ -200,7 +207,7 @@ app.get("/api/auth/auth0/callback", async (req, res) => {
       return res.redirect(`${FRONTEND_URL}/login?social_error=token`);
     }
 
-    const userInfoResp = await axios.get(`https://${AUTH0_DOMAIN}/userinfo`, {
+    const userInfoResp = await axios.get(`https://${cfg.domain}/userinfo`, {
       headers: { Authorization: `Bearer ${accessToken}` },
       timeout: 10000,
     });
