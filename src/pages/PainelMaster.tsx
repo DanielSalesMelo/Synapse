@@ -19,7 +19,7 @@ import {
   Briefcase, Store, MessageCircleMore, CalendarRange, Rocket,
   Home, Repeat, Handshake, FileText, Lightbulb, ClipboardList, CalendarDays, NotebookTabs, UsersRound, Newspaper,
   Target, Bot, Search, LifeBuoy, BarChart3, BookOpen, FolderOpen, Scale, TrendingUp, ShoppingCart, CheckCircle2,
-  Mail, Database, Truck, UserPlus, Banknote, Brain, GitMerge,
+  Mail, Database, Truck, UserPlus, Banknote, Brain, GitMerge, MapPin,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useViewAs } from "@/contexts/ViewAsContext";
