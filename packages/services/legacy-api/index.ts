@@ -148,15 +148,18 @@ app.get("/api/auth/auth0/start", (req, res) => {
   }
   const cfg = getAuth0Config();
 
-  const provider = String(req.query.provider || "google").toLowerCase();
+  const providerParam = String(req.query.provider || "google").toLowerCase();
   const providerToConnection: Record<string, string> = {
     google: cfg.connGoogle,
     microsoft: cfg.connMicrosoft,
     apple: cfg.connApple,
   };
+  const provider = Object.prototype.hasOwnProperty.call(providerToConnection, providerParam)
+    ? providerParam
+    : "google";
   const connection = providerToConnection[provider] || cfg.connGoogle;
 
-  const state = crypto.randomBytes(24).toString("hex");
+  const state = `${provider}__${crypto.randomBytes(24).toString("hex")}`;
   res.cookie("synapse-auth0-provider", provider, {
     httpOnly: true,
     sameSite: "lax",
@@ -179,13 +182,25 @@ app.get("/api/auth/auth0/start", (req, res) => {
   authorizeUrl.searchParams.set("scope", "openid profile email");
   authorizeUrl.searchParams.set("connection", connection);
   authorizeUrl.searchParams.set("state", state);
+  if (provider === "microsoft") {
+    // Força seleção/reauth para evitar "entrar direto" em conta errada.
+    authorizeUrl.searchParams.set("prompt", "login");
+  } else if (provider === "google") {
+    authorizeUrl.searchParams.set("prompt", "select_account");
+  }
   res.redirect(authorizeUrl.toString());
 });
 
 app.get("/api/auth/auth0/callback", async (req, res) => {
   const cookieHeader = String(req.headers.cookie || "");
+  const stateFromQueryRaw = String(req.query.state || "");
+  const providerFromState = stateFromQueryRaw.includes("__")
+    ? stateFromQueryRaw.split("__")[0]
+    : "";
   const providerMatch = cookieHeader.match(/(?:^|;\s*)synapse-auth0-provider=([^;]+)/);
-  const provider = providerMatch ? decodeURIComponent(providerMatch[1]) : "google";
+  const provider = String(
+    providerMatch ? decodeURIComponent(providerMatch[1]) : (providerFromState || "google")
+  ).toLowerCase();
   const socialErrorRedirect = (code: string) =>
     `${FRONTEND_URL}/login?social_error=${encodeURIComponent(code)}&social_provider=${encodeURIComponent(provider)}`;
 
@@ -195,7 +210,7 @@ app.get("/api/auth/auth0/callback", async (req, res) => {
   const cfg = getAuth0Config();
 
   const code = String(req.query.code || "");
-  const state = String(req.query.state || "");
+  const state = stateFromQueryRaw;
   const savedStateMatch = cookieHeader.match(/(?:^|;\s*)synapse-auth0-state=([^;]+)/);
   const savedState = savedStateMatch ? decodeURIComponent(savedStateMatch[1]) : "";
 
@@ -248,10 +263,12 @@ app.get("/api/auth/auth0/callback", async (req, res) => {
     let user = existingByEmail[0];
     const openId = `auth0_${sub}`.slice(0, 64);
 
+    const loginMethod = provider === "microsoft" ? "microsoft" : provider === "apple" ? "apple" : "google";
+
     if (!user) {
       const inserted = await client`
         INSERT INTO users ("openId", name, email, "loginMethod", role, status, "empresaId", "createdAt", "updatedAt", "lastSignedIn")
-        VALUES (${openId}, ${name}, ${email}, 'google', 'user', 'approved', NULL, NOW(), NOW(), NOW())
+        VALUES (${openId}, ${name}, ${email}, ${loginMethod}, 'user', 'approved', NULL, NOW(), NOW(), NOW())
         RETURNING id, "openId", email, role, status, "empresaId", password
       `;
       user = inserted[0];
@@ -260,7 +277,7 @@ app.get("/api/auth/auth0/callback", async (req, res) => {
         UPDATE users
         SET "openId"=${openId},
             name=${name},
-            "loginMethod"='google',
+            "loginMethod"=${loginMethod},
             "lastSignedIn"=NOW(),
             "updatedAt"=NOW()
         WHERE id=${user.id}
