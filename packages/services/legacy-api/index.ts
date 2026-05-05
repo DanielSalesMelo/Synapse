@@ -602,27 +602,44 @@ app.post("/api/agents/generate-pairing-code", requireUser, async (req, res) => {
   res.json({ code, expiresAt, empresaId });
 });
 
+const setNoCacheDownloadHeaders = (res: Response) => {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+};
+
 app.get("/api/agent/download/windows", (_req, res) => {
+  setNoCacheDownloadHeaders(res);
   res.download(path.join(AGENT_DIR, "synapse-agent.exe"), "synapse-agent.exe");
 });
 
 app.get("/api/agent/download/windows-installer", (_req, res) => {
+  setNoCacheDownloadHeaders(res);
   res.download(path.join(AGENT_DIR, "install_windows.bat"), "instalar_agente.bat");
 });
 
 app.get("/api/agent/download/windows-uninstaller", (_req, res) => {
+  setNoCacheDownloadHeaders(res);
   res.download(path.join(AGENT_DIR, "uninstall_windows.bat"), "desinstalar_agente.bat");
 });
 
 app.get("/api/agent/download/windows-node-installer", (_req, res) => {
+  setNoCacheDownloadHeaders(res);
   res.download(path.join(AGENT_DIR, "install_synapse.js"), "instalar_agente_node.js");
 });
 
 app.get("/api/agent/download/linux", (_req, res) => {
+  setNoCacheDownloadHeaders(res);
   res.download(path.join(AGENT_DIR, "install_linux.sh"), "install_linux.sh");
 });
 
 app.get("/api/agent/download/agent", (_req, res) => {
+  setNoCacheDownloadHeaders(res);
+  res.download(path.join(AGENT_DIR, "synapse_agent.py"), "synapse_agent.py");
+});
+
+app.get("/api/agent/support/latest.py", (_req, res) => {
+  setNoCacheDownloadHeaders(res);
   res.download(path.join(AGENT_DIR, "synapse_agent.py"), "synapse_agent.py");
 });
 
@@ -739,6 +756,9 @@ app.post("/api/agent/pair", async (req, res) => {
     const pairedUserId = pairing.user_id || pairing.criadoPor || null;
     const pairedDepartmentId = pairing.department_id || null;
     const fingerprint = req.body?.fingerprint || `${hostname}:${req.body?.platform?.machine || ""}:${req.body?.platform?.processor || ""}`;
+    const soValue = req.body?.platform?.os || req.body?.so || req.body?.platform || null;
+    const anydeskValue = req.body?.anydeskId || req.body?.anydesk_id || null;
+    const macValue = req.body?.mac || null;
 
     const existingRows = await client`
       SELECT * FROM monitor_agentes
@@ -754,7 +774,9 @@ app.post("/api/agent/pair", async (req, res) => {
         UPDATE monitor_agentes
         SET hostname=${hostname},
             ip=${req.body?.ip || null},
-            so=${req.body?.platform?.os || req.body?.so || null},
+            so=${soValue},
+            mac=${macValue},
+            "anydeskId"=${anydeskValue},
             "versaoAgente"=${req.body?.agentVersion || req.body?.versao_agente || "1.0.0"},
             token=${token},
             fingerprint=${fingerprint},
@@ -771,13 +793,15 @@ app.post("/api/agent/pair", async (req, res) => {
     } else {
       const inserted = await client`
         INSERT INTO monitor_agentes (
-          "empresaId", hostname, ip, so, "versaoAgente", token,
+          "empresaId", hostname, ip, so, mac, "anydeskId", "versaoAgente", token,
           "ultimoContato", online, ativo, "createdAt", "updatedAt",
           status, "pairingCode", fingerprint, user_id, department_id
         )
         VALUES (
           ${pairing.empresaId}, ${hostname}, ${req.body?.ip || null},
-          ${req.body?.platform?.os || req.body?.so || null},
+          ${soValue},
+          ${macValue},
+          ${anydeskValue},
           ${req.body?.agentVersion || req.body?.versao_agente || "1.0.0"},
           ${token}, NOW(), true, true, NOW(), NOW(),
           'online', ${pairCode}, ${fingerprint}, ${pairedUserId}, ${pairedDepartmentId}
@@ -793,7 +817,7 @@ app.post("/api/agent/pair", async (req, res) => {
       WHERE id=${pairing.id}
     `;
 
-    return res.json({ token, deviceId });
+    return res.json({ token, deviceId, empresaId: pairing.empresaId, hostname });
   } catch (error) {
     console.error("[Agent Pair] Falha:", error);
     return res.status(500).json({ error: "PAIR_FAILED" });
@@ -931,7 +955,7 @@ app.post("/api/agent/metrics", async (req, res) => {
   } catch (error) {
     console.error("[Agent Metrics] Falha:", error);
     // Não derruba o agente em produção por erro transitório/schema legado.
-    return res.status(202).json({ success: false, queued: true, warning: "METRICS_DEGRADED" });
+    return res.status(200).json({ success: false, queued: true, warning: "METRICS_DEGRADED" });
   }
 });
 

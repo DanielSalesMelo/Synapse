@@ -45,6 +45,16 @@ type MenuGroup = {
   items: MenuItem[];
 };
 
+const TI_MANAGER_ROLES = new Set([
+  "master_admin",
+  "ti_master",
+  "admin",
+  "administrador",
+  "ti",
+  "supervisor_geral",
+  "supervisor_ti",
+]);
+
 // ─────────────────────────────────────────────────────────────────────────────
 // ESTRUTURA DO MENU — Limpa, intuitiva, máximo 10 grupos principais
 // ─────────────────────────────────────────────────────────────────────────────
@@ -266,13 +276,14 @@ function Sidebar({
     items.some((item) => isActive(item.path));
 
   // Badges de notificação por rota — dados reais do backend
+  const isTiManagerRole = TI_MANAGER_ROLES.has(String(user?.role || "").toLowerCase());
   const conversationsQ = trpc.chat.listConversations.useQuery(undefined, { refetchInterval: 15000 });
   const tiUnreadQ = trpc.ti.getUnreadCount.useQuery(undefined, { refetchInterval: 30000 });
-  const tiAlertsQ = trpc.ti.listAlertas.useQuery({ limit: 10 }, { refetchInterval: 30000 });
+  const tiAlertsQ = trpc.ti.listAlertas.useQuery({ limit: 10 }, { refetchInterval: 30000, enabled: isTiManagerRole });
   const persistedNotifsQ = trpc.notifications.unreadCount.useQuery(undefined, { refetchInterval: 15000 });
   const chatUnread = (conversationsQ.data ?? []).length;
   const tiOpen = Number(tiUnreadQ.data?.tickets ?? 0);
-  const tiCritical = (tiAlertsQ.data ?? []).filter((a: any) => a.severidade === "critico").length;
+  const tiCritical = isTiManagerRole ? (tiAlertsQ.data ?? []).filter((a: any) => a.severidade === "critico").length : 0;
   const totalNotifs = Number(persistedNotifsQ.data?.total ?? 0) || (chatUnread + tiOpen + tiCritical);
 
   // Atualiza título da aba com contador de notificações
@@ -336,7 +347,14 @@ function Sidebar({
     return isGroupActive(items);
   };
 
-  const menuGroups = getMenuGroups(t);
+  const menuGroups = getMenuGroups(t).map((g) => {
+    if (g.label !== "TI") return g;
+    if (isTiManagerRole) return g;
+    return {
+      ...g,
+      items: [{ icon: Headphones, label: "Meus Chamados TI", path: "/ti/tickets" }],
+    };
+  });
 
   const filteredGroups = search.trim()
     ? menuGroups.map((g) => ({
@@ -360,7 +378,7 @@ function Sidebar({
     "Estoque & Logística": [...FULL_ACCESS_ROLES, "wms_operator", "dispatcher"],
     "Financeiro": [...FULL_ACCESS_ROLES, "financeiro"],
     "Pessoas": [...FULL_ACCESS_ROLES, "rh"],
-    "TI": [...FULL_ACCESS_ROLES, "ti"],
+    "TI": [...FULL_ACCESS_ROLES, "ti", "user"],
     "Relatórios & BI": [...FULL_ACCESS_ROLES, "financeiro", "monitor"],
     "Sistema": [...FULL_ACCESS_ROLES, "ti"],
     "Master Admin": ["master_admin", "ti_master"],
@@ -666,6 +684,7 @@ type Notification = {
 };
 
 function NotificationBell() {
+  const { user } = useAuth();
   const [, navigate] = useLocation();
   const [open, setOpen] = useState(false);
   const [dismissedIds, setDismissedIds] = useState<number[]>([]);
@@ -676,7 +695,8 @@ function NotificationBell() {
   const utils = trpc.useUtils();
   const conversationsQ = trpc.chat.listConversations.useQuery(undefined, { refetchInterval: 15000 });
   const ticketsQ = trpc.ti.listTickets.useQuery({ status: "aberto" }, { refetchInterval: 15000 });
-  const alertasQ = trpc.ti.listAlertas.useQuery({ limit: 10 }, { refetchInterval: 15000 });
+  const isTiManagerRole = TI_MANAGER_ROLES.has(String(user?.role || "").toLowerCase());
+  const alertasQ = trpc.ti.listAlertas.useQuery({ limit: 10 }, { refetchInterval: 15000, enabled: isTiManagerRole });
 
   const persistedNotifs: Notification[] = ((notificationsQ.data ?? []) as any[]).map((n: any) => ({
     id: Number(n.id),

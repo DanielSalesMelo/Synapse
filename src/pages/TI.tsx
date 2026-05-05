@@ -52,6 +52,16 @@ const PRIORIDADE_ICONS: Record<string, string> = {
   baixa: "🟢", media: "🔵", alta: "🟠", critica: "🔴",
 };
 
+const TI_MANAGER_ROLES = new Set([
+  "master_admin",
+  "ti_master",
+  "admin",
+  "administrador",
+  "ti",
+  "supervisor_geral",
+  "supervisor_ti",
+]);
+
 // ─── Componente de Lightbox ───────────────────────────────────────────────────
 function Lightbox({ src, onClose }: { src: string; onClose: () => void }) {
   useEffect(() => {
@@ -249,7 +259,7 @@ function TicketChat({ ticketId, empresaId }: { ticketId: number; empresaId: numb
 }
 
 // ─── Componente de Detalhe do Chamado ─────────────────────────────────────────
-function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: () => void; empresaId: number }) {
+function TicketDetail({ ticket, onClose, empresaId, isTiManager }: { ticket: any; onClose: () => void; empresaId: number; isTiManager: boolean }) {
   const [, navigate] = useLocation() as any;
   const updateTicket = trpc.ti.updateTicket.useMutation({
     onSuccess: () => toast.success("Chamado atualizado!"),
@@ -271,7 +281,7 @@ function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: ()
     onError: (e: any) => toast.error(e?.message || "Falha na triagem IA"),
   });
   const historyQ = trpc.ti.listStatusHistory.useQuery({ ticketId: ticket.id }) as any;
-  const notesQ = trpc.ti.listInternalNotes.useQuery({ ticketId: ticket.id }) as any;
+  const notesQ = trpc.ti.listInternalNotes.useQuery({ ticketId: ticket.id }, { enabled: isTiManager }) as any;
   const addNote = trpc.ti.addInternalNote.useMutation({
     onSuccess: () => {
       notesQ.refetch();
@@ -279,7 +289,7 @@ function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: ()
     },
   });
   const [internalNote, setInternalNote] = useState("");
-  const tecnicos = trpc.ti.listTecnicos.useQuery() as any;
+  const tecnicos = trpc.ti.listTecnicos.useQuery(undefined, { enabled: isTiManager }) as any;
 
   const slaPercent = ticket.slaHoras && ticket.createdAt
     ? Math.min(100, Math.round(((Date.now() - new Date(ticket.createdAt).getTime()) / (1000 * 60 * 60 * ticket.slaHoras)) * 100))
@@ -335,12 +345,16 @@ function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: ()
         {STATUS_FLOW.map((s, i) => (
           <div key={s} className="flex items-center gap-1 flex-shrink-0">
             <button
-              onClick={() => updateStatus.mutate({ id: ticket.id, status: s as any })}
+              onClick={() => {
+                if (!isTiManager) return;
+                updateStatus.mutate({ id: ticket.id, status: s as any });
+              }}
+              disabled={!isTiManager}
               className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
                 i === currentIdx ? "bg-primary text-primary-foreground" :
                 i < currentIdx ? "bg-green-100 text-green-700 dark:bg-green-900/30" :
                 "bg-muted text-muted-foreground hover:bg-muted/80"
-              }`}
+              } ${!isTiManager ? "opacity-70 cursor-not-allowed" : ""}`}
             >
               {i < currentIdx ? <Check className="h-3 w-3 inline mr-1" /> : null}
               {s.replace("_", " ")}
@@ -364,6 +378,8 @@ function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: ()
       )}
 
       {/* Campos editáveis — somente equipe TI */}
+      {isTiManager ? (
+      <>
       <div className="grid grid-cols-2 gap-3">
         <div>
           <Label className="text-xs">Prioridade (Equipe TI)</Label>
@@ -450,61 +466,69 @@ function TicketDetail({ ticket, onClose, empresaId }: { ticket: any; onClose: ()
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm">Notas internas da TI</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Textarea
-              rows={3}
-              value={internalNote}
-              onChange={(e) => setInternalNote(e.target.value)}
-              placeholder="Registre detalhes internos, causa raiz ou orientação para a equipe..."
-            />
-            <div className="flex gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => requestRemoteAccess.mutate({ ticketId: ticket.id, anydeskId: ticket.anydeskId, observacoes: "Solicitação iniciada pela equipe de TI" })}
-              >
-                Solicitar acesso remoto
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={runAiTriage.isPending}
-                onClick={() => runAiTriage.mutate({ ticketId: ticket.id, descricao: ticket.descricao || ticket.titulo })}
-              >
-                {runAiTriage.isPending ? "Triando..." : "Triagem IA"}
-              </Button>
-              <Button
-                size="sm"
-                onClick={() => {
-                  if (!internalNote.trim()) return;
-                  addNote.mutate({ ticketId: ticket.id, conteudo: internalNote });
-                  setInternalNote("");
-                }}
-              >
-                Salvar nota interna
-              </Button>
-            </div>
-            <div className="space-y-2">
-              {(notesQ.data ?? []).length === 0 ? (
-                <p className="text-sm text-muted-foreground">Nenhuma nota interna registrada.</p>
-              ) : (
-                (notesQ.data ?? []).map((note: any) => (
-                  <div key={note.id} className="rounded-lg bg-muted/40 p-3">
-                    <p className="text-sm">{note.conteudo}</p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {note.autor_nome ?? "Equipe TI"} · {new Date(note.createdAt).toLocaleString("pt-BR")}
-                    </p>
-                  </div>
-                ))
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        {isTiManager && (
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm">Notas internas da TI</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Textarea
+                rows={3}
+                value={internalNote}
+                onChange={(e) => setInternalNote(e.target.value)}
+                placeholder="Registre detalhes internos, causa raiz ou orientação para a equipe..."
+              />
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => requestRemoteAccess.mutate({ ticketId: ticket.id, anydeskId: ticket.anydeskId, observacoes: "Solicitação iniciada pela equipe de TI" })}
+                >
+                  Solicitar acesso remoto
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={runAiTriage.isPending}
+                  onClick={() => runAiTriage.mutate({ ticketId: ticket.id, descricao: ticket.descricao || ticket.titulo })}
+                >
+                  {runAiTriage.isPending ? "Triando..." : "Triagem IA"}
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    if (!internalNote.trim()) return;
+                    addNote.mutate({ ticketId: ticket.id, conteudo: internalNote });
+                    setInternalNote("");
+                  }}
+                >
+                  Salvar nota interna
+                </Button>
+              </div>
+              <div className="space-y-2">
+                {(notesQ.data ?? []).length === 0 ? (
+                  <p className="text-sm text-muted-foreground">Nenhuma nota interna registrada.</p>
+                ) : (
+                  (notesQ.data ?? []).map((note: any) => (
+                    <div key={note.id} className="rounded-lg bg-muted/40 p-3">
+                      <p className="text-sm">{note.conteudo}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {note.autor_nome ?? "Equipe TI"} · {new Date(note.createdAt).toLocaleString("pt-BR")}
+                      </p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
+      </>
+      ) : (
+        <div className="rounded-md border bg-muted/40 p-3 text-xs text-muted-foreground">
+          Modo usuário: você consegue acompanhar o chamado e conversar com o TI. A classificação técnica é feita pela equipe de suporte.
+        </div>
+      )}
     </div>
   );
 }
@@ -514,6 +538,8 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const { user } = useAuth();
   const { effectiveEmpresaId } = useViewAs();
   const empresaId = Number(effectiveEmpresaId || user?.empresaId || 1);
+  const userRole = String(user?.role || "").toLowerCase();
+  const isTiManager = TI_MANAGER_ROLES.has(userRole);
   const backendBaseUrl = getBackendBaseUrl();
   const TAB_ALIASES: Record<string, string> = {
     agente: "agentes",
@@ -525,15 +551,33 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   };
 
   const [location, setLocation] = useLocation() as any;
+  const MANAGER_ONLY_TABS = new Set([
+    "inventario",
+    "monitoramento",
+    "acessos",
+    "licencas",
+    "compras",
+    "manutencao",
+    "agentes",
+    "dispositivos",
+    "certificados",
+    "alertas",
+  ]);
   // Prioriza o parâmetro da rota (params.tab), depois tenta extrair da URL, fallback para dashboard
   const getInitialTab = () => {
-    if (params?.tab) return TAB_ALIASES[params.tab] ?? params.tab;
+    if (params?.tab) {
+      const normalized = TAB_ALIASES[params.tab] ?? params.tab;
+      if (!isTiManager && MANAGER_ONLY_TABS.has(normalized)) return "tickets";
+      return normalized;
+    }
     const parts = location.split("/");
     const tiIndex = parts.indexOf("ti");
     if (tiIndex !== -1 && parts[tiIndex + 1]) {
-      return TAB_ALIASES[parts[tiIndex + 1]] ?? parts[tiIndex + 1];
+      const normalized = TAB_ALIASES[parts[tiIndex + 1]] ?? parts[tiIndex + 1];
+      if (!isTiManager && MANAGER_ONLY_TABS.has(normalized)) return "tickets";
+      return normalized;
     }
-    return "dashboard";
+    return isTiManager ? "dashboard" : "tickets";
   };
 
   const [tab, setTab] = useState(getInitialTab());
@@ -544,6 +588,12 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   }, [location, params?.tab]);
 
   const handleTabChange = (newTab: string) => {
+    if (!isTiManager && MANAGER_ONLY_TABS.has(newTab)) {
+      toast.warning("Este módulo é exclusivo da equipe de TI.");
+      setTab("tickets");
+      setLocation("/ti/tickets");
+      return;
+    }
     setTab(newTab);
     setLocation(`/ti/${newTab}`);
   };
@@ -631,22 +681,22 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     { search, status: statusFilter === "todos" ? undefined : statusFilter },
     { refetchInterval: 15000 }
   ) as any;
-  const ativosQ = trpc.ti.listAtivos.useQuery({ search }, { refetchInterval: 30000 }) as any;
-  const licencasQ = trpc.ti.listLicencas.useQuery({ search }, { refetchInterval: 60000 }) as any;
-  const comprasQ = trpc.ti.listCompras.useQuery(undefined, { refetchInterval: 60000 }) as any;
-  const acessosQ = trpc.ti.listAcessos.useQuery(undefined, { refetchInterval: 60000 }) as any;
+  const ativosQ = trpc.ti.listAtivos.useQuery({ search }, { refetchInterval: 30000, enabled: isTiManager }) as any;
+  const licencasQ = trpc.ti.listLicencas.useQuery({ search }, { refetchInterval: 60000, enabled: isTiManager }) as any;
+  const comprasQ = trpc.ti.listCompras.useQuery(undefined, { refetchInterval: 60000, enabled: isTiManager }) as any;
+  const acessosQ = trpc.ti.listAcessos.useQuery(undefined, { refetchInterval: 60000, enabled: isTiManager }) as any;
   const remoteAccessQ = trpc.ti.listRemoteAccessRequests.useQuery(
     { status: remoteStatusFilter === "todos" ? undefined : remoteStatusFilter },
-    { refetchInterval: 15000 }
+    { refetchInterval: 15000, enabled: isTiManager }
   ) as any;
-  const agentesQ = trpc.ti.listAgentes.useQuery({ empresaId }, { refetchInterval: 5000 }) as any;
-  const alertasQ = trpc.ti.listAlertas.useQuery({ limit: 20 }, { refetchInterval: 15000 }) as any;
-  const manutencoesQ = trpc.ti.listManutencoes.useQuery(undefined, { refetchInterval: 60000 }) as any;
-  const codigosQ = trpc.ti.listCodigosPareamento.useQuery({ empresaId }, { refetchInterval: 10000 }) as any;
-  const certificadosQ = trpc.ti.listCertificados.useQuery({ search }, { refetchInterval: 60000 }) as any;
+  const agentesQ = trpc.ti.listAgentes.useQuery({ empresaId }, { refetchInterval: 5000, enabled: isTiManager }) as any;
+  const alertasQ = trpc.ti.listAlertas.useQuery({ limit: 20 }, { refetchInterval: 15000, enabled: isTiManager }) as any;
+  const manutencoesQ = trpc.ti.listManutencoes.useQuery(undefined, { refetchInterval: 60000, enabled: isTiManager }) as any;
+  const codigosQ = trpc.ti.listCodigosPareamento.useQuery({ empresaId }, { refetchInterval: 10000, enabled: isTiManager }) as any;
+  const certificadosQ = trpc.ti.listCertificados.useQuery({ search }, { refetchInterval: 60000, enabled: isTiManager }) as any;
   const agenteMetricas = trpc.ti.getAgenteMetricas.useQuery(
     { agenteId: selectedAgente?.id, periodo: "24h", empresaId },
-    { enabled: !!selectedAgente?.id, refetchInterval: 30000 }
+    { enabled: isTiManager && !!selectedAgente?.id, refetchInterval: 30000 }
   ) as any;
 
   // ── Mutations ──
@@ -991,19 +1041,23 @@ export default function TI({ params }: { params?: { tab?: string } }) {
             <Headphones className="h-4 w-4 mr-1" />Chamados
             {kpiAbertos > 0 && <span className="ml-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full bg-red-500 text-white text-[10px]">{kpiAbertos}</span>}
           </TabsTrigger>
-          <TabsTrigger value="inventario"><HardDrive className="h-4 w-4 mr-1" />Inventário</TabsTrigger>
-          <TabsTrigger value="monitoramento"><Cpu className="h-4 w-4 mr-1" />Monitoramento</TabsTrigger>
-          <TabsTrigger value="acessos"><Key className="h-4 w-4 mr-1" />Acessos Remotos</TabsTrigger>
-          <TabsTrigger value="licencas"><Shield className="h-4 w-4 mr-1" />Licenças</TabsTrigger>
-          <TabsTrigger value="compras"><ShoppingCart className="h-4 w-4 mr-1" />Compras</TabsTrigger>
-          <TabsTrigger value="manutencao"><Wrench className="h-4 w-4 mr-1" />Manutenção</TabsTrigger>
-          <TabsTrigger value="agentes"><Network className="h-4 w-4 mr-1" />Agentes e Dispositivos</TabsTrigger>
-          <TabsTrigger value="dispositivos"><Monitor className="h-4 w-4 mr-1" />Vínculos e Inventário</TabsTrigger>
-          <TabsTrigger value="certificados"><Shield className="h-4 w-4 mr-1" />Certificados</TabsTrigger>
-          <TabsTrigger value="alertas" className="relative">
-            <Bell className="h-4 w-4 mr-1" />Alertas
-            {kpiCriticos > 0 && <span className="ml-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full bg-red-500 text-white text-[10px] animate-pulse">{kpiCriticos}</span>}
-          </TabsTrigger>
+          {isTiManager && (
+            <>
+              <TabsTrigger value="inventario"><HardDrive className="h-4 w-4 mr-1" />Inventário</TabsTrigger>
+              <TabsTrigger value="monitoramento"><Cpu className="h-4 w-4 mr-1" />Monitoramento</TabsTrigger>
+              <TabsTrigger value="acessos"><Key className="h-4 w-4 mr-1" />Acessos Remotos</TabsTrigger>
+              <TabsTrigger value="licencas"><Shield className="h-4 w-4 mr-1" />Licenças</TabsTrigger>
+              <TabsTrigger value="compras"><ShoppingCart className="h-4 w-4 mr-1" />Compras</TabsTrigger>
+              <TabsTrigger value="manutencao"><Wrench className="h-4 w-4 mr-1" />Manutenção</TabsTrigger>
+              <TabsTrigger value="agentes"><Network className="h-4 w-4 mr-1" />Agentes e Dispositivos</TabsTrigger>
+              <TabsTrigger value="dispositivos"><Monitor className="h-4 w-4 mr-1" />Vínculos e Inventário</TabsTrigger>
+              <TabsTrigger value="certificados"><Shield className="h-4 w-4 mr-1" />Certificados</TabsTrigger>
+              <TabsTrigger value="alertas" className="relative">
+                <Bell className="h-4 w-4 mr-1" />Alertas
+                {kpiCriticos > 0 && <span className="ml-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full bg-red-500 text-white text-[10px] animate-pulse">{kpiCriticos}</span>}
+              </TabsTrigger>
+            </>
+          )}
         </TabsList>
 
         {/* ══ VISÃO GERAL ══ */}
@@ -1079,7 +1133,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                 </div>
               </CardHeader>
               <CardContent>
-                <TicketDetail ticket={selectedTicket} onClose={() => setSelectedTicket(null)} empresaId={empresaId} />
+                <TicketDetail ticket={selectedTicket} onClose={() => setSelectedTicket(null)} empresaId={empresaId} isTiManager={isTiManager} />
               </CardContent>
             </Card>
           ) : (
@@ -1127,16 +1181,20 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                         <TableCell><Badge className={`text-xs ${STATUS_COLORS[t.status] ?? ""}`}>{t.status.replace("_", " ")}</Badge></TableCell>
                         <TableCell className="text-xs text-muted-foreground">{new Date(t.createdAt).toLocaleDateString("pt-BR")}</TableCell>
                         <TableCell onClick={(e) => e.stopPropagation()}>
-                          <Select value={t.status} onValueChange={(v) => updateStatus.mutate({ id: t.id, status: v as any })}>
-                            <SelectTrigger className="h-7 w-36 text-xs"><SelectValue /></SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="aberto">Aberto</SelectItem>
-                              <SelectItem value="em_andamento">Em Andamento</SelectItem>
-                              <SelectItem value="aguardando">Aguardando</SelectItem>
-                              <SelectItem value="resolvido">Resolvido</SelectItem>
-                              <SelectItem value="fechado">Fechado</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          {isTiManager ? (
+                            <Select value={t.status} onValueChange={(v) => updateStatus.mutate({ id: t.id, status: v as any })}>
+                              <SelectTrigger className="h-7 w-36 text-xs"><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="aberto">Aberto</SelectItem>
+                                <SelectItem value="em_andamento">Em Andamento</SelectItem>
+                                <SelectItem value="aguardando">Aguardando</SelectItem>
+                                <SelectItem value="resolvido">Resolvido</SelectItem>
+                                <SelectItem value="fechado">Fechado</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          ) : (
+                            <Badge className={`text-xs ${STATUS_COLORS[t.status] ?? ""}`}>{String(t.status || "").replace("_", " ")}</Badge>
+                          )}
                         </TableCell>
                       </TableRow>
                     ))}
