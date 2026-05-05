@@ -362,6 +362,28 @@ export default function Financeiro() {
     return buckets;
   }, [receber]);
 
+  const pagarFiltrado = useMemo(() => {
+    const term = searchPagar.trim().toLowerCase();
+    return pagar.filter((item: any) => {
+      const statusOk = statusPagarFiltro === "todos" || item.status === statusPagarFiltro;
+      const textOk = !term || [item.descricao, item.categoria, item.fornecedor]
+        .filter(Boolean)
+        .some((v: any) => String(v).toLowerCase().includes(term));
+      return statusOk && textOk;
+    });
+  }, [pagar, searchPagar, statusPagarFiltro]);
+
+  const receberFiltrado = useMemo(() => {
+    const term = searchReceber.trim().toLowerCase();
+    return receber.filter((item: any) => {
+      const statusOk = statusReceberFiltro === "todos" || item.status === statusReceberFiltro;
+      const textOk = !term || [item.descricao, item.cliente, item.categoria, item.cteNumero]
+        .filter(Boolean)
+        .some((v: any) => String(v).toLowerCase().includes(term));
+      return statusOk && textOk;
+    });
+  }, [receber, searchReceber, statusReceberFiltro]);
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
@@ -765,24 +787,3 @@ export default function Financeiro() {
     </div>
   );
 }
-  const pagarFiltrado = useMemo(() => {
-    const term = searchPagar.trim().toLowerCase();
-    return pagar.filter((item: any) => {
-      const statusOk = statusPagarFiltro === "todos" || item.status === statusPagarFiltro;
-      const textOk = !term || [item.descricao, item.categoria, item.fornecedor]
-        .filter(Boolean)
-        .some((v: any) => String(v).toLowerCase().includes(term));
-      return statusOk && textOk;
-    });
-  }, [pagar, searchPagar, statusPagarFiltro]);
-
-  const receberFiltrado = useMemo(() => {
-    const term = searchReceber.trim().toLowerCase();
-    return receber.filter((item: any) => {
-      const statusOk = statusReceberFiltro === "todos" || item.status === statusReceberFiltro;
-      const textOk = !term || [item.descricao, item.cliente, item.categoria, item.cteNumero]
-        .filter(Boolean)
-        .some((v: any) => String(v).toLowerCase().includes(term));
-      return statusOk && textOk;
-    });
-  }, [receber, searchReceber, statusReceberFiltro]);
