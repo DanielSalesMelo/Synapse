@@ -89021,12 +89021,23 @@ var documentosRouter = router({
 // routers/ia.ts
 init_schema2();
 init_drizzle_orm();
+var BASE_PROMPT_AUTOATENDIMENTO = `
+Regra principal do Synapse: reduzir chamados repetitivos com autoatendimento seguro.
+Sempre:
+1) classifique a d\xFAvida (acesso, fiscal, winthor, infraestrutura, rede, financeiro, opera\xE7\xE3o).
+2) d\xEA passos objetivos para o usu\xE1rio tentar resolver sozinho.
+3) se houver risco (dados fiscais, exclus\xE3o, senha, produ\xE7\xE3o), pare e escale para TI.
+4) nunca invente procedimento, menu, campo ou c\xF3digo.
+5) quando n\xE3o houver confian\xE7a, diga claramente "precisa escalar para TI".
+6) responda em portugu\xEAs do Brasil, curto, pr\xE1tico e com checklist.
+`;
 var PROMPTS_PADRAO = {
   master: {
     nome: "Synapse Master",
     avatar: "\u{1F9E0}",
     descricao: "IA central que coordena todos os agentes e responde sobre o sistema",
-    systemPrompt: `Voc\xEA \xE9 o Synapse Master, a intelig\xEAncia central do sistema Synapse de gest\xE3o log\xEDstica.
+    systemPrompt: `${BASE_PROMPT_AUTOATENDIMENTO}
+Voc\xEA \xE9 o Synapse Master, a intelig\xEAncia central do sistema Synapse de gest\xE3o log\xEDstica.
 Voc\xEA tem acesso a todos os m\xF3dulos: Frota, Financeiro, RH, Manuten\xE7\xE3o, Recep\xE7\xE3o, WMS e Jur\xEDdico.
 Responda de forma clara, objetiva e profissional. Quando n\xE3o souber algo espec\xEDfico, oriente o usu\xE1rio ao m\xF3dulo correto.
 Sempre que poss\xEDvel, sugira a\xE7\xF5es pr\xE1ticas baseadas nas informa\xE7\xF5es dispon\xEDveis.`
@@ -89035,7 +89046,8 @@ Sempre que poss\xEDvel, sugira a\xE7\xF5es pr\xE1ticas baseadas nas informa\xE7\
     nome: "Analista Financeiro",
     avatar: "\u{1F4CA}",
     descricao: "Especialista em custos, DRE, contas a pagar/receber e an\xE1lise financeira",
-    systemPrompt: `Voc\xEA \xE9 um analista financeiro especializado em log\xEDstica e transporte.
+    systemPrompt: `${BASE_PROMPT_AUTOATENDIMENTO}
+Voc\xEA \xE9 um analista financeiro especializado em log\xEDstica e transporte.
 Voc\xEA analisa custos por km, DRE, contas a pagar e receber, adiantamentos e margens de lucro.
 Forne\xE7a an\xE1lises precisas, identifique tend\xEAncias e sugira otimiza\xE7\xF5es de custo.`
   },
@@ -89043,7 +89055,8 @@ Forne\xE7a an\xE1lises precisas, identifique tend\xEAncias e sugira otimiza\xE7\
     nome: "Gestor de Frota",
     avatar: "\u{1F69B}",
     descricao: "Especialista em ve\xEDculos, rotas, checklists e gest\xE3o operacional de frota",
-    systemPrompt: `Voc\xEA \xE9 um especialista em gest\xE3o de frotas de transporte.
+    systemPrompt: `${BASE_PROMPT_AUTOATENDIMENTO}
+Voc\xEA \xE9 um especialista em gest\xE3o de frotas de transporte.
 Voc\xEA conhece sobre ve\xEDculos, checklists, rotas, consumo de combust\xEDvel e efici\xEAncia operacional.
 Ajude a otimizar rotas, reduzir custos de combust\xEDvel e garantir a conformidade dos ve\xEDculos.`
   },
@@ -89051,7 +89064,8 @@ Ajude a otimizar rotas, reduzir custos de combust\xEDvel e garantir a conformida
     nome: "Suporte ao Motorista",
     avatar: "\u{1F468}\u200D\u2708\uFE0F",
     descricao: "Assistente para d\xFAvidas operacionais, procedimentos e suporte aos motoristas",
-    systemPrompt: `Voc\xEA \xE9 um assistente de suporte para motoristas e equipe operacional.
+    systemPrompt: `${BASE_PROMPT_AUTOATENDIMENTO}
+Voc\xEA \xE9 um assistente de suporte para motoristas e equipe operacional.
 Voc\xEA responde d\xFAvidas sobre procedimentos, documenta\xE7\xE3o (CNH, CRLV, MOPP), regras de tr\xE2nsito e legisla\xE7\xE3o de transporte.
 Use linguagem simples e direta. Seja emp\xE1tico e prestativo.`
   },
@@ -89059,7 +89073,8 @@ Use linguagem simples e direta. Seja emp\xE1tico e prestativo.`
     nome: "Especialista em Manuten\xE7\xE3o",
     avatar: "\u{1F527}",
     descricao: "Especialista em manuten\xE7\xE3o preventiva, corretiva e gest\xE3o de pneus",
-    systemPrompt: `Voc\xEA \xE9 um especialista em manuten\xE7\xE3o de ve\xEDculos pesados e log\xEDstica.
+    systemPrompt: `${BASE_PROMPT_AUTOATENDIMENTO}
+Voc\xEA \xE9 um especialista em manuten\xE7\xE3o de ve\xEDculos pesados e log\xEDstica.
 Voc\xEA conhece sobre manuten\xE7\xE3o preventiva, corretiva, gest\xE3o de pneus, diagn\xF3stico de problemas mec\xE2nicos e planejamento de revis\xF5es.
 Ajude a criar planos de manuten\xE7\xE3o, interpretar alertas e reduzir custos com reparos.`
   },
@@ -89067,7 +89082,8 @@ Ajude a criar planos de manuten\xE7\xE3o, interpretar alertas e reduzir custos c
     nome: "Assistente Jur\xEDdico",
     avatar: "\u2696\uFE0F",
     descricao: "Especialista em legisla\xE7\xE3o de transporte, ANTT, multas e compliance",
-    systemPrompt: `Voc\xEA \xE9 um assistente jur\xEDdico especializado em transporte rodovi\xE1rio de cargas.
+    systemPrompt: `${BASE_PROMPT_AUTOATENDIMENTO}
+Voc\xEA \xE9 um assistente jur\xEDdico especializado em transporte rodovi\xE1rio de cargas.
 Voc\xEA conhece a legisla\xE7\xE3o da ANTT, CTB, normas de seguran\xE7a, multas, habilita\xE7\xF5es e contratos de transporte.
 IMPORTANTE: Sempre recomende consultar um advogado para casos espec\xEDficos e complexos.`
   },
@@ -89075,7 +89091,8 @@ IMPORTANTE: Sempre recomende consultar um advogado para casos espec\xEDficos e c
     nome: "Assistente de Recep\xE7\xE3o",
     avatar: "\u{1F4E6}",
     descricao: "Especialista em recebimento de mercadorias, confer\xEAncia e gest\xE3o de docas",
-    systemPrompt: `Voc\xEA \xE9 um especialista em recep\xE7\xE3o e confer\xEAncia de mercadorias.
+    systemPrompt: `${BASE_PROMPT_AUTOATENDIMENTO}
+Voc\xEA \xE9 um especialista em recep\xE7\xE3o e confer\xEAncia de mercadorias.
 Voc\xEA conhece sobre processos de recebimento, confer\xEAncia de notas fiscais, gest\xE3o de docas e identifica\xE7\xE3o de diverg\xEAncias.
 Ajude a otimizar o processo de recebimento e garantir a rastreabilidade das mercadorias.`
   },
@@ -89083,7 +89100,8 @@ Ajude a otimizar o processo de recebimento e garantir a rastreabilidade das merc
     nome: "Gestor de Armaz\xE9m",
     avatar: "\u{1F3ED}",
     descricao: "Especialista em WMS, gest\xE3o de estoque, localiza\xE7\xE3o e movimenta\xE7\xF5es",
-    systemPrompt: `Voc\xEA \xE9 um especialista em gest\xE3o de armaz\xE9ns e estoque (WMS).
+    systemPrompt: `${BASE_PROMPT_AUTOATENDIMENTO}
+Voc\xEA \xE9 um especialista em gest\xE3o de armaz\xE9ns e estoque (WMS).
 Voc\xEA conhece sobre organiza\xE7\xE3o de armaz\xE9ns, endere\xE7amento de produtos, controle de estoque, invent\xE1rios, picking e expedi\xE7\xE3o.
 Ajude a otimizar o layout do armaz\xE9m, reduzir perdas e melhorar a efici\xEAncia das opera\xE7\xF5es.`
   }
@@ -89126,11 +89144,20 @@ function processarMensagemLocal(mensagem, setor, instrucoes) {
     "erro": "Se voc\xEA est\xE1 encontrando um erro: 1) Recarregue a p\xE1gina, 2) Verifique os campos obrigat\xF3rios, 3) Verifique sua conex\xE3o.",
     "relatorio": "Os relat\xF3rios est\xE3o dispon\xEDveis em cada m\xF3dulo. Acesse o m\xF3dulo desejado e procure pela op\xE7\xE3o 'Relat\xF3rios' ou 'Exportar'."
   };
+  const casosSuporteRapido = {
+    "ie do destinatario invalida": "Poss\xEDvel causa fiscal. Checklist: 1) validar IE no cadastro do destinat\xE1rio, 2) conferir UF e tipo de contribuinte, 3) revisar opera\xE7\xE3o/NF-e no ERP. Se persistir, escalar para fiscal/TI com print e XML.",
+    "1452": "Erro WinThor 1452 geralmente envolve chave relacional/registro dependente. Checklist: 1) confirmar cadastro pai existe, 2) revisar v\xEDnculo obrigat\xF3rio, 3) repetir opera\xE7\xE3o com usu\xE1rio de perfil correto. Se persistir, escalar para TI com print e SQL/ID afetado.",
+    "winthor": "Para erro no WinThor: envie n\xFAmero do erro + tela + opera\xE7\xE3o. A\xE7\xE3o imediata: validar permiss\xF5es e campos obrigat\xF3rios. Se bloquear faturamento, escalar para TI.",
+    "n\xE3o abre": "Passos r\xE1pidos: 1) atualizar p\xE1gina, 2) limpar cache, 3) trocar navegador, 4) testar em aba privada. Persistindo, abrir chamado com print do erro."
+  };
   const respostasDoSetor = respostasSetor[setor] ?? {};
   for (const [chave, resposta] of Object.entries(respostasDoSetor)) {
     if (msg.includes(chave)) return resposta;
   }
   for (const [chave, resposta] of Object.entries(respostasGerais)) {
+    if (msg.includes(chave)) return resposta;
+  }
+  for (const [chave, resposta] of Object.entries(casosSuporteRapido)) {
     if (msg.includes(chave)) return resposta;
   }
   if (instrucoes) {
@@ -90246,6 +90273,170 @@ var auditoriaRouter = router({
 // routers/ti.ts
 init_schema2();
 init_drizzle_orm();
+
+// _core/llm.ts
+var ensureArray = (value) => Array.isArray(value) ? value : [value];
+var normalizeContentPart = (part) => {
+  if (typeof part === "string") {
+    return { type: "text", text: part };
+  }
+  if (part.type === "text") {
+    return part;
+  }
+  if (part.type === "image_url") {
+    return part;
+  }
+  if (part.type === "file_url") {
+    return part;
+  }
+  throw new Error("Unsupported message content part");
+};
+var normalizeMessage = (message) => {
+  const { role, name: name2, tool_call_id } = message;
+  if (role === "tool" || role === "function") {
+    const content = ensureArray(message.content).map((part) => typeof part === "string" ? part : JSON.stringify(part)).join("\n");
+    return {
+      role,
+      name: name2,
+      tool_call_id,
+      content
+    };
+  }
+  const contentParts = ensureArray(message.content).map(normalizeContentPart);
+  if (contentParts.length === 1 && contentParts[0].type === "text") {
+    return {
+      role,
+      name: name2,
+      content: contentParts[0].text
+    };
+  }
+  return {
+    role,
+    name: name2,
+    content: contentParts
+  };
+};
+var normalizeToolChoice = (toolChoice, tools) => {
+  if (!toolChoice) return void 0;
+  if (toolChoice === "none" || toolChoice === "auto") {
+    return toolChoice;
+  }
+  if (toolChoice === "required") {
+    if (!tools || tools.length === 0) {
+      throw new Error(
+        "tool_choice 'required' was provided but no tools were configured"
+      );
+    }
+    if (tools.length > 1) {
+      throw new Error(
+        "tool_choice 'required' needs a single tool or specify the tool name explicitly"
+      );
+    }
+    return {
+      type: "function",
+      function: { name: tools[0].function.name }
+    };
+  }
+  if ("name" in toolChoice) {
+    return {
+      type: "function",
+      function: { name: toolChoice.name }
+    };
+  }
+  return toolChoice;
+};
+var resolveApiUrl = () => ENV.forgeApiUrl && ENV.forgeApiUrl.trim().length > 0 ? `${ENV.forgeApiUrl.replace(/\/$/, "")}/v1/chat/completions` : "https://forge.manus.im/v1/chat/completions";
+var assertApiKey = () => {
+  if (!ENV.forgeApiKey) {
+    throw new Error("OPENAI_API_KEY is not configured");
+  }
+};
+var normalizeResponseFormat = ({
+  responseFormat,
+  response_format,
+  outputSchema,
+  output_schema
+}) => {
+  const explicitFormat = responseFormat || response_format;
+  if (explicitFormat) {
+    if (explicitFormat.type === "json_schema" && !explicitFormat.json_schema?.schema) {
+      throw new Error(
+        "responseFormat json_schema requires a defined schema object"
+      );
+    }
+    return explicitFormat;
+  }
+  const schema = outputSchema || output_schema;
+  if (!schema) return void 0;
+  if (!schema.name || !schema.schema) {
+    throw new Error("outputSchema requires both name and schema");
+  }
+  return {
+    type: "json_schema",
+    json_schema: {
+      name: schema.name,
+      schema: schema.schema,
+      ...typeof schema.strict === "boolean" ? { strict: schema.strict } : {}
+    }
+  };
+};
+async function invokeLLM(params) {
+  assertApiKey();
+  const {
+    messages: messages2,
+    tools,
+    toolChoice,
+    tool_choice,
+    outputSchema,
+    output_schema,
+    responseFormat,
+    response_format
+  } = params;
+  const payload = {
+    model: "gemini-2.5-flash",
+    messages: messages2.map(normalizeMessage)
+  };
+  if (tools && tools.length > 0) {
+    payload.tools = tools;
+  }
+  const normalizedToolChoice = normalizeToolChoice(
+    toolChoice || tool_choice,
+    tools
+  );
+  if (normalizedToolChoice) {
+    payload.tool_choice = normalizedToolChoice;
+  }
+  payload.max_tokens = 32768;
+  payload.thinking = {
+    "budget_tokens": 128
+  };
+  const normalizedResponseFormat = normalizeResponseFormat({
+    responseFormat,
+    response_format,
+    outputSchema,
+    output_schema
+  });
+  if (normalizedResponseFormat) {
+    payload.response_format = normalizedResponseFormat;
+  }
+  const response = await fetch(resolveApiUrl(), {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      authorization: `Bearer ${ENV.forgeApiKey}`
+    },
+    body: JSON.stringify(payload)
+  });
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(
+      `LLM invoke failed: ${response.status} ${response.statusText} \u2013 ${errorText}`
+    );
+  }
+  return await response.json();
+}
+
+// routers/ti.ts
 function gerarOS() {
   const ano = (/* @__PURE__ */ new Date()).getFullYear();
   const seq = Math.floor(Math.random() * 9e3) + 1e3;
@@ -90267,6 +90458,18 @@ var TICKET_STATUS_VALUES = [
   "cancelado",
   "reaberto"
 ];
+function canManageTi(user) {
+  const role = String(user?.role || "").toLowerCase();
+  return ["master_admin", "admin", "administrador", "ti", "supervisor_geral", "supervisor_ti"].includes(role);
+}
+function requireTiManager(user) {
+  if (!canManageTi(user)) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Este recurso \xE9 exclusivo da equipe de TI."
+    });
+  }
+}
 var tiRouter = router({
   // ══════════════════════════════════════════════════════════════════════════
   // DASHBOARD
@@ -90275,13 +90478,19 @@ var tiRouter = router({
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const empresaId = ctx.user.empresaId;
+    const isManager = canManageTi(ctx.user);
+    const ticketWhere = isManager ? and(eq(ticketsTi.empresaId, empresaId), isNull2(ticketsTi.deletedAt)) : and(
+      eq(ticketsTi.empresaId, empresaId),
+      eq(ticketsTi.solicitanteId, ctx.user.id),
+      isNull2(ticketsTi.deletedAt)
+    );
     const [ticketStats] = await db.select({
       total: sql`count(*)`,
       abertos: sql`count(*) filter (where status = 'aberto')`,
       emAndamento: sql`count(*) filter (where status = 'em_andamento')`,
       resolvidosHoje: sql`count(*) filter (where status = 'resolvido' AND "resolvidoEm" >= current_date)`,
       ativos: sql`count(*) filter (where status IN ('aberto','triagem_ia','aguardando_usuario','aguardando_ti','em_andamento','acesso_remoto_solicitado','em_acesso_remoto','reaberto'))`
-    }).from(ticketsTi).where(and(eq(ticketsTi.empresaId, empresaId), isNull2(ticketsTi.deletedAt)));
+    }).from(ticketsTi).where(ticketWhere);
     const [ativoStats] = await db.select({
       total: sql`count(*)`,
       online: sql`count(*) filter (where status = 'online')`,
@@ -90293,15 +90502,29 @@ var tiRouter = router({
       expirando: sql`count(*) filter (where vencimento <= (current_date + interval '30 days') AND vencimento >= current_date)`,
       vencidos: sql`count(*) filter (where vencimento < current_date)`
     }).from(certificadosTi).where(and(eq(certificadosTi.empresaId, empresaId), isNull2(certificadosTi.deletedAt)));
+    if (!isManager) {
+      return {
+        tickets: ticketStats,
+        ativos: { total: 0, online: 0, atencao: 0, critico: 0 },
+        certificados: { total: 0, expirando: 0, vencidos: 0 },
+        licencas: { total: 0 }
+      };
+    }
     return { tickets: ticketStats, ativos: ativoStats, certificados: certStats, licencas: { total: 0 } };
   }),
   getUnreadCount: protectedProcedure.query(async ({ ctx }) => {
     const db = await getDb();
     if (!db) return { tickets: 0, alertas: 0 };
     const empresaId = ctx.user.empresaId;
+    const isManager = canManageTi(ctx.user);
+    const whereExpr = isManager ? and(eq(ticketsTi.empresaId, empresaId), isNull2(ticketsTi.deletedAt)) : and(
+      eq(ticketsTi.empresaId, empresaId),
+      eq(ticketsTi.solicitanteId, ctx.user.id),
+      isNull2(ticketsTi.deletedAt)
+    );
     const [r] = await db.select({
       tickets: sql`count(*) filter (where status = 'aberto')`
-    }).from(ticketsTi).where(and(eq(ticketsTi.empresaId, empresaId), isNull2(ticketsTi.deletedAt)));
+    }).from(ticketsTi).where(whereExpr);
     return { tickets: Number(r?.tickets || 0), alertas: 0 };
   }),
   // ══════════════════════════════════════════════════════════════════════════
@@ -90311,6 +90534,9 @@ var tiRouter = router({
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const conds = [eq(ticketsTi.empresaId, ctx.user.empresaId), isNull2(ticketsTi.deletedAt)];
+    if (!canManageTi(ctx.user)) {
+      conds.push(eq(ticketsTi.solicitanteId, ctx.user.id));
+    }
     if (input.status && input.status !== "todos") conds.push(eq(ticketsTi.status, input.status));
     if (input.search) conds.push(or(ilike(ticketsTi.titulo, `%${input.search}%`), ilike(ticketsTi.protocolo, `%${input.search}%`)));
     return db.select().from(ticketsTi).where(and(...conds)).orderBy(desc(ticketsTi.createdAt));
@@ -90330,6 +90556,9 @@ var tiRouter = router({
         WHERE t.id = ${input.id} AND t."empresaId" = ${ctx.user.empresaId}
       `;
     if (!rows[0]) throw new TRPCError({ code: "NOT_FOUND" });
+    if (!canManageTi(ctx.user) && Number(rows[0]?.solicitante_id || 0) !== Number(ctx.user.id)) {
+      throw new TRPCError({ code: "FORBIDDEN" });
+    }
     return rows[0];
   }),
   createTicket: protectedProcedure.input(external_exports.object({
@@ -90379,6 +90608,111 @@ var tiRouter = router({
     }
     return ticket;
   }),
+  aiTriage: protectedProcedure.input(
+    external_exports.object({
+      ticketId: external_exports.number().optional(),
+      titulo: external_exports.string().optional(),
+      descricao: external_exports.string().min(4),
+      contextoTecnico: external_exports.string().optional()
+    })
+  ).mutation(async ({ input, ctx }) => {
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    let ticket = null;
+    if (input.ticketId) {
+      const rows = await client`
+          SELECT id, protocolo, titulo, descricao, categoria, prioridade, status, "solicitanteId"
+          FROM tickets_ti
+          WHERE id = ${input.ticketId}
+            AND "empresaId" = ${ctx.user.empresaId}
+            AND "deletedAt" IS NULL
+          LIMIT 1
+        `;
+      ticket = rows?.[0] ?? null;
+      if (!ticket) throw new TRPCError({ code: "NOT_FOUND", message: "Chamado n\xE3o encontrado." });
+      if (!canManageTi(ctx.user) && Number(ticket.solicitanteId || 0) !== Number(ctx.user.id)) {
+        throw new TRPCError({ code: "FORBIDDEN" });
+      }
+    }
+    const descricao = (ticket?.descricao || input.descricao || "").trim();
+    const titulo = (ticket?.titulo || input.titulo || "Chamado de TI").trim();
+    const contexto = (input.contextoTecnico || "").trim();
+    const prompt = [
+      "Voc\xEA \xE9 um analista de suporte N1/N2 de TI para empresa brasileira.",
+      "Objetivo: reduzir chamados repetitivos com orienta\xE7\xE3o segura e pr\xE1tica.",
+      "Regra: se n\xE3o souber com confian\xE7a, marque precisa_escalar=true e n\xE3o invente.",
+      "Retorne JSON com campos:",
+      "resumo, causaProvavel, nivelConfianca(0-100), precisaEscalar(boolean), categoriaSugerida, prioridadeSugerida,",
+      "passosUsuario(array de strings), passosTI(array de strings), acaoImediata.",
+      "",
+      `T\xEDtulo: ${titulo}`,
+      `Descri\xE7\xE3o: ${descricao}`,
+      contexto ? `Contexto t\xE9cnico adicional: ${contexto}` : ""
+    ].filter(Boolean).join("\n");
+    let ai = null;
+    try {
+      const llm = await invokeLLM({
+        messages: [
+          { role: "system", content: "Responda somente em JSON v\xE1lido, sem markdown." },
+          { role: "user", content: prompt }
+        ],
+        response_format: { type: "json_object" }
+      });
+      const raw = llm.choices?.[0]?.message?.content;
+      const text2 = typeof raw === "string" ? raw : Array.isArray(raw) ? raw.map((p) => p?.type === "text" ? p.text : "").join("\n") : "{}";
+      ai = JSON.parse(text2 || "{}");
+    } catch (error48) {
+      ai = {
+        resumo: "N\xE3o foi poss\xEDvel gerar triagem autom\xE1tica neste momento.",
+        causaProvavel: "Indeterminada",
+        nivelConfianca: 0,
+        precisaEscalar: true,
+        categoriaSugerida: "outro",
+        prioridadeSugerida: "media",
+        passosUsuario: ["Encaminhar para equipe de TI para an\xE1lise manual."],
+        passosTI: ["Validar logs, print e contexto t\xE9cnico do usu\xE1rio."],
+        acaoImediata: "Escalonar para atendimento humano.",
+        erro: String(error48?.message || "AI_TRIAGE_FAILED")
+      };
+    }
+    const precisaEscalar = Boolean(ai?.precisaEscalar ?? true);
+    const nivelConfianca = Number(ai?.nivelConfianca ?? 0);
+    if (ticket?.id) {
+      const statusTarget = precisaEscalar ? "aguardando_ti" : "aguardando_usuario";
+      await client`
+          UPDATE tickets_ti
+          SET status = ${statusTarget},
+              categoria = COALESCE(${String(ai?.categoriaSugerida || "") || null}, categoria),
+              prioridade = COALESCE(${String(ai?.prioridadeSugerida || "") || null}, prioridade),
+              "updatedAt" = NOW()
+          WHERE id = ${ticket.id} AND "empresaId" = ${ctx.user.empresaId}
+        `.catch(() => {
+      });
+      const conteudoPublico = [
+        `Triagem IA: ${ai?.resumo || "Sem resumo."}`,
+        ai?.acaoImediata ? `A\xE7\xE3o imediata: ${ai.acaoImediata}` : "",
+        Array.isArray(ai?.passosUsuario) && ai.passosUsuario.length ? `Passos sugeridos para o usu\xE1rio:
+- ${ai.passosUsuario.join("\n- ")}` : "",
+        `Confian\xE7a: ${nivelConfianca}%`
+      ].filter(Boolean).join("\n\n");
+      await client`
+          INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"isInterno","createdAt")
+          VALUES (${ticket.id},${ctx.user.empresaId},${ctx.user.id},${conteudoPublico},'sistema',false,NOW())
+        `.catch(() => {
+      });
+      await client`
+          INSERT INTO ticket_internal_notes ("ticketId","empresaId","autorId",conteudo,"createdAt")
+          VALUES (${ticket.id},${ctx.user.empresaId},${ctx.user.id},${`Triagem IA (interno): ${JSON.stringify(ai)}`},NOW())
+        `.catch(() => {
+      });
+    }
+    return {
+      ok: true,
+      triagem: ai,
+      precisaEscalar,
+      nivelConfianca
+    };
+  }),
   updateTicket: protectedProcedure.input(external_exports.object({
     id: external_exports.number(),
     status: external_exports.enum(TICKET_STATUS_VALUES).optional(),
@@ -90388,6 +90722,7 @@ var tiRouter = router({
     resolucao: external_exports.string().optional(),
     slaHoras: external_exports.number().optional()
   })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const { id, ...data } = input;
@@ -90439,6 +90774,7 @@ var tiRouter = router({
     return { success: true };
   }),
   updateTicketStatus: protectedProcedure.input(external_exports.object({ id: external_exports.number(), status: external_exports.enum(TICKET_STATUS_VALUES), resolucao: external_exports.string().optional() })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const rows = await client`SELECT status FROM tickets_ti WHERE id=${input.id} AND "empresaId"=${ctx.user.empresaId} LIMIT 1`;
@@ -90461,6 +90797,9 @@ var tiRouter = router({
     return { success: true };
   }),
   deleteTicket: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input, ctx }) => {
+    if (!canManageTi(ctx.user)) {
+      throw new TRPCError({ code: "FORBIDDEN", message: "Sem permiss\xE3o para excluir chamado." });
+    }
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     await db.update(ticketsTi).set({ deletedAt: /* @__PURE__ */ new Date() }).where(and(eq(ticketsTi.id, input.id), eq(ticketsTi.empresaId, ctx.user.empresaId)));
@@ -90470,6 +90809,17 @@ var tiRouter = router({
   listMensagens: protectedProcedure.input(external_exports.object({ ticketId: external_exports.number() })).query(async ({ input, ctx }) => {
     const client = await getRawClient();
     if (!client) return [];
+    if (!canManageTi(ctx.user)) {
+      const own2 = await client`
+          SELECT id FROM tickets_ti
+          WHERE id = ${input.ticketId}
+            AND "empresaId" = ${ctx.user.empresaId}
+            AND "solicitanteId" = ${ctx.user.id}
+            AND "deletedAt" IS NULL
+          LIMIT 1
+        `.catch(() => []);
+      if (!own2?.[0]) throw new TRPCError({ code: "FORBIDDEN" });
+    }
     return client`
         SELECT m.*, u.name as autor_nome, u.email as autor_email
         FROM ticket_mensagens m
@@ -90509,6 +90859,7 @@ var tiRouter = router({
       `.catch(() => []);
   }),
   listInternalNotes: protectedProcedure.input(external_exports.object({ ticketId: external_exports.number() })).query(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
     return client`
@@ -90522,6 +90873,7 @@ var tiRouter = router({
       `.catch(() => []);
   }),
   addInternalNote: protectedProcedure.input(external_exports.object({ ticketId: external_exports.number(), conteudo: external_exports.string().min(2) })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const rows = await client`
@@ -90537,6 +90889,7 @@ var tiRouter = router({
     return rows[0];
   }),
   requestRemoteAccess: protectedProcedure.input(external_exports.object({ ticketId: external_exports.number(), anydeskId: external_exports.string().optional(), observacoes: external_exports.string().optional() })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     await client`
@@ -90556,6 +90909,7 @@ var tiRouter = router({
     return { success: true };
   }),
   listRemoteAccessRequests: protectedProcedure.input(external_exports.object({ status: external_exports.string().optional() }).optional()).query(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
     const status = input?.status;
@@ -90581,6 +90935,7 @@ var tiRouter = router({
     anydeskId: external_exports.string().optional(),
     consentimento: external_exports.boolean().optional()
   })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const rows = await client`
@@ -90648,6 +91003,7 @@ var tiRouter = router({
   // ATIVOS / INVENTÁRIO
   // ══════════════════════════════════════════════════════════════════════════
   listAtivos: protectedProcedure.input(external_exports.object({ search: external_exports.string().optional(), tipo: external_exports.string().optional() })).query(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const conds = [eq(ativosTi.empresaId, ctx.user.empresaId), isNull2(ativosTi.deletedAt)];
@@ -90667,6 +91023,7 @@ var tiRouter = router({
     anydesk: external_exports.string().optional(),
     observacoes: external_exports.string().optional()
   })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const [a] = await db.insert(ativosTi).values({ ...input, empresaId: ctx.user.empresaId }).returning();
@@ -90687,6 +91044,7 @@ var tiRouter = router({
     status: external_exports.string().optional(),
     observacoes: external_exports.string().optional()
   })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const { id, ...data } = input;
@@ -90694,6 +91052,7 @@ var tiRouter = router({
     return { success: true };
   }),
   deleteAtivo: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     await db.update(ativosTi).set({ deletedAt: /* @__PURE__ */ new Date() }).where(and(eq(ativosTi.id, input.id), eq(ativosTi.empresaId, ctx.user.empresaId)));
@@ -90703,6 +91062,7 @@ var tiRouter = router({
   // LICENÇAS
   // ══════════════════════════════════════════════════════════════════════════
   listLicencas: protectedProcedure.input(external_exports.object({ search: external_exports.string().optional() })).query(async ({ ctx, input }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
     return client`
@@ -90764,6 +91124,7 @@ var tiRouter = router({
     return { success: true };
   }),
   deleteLicenca: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     await client`UPDATE licencas_ti SET "deletedAt"=NOW() WHERE id=${input.id} AND "empresaId"=${ctx.user.empresaId}`;
@@ -90773,6 +91134,7 @@ var tiRouter = router({
   // SERVIDORES
   // ══════════════════════════════════════════════════════════════════════════
   listServidores: protectedProcedure.query(async ({ ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
     return client`SELECT * FROM servidores_ti WHERE "empresaId"=${ctx.user.empresaId} AND "deletedAt" IS NULL ORDER BY "createdAt" DESC`.catch(() => []);
@@ -90789,6 +91151,7 @@ var tiRouter = router({
     funcao: external_exports.string().optional(),
     observacoes: external_exports.string().optional()
   })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const rows = await client`
@@ -90799,6 +91162,7 @@ var tiRouter = router({
     return rows[0];
   }),
   updateServidor: protectedProcedure.input(external_exports.object({ id: external_exports.number(), status: external_exports.enum(["online", "offline", "manutencao"]).optional(), observacoes: external_exports.string().optional() })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     if (input.status) await client`UPDATE servidores_ti SET status=${input.status},"updatedAt"=NOW() WHERE id=${input.id} AND "empresaId"=${ctx.user.empresaId}`;
@@ -90808,6 +91172,7 @@ var tiRouter = router({
   // ACESSOS REMOTOS
   // ══════════════════════════════════════════════════════════════════════════
   listAcessos: protectedProcedure.query(async ({ ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
     return client`
@@ -90827,6 +91192,7 @@ var tiRouter = router({
     setor: external_exports.string().optional(),
     observacoes: external_exports.string().optional()
   })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const rows = await client`
@@ -90840,6 +91206,7 @@ var tiRouter = router({
   // COMPRAS DE TI
   // ══════════════════════════════════════════════════════════════════════════
   listCompras: protectedProcedure.query(async ({ ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
     return client`
@@ -90854,6 +91221,7 @@ var tiRouter = router({
     `.catch(() => []);
   }),
   listComprasHistorico: protectedProcedure.input(external_exports.object({ compraId: external_exports.number() })).query(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
     return client`
@@ -90874,6 +91242,7 @@ var tiRouter = router({
     justificativa: external_exports.string().optional(),
     observacoes: external_exports.string().optional()
   })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const quantidade = input.quantidade || 1;
@@ -90900,6 +91269,7 @@ var tiRouter = router({
     status: external_exports.enum(["solicitado", "em_aprovacao", "aprovado", "rejeitado", "comprado", "entregue", "cancelado"]),
     observacao: external_exports.string().optional()
   })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const rows = await client`
@@ -90933,6 +91303,7 @@ var tiRouter = router({
   // CMDB
   // ══════════════════════════════════════════════════════════════════════════
   listCmdb: protectedProcedure.query(async ({ ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
     return client`SELECT * FROM cmdb_ti WHERE "empresaId"=${ctx.user.empresaId} AND "deletedAt" IS NULL ORDER BY "createdAt" DESC`.catch(() => []);
@@ -90946,6 +91317,7 @@ var tiRouter = router({
     dependencias: external_exports.string().optional(),
     observacoes: external_exports.string().optional()
   })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const rows = await client`
@@ -90959,6 +91331,7 @@ var tiRouter = router({
   // MANUTENÇÕES
   // ══════════════════════════════════════════════════════════════════════════
   listManutencoes: protectedProcedure.query(async ({ ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
     return client`
@@ -90978,6 +91351,7 @@ var tiRouter = router({
     custo: external_exports.number().optional(),
     observacoes: external_exports.string().optional()
   })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const rows = await client`
@@ -90991,10 +91365,11 @@ var tiRouter = router({
   // MONITORAMENTO — Agentes
   // ══════════════════════════════════════════════════════════════════════════
   listAgentes: protectedProcedure.input(external_exports.object({ empresaId: external_exports.number().optional() }).optional()).query(async ({ ctx, input }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
     const empresaId = await resolveAccessibleEmpresaId(ctx, input?.empresaId);
-    return client`
+    const fullRows = await client`
       SELECT a.*,
         (SELECT "coletadoEm" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as ultima_coleta,
         (SELECT "cpuUso" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as cpu_atual,
@@ -91012,8 +91387,16 @@ var tiRouter = router({
       WHERE a."empresaId"=${empresaId}
       ORDER BY a.hostname ASC
     `.catch(() => []);
+    if (fullRows.length > 0) return fullRows;
+    return client`
+      SELECT a.*
+      FROM monitor_agentes a
+      WHERE a."empresaId"=${empresaId}
+      ORDER BY a.hostname ASC
+    `.catch(() => []);
   }),
   getAgenteMetricas: protectedProcedure.input(external_exports.object({ agenteId: external_exports.number(), periodo: external_exports.enum(["1h", "24h", "7d", "30d", "90d"]).optional(), empresaId: external_exports.number().optional() })).query(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return { metricas: [], ultima: null, picos: {} };
     const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
@@ -91105,6 +91488,7 @@ var tiRouter = router({
     return { received: inserted };
   }),
   listAlertas: protectedProcedure.input(external_exports.object({ limit: external_exports.number().optional() })).query(async ({ ctx, input }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
     return client`
@@ -91115,22 +91499,31 @@ var tiRouter = router({
       `.catch(() => []);
   }),
   // ── Códigos de Pareamento PC↔Synapse ──────────────────────────────────────────────────────────────────────────────
-  gerarCodigoPareamento: protectedProcedure.input(external_exports.object({ descricao: external_exports.string().optional(), ativoId: external_exports.number().optional(), empresaId: external_exports.number().optional() })).mutation(async ({ input, ctx }) => {
+  gerarCodigoPareamento: protectedProcedure.input(external_exports.object({
+    descricao: external_exports.string().optional(),
+    ativoId: external_exports.number().optional(),
+    empresaId: external_exports.number().optional(),
+    userId: external_exports.number().optional(),
+    departmentId: external_exports.number().optional()
+  })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
+    const userId = input.userId || ctx.user.id;
     const parte1 = Math.random().toString(36).slice(2, 6).toUpperCase();
     const parte2 = Math.random().toString(36).slice(2, 6).toUpperCase();
     const codigo = `SYNC-${parte1}-${parte2}`;
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1e3).toISOString();
     const rows = await client`
-          INSERT INTO agent_pairing_codes ("empresaId",codigo,descricao,"ativoId","criadoPor","expiresAt","createdAt")
-          VALUES (${empresaId},${codigo},${input.descricao || null},${input.ativoId || null},${ctx.user.id},${expiresAt},NOW())
+          INSERT INTO agent_pairing_codes ("empresaId",codigo,descricao,"ativoId","criadoPor","expiresAt","createdAt",user_id,department_id)
+          VALUES (${empresaId},${codigo},${input.descricao || null},${input.ativoId || null},${ctx.user.id},${expiresAt},NOW(),${userId},${input.departmentId || null})
           RETURNING *
         `;
     return rows[0];
   }),
   listCodigosPareamento: protectedProcedure.input(external_exports.object({ empresaId: external_exports.number().optional() }).optional()).query(async ({ ctx, input }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
     const empresaId = await resolveAccessibleEmpresaId(ctx, input?.empresaId);
@@ -91144,6 +91537,7 @@ var tiRouter = router({
   }),
   // ── Certificados Digitais ──────────────────────────────────────────────────
   listCertificados: protectedProcedure.input(external_exports.object({ search: external_exports.string().optional() })).query(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const conds = [eq(certificadosTi.empresaId, ctx.user.empresaId), isNull2(certificadosTi.deletedAt)];
@@ -91157,6 +91551,7 @@ var tiRouter = router({
     senha: external_exports.string().optional(),
     observacoes: external_exports.string().optional()
   })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const [novo] = await db.insert(certificadosTi).values({
@@ -91170,12 +91565,14 @@ var tiRouter = router({
     return novo;
   }),
   deleteCertificado: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     await db.update(certificadosTi).set({ deletedAt: /* @__PURE__ */ new Date() }).where(and(eq(certificadosTi.id, input.id), eq(certificadosTi.empresaId, ctx.user.empresaId)));
     return { success: true };
   }),
   revogarCodigoPareamento: protectedProcedure.input(external_exports.object({ id: external_exports.number(), empresaId: external_exports.number().optional() })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
@@ -91232,6 +91629,7 @@ var tiRouter = router({
   }),
   // ── Listar usuários da empresa (para atribuição de técnico) ────────────────────────
   listTecnicos: protectedProcedure.query(async ({ ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
     return client`SELECT id, name, email FROM users WHERE "empresaId"=${ctx.user.empresaId} AND "deletedAt" IS NULL ORDER BY name ASC`.catch(() => []);
@@ -97550,17 +97948,24 @@ app.options("*", (0, import_cors.default)());
 app.use(import_express.default.json({ limit: "10mb" }));
 var getBaseUrl = (req) => `${req.protocol}://${req.get("host")}`;
 var FRONTEND_URL = process.env.FRONTEND_URL || "https://synapse-seven-nu.vercel.app";
-var AUTH0_DOMAIN = process.env.AUTH0_DOMAIN || "";
-var AUTH0_CLIENT_ID = process.env.AUTH0_CLIENT_ID || "";
-var AUTH0_CLIENT_SECRET = process.env.AUTH0_CLIENT_SECRET || "";
-var AUTH0_CONNECTION_GOOGLE = process.env.AUTH0_CONNECTION_GOOGLE || "google-oauth2";
-var AUTH0_CONNECTION_MICROSOFT = process.env.AUTH0_CONNECTION_MICROSOFT || "windowslive";
-var AUTH0_CONNECTION_APPLE = process.env.AUTH0_CONNECTION_APPLE || "apple";
+var getAuth0Config = () => ({
+  domain: String(process.env.AUTH0_DOMAIN || "").trim(),
+  clientId: String(process.env.AUTH0_CLIENT_ID || "").trim(),
+  clientSecret: String(process.env.AUTH0_CLIENT_SECRET || "").trim(),
+  connGoogle: String(process.env.AUTH0_CONNECTION_GOOGLE || "google-oauth2").trim(),
+  connMicrosoft: String(process.env.AUTH0_CONNECTION_MICROSOFT || "windowslive").trim(),
+  connApple: String(process.env.AUTH0_CONNECTION_APPLE || "apple").trim()
+});
 var buildAuth0RedirectUri = (req) => {
+  const fixed = String(process.env.AUTH0_REDIRECT_URI || "").trim();
+  if (fixed) return fixed;
   const origin2 = getBaseUrl(req);
   return `${origin2}/api/auth/auth0/callback`;
 };
-var isAuth0Configured = () => Boolean(AUTH0_DOMAIN && AUTH0_CLIENT_ID && AUTH0_CLIENT_SECRET);
+var isAuth0Configured = () => {
+  const cfg = getAuth0Config();
+  return Boolean(cfg.domain && cfg.clientId && cfg.clientSecret);
+};
 app.get("/api/auth/providers", (_req, res) => {
   res.json({
     google: isAuth0Configured(),
@@ -97573,14 +97978,23 @@ app.get("/api/auth/auth0/start", (req, res) => {
   if (!isAuth0Configured()) {
     return res.status(503).json({ error: "AUTH0_NOT_CONFIGURED" });
   }
-  const provider = String(req.query.provider || "google").toLowerCase();
+  const cfg = getAuth0Config();
+  const providerParam = String(req.query.provider || "google").toLowerCase();
   const providerToConnection = {
-    google: AUTH0_CONNECTION_GOOGLE,
-    microsoft: AUTH0_CONNECTION_MICROSOFT,
-    apple: AUTH0_CONNECTION_APPLE
+    google: cfg.connGoogle,
+    microsoft: cfg.connMicrosoft,
+    apple: cfg.connApple
   };
-  const connection2 = providerToConnection[provider] || AUTH0_CONNECTION_GOOGLE;
-  const state = import_crypto5.default.randomBytes(24).toString("hex");
+  const provider = Object.prototype.hasOwnProperty.call(providerToConnection, providerParam) ? providerParam : "google";
+  const connection2 = providerToConnection[provider] || cfg.connGoogle;
+  const state = `${provider}__${import_crypto5.default.randomBytes(24).toString("hex")}`;
+  res.cookie("synapse-auth0-provider", provider, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 10 * 60 * 1e3,
+    path: "/"
+  });
   res.cookie("synapse-auth0-state", state, {
     httpOnly: true,
     sameSite: "lax",
@@ -97588,34 +98002,47 @@ app.get("/api/auth/auth0/start", (req, res) => {
     maxAge: 10 * 60 * 1e3,
     path: "/"
   });
-  const authorizeUrl = new URL(`https://${AUTH0_DOMAIN}/authorize`);
+  const authorizeUrl = new URL(`https://${cfg.domain}/authorize`);
   authorizeUrl.searchParams.set("response_type", "code");
-  authorizeUrl.searchParams.set("client_id", AUTH0_CLIENT_ID);
+  authorizeUrl.searchParams.set("client_id", cfg.clientId);
   authorizeUrl.searchParams.set("redirect_uri", buildAuth0RedirectUri(req));
   authorizeUrl.searchParams.set("scope", "openid profile email");
   authorizeUrl.searchParams.set("connection", connection2);
   authorizeUrl.searchParams.set("state", state);
+  if (provider === "microsoft") {
+    authorizeUrl.searchParams.set("prompt", "select_account");
+  } else if (provider === "google") {
+    authorizeUrl.searchParams.set("prompt", "select_account");
+  }
   res.redirect(authorizeUrl.toString());
 });
 app.get("/api/auth/auth0/callback", async (req, res) => {
-  if (!isAuth0Configured()) {
-    return res.redirect(`${FRONTEND_URL}/login?social_error=config`);
-  }
-  const code = String(req.query.code || "");
-  const state = String(req.query.state || "");
   const cookieHeader = String(req.headers.cookie || "");
+  const stateFromQueryRaw = String(req.query.state || "");
+  const providerFromState = stateFromQueryRaw.includes("__") ? stateFromQueryRaw.split("__")[0] : "";
+  const providerMatch = cookieHeader.match(/(?:^|;\s*)synapse-auth0-provider=([^;]+)/);
+  const provider = String(
+    providerFromState || (providerMatch ? decodeURIComponent(providerMatch[1]) : "google")
+  ).toLowerCase();
+  const socialErrorRedirect = (code2) => `${FRONTEND_URL}/login?social_error=${encodeURIComponent(code2)}&social_provider=${encodeURIComponent(provider)}`;
+  if (!isAuth0Configured()) {
+    return res.redirect(socialErrorRedirect("config"));
+  }
+  const cfg = getAuth0Config();
+  const code = String(req.query.code || "");
+  const state = stateFromQueryRaw;
   const savedStateMatch = cookieHeader.match(/(?:^|;\s*)synapse-auth0-state=([^;]+)/);
   const savedState = savedStateMatch ? decodeURIComponent(savedStateMatch[1]) : "";
   if (!code || !state || !savedState || state !== savedState) {
-    return res.redirect(`${FRONTEND_URL}/login?social_error=state`);
+    return res.redirect(socialErrorRedirect("state"));
   }
   try {
     const tokenResp = await axios_default.post(
-      `https://${AUTH0_DOMAIN}/oauth/token`,
+      `https://${cfg.domain}/oauth/token`,
       {
         grant_type: "authorization_code",
-        client_id: AUTH0_CLIENT_ID,
-        client_secret: AUTH0_CLIENT_SECRET,
+        client_id: cfg.clientId,
+        client_secret: cfg.clientSecret,
         code,
         redirect_uri: buildAuth0RedirectUri(req)
       },
@@ -97623,9 +98050,9 @@ app.get("/api/auth/auth0/callback", async (req, res) => {
     );
     const accessToken = tokenResp.data?.access_token;
     if (!accessToken) {
-      return res.redirect(`${FRONTEND_URL}/login?social_error=token`);
+      return res.redirect(socialErrorRedirect("token"));
     }
-    const userInfoResp = await axios_default.get(`https://${AUTH0_DOMAIN}/userinfo`, {
+    const userInfoResp = await axios_default.get(`https://${cfg.domain}/userinfo`, {
       headers: { Authorization: `Bearer ${accessToken}` },
       timeout: 1e4
     });
@@ -97634,10 +98061,10 @@ app.get("/api/auth/auth0/callback", async (req, res) => {
     const sub = String(profile.sub || "");
     const name2 = String(profile.name || profile.nickname || email3 || "Usu\xE1rio");
     if (!email3 || !sub) {
-      return res.redirect(`${FRONTEND_URL}/login?social_error=profile`);
+      return res.redirect(socialErrorRedirect("profile"));
     }
     const client = await getRawClient();
-    if (!client) return res.redirect(`${FRONTEND_URL}/login?social_error=db`);
+    if (!client) return res.redirect(socialErrorRedirect("db"));
     const existingByEmail = await client`
       SELECT id, "openId", email, role, status, "empresaId", password
       FROM users
@@ -97646,10 +98073,11 @@ app.get("/api/auth/auth0/callback", async (req, res) => {
     `;
     let user = existingByEmail[0];
     const openId = `auth0_${sub}`.slice(0, 64);
+    const loginMethod = provider === "microsoft" ? "microsoft" : provider === "apple" ? "apple" : "google";
     if (!user) {
       const inserted = await client`
         INSERT INTO users ("openId", name, email, "loginMethod", role, status, "empresaId", "createdAt", "updatedAt", "lastSignedIn")
-        VALUES (${openId}, ${name2}, ${email3}, 'google', 'user', 'approved', NULL, NOW(), NOW(), NOW())
+        VALUES (${openId}, ${name2}, ${email3}, ${loginMethod}, 'user', 'approved', NULL, NOW(), NOW(), NOW())
         RETURNING id, "openId", email, role, status, "empresaId", password
       `;
       user = inserted[0];
@@ -97658,14 +98086,14 @@ app.get("/api/auth/auth0/callback", async (req, res) => {
         UPDATE users
         SET "openId"=${openId},
             name=${name2},
-            "loginMethod"='google',
+            "loginMethod"=${loginMethod},
             "lastSignedIn"=NOW(),
             "updatedAt"=NOW()
         WHERE id=${user.id}
       `;
     }
     if (user?.status === "pending") {
-      return res.redirect(`${FRONTEND_URL}/login?social_error=pending`);
+      return res.redirect(socialErrorRedirect("pending"));
     }
     const appToken = await sdk.signSession(
       {
@@ -97682,12 +98110,19 @@ app.get("/api/auth/auth0/callback", async (req, res) => {
       maxAge: 0,
       path: "/"
     });
+    res.cookie("synapse-auth0-provider", "", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 0,
+      path: "/"
+    });
     return res.redirect(
       `${FRONTEND_URL}/auth/callback?token=${encodeURIComponent(appToken)}`
     );
   } catch (error48) {
     console.error("[Auth0 Callback] Falha:", error48);
-    return res.redirect(`${FRONTEND_URL}/login?social_error=callback`);
+    return res.redirect(socialErrorRedirect("callback"));
   }
 });
 var requireUser2 = async (req, res, next) => {
@@ -97850,7 +98285,7 @@ app.get("/api/agents", requireUser2, async (req, res) => {
   if (user.role !== "master_admin" && user.empresaId && Number(user.empresaId) !== empresaId) {
     return res.status(403).json({ error: "FORBIDDEN_COMPANY" });
   }
-  const rows = await client`
+  const fullRows = await client`
     SELECT a.*,
       (SELECT "coletadoEm" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as ultima_coleta,
       (SELECT "cpuUso" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as cpu_atual,
@@ -97868,7 +98303,16 @@ app.get("/api/agents", requireUser2, async (req, res) => {
     WHERE a."empresaId"=${empresaId} AND a."deletedAt" IS NULL
     ORDER BY a.hostname ASC
   `.catch(() => []);
-  res.json(rows);
+  if (fullRows.length > 0) {
+    return res.json(fullRows);
+  }
+  const fallbackRows = await client`
+    SELECT a.*
+    FROM monitor_agentes a
+    WHERE a."empresaId"=${empresaId} AND a."deletedAt" IS NULL
+    ORDER BY a.hostname ASC
+  `.catch(() => []);
+  return res.json(fallbackRows);
 });
 app.put("/api/agents/:id/associate", requireUser2, async (req, res) => {
   const user = req.user;
@@ -97912,22 +98356,37 @@ app.post("/api/agents/generate-pairing-code", requireUser2, async (req, res) => 
   `;
   res.json({ code, expiresAt, empresaId });
 });
+var setNoCacheDownloadHeaders = (res) => {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+};
 app.get("/api/agent/download/windows", (_req, res) => {
+  setNoCacheDownloadHeaders(res);
   res.download(import_path39.default.join(AGENT_DIR, "synapse-agent.exe"), "synapse-agent.exe");
 });
 app.get("/api/agent/download/windows-installer", (_req, res) => {
+  setNoCacheDownloadHeaders(res);
   res.download(import_path39.default.join(AGENT_DIR, "install_windows.bat"), "instalar_agente.bat");
 });
 app.get("/api/agent/download/windows-uninstaller", (_req, res) => {
+  setNoCacheDownloadHeaders(res);
   res.download(import_path39.default.join(AGENT_DIR, "uninstall_windows.bat"), "desinstalar_agente.bat");
 });
 app.get("/api/agent/download/windows-node-installer", (_req, res) => {
+  setNoCacheDownloadHeaders(res);
   res.download(import_path39.default.join(AGENT_DIR, "install_synapse.js"), "instalar_agente_node.js");
 });
 app.get("/api/agent/download/linux", (_req, res) => {
+  setNoCacheDownloadHeaders(res);
   res.download(import_path39.default.join(AGENT_DIR, "install_linux.sh"), "install_linux.sh");
 });
 app.get("/api/agent/download/agent", (_req, res) => {
+  setNoCacheDownloadHeaders(res);
+  res.download(import_path39.default.join(AGENT_DIR, "synapse_agent.py"), "synapse_agent.py");
+});
+app.get("/api/agent/support/latest.py", (_req, res) => {
+  setNoCacheDownloadHeaders(res);
   res.download(import_path39.default.join(AGENT_DIR, "synapse_agent.py"), "synapse_agent.py");
 });
 app.post("/api/omnichannel/webhook/:provider/:empresaId", async (req, res) => {
@@ -98030,7 +98489,12 @@ app.post("/api/agent/pair", async (req, res) => {
       return res.status(404).json({ error: "C\xF3digo inv\xE1lido ou expirado" });
     }
     const token = `agent_${pairing.empresaId}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+    const pairedUserId = pairing.user_id || pairing.criadoPor || null;
+    const pairedDepartmentId = pairing.department_id || null;
     const fingerprint = req.body?.fingerprint || `${hostname3}:${req.body?.platform?.machine || ""}:${req.body?.platform?.processor || ""}`;
+    const soValue = req.body?.platform?.os || req.body?.so || req.body?.platform || null;
+    const anydeskValue = req.body?.anydeskId || req.body?.anydesk_id || null;
+    const macValue = req.body?.mac || null;
     const existingRows = await client`
       SELECT * FROM monitor_agentes
       WHERE "empresaId"=${pairing.empresaId}
@@ -98043,7 +98507,9 @@ app.post("/api/agent/pair", async (req, res) => {
         UPDATE monitor_agentes
         SET hostname=${hostname3},
             ip=${req.body?.ip || null},
-            so=${req.body?.platform?.os || req.body?.so || null},
+            so=${soValue},
+            mac=${macValue},
+            "anydeskId"=${anydeskValue},
             "versaoAgente"=${req.body?.agentVersion || req.body?.versao_agente || "1.0.0"},
             token=${token},
             fingerprint=${fingerprint},
@@ -98052,22 +98518,26 @@ app.post("/api/agent/pair", async (req, res) => {
             online=true,
             ativo=true,
             "ultimoContato"=NOW(),
+            user_id=COALESCE(user_id, ${pairedUserId}),
+            department_id=COALESCE(department_id, ${pairedDepartmentId}),
             "updatedAt"=NOW()
         WHERE id=${deviceId}
       `;
     } else {
       const inserted = await client`
         INSERT INTO monitor_agentes (
-          "empresaId", hostname, ip, so, "versaoAgente", token,
+          "empresaId", hostname, ip, so, mac, "anydeskId", "versaoAgente", token,
           "ultimoContato", online, ativo, "createdAt", "updatedAt",
           status, "pairingCode", fingerprint, user_id, department_id
         )
         VALUES (
           ${pairing.empresaId}, ${hostname3}, ${req.body?.ip || null},
-          ${req.body?.platform?.os || req.body?.so || null},
+          ${soValue},
+          ${macValue},
+          ${anydeskValue},
           ${req.body?.agentVersion || req.body?.versao_agente || "1.0.0"},
           ${token}, NOW(), true, true, NOW(), NOW(),
-          'online', ${pairCode}, ${fingerprint}, ${pairing.user_id || null}, ${pairing.department_id || null}
+          'online', ${pairCode}, ${fingerprint}, ${pairedUserId}, ${pairedDepartmentId}
         )
         RETURNING id
       `;
@@ -98078,7 +98548,7 @@ app.post("/api/agent/pair", async (req, res) => {
       SET "usado"=true, is_used=true, "agenteId"=${deviceId}, "usadoEm"=NOW(), "hostnameVinculado"=${hostname3}
       WHERE id=${pairing.id}
     `;
-    return res.json({ token, deviceId });
+    return res.json({ token, deviceId, empresaId: pairing.empresaId, hostname: hostname3 });
   } catch (error48) {
     console.error("[Agent Pair] Falha:", error48);
     return res.status(500).json({ error: "PAIR_FAILED" });
@@ -98200,7 +98670,7 @@ app.post("/api/agent/metrics", async (req, res) => {
     return res.json({ success: true });
   } catch (error48) {
     console.error("[Agent Metrics] Falha:", error48);
-    return res.status(202).json({ success: false, queued: true, warning: "METRICS_DEGRADED" });
+    return res.status(200).json({ success: false, queued: true, warning: "METRICS_DEGRADED" });
   }
 });
 app.get("/api/agent/profile", requireAgent, async (req, res) => {
@@ -98228,7 +98698,15 @@ app.get("/api/agent/profile", requireAgent, async (req, res) => {
     WHERE a.id = ${agent.id}
     LIMIT 1
   `.catch(() => []);
-  return res.json(profileRows[0] ?? null);
+  if (profileRows[0]) return res.json(profileRows[0]);
+  const fallbackProfileRows = await client`
+    SELECT a.*, e.nome as empresa_nome
+    FROM monitor_agentes a
+    LEFT JOIN empresas e ON e.id = a."empresaId"
+    WHERE a.id = ${agent.id}
+    LIMIT 1
+  `.catch(() => []);
+  return res.json(fallbackProfileRows[0] ?? null);
 });
 app.get("/api/agent/tickets", requireAgent, async (req, res) => {
   const agent = req.agent;

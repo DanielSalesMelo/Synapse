@@ -183,8 +183,8 @@ app.get("/api/auth/auth0/start", (req, res) => {
   authorizeUrl.searchParams.set("connection", connection);
   authorizeUrl.searchParams.set("state", state);
   if (provider === "microsoft") {
-    // Força seleção/reauth para evitar "entrar direto" em conta errada.
-    authorizeUrl.searchParams.set("prompt", "login");
+    // Força seletor de contas da Microsoft para o usuário escolher o e-mail.
+    authorizeUrl.searchParams.set("prompt", "select_account");
   } else if (provider === "google") {
     authorizeUrl.searchParams.set("prompt", "select_account");
   }
@@ -199,7 +199,7 @@ app.get("/api/auth/auth0/callback", async (req, res) => {
     : "";
   const providerMatch = cookieHeader.match(/(?:^|;\s*)synapse-auth0-provider=([^;]+)/);
   const provider = String(
-    providerMatch ? decodeURIComponent(providerMatch[1]) : (providerFromState || "google")
+    providerFromState || (providerMatch ? decodeURIComponent(providerMatch[1]) : "google")
   ).toLowerCase();
   const socialErrorRedirect = (code: string) =>
     `${FRONTEND_URL}/login?social_error=${encodeURIComponent(code)}&social_provider=${encodeURIComponent(provider)}`;
