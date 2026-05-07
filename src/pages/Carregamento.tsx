@@ -710,6 +710,7 @@ function CarregamentoCard({ carg, empresaId }: { carg: any; empresaId: number })
 
 // ─── Página principal ─────────────────────────────────────────────────────────
 export default function Carregamento() {
+  const { effectiveEmpresaId: EMPRESA_ID } = useViewAs();
   const [statusFiltro, setStatusFiltro] = useState("todos");
   const [busca, setBusca] = useState("");
   const [modalNovo, setModalNovo] = useState(false);

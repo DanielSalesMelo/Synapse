@@ -14,11 +14,11 @@ var __export = (target, all3) => {
   for (var name2 in all3)
     __defProp(target, name2, { get: all3[name2], enumerable: true });
 };
-var __copyProps = (to, from, except2, desc2) => {
+var __copyProps = (to, from, except2, desc3) => {
   if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except2)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc2 = __getOwnPropDesc(from, key)) || desc2.enumerable });
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc3 = __getOwnPropDesc(from, key)) || desc3.enumerable });
   }
   return to;
 };
@@ -885,10 +885,10 @@ var require_http_errors = __commonJS({
       return ServerError;
     }
     function nameFunc(func, name2) {
-      var desc2 = Object.getOwnPropertyDescriptor(func, "name");
-      if (desc2 && desc2.configurable) {
-        desc2.value = name2;
-        Object.defineProperty(func, "name", desc2);
+      var desc3 = Object.getOwnPropertyDescriptor(func, "name");
+      if (desc3 && desc3.configurable) {
+        desc3.value = name2;
+        Object.defineProperty(func, "name", desc3);
       }
     }
     function populateConstructorExports(exports3, codes, HttpError2) {
@@ -15532,14 +15532,14 @@ var require_get = __commonJS({
         throw e;
       }
     }
-    var desc2 = !!hasProtoAccessor && gOPD && gOPD(
+    var desc3 = !!hasProtoAccessor && gOPD && gOPD(
       Object.prototype,
       /** @type {keyof typeof Object.prototype} */
       "__proto__"
     );
     var $Object = Object;
     var $getPrototypeOf = $Object.getPrototypeOf;
-    module2.exports = desc2 && typeof desc2.get === "function" ? callBind([desc2.get]) : typeof $getPrototypeOf === "function" ? (
+    module2.exports = desc3 && typeof desc3.get === "function" ? callBind([desc3.get]) : typeof $getPrototypeOf === "function" ? (
       /** @type {import('./get')} */
       function getDunder(value) {
         return $getPrototypeOf(value == null ? value : $Object(value));
@@ -15889,10 +15889,10 @@ var require_get_intrinsic = __commonJS({
             return void undefined2;
           }
           if ($gOPD && i + 1 >= parts.length) {
-            var desc2 = $gOPD(value, part);
-            isOwn = !!desc2;
-            if (isOwn && "get" in desc2 && !("originalValue" in desc2.get)) {
-              value = desc2.get;
+            var desc3 = $gOPD(value, part);
+            isOwn = !!desc3;
+            if (isOwn && "get" in desc3 && !("originalValue" in desc3.get)) {
+              value = desc3.get;
             } else {
               value = value[part];
             }
@@ -31151,16 +31151,16 @@ var require_typedarray = __commonJS({
     })()) {
       defineProp = Object.defineProperty;
     } else {
-      defineProp = function(o, p, desc2) {
+      defineProp = function(o, p, desc3) {
         if (!o === Object(o)) throw new TypeError("Object.defineProperty called on non-object");
-        if (ECMAScript.HasProperty(desc2, "get") && Object.prototype.__defineGetter__) {
-          Object.prototype.__defineGetter__.call(o, p, desc2.get);
+        if (ECMAScript.HasProperty(desc3, "get") && Object.prototype.__defineGetter__) {
+          Object.prototype.__defineGetter__.call(o, p, desc3.get);
         }
-        if (ECMAScript.HasProperty(desc2, "set") && Object.prototype.__defineSetter__) {
-          Object.prototype.__defineSetter__.call(o, p, desc2.set);
+        if (ECMAScript.HasProperty(desc3, "set") && Object.prototype.__defineSetter__) {
+          Object.prototype.__defineSetter__.call(o, p, desc3.set);
         }
-        if (ECMAScript.HasProperty(desc2, "value")) {
-          o[p] = desc2.value;
+        if (ECMAScript.HasProperty(desc3, "value")) {
+          o[p] = desc3.value;
         }
         return o;
       };
@@ -34955,10 +34955,10 @@ var init_subquery = __esm({
     init_entity();
     Subquery = class {
       static [entityKind] = "Subquery";
-      constructor(sql5, fields, alias, isWith = false, usedTables = []) {
+      constructor(sql6, fields, alias, isWith = false, usedTables = []) {
         this._ = {
           brand: "Subquery",
-          sql: sql5,
+          sql: sql6,
           selectedFields: fields,
           alias,
           isWith,
@@ -41896,10 +41896,10 @@ var init_raw = __esm({
     init_entity();
     init_query_promise();
     PgRaw = class extends QueryPromise {
-      constructor(execute, sql5, query, mapBatchResult) {
+      constructor(execute, sql6, query, mapBatchResult) {
         super();
         this.execute = execute;
-        this.sql = sql5;
+        this.sql = sql6;
         this.query = query;
         this.mapBatchResult = mapBatchResult;
       }
@@ -42219,8 +42219,8 @@ var init_db = __esm({
 });
 
 // node_modules/drizzle-orm/cache/core/cache.js
-async function hashQuery(sql5, params) {
-  const dataToHash = `${sql5}-${JSON.stringify(params)}`;
+async function hashQuery(sql6, params) {
+  const dataToHash = `${sql6}-${JSON.stringify(params)}`;
   const encoder = new TextEncoder();
   const data = encoder.encode(dataToHash);
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
@@ -47962,8 +47962,8 @@ var require_gte = __commonJS({
   "node_modules/semver/functions/gte.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
-    var gte2 = (a, b2, loose) => compare(a, b2, loose) >= 0;
-    module2.exports = gte2;
+    var gte3 = (a, b2, loose) => compare(a, b2, loose) >= 0;
+    module2.exports = gte3;
   }
 });
 
@@ -47972,8 +47972,8 @@ var require_lte = __commonJS({
   "node_modules/semver/functions/lte.js"(exports2, module2) {
     "use strict";
     var compare = require_compare();
-    var lte3 = (a, b2, loose) => compare(a, b2, loose) <= 0;
-    module2.exports = lte3;
+    var lte4 = (a, b2, loose) => compare(a, b2, loose) <= 0;
+    module2.exports = lte4;
   }
 });
 
@@ -47984,9 +47984,9 @@ var require_cmp = __commonJS({
     var eq2 = require_eq();
     var neq = require_neq();
     var gt2 = require_gt();
-    var gte2 = require_gte();
+    var gte3 = require_gte();
     var lt3 = require_lt();
-    var lte3 = require_lte();
+    var lte4 = require_lte();
     var cmp = (a, op, b2, loose) => {
       switch (op) {
         case "===":
@@ -48014,11 +48014,11 @@ var require_cmp = __commonJS({
         case ">":
           return gt2(a, b2, loose);
         case ">=":
-          return gte2(a, b2, loose);
+          return gte3(a, b2, loose);
         case "<":
           return lt3(a, b2, loose);
         case "<=":
-          return lte3(a, b2, loose);
+          return lte4(a, b2, loose);
         default:
           throw new TypeError(`Invalid operator: ${op}`);
       }
@@ -48772,8 +48772,8 @@ var require_outside = __commonJS({
     var satisfies = require_satisfies();
     var gt2 = require_gt();
     var lt3 = require_lt();
-    var lte3 = require_lte();
-    var gte2 = require_gte();
+    var lte4 = require_lte();
+    var gte3 = require_gte();
     var outside = (version3, range, hilo, options) => {
       version3 = new SemVer(version3, options);
       range = new Range(range, options);
@@ -48781,14 +48781,14 @@ var require_outside = __commonJS({
       switch (hilo) {
         case ">":
           gtfn = gt2;
-          ltefn = lte3;
+          ltefn = lte4;
           ltfn = lt3;
           comp = ">";
           ecomp = ">=";
           break;
         case "<":
           gtfn = lt3;
-          ltefn = gte2;
+          ltefn = gte3;
           ltfn = gt2;
           comp = "<";
           ecomp = "<=";
@@ -49103,8 +49103,8 @@ var require_semver2 = __commonJS({
     var lt3 = require_lt();
     var eq2 = require_eq();
     var neq = require_neq();
-    var gte2 = require_gte();
-    var lte3 = require_lte();
+    var gte3 = require_gte();
+    var lte4 = require_lte();
     var cmp = require_cmp();
     var coerce = require_coerce();
     var Comparator = require_comparator();
@@ -49141,8 +49141,8 @@ var require_semver2 = __commonJS({
       lt: lt3,
       eq: eq2,
       neq,
-      gte: gte2,
-      lte: lte3,
+      gte: gte3,
+      lte: lte4,
       cmp,
       coerce,
       Comparator,
@@ -58413,12 +58413,12 @@ var __hasOwnProp2 = Object.prototype.hasOwnProperty;
 var __commonJS2 = (cb, mod) => function() {
   return mod || (0, cb[__getOwnPropNames2(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
-var __copyProps2 = (to, from, except2, desc2) => {
+var __copyProps2 = (to, from, except2, desc3) => {
   if (from && typeof from === "object" || typeof from === "function") for (var keys = __getOwnPropNames2(from), i = 0, n = keys.length, key; i < n; i++) {
     key = keys[i];
     if (!__hasOwnProp2.call(to, key) && key !== except2) __defProp2(to, key, {
       get: ((k) => from[k]).bind(null, key),
-      enumerable: !(desc2 = __getOwnPropDesc2(from, key)) || desc2.enumerable
+      enumerable: !(desc3 = __getOwnPropDesc2(from, key)) || desc3.enumerable
     });
   }
   return to;
@@ -65597,8 +65597,8 @@ var validators = {};
 });
 var deprecatedWarnings = {};
 validators.transitional = function transitional(validator, version3, message) {
-  function formatMessage(opt, desc2) {
-    return "[Axios v" + VERSION + "] Transitional option '" + opt + "'" + desc2 + (message ? ". " + message : "");
+  function formatMessage(opt, desc3) {
+    return "[Axios v" + VERSION + "] Transitional option '" + opt + "'" + desc3 + (message ? ". " + message : "");
   }
   return (value, opt, opts) => {
     if (validator === false) {
@@ -69052,8 +69052,8 @@ function handleCatchall(proms, input, payload, ctx, def, inst) {
 }
 var $ZodObject = /* @__PURE__ */ $constructor("$ZodObject", (inst, def) => {
   $ZodType.init(inst, def);
-  const desc2 = Object.getOwnPropertyDescriptor(def, "shape");
-  if (!desc2?.get) {
+  const desc3 = Object.getOwnPropertyDescriptor(def, "shape");
+  if (!desc3?.get) {
     const sh = def.shape;
     Object.defineProperty(def, "shape", {
       get: () => {
@@ -82305,7 +82305,7 @@ var noop4 = () => {
 function Subscribe(postgres2, options) {
   const subscribers = /* @__PURE__ */ new Map(), slot = "postgresjs_" + Math.random().toString(36).slice(2), state = {};
   let connection2, stream4, ended = false;
-  const sql5 = subscribe.sql = postgres2({
+  const sql6 = subscribe.sql = postgres2({
     ...options,
     transform: { column: {}, value: {}, row: {} },
     max: 1,
@@ -82321,18 +82321,18 @@ function Subscribe(postgres2, options) {
         return;
       stream4 = null;
       state.pid = state.secret = void 0;
-      connected(await init(sql5, slot, options.publications));
+      connected(await init(sql6, slot, options.publications));
       subscribers.forEach((event) => event.forEach(({ onsubscribe }) => onsubscribe()));
     },
     no_subscribe: true
   });
-  const end = sql5.end, close = sql5.close;
-  sql5.end = async () => {
+  const end = sql6.end, close = sql6.close;
+  sql6.end = async () => {
     ended = true;
     stream4 && await new Promise((r) => (stream4.once("close", r), stream4.end()));
     return end();
   };
-  sql5.close = async () => {
+  sql6.close = async () => {
     stream4 && await new Promise((r) => (stream4.once("close", r), stream4.end()));
     return close();
   };
@@ -82340,7 +82340,7 @@ function Subscribe(postgres2, options) {
   async function subscribe(event, fn, onsubscribe = noop4, onerror = noop4) {
     event = parseEvent(event);
     if (!connection2)
-      connection2 = init(sql5, slot, options.publications);
+      connection2 = init(sql6, slot, options.publications);
     const subscriber = { fn, onsubscribe };
     const fns = subscribers.has(event) ? subscribers.get(event).add(subscriber) : subscribers.set(event, /* @__PURE__ */ new Set([subscriber])).get(event);
     const unsubscribe = () => {
@@ -82351,7 +82351,7 @@ function Subscribe(postgres2, options) {
       connected(x);
       onsubscribe();
       stream4 && stream4.on("error", onerror);
-      return { unsubscribe, state, sql: sql5 };
+      return { unsubscribe, state, sql: sql6 };
     });
   }
   function connected(x) {
@@ -82359,14 +82359,14 @@ function Subscribe(postgres2, options) {
     state.pid = x.state.pid;
     state.secret = x.state.secret;
   }
-  async function init(sql6, slot2, publications) {
+  async function init(sql7, slot2, publications) {
     if (!publications)
       throw new Error("Missing publication names");
-    const xs = await sql6.unsafe(
+    const xs = await sql7.unsafe(
       `CREATE_REPLICATION_SLOT ${slot2} TEMPORARY LOGICAL pgoutput NOEXPORT_SNAPSHOT`
     );
     const [x] = xs;
-    const stream5 = await sql6.unsafe(
+    const stream5 = await sql7.unsafe(
       `START_REPLICATION SLOT ${slot2} LOGICAL ${x.consistent_point} (proto_version '1', publication_names '${publications}')`
     ).writable();
     const state2 = {
@@ -82374,14 +82374,14 @@ function Subscribe(postgres2, options) {
     };
     stream5.on("data", data);
     stream5.on("error", error48);
-    stream5.on("close", sql6.close);
+    stream5.on("close", sql7.close);
     return { stream: stream5, state: xs.state };
     function error48(e) {
       console.error("Unexpected error during logical streaming - reconnecting", e);
     }
     function data(x2) {
       if (x2[0] === 119) {
-        parse4(x2.subarray(25), state2, sql6.options.parsers, handle, options.transform);
+        parse4(x2.subarray(25), state2, sql7.options.parsers, handle, options.transform);
       } else if (x2[0] === 107 && x2[17]) {
         state2.lsn = x2.subarray(1, 9);
         pong();
@@ -82513,22 +82513,22 @@ function parseEvent(x) {
 
 // node_modules/postgres/src/large.js
 var import_stream6 = __toESM(require("stream"), 1);
-function largeObject(sql5, oid, mode = 131072 | 262144) {
+function largeObject(sql6, oid, mode = 131072 | 262144) {
   return new Promise(async (resolve, reject) => {
-    await sql5.begin(async (sql6) => {
+    await sql6.begin(async (sql7) => {
       let finish;
-      !oid && ([{ oid }] = await sql6`select lo_creat(-1) as oid`);
-      const [{ fd }] = await sql6`select lo_open(${oid}, ${mode}) as fd`;
+      !oid && ([{ oid }] = await sql7`select lo_creat(-1) as oid`);
+      const [{ fd }] = await sql7`select lo_open(${oid}, ${mode}) as fd`;
       const lo = {
         writable,
         readable,
-        close: () => sql6`select lo_close(${fd})`.then(finish),
-        tell: () => sql6`select lo_tell64(${fd})`,
-        read: (x) => sql6`select loread(${fd}, ${x}) as data`,
-        write: (x) => sql6`select lowrite(${fd}, ${x})`,
-        truncate: (x) => sql6`select lo_truncate64(${fd}, ${x})`,
-        seek: (x, whence = 0) => sql6`select lo_lseek64(${fd}, ${x}, ${whence})`,
-        size: () => sql6`
+        close: () => sql7`select lo_close(${fd})`.then(finish),
+        tell: () => sql7`select lo_tell64(${fd})`,
+        read: (x) => sql7`select loread(${fd}, ${x}) as data`,
+        write: (x) => sql7`select lowrite(${fd}, ${x})`,
+        truncate: (x) => sql7`select lo_truncate64(${fd}, ${x})`,
+        seek: (x, whence = 0) => sql7`select lo_lseek64(${fd}, ${x}, ${whence})`,
+        size: () => sql7`
           select
             lo_lseek64(${fd}, location, 0) as position,
             seek.size
@@ -82603,12 +82603,12 @@ function Postgres(a, b2) {
   let ending = false;
   const queries = queue_default(), connecting = queue_default(), reserved = queue_default(), closed = queue_default(), ended = queue_default(), open = queue_default(), busy = queue_default(), full = queue_default(), queues = { connecting, reserved, closed, ended, open, busy, full };
   const connections = [...Array(options.max)].map(() => connection_default(options, queues, { onopen, onend, onclose }));
-  const sql5 = Sql(handler);
-  Object.assign(sql5, {
+  const sql6 = Sql(handler);
+  Object.assign(sql6, {
     get parameters() {
       return options.parameters;
     },
-    largeObject: largeObject.bind(null, sql5),
+    largeObject: largeObject.bind(null, sql6),
     subscribe,
     CLOSE,
     END: CLOSE,
@@ -82620,14 +82620,14 @@ function Postgres(a, b2) {
     close,
     end
   });
-  return sql5;
+  return sql6;
   function Sql(handler2) {
     handler2.debug = options.debug;
     Object.entries(options.types).reduce((acc, [name2, type]) => {
       acc[name2] = (x) => new Parameter(x, type.to);
       return acc;
     }, typed);
-    Object.assign(sql6, {
+    Object.assign(sql7, {
       types: typed,
       typed,
       unsafe,
@@ -82636,11 +82636,11 @@ function Postgres(a, b2) {
       json: json3,
       file: file2
     });
-    return sql6;
+    return sql7;
     function typed(value, type) {
       return new Parameter(value, type);
     }
-    function sql6(strings, ...args) {
+    function sql7(strings, ...args) {
       const query = strings && Array.isArray(strings.raw) ? new Query(strings, args, handler2, cancel) : typeof strings === "string" && !args.length ? new Identifier(options.transform.column.to ? options.transform.column.to(strings) : strings) : new Builder(strings, args);
       return query;
     }
@@ -82671,7 +82671,7 @@ function Postgres(a, b2) {
   }
   async function listen(name2, fn, onlisten) {
     const listener = { fn, onlisten };
-    const sql6 = listen.sql || (listen.sql = Postgres({
+    const sql7 = listen.sql || (listen.sql = Postgres({
       ...options,
       max: 1,
       idle_timeout: null,
@@ -82695,7 +82695,7 @@ function Postgres(a, b2) {
       listener.onlisten && listener.onlisten();
       return { state: result2.state, unlisten };
     }
-    channels[name2] = { result: sql6`listen ${sql6.unsafe('"' + name2.replace(/"/g, '""') + '"')}`, listeners: [listener] };
+    channels[name2] = { result: sql7`listen ${sql7.unsafe('"' + name2.replace(/"/g, '""') + '"')}`, listeners: [listener] };
     const result = await channels[name2].result;
     listener.onlisten && listener.onlisten();
     return { state: result.state, unlisten };
@@ -82706,11 +82706,11 @@ function Postgres(a, b2) {
       if (channels[name2].listeners.length)
         return;
       delete channels[name2];
-      return sql6`unlisten ${sql6.unsafe('"' + name2.replace(/"/g, '""') + '"')}`;
+      return sql7`unlisten ${sql7.unsafe('"' + name2.replace(/"/g, '""') + '"')}`;
     }
   }
   async function notify(channel, payload) {
-    return await sql5`select pg_notify(${channel}, ${"" + payload})`;
+    return await sql6`select pg_notify(${channel}, ${"" + payload})`;
   }
   async function reserve() {
     const queue = queue_default();
@@ -82722,12 +82722,12 @@ function Postgres(a, b2) {
     move(c, reserved);
     c.reserved = () => queue.length ? c.execute(queue.shift()) : move(c, reserved);
     c.reserved.release = true;
-    const sql6 = Sql(handler2);
-    sql6.release = () => {
+    const sql7 = Sql(handler2);
+    sql7.release = () => {
       c.reserved = null;
       onopen(c);
     };
-    return sql6;
+    return sql7;
     function handler2(q) {
       c.queue === full ? queue.push(q) : c.execute(q) || move(c, full);
     }
@@ -82737,7 +82737,7 @@ function Postgres(a, b2) {
     const queries2 = queue_default();
     let savepoints = 0, connection2, prepare = null;
     try {
-      await sql5.unsafe("begin " + options2.replace(/[^a-z ]/ig, ""), [], { onexecute }).execute();
+      await sql6.unsafe("begin " + options2.replace(/[^a-z ]/ig, ""), [], { onexecute }).execute();
       return await Promise.race([
         scope(connection2, fn),
         new Promise((_, reject) => connection2.onclose = reject)
@@ -82746,29 +82746,29 @@ function Postgres(a, b2) {
       throw error48;
     }
     async function scope(c, fn2, name2) {
-      const sql6 = Sql(handler2);
-      sql6.savepoint = savepoint;
-      sql6.prepare = (x) => prepare = x.replace(/[^a-z0-9$-_. ]/gi);
+      const sql7 = Sql(handler2);
+      sql7.savepoint = savepoint;
+      sql7.prepare = (x) => prepare = x.replace(/[^a-z0-9$-_. ]/gi);
       let uncaughtError, result;
-      name2 && await sql6`savepoint ${sql6(name2)}`;
+      name2 && await sql7`savepoint ${sql7(name2)}`;
       try {
         result = await new Promise((resolve, reject) => {
-          const x = fn2(sql6);
+          const x = fn2(sql7);
           Promise.resolve(Array.isArray(x) ? Promise.all(x) : x).then(resolve, reject);
         });
         if (uncaughtError)
           throw uncaughtError;
       } catch (e) {
-        await (name2 ? sql6`rollback to ${sql6(name2)}` : sql6`rollback`);
+        await (name2 ? sql7`rollback to ${sql7(name2)}` : sql7`rollback`);
         throw e instanceof PostgresError && e.code === "25P02" && uncaughtError || e;
       }
       if (!name2) {
-        prepare ? await sql6`prepare transaction '${sql6.unsafe(prepare)}'` : await sql6`commit`;
+        prepare ? await sql7`prepare transaction '${sql7.unsafe(prepare)}'` : await sql7`commit`;
       }
       return result;
       function savepoint(name3, fn3) {
         if (name3 && Array.isArray(name3.raw))
-          return savepoint((sql7) => sql7.apply(sql7, arguments));
+          return savepoint((sql8) => sql8.apply(sql8, arguments));
         arguments.length === 1 && (fn3 = name3, name3 = null);
         return scope(c, fn3, "s" + savepoints++ + (name3 ? "_" + name3 : ""));
       }
@@ -83640,7 +83640,16 @@ async function resolveAccessibleEmpresaId(ctx, requestedEmpresaId) {
     throw new TRPCError({ code: "UNAUTHORIZED", message: "Usu\xE1rio n\xE3o autenticado" });
   }
   if (ctx.user.role === "master_admin") {
-    if (requestedEmpresaId && requestedEmpresaId > 0) return requestedEmpresaId;
+    if (requestedEmpresaId && requestedEmpresaId > 0) {
+      const accessible2 = await listAccessibleCompanyIds(ctx.user);
+      if (!accessible2.includes(requestedEmpresaId)) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Empresa selecionada n\xE3o est\xE1 ativa ou n\xE3o existe."
+        });
+      }
+      return requestedEmpresaId;
+    }
     if (ctx.user.empresaId && ctx.user.empresaId > 0) return ctx.user.empresaId;
     const summary = await getAccessibleCompanySummary(ctx.user);
     if (summary.length > 0 && summary[0].empresaId > 0) {
@@ -84362,7 +84371,7 @@ var funcionariosRouter = router({
   })).mutation(async ({ input, ctx }) => {
     return safeDb(async () => {
       const db = requireDb(await getDb(), "funcionarios.lancarFolha");
-      const { contasPagar: contasPagar2 } = await Promise.resolve().then(() => (init_schema2(), schema_exports));
+      const { contasPagar: contasPagar3 } = await Promise.resolve().then(() => (init_schema2(), schema_exports));
       const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
       const funcs = await db.select().from(funcionarios).where(and(
         eq(funcionarios.empresaId, empresaId),
@@ -84379,7 +84388,7 @@ var funcionariosRouter = router({
         const vt = f.temValeTransporte ? Math.round(salario * 0.06 * 100) / 100 : 0;
         const planoSaude = f.temPlanoSaude ? 350 : 0;
         const encargos = Math.round(salario * 0.28 * 100) / 100;
-        await db.insert(contasPagar2).values({
+        await db.insert(contasPagar3).values({
           empresaId,
           descricao: `Sal\xE1rio ${f.nome} - Ref: ${input.mes}/${input.ano}`,
           categoria: "salario",
@@ -84390,7 +84399,7 @@ var funcionariosRouter = router({
         });
         lancados++;
         if (vr > 0) {
-          await db.insert(contasPagar2).values({
+          await db.insert(contasPagar3).values({
             empresaId,
             descricao: `Vale refei\xE7\xE3o ${f.nome} - Ref: ${input.mes}/${input.ano}`,
             categoria: "outro",
@@ -84403,7 +84412,7 @@ var funcionariosRouter = router({
           beneficiosLancados++;
         }
         if (vt > 0) {
-          await db.insert(contasPagar2).values({
+          await db.insert(contasPagar3).values({
             empresaId,
             descricao: `Vale transporte ${f.nome} - Ref: ${input.mes}/${input.ano}`,
             categoria: "outro",
@@ -84416,7 +84425,7 @@ var funcionariosRouter = router({
           beneficiosLancados++;
         }
         if (planoSaude > 0) {
-          await db.insert(contasPagar2).values({
+          await db.insert(contasPagar3).values({
             empresaId,
             descricao: `Plano de sa\xFAde ${f.nome} - Ref: ${input.mes}/${input.ano}`,
             categoria: "seguro",
@@ -84429,7 +84438,7 @@ var funcionariosRouter = router({
           beneficiosLancados++;
         }
         if (encargos > 0) {
-          await db.insert(contasPagar2).values({
+          await db.insert(contasPagar3).values({
             empresaId,
             descricao: `Encargos estimados ${f.nome} - Ref: ${input.mes}/${input.ano}`,
             categoria: "outro",
@@ -85642,70 +85651,95 @@ init_schema2();
 init_drizzle_orm();
 var dashboardRouter = router({
   resumo: protectedProcedure.input(external_exports.object({ empresaId: external_exports.number() })).query(async ({ input, ctx }) => {
-    const db = await getDb();
-    if (!db) return null;
+    const client = await getRawClient();
+    if (!client) return null;
     const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
     const hoje = /* @__PURE__ */ new Date();
     const inicioMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
     const em7dias = new Date(hoje);
     em7dias.setDate(hoje.getDate() + 7);
-    const [veiculosResumo] = await db.select({ total: sql`COUNT(*)` }).from(veiculos).where(and(eq(veiculos.empresaId, empresaId), eq(veiculos.ativo, true), isNull2(veiculos.deletedAt)));
-    const funcionariosResumo = await db.select({
-      funcao: funcionarios.funcao,
-      total: sql`COUNT(*)`
-    }).from(funcionarios).where(and(eq(funcionarios.empresaId, empresaId), eq(funcionarios.ativo, true), isNull2(funcionarios.deletedAt))).groupBy(funcionarios.funcao);
-    const [abastecimentosResumo] = await db.select({
-      total: sql`SUM(${abastecimentos.valorTotal})`,
-      litros: sql`SUM(${abastecimentos.quantidade})`
-    }).from(abastecimentos).where(and(eq(abastecimentos.empresaId, empresaId), isNull2(abastecimentos.deletedAt), gte(abastecimentos.data, inicioMes)));
-    const [manutencoesResumo] = await db.select({
-      total: sql`SUM(${manutencoes.valor})`,
-      count: sql`COUNT(*)`
-    }).from(manutencoes).where(and(eq(manutencoes.empresaId, empresaId), isNull2(manutencoes.deletedAt), gte(manutencoes.data, inicioMes)));
-    const viagensResumo = await db.select({
-      status: viagens.status,
-      total: sql`COUNT(*)`
-    }).from(viagens).where(and(eq(viagens.empresaId, empresaId), isNull2(viagens.deletedAt))).groupBy(viagens.status);
-    const [contasVencendo] = await db.select({
-      total: sql`COUNT(*)`,
-      valor: sql`SUM(${contasPagar.valor})`
-    }).from(contasPagar).where(
-      and(
-        eq(contasPagar.empresaId, empresaId),
-        eq(contasPagar.status, "pendente"),
-        lte(contasPagar.dataVencimento, em7dias),
-        gte(contasPagar.dataVencimento, hoje),
-        isNull2(contasPagar.deletedAt)
-      )
-    );
-    const freelancers = await db.select().from(funcionarios).where(
-      and(
-        eq(funcionarios.empresaId, empresaId),
-        eq(funcionarios.tipoContrato, "freelancer"),
-        isNull2(funcionarios.deletedAt)
-      )
-    );
+    const hojeIso = hoje.toISOString().slice(0, 10);
+    const inicioMesIso = inicioMes.toISOString().slice(0, 10);
+    const em7diasIso = em7dias.toISOString().slice(0, 10);
+    const [veiculosResumo] = await client`
+        SELECT COUNT(*)::int as total
+        FROM veiculos
+        WHERE "empresaId"=${empresaId}
+          AND COALESCE(ativo, true) = true
+          AND "deletedAt" IS NULL
+      `.catch(() => [{ total: 0 }]);
+    const funcionariosResumo = await client`
+        SELECT funcao::text as funcao, COUNT(*)::int as total
+        FROM funcionarios
+        WHERE "empresaId"=${empresaId}
+          AND COALESCE(ativo, true) = true
+          AND "deletedAt" IS NULL
+        GROUP BY funcao
+      `.catch(() => []);
+    const [abastecimentosResumo] = await client`
+        SELECT
+          COALESCE(SUM("valorTotal"), 0)::float8 as total,
+          COALESCE(SUM(quantidade), 0)::float8 as litros
+        FROM abastecimentos
+        WHERE "empresaId"=${empresaId}
+          AND "deletedAt" IS NULL
+          AND data >= ${inicioMesIso}::date
+      `.catch(() => [{ total: 0, litros: 0 }]);
+    const [manutencoesResumo] = await client`
+        SELECT
+          COALESCE(SUM(valor), 0)::float8 as total,
+          COUNT(*)::int as count
+        FROM manutencoes
+        WHERE "empresaId"=${empresaId}
+          AND "deletedAt" IS NULL
+          AND data >= ${inicioMesIso}::date
+      `.catch(() => [{ total: 0, count: 0 }]);
+    const viagensResumo = await client`
+        SELECT status::text as status, COUNT(*)::int as total
+        FROM viagens
+        WHERE "empresaId"=${empresaId}
+          AND "deletedAt" IS NULL
+        GROUP BY status
+      `.catch(() => []);
+    const [contasVencendo] = await client`
+        SELECT
+          COUNT(*)::int as total,
+          COALESCE(SUM(valor), 0)::float8 as valor
+        FROM contas_pagar
+        WHERE "empresaId"=${empresaId}
+          AND status::text = 'pendente'
+          AND "dataVencimento" <= ${em7diasIso}::date
+          AND "dataVencimento" >= ${hojeIso}::date
+          AND "deletedAt" IS NULL
+      `.catch(() => [{ total: 0, valor: 0 }]);
+    const freelancers = await client`
+        SELECT "diaPagamento"
+        FROM funcionarios
+        WHERE "empresaId"=${empresaId}
+          AND "tipoContrato"::text = 'freelancer'
+          AND "deletedAt" IS NULL
+      `.catch(() => []);
     const freelancersParaPagar = freelancers.filter((funcionario) => {
       if (!funcionario.diaPagamento) return false;
       const diff = funcionario.diaPagamento - hoje.getDate();
       return diff >= 0 && diff <= 7;
     });
-    const [cnhVencendo] = await db.select({ count: sql`COUNT(*)` }).from(funcionarios).where(
-      and(
-        eq(funcionarios.empresaId, empresaId),
-        isNull2(funcionarios.deletedAt),
-        lte(funcionarios.vencimentoCnh, em7dias),
-        gte(funcionarios.vencimentoCnh, hoje)
-      )
-    );
-    const [crlvVencendo] = await db.select({ count: sql`COUNT(*)` }).from(veiculos).where(
-      and(
-        eq(veiculos.empresaId, empresaId),
-        isNull2(veiculos.deletedAt),
-        lte(veiculos.vencimentoCrlv, em7dias),
-        gte(veiculos.vencimentoCrlv, hoje)
-      )
-    );
+    const [cnhVencendo] = await client`
+        SELECT COUNT(*)::int as count
+        FROM funcionarios
+        WHERE "empresaId"=${empresaId}
+          AND "deletedAt" IS NULL
+          AND "vencimentoCnh" <= ${em7diasIso}::date
+          AND "vencimentoCnh" >= ${hojeIso}::date
+      `.catch(() => [{ count: 0 }]);
+    const [crlvVencendo] = await client`
+        SELECT COUNT(*)::int as count
+        FROM veiculos
+        WHERE "empresaId"=${empresaId}
+          AND "deletedAt" IS NULL
+          AND "vencimentoCrlv" <= ${em7diasIso}::date
+          AND "vencimentoCrlv" >= ${hojeIso}::date
+      `.catch(() => [{ count: 0 }]);
     return {
       veiculos: {
         total: Number(veiculosResumo?.total) || 0
@@ -86805,11 +86839,11 @@ var authRouter = router({
         });
       }
       const { empresas: empresas2 } = await Promise.resolve().then(() => (init_schema2(), schema_exports));
-      const { or: or2 } = await Promise.resolve().then(() => (init_drizzle_orm(), drizzle_orm_exports));
+      const { or: or3 } = await Promise.resolve().then(() => (init_drizzle_orm(), drizzle_orm_exports));
       const codigoUpper = input.companyCode.trim().toUpperCase();
       const companyId = parseInt(input.companyCode);
       const [empresa] = await db.select().from(empresas2).where(
-        !isNaN(companyId) ? or2(eq(empresas2.id, companyId), eq(empresas2.codigoConvite, codigoUpper)) : eq(empresas2.codigoConvite, codigoUpper)
+        !isNaN(companyId) ? or3(eq(empresas2.id, companyId), eq(empresas2.codigoConvite, codigoUpper)) : eq(empresas2.codigoConvite, codigoUpper)
       ).limit(1);
       if (!empresa) {
         throw new TRPCError({
@@ -90470,6 +90504,9 @@ function requireTiManager(user) {
     });
   }
 }
+async function resolveTiEmpresaId(ctx, requestedEmpresaId) {
+  return resolveAccessibleEmpresaId(ctx, requestedEmpresaId ?? ctx.user?.empresaId ?? void 0);
+}
 var tiRouter = router({
   // ══════════════════════════════════════════════════════════════════════════
   // DASHBOARD
@@ -90477,7 +90514,7 @@ var tiRouter = router({
   dashboard: protectedProcedure.query(async ({ ctx }) => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    const empresaId = ctx.user.empresaId;
+    const empresaId = await resolveTiEmpresaId(ctx);
     const isManager = canManageTi(ctx.user);
     const ticketWhere = isManager ? and(eq(ticketsTi.empresaId, empresaId), isNull2(ticketsTi.deletedAt)) : and(
       eq(ticketsTi.empresaId, empresaId),
@@ -90515,7 +90552,7 @@ var tiRouter = router({
   getUnreadCount: protectedProcedure.query(async ({ ctx }) => {
     const db = await getDb();
     if (!db) return { tickets: 0, alertas: 0 };
-    const empresaId = ctx.user.empresaId;
+    const empresaId = await resolveTiEmpresaId(ctx);
     const isManager = canManageTi(ctx.user);
     const whereExpr = isManager ? and(eq(ticketsTi.empresaId, empresaId), isNull2(ticketsTi.deletedAt)) : and(
       eq(ticketsTi.empresaId, empresaId),
@@ -90531,19 +90568,43 @@ var tiRouter = router({
   // TICKETS / CHAMADOS
   // ══════════════════════════════════════════════════════════════════════════
   listTickets: protectedProcedure.input(external_exports.object({ status: external_exports.string().optional(), search: external_exports.string().optional(), prioridade: external_exports.string().optional() })).query(async ({ input, ctx }) => {
-    const db = await getDb();
-    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    const conds = [eq(ticketsTi.empresaId, ctx.user.empresaId), isNull2(ticketsTi.deletedAt)];
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx);
+    const params = [empresaId];
+    const conds = ['t."empresaId" = $1', 't."deletedAt" IS NULL'];
     if (!canManageTi(ctx.user)) {
-      conds.push(eq(ticketsTi.solicitanteId, ctx.user.id));
+      params.push(ctx.user.id);
+      conds.push(`t."solicitanteId" = $${params.length}`);
     }
-    if (input.status && input.status !== "todos") conds.push(eq(ticketsTi.status, input.status));
-    if (input.search) conds.push(or(ilike(ticketsTi.titulo, `%${input.search}%`), ilike(ticketsTi.protocolo, `%${input.search}%`)));
-    return db.select().from(ticketsTi).where(and(...conds)).orderBy(desc(ticketsTi.createdAt));
+    if (input.status && input.status !== "todos") {
+      params.push(input.status);
+      conds.push(`t.status = $${params.length}`);
+    }
+    if (input.search) {
+      params.push(`%${input.search}%`);
+      const searchParam = `$${params.length}`;
+      conds.push(`(t.titulo ILIKE ${searchParam} OR t.protocolo ILIKE ${searchParam})`);
+    }
+    return client.unsafe(`
+        SELECT
+          t.*,
+          t."numeroOS" as "numeroOs",
+          solicitante.id as solicitante_id,
+          solicitante.name as solicitante_nome,
+          solicitante.email as solicitante_email,
+          tecnico.name as tecnico_nome
+        FROM tickets_ti t
+        LEFT JOIN users solicitante ON solicitante.id = t."solicitanteId"
+        LEFT JOIN users tecnico ON tecnico.id = COALESCE(t."tecnicoId", t."responsavelId")
+        WHERE ${conds.join(" AND ")}
+        ORDER BY t."createdAt" DESC
+      `, params);
   }),
   getTicket: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).query(async ({ input, ctx }) => {
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx);
     const rows = await client`
         SELECT t.*, 
           u.name as solicitante_nome, u.email as solicitante_email,
@@ -90553,7 +90614,7 @@ var tiRouter = router({
         FROM tickets_ti t
         LEFT JOIN users u ON u.id = t."solicitanteId"
         LEFT JOIN users tec ON tec.id = t."tecnicoId"
-        WHERE t.id = ${input.id} AND t."empresaId" = ${ctx.user.empresaId}
+        WHERE t.id = ${input.id} AND t."empresaId" = ${empresaId}
       `;
     if (!rows[0]) throw new TRPCError({ code: "NOT_FOUND" });
     if (!canManageTi(ctx.user) && Number(rows[0]?.solicitante_id || 0) !== Number(ctx.user.id)) {
@@ -90572,6 +90633,7 @@ var tiRouter = router({
   })).mutation(async ({ input, ctx }) => {
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx);
     const protocolo = gerarProtocolo();
     const numeroOs = gerarOS();
     const rows = await client`
@@ -90579,7 +90641,7 @@ var tiRouter = router({
           "empresaId", "solicitanteId", protocolo, titulo, descricao,
           categoria, prioridade, status, "createdAt", "updatedAt"
         ) VALUES (
-          ${ctx.user.empresaId}, ${ctx.user.id}, ${protocolo},
+          ${empresaId}, ${ctx.user.id}, ${protocolo},
           ${input.titulo}, ${input.descricao},
           ${input.categoria || "outro"}, ${input.prioridade || "media"}, 'aberto',
           NOW(), NOW()
@@ -90589,19 +90651,19 @@ var tiRouter = router({
     if (!ticket) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     await client`
         INSERT INTO ticket_status_history ("ticketId","empresaId","changedBy","fromStatus","toStatus",motivo,"createdAt")
-        VALUES (${ticket.id},${ctx.user.empresaId},${ctx.user.id},${null},'aberto',${"Chamado criado"},NOW())
+        VALUES (${ticket.id},${empresaId},${ctx.user.id},${null},'aberto',${"Chamado criado"},NOW())
       `.catch(() => {
     });
     await client`
         INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
-        VALUES (${ticket.id},${ctx.user.empresaId},${ctx.user.id},${"Chamado aberto: " + input.descricao},'sistema',NOW())
+        VALUES (${ticket.id},${empresaId},${ctx.user.id},${"Chamado aberto: " + input.descricao},'sistema',NOW())
       `.catch(() => {
     });
     if (input.anexos) {
       for (const a of input.anexos) {
         await client`
             INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"fileUrl","fileName","fileType","createdAt")
-            VALUES (${ticket.id},${ctx.user.empresaId},${ctx.user.id},'','anexo',${a.url},${a.nome},${a.tipo},NOW())
+            VALUES (${ticket.id},${empresaId},${ctx.user.id},'','anexo',${a.url},${a.nome},${a.tipo},NOW())
           `.catch(() => {
         });
       }
@@ -90618,13 +90680,14 @@ var tiRouter = router({
   ).mutation(async ({ input, ctx }) => {
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx);
     let ticket = null;
     if (input.ticketId) {
       const rows = await client`
           SELECT id, protocolo, titulo, descricao, categoria, prioridade, status, "solicitanteId"
           FROM tickets_ti
           WHERE id = ${input.ticketId}
-            AND "empresaId" = ${ctx.user.empresaId}
+            AND "empresaId" = ${empresaId}
             AND "deletedAt" IS NULL
           LIMIT 1
         `;
@@ -90685,7 +90748,7 @@ var tiRouter = router({
               categoria = COALESCE(${String(ai?.categoriaSugerida || "") || null}, categoria),
               prioridade = COALESCE(${String(ai?.prioridadeSugerida || "") || null}, prioridade),
               "updatedAt" = NOW()
-          WHERE id = ${ticket.id} AND "empresaId" = ${ctx.user.empresaId}
+          WHERE id = ${ticket.id} AND "empresaId" = ${empresaId}
         `.catch(() => {
       });
       const conteudoPublico = [
@@ -90697,12 +90760,12 @@ var tiRouter = router({
       ].filter(Boolean).join("\n\n");
       await client`
           INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"isInterno","createdAt")
-          VALUES (${ticket.id},${ctx.user.empresaId},${ctx.user.id},${conteudoPublico},'sistema',false,NOW())
+          VALUES (${ticket.id},${empresaId},${ctx.user.id},${conteudoPublico},'sistema',false,NOW())
         `.catch(() => {
       });
       await client`
           INSERT INTO ticket_internal_notes ("ticketId","empresaId","autorId",conteudo,"createdAt")
-          VALUES (${ticket.id},${ctx.user.empresaId},${ctx.user.id},${`Triagem IA (interno): ${JSON.stringify(ai)}`},NOW())
+          VALUES (${ticket.id},${empresaId},${ctx.user.id},${`Triagem IA (interno): ${JSON.stringify(ai)}`},NOW())
         `.catch(() => {
       });
     }
@@ -90725,8 +90788,9 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx);
     const { id, ...data } = input;
-    const currentRows = await client`SELECT status FROM tickets_ti WHERE id=${id} AND "empresaId"=${ctx.user.empresaId} LIMIT 1`;
+    const currentRows = await client`SELECT status FROM tickets_ti WHERE id=${id} AND "empresaId"=${empresaId} LIMIT 1`;
     const currentStatus = currentRows?.[0]?.status ?? null;
     const sets = ['"updatedAt"=NOW()'];
     const vals = [];
@@ -90753,7 +90817,7 @@ var tiRouter = router({
     }
     if (data.status === "resolvido" || data.status === "encerrado") sets.push('"resolvidoEm"=NOW()');
     vals.push(id);
-    vals.push(ctx.user.empresaId);
+    vals.push(empresaId);
     await client.unsafe(
       `UPDATE tickets_ti SET ${sets.join(",")} WHERE id=$${i++} AND "empresaId"=$${i}`,
       vals
@@ -90762,12 +90826,12 @@ var tiRouter = router({
     if (data.status) {
       await client`
           INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
-          VALUES (${id},${ctx.user.empresaId},${ctx.user.id},${"Status alterado para: " + data.status + (data.resolucao ? " \u2014 " + data.resolucao : "")},'sistema',NOW())
+          VALUES (${id},${empresaId},${ctx.user.id},${"Status alterado para: " + data.status + (data.resolucao ? " \u2014 " + data.resolucao : "")},'sistema',NOW())
         `.catch(() => {
       });
       await client`
           INSERT INTO ticket_status_history ("ticketId","empresaId","changedBy","fromStatus","toStatus",motivo,"createdAt")
-          VALUES (${id},${ctx.user.empresaId},${ctx.user.id},${currentStatus},${data.status},${data.resolucao ?? null},NOW())
+          VALUES (${id},${empresaId},${ctx.user.id},${currentStatus},${data.status},${data.resolucao ?? null},NOW())
         `.catch(() => {
       });
     }
@@ -90777,7 +90841,8 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    const rows = await client`SELECT status FROM tickets_ti WHERE id=${input.id} AND "empresaId"=${ctx.user.empresaId} LIMIT 1`;
+    const empresaId = await resolveTiEmpresaId(ctx);
+    const rows = await client`SELECT status FROM tickets_ti WHERE id=${input.id} AND "empresaId"=${empresaId} LIMIT 1`;
     const currentStatus = rows?.[0]?.status ?? null;
     const resolvedAt = input.status === "resolvido" || input.status === "encerrado" ? /* @__PURE__ */ new Date() : null;
     await client`
@@ -90786,12 +90851,12 @@ var tiRouter = router({
             resolucao=${input.resolucao ?? null},
             "resolvidoEm"=${resolvedAt},
             "updatedAt"=NOW()
-        WHERE id=${input.id} AND "empresaId"=${ctx.user.empresaId}
+        WHERE id=${input.id} AND "empresaId"=${empresaId}
       `.catch(() => {
     });
     await client`
         INSERT INTO ticket_status_history ("ticketId","empresaId","changedBy","fromStatus","toStatus",motivo,"createdAt")
-        VALUES (${input.id},${ctx.user.empresaId},${ctx.user.id},${currentStatus},${input.status},${input.resolucao ?? null},NOW())
+        VALUES (${input.id},${empresaId},${ctx.user.id},${currentStatus},${input.status},${input.resolucao ?? null},NOW())
       `.catch(() => {
     });
     return { success: true };
@@ -90802,18 +90867,20 @@ var tiRouter = router({
     }
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    await db.update(ticketsTi).set({ deletedAt: /* @__PURE__ */ new Date() }).where(and(eq(ticketsTi.id, input.id), eq(ticketsTi.empresaId, ctx.user.empresaId)));
+    const empresaId = await resolveTiEmpresaId(ctx);
+    await db.update(ticketsTi).set({ deletedAt: /* @__PURE__ */ new Date() }).where(and(eq(ticketsTi.id, input.id), eq(ticketsTi.empresaId, empresaId)));
     return { success: true };
   }),
   // ── Mensagens do ticket ────────────────────────────────────────────────────
   listMensagens: protectedProcedure.input(external_exports.object({ ticketId: external_exports.number() })).query(async ({ input, ctx }) => {
     const client = await getRawClient();
     if (!client) return [];
+    const empresaId = await resolveTiEmpresaId(ctx);
     if (!canManageTi(ctx.user)) {
       const own2 = await client`
           SELECT id FROM tickets_ti
           WHERE id = ${input.ticketId}
-            AND "empresaId" = ${ctx.user.empresaId}
+            AND "empresaId" = ${empresaId}
             AND "solicitanteId" = ${ctx.user.id}
             AND "deletedAt" IS NULL
           LIMIT 1
@@ -90824,23 +90891,25 @@ var tiRouter = router({
         SELECT m.*, u.name as autor_nome, u.email as autor_email
         FROM ticket_mensagens m
         LEFT JOIN users u ON u.id = m."autorId"
-        WHERE m."ticketId" = ${input.ticketId} AND m."empresaId" = ${ctx.user.empresaId}
+        WHERE m."ticketId" = ${input.ticketId} AND m."empresaId" = ${empresaId}
         ORDER BY m."createdAt" ASC
       `.catch(() => []);
   }),
   sendMensagem: protectedProcedure.input(external_exports.object({
     ticketId: external_exports.number(),
     conteudo: external_exports.string(),
-    tipo: external_exports.enum(["mensagem", "nota_interna", "anexo", "sistema"]).optional(),
+    tipo: external_exports.enum(["mensagem", "texto", "nota_interna", "anexo", "imagem", "file", "sistema"]).optional(),
     anexoUrl: external_exports.string().optional(),
     anexoNome: external_exports.string().optional(),
     anexoTipo: external_exports.string().optional()
   })).mutation(async ({ input, ctx }) => {
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx);
+    const tipo = input.anexoUrl ? "anexo" : input.tipo === "texto" ? "mensagem" : input.tipo === "imagem" || input.tipo === "file" ? "anexo" : input.tipo || "mensagem";
     const rows = await client`
         INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"fileUrl","fileName","fileType","createdAt")
-        VALUES (${input.ticketId},${ctx.user.empresaId},${ctx.user.id},${input.conteudo},${input.tipo || "mensagem"},${input.anexoUrl || null},${input.anexoNome || null},${input.anexoTipo || null},NOW())
+        VALUES (${input.ticketId},${empresaId},${ctx.user.id},${input.conteudo},${tipo},${input.anexoUrl || null},${input.anexoNome || null},${input.anexoTipo || null},NOW())
         RETURNING *
       `;
     await client`UPDATE tickets_ti SET "updatedAt"=NOW() WHERE id=${input.ticketId}`.catch(() => {
@@ -90850,11 +90919,12 @@ var tiRouter = router({
   listStatusHistory: protectedProcedure.input(external_exports.object({ ticketId: external_exports.number() })).query(async ({ input, ctx }) => {
     const client = await getRawClient();
     if (!client) return [];
+    const empresaId = await resolveTiEmpresaId(ctx);
     return client`
         SELECT h.*, u.name as autor_nome
         FROM ticket_status_history h
         LEFT JOIN users u ON u.id = h."changedBy"
-        WHERE h."ticketId" = ${input.ticketId} AND h."empresaId" = ${ctx.user.empresaId}
+        WHERE h."ticketId" = ${input.ticketId} AND h."empresaId" = ${empresaId}
         ORDER BY h."createdAt" ASC
       `.catch(() => []);
   }),
@@ -90862,12 +90932,13 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
+    const empresaId = await resolveTiEmpresaId(ctx);
     return client`
         SELECT n.*, u.name as autor_nome
         FROM ticket_internal_notes n
         LEFT JOIN users u ON u.id = n."autorId"
         WHERE n."ticketId" = ${input.ticketId}
-          AND n."empresaId" = ${ctx.user.empresaId}
+          AND n."empresaId" = ${empresaId}
           AND n."deletedAt" IS NULL
         ORDER BY n."createdAt" DESC
       `.catch(() => []);
@@ -90876,14 +90947,15 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx);
     const rows = await client`
         INSERT INTO ticket_internal_notes ("ticketId","empresaId","autorId",conteudo,"createdAt")
-        VALUES (${input.ticketId},${ctx.user.empresaId},${ctx.user.id},${input.conteudo},NOW())
+        VALUES (${input.ticketId},${empresaId},${ctx.user.id},${input.conteudo},NOW())
         RETURNING *
       `;
     await client`
         INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
-        VALUES (${input.ticketId},${ctx.user.empresaId},${ctx.user.id},${"Nota interna registrada"},'sistema',NOW())
+        VALUES (${input.ticketId},${empresaId},${ctx.user.id},${"Nota interna registrada"},'sistema',NOW())
       `.catch(() => {
     });
     return rows[0];
@@ -90892,18 +90964,19 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx);
     await client`
         INSERT INTO remote_access_requests ("ticketId","empresaId","solicitadoPor",status,"anydeskId",observacoes)
-        VALUES (${input.ticketId},${ctx.user.empresaId},${ctx.user.id},'solicitado',${input.anydeskId ?? null},${input.observacoes ?? null})
+        VALUES (${input.ticketId},${empresaId},${ctx.user.id},'solicitado',${input.anydeskId ?? null},${input.observacoes ?? null})
       `.catch(() => {
     });
     await client`
-        UPDATE tickets_ti SET status='acesso_remoto_solicitado',"updatedAt"=NOW() WHERE id=${input.ticketId} AND "empresaId"=${ctx.user.empresaId}
+        UPDATE tickets_ti SET status='acesso_remoto_solicitado',"updatedAt"=NOW() WHERE id=${input.ticketId} AND "empresaId"=${empresaId}
       `.catch(() => {
     });
     await client`
         INSERT INTO ticket_status_history ("ticketId","empresaId","changedBy","fromStatus","toStatus",motivo,"createdAt")
-        VALUES (${input.ticketId},${ctx.user.empresaId},${ctx.user.id},${null},'acesso_remoto_solicitado',${input.observacoes ?? "Acesso remoto solicitado"},NOW())
+        VALUES (${input.ticketId},${empresaId},${ctx.user.id},${null},'acesso_remoto_solicitado',${input.observacoes ?? "Acesso remoto solicitado"},NOW())
       `.catch(() => {
     });
     return { success: true };
@@ -90913,6 +90986,7 @@ var tiRouter = router({
     const client = await getRawClient();
     if (!client) return [];
     const status = input?.status;
+    const empresaId = await resolveTiEmpresaId(ctx);
     return client`
         SELECT r.*,
           t.protocolo,
@@ -90923,7 +90997,7 @@ var tiRouter = router({
         LEFT JOIN tickets_ti t ON t.id = r."ticketId"
         LEFT JOIN users solicitante ON solicitante.id = r."solicitadoPor"
         LEFT JOIN users autorizador ON autorizador.id = r."autorizadoPor"
-        WHERE r."empresaId" = ${ctx.user.empresaId}
+        WHERE r."empresaId" = ${empresaId}
           ${status && status !== "todos" ? client`AND r.status = ${status}` : client``}
         ORDER BY COALESCE(r."solicitadoEm", NOW()) DESC, r.id DESC
       `.catch(() => []);
@@ -90938,9 +91012,10 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx);
     const rows = await client`
         SELECT * FROM remote_access_requests
-        WHERE id = ${input.id} AND "empresaId" = ${ctx.user.empresaId}
+        WHERE id = ${input.id} AND "empresaId" = ${empresaId}
         LIMIT 1
       `;
     const request = rows[0];
@@ -90960,7 +91035,7 @@ var tiRouter = router({
             consentimento = ${consentimento},
             "anydeskId" = ${anydeskId},
             observacoes = ${observacoes}
-        WHERE id = ${input.id} AND "empresaId" = ${ctx.user.empresaId}
+        WHERE id = ${input.id} AND "empresaId" = ${empresaId}
       `;
     const ticketStatusMap = {
       solicitado: "acesso_remoto_solicitado",
@@ -90976,12 +91051,12 @@ var tiRouter = router({
           SET status = ${nextTicketStatus},
               "updatedAt" = NOW(),
               "resolvidoEm" = ${input.status === "encerrado" ? /* @__PURE__ */ new Date() : null}
-          WHERE id = ${request.ticketId} AND "empresaId" = ${ctx.user.empresaId}
+          WHERE id = ${request.ticketId} AND "empresaId" = ${empresaId}
         `.catch(() => {
       });
       await client`
           INSERT INTO ticket_status_history ("ticketId","empresaId","changedBy","fromStatus","toStatus",motivo,"createdAt")
-          VALUES (${request.ticketId},${ctx.user.empresaId},${ctx.user.id},${null},${nextTicketStatus},${observacoes},NOW())
+          VALUES (${request.ticketId},${empresaId},${ctx.user.id},${null},${nextTicketStatus},${observacoes},NOW())
         `.catch(() => {
       });
     }
@@ -90989,7 +91064,7 @@ var tiRouter = router({
         INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
         VALUES (
           ${request.ticketId},
-          ${ctx.user.empresaId},
+          ${empresaId},
           ${ctx.user.id},
           ${"Acesso remoto atualizado para: " + input.status.replaceAll("_", " ") + (observacoes ? " \u2014 " + observacoes : "")},
           'sistema',
@@ -91004,11 +91079,58 @@ var tiRouter = router({
   // ══════════════════════════════════════════════════════════════════════════
   listAtivos: protectedProcedure.input(external_exports.object({ search: external_exports.string().optional(), tipo: external_exports.string().optional() })).query(async ({ input, ctx }) => {
     requireTiManager(ctx.user);
-    const db = await getDb();
-    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    const conds = [eq(ativosTi.empresaId, ctx.user.empresaId), isNull2(ativosTi.deletedAt)];
-    if (input.search) conds.push(or(ilike(ativosTi.tipo, `%${input.search}%`), ilike(ativosTi.patrimonio, `%${input.search}%`), ilike(ativosTi.marca, `%${input.search}%`)));
-    return db.select().from(ativosTi).where(and(...conds)).orderBy(desc(ativosTi.createdAt));
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx);
+    const params = [empresaId];
+    const conds = ['a."empresaId" = $1', 'a."deletedAt" IS NULL'];
+    if (input.tipo) {
+      params.push(input.tipo);
+      conds.push(`a.tipo = $${params.length}`);
+    }
+    if (input.search) {
+      params.push(`%${input.search}%`);
+      const searchParam = `$${params.length}`;
+      conds.push(`(a.tipo ILIKE ${searchParam} OR a.patrimonio ILIKE ${searchParam} OR a.marca ILIKE ${searchParam} OR a.modelo ILIKE ${searchParam} OR a.hostname ILIKE ${searchParam})`);
+    }
+    return client.unsafe(`
+        SELECT
+          a.id,
+          a."empresaId",
+          a.tipo,
+          a.marca,
+          a.modelo,
+          a.patrimonio,
+          a.serial,
+          a."responsavelId",
+          a.setor,
+          a.status,
+          a."dataAquisicao",
+          a."garantiaAte",
+          a.observacoes,
+          a.anydesk,
+          a.anydesk as "anydeskId",
+          a."sistemaOperacional",
+          a.processador,
+          a."memoriaRam",
+          a.armazenamento,
+          a.hostname,
+          a.ip,
+          a.so,
+          a.teamviewer,
+          a."cpuUso",
+          a."ramUso",
+          a."discoSaude",
+          a.temperatura,
+          a."ultimoPing",
+          a."valorAquisicao",
+          a."createdAt",
+          a."updatedAt",
+          a."deletedAt"
+        FROM ativos_ti a
+        WHERE ${conds.join(" AND ")}
+        ORDER BY a."createdAt" DESC
+      `, params);
   }),
   createAtivo: protectedProcedure.input(external_exports.object({
     tipo: external_exports.string().min(2),
@@ -91026,7 +91148,8 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    const [a] = await db.insert(ativosTi).values({ ...input, empresaId: ctx.user.empresaId }).returning();
+    const empresaId = await resolveTiEmpresaId(ctx);
+    const [a] = await db.insert(ativosTi).values({ ...input, empresaId }).returning();
     return a;
   }),
   updateAtivo: protectedProcedure.input(external_exports.object({
@@ -91048,14 +91171,16 @@ var tiRouter = router({
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const { id, ...data } = input;
-    await db.update(ativosTi).set({ ...data, updatedAt: /* @__PURE__ */ new Date() }).where(and(eq(ativosTi.id, id), eq(ativosTi.empresaId, ctx.user.empresaId)));
+    const empresaId = await resolveTiEmpresaId(ctx);
+    await db.update(ativosTi).set({ ...data, updatedAt: /* @__PURE__ */ new Date() }).where(and(eq(ativosTi.id, id), eq(ativosTi.empresaId, empresaId)));
     return { success: true };
   }),
   deleteAtivo: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input, ctx }) => {
     requireTiManager(ctx.user);
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    await db.update(ativosTi).set({ deletedAt: /* @__PURE__ */ new Date() }).where(and(eq(ativosTi.id, input.id), eq(ativosTi.empresaId, ctx.user.empresaId)));
+    const empresaId = await resolveTiEmpresaId(ctx);
+    await db.update(ativosTi).set({ deletedAt: /* @__PURE__ */ new Date() }).where(and(eq(ativosTi.id, input.id), eq(ativosTi.empresaId, empresaId)));
     return { success: true };
   }),
   // ══════════════════════════════════════════════════════════════════════════
@@ -91065,9 +91190,10 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
+    const empresaId = await resolveTiEmpresaId(ctx);
     return client`
         SELECT * FROM licencas_ti
-        WHERE "empresaId" = ${ctx.user.empresaId} AND "deletedAt" IS NULL
+        WHERE "empresaId" = ${empresaId} AND "deletedAt" IS NULL
         ${input.search ? client`AND (software ILIKE ${"%" + input.search + "%"} OR fornecedor ILIKE ${"%" + input.search + "%"})` : client``}
         ORDER BY "createdAt" DESC
       `.catch(() => []);
@@ -91083,11 +91209,13 @@ var tiRouter = router({
     valor: external_exports.number().optional(),
     observacoes: external_exports.string().optional()
   })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx);
     const rows = await client`
         INSERT INTO licencas_ti ("empresaId",software,fornecedor,tipo,"quantidadeTotal","quantidadeUsada",chave,vencimento,valor,observacoes,"createdAt","updatedAt")
-        VALUES (${ctx.user.empresaId},${input.software},${input.fornecedor || null},${input.tipo || "perpetua"},${input.quantidadeTotal || 1},${input.quantidadeUsada || 0},${input.chave || null},${input.vencimento ? new Date(input.vencimento) : null},${input.valor || null},${input.observacoes || null},NOW(),NOW())
+        VALUES (${empresaId},${input.software},${input.fornecedor || null},${input.tipo || "perpetua"},${input.quantidadeTotal || 1},${input.quantidadeUsada || 0},${input.chave || null},${input.vencimento ? new Date(input.vencimento) : null},${input.valor || null},${input.observacoes || null},NOW(),NOW())
         RETURNING *
       `;
     return rows[0];
@@ -91103,8 +91231,10 @@ var tiRouter = router({
     valor: external_exports.number().optional(),
     observacoes: external_exports.string().optional()
   })).mutation(async ({ input, ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx);
     const { id, vencimento, ...rest } = input;
     const sets = ['"updatedAt"=NOW()'];
     const vals = [];
@@ -91119,7 +91249,7 @@ var tiRouter = router({
       sets.push(`vencimento=$${i++}`);
       vals.push(new Date(vencimento));
     }
-    vals.push(id, ctx.user.empresaId);
+    vals.push(id, empresaId);
     await client.unsafe(`UPDATE licencas_ti SET ${sets.join(",")} WHERE id=$${i++} AND "empresaId"=$${i++}`, vals);
     return { success: true };
   }),
@@ -91127,7 +91257,8 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    await client`UPDATE licencas_ti SET "deletedAt"=NOW() WHERE id=${input.id} AND "empresaId"=${ctx.user.empresaId}`;
+    const empresaId = await resolveTiEmpresaId(ctx);
+    await client`UPDATE licencas_ti SET "deletedAt"=NOW() WHERE id=${input.id} AND "empresaId"=${empresaId}`;
     return { success: true };
   }),
   // ══════════════════════════════════════════════════════════════════════════
@@ -91137,7 +91268,8 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
-    return client`SELECT * FROM servidores_ti WHERE "empresaId"=${ctx.user.empresaId} AND "deletedAt" IS NULL ORDER BY "createdAt" DESC`.catch(() => []);
+    const empresaId = await resolveTiEmpresaId(ctx);
+    return client`SELECT * FROM servidores_ti WHERE "empresaId"=${empresaId} AND "deletedAt" IS NULL ORDER BY "createdAt" DESC`.catch(() => []);
   }),
   createServidor: protectedProcedure.input(external_exports.object({
     nome: external_exports.string().min(2),
@@ -91154,9 +91286,10 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx);
     const rows = await client`
         INSERT INTO servidores_ti ("empresaId",nome,tipo,ip,so,cpu,ram,disco,localizacao,funcao,observacoes,status,"createdAt","updatedAt")
-        VALUES (${ctx.user.empresaId},${input.nome},${input.tipo || "fisico"},${input.ip || null},${input.so || null},${input.cpu || null},${input.ram || null},${input.disco || null},${input.localizacao || null},${input.funcao || null},${input.observacoes || null},'online',NOW(),NOW())
+        VALUES (${empresaId},${input.nome},${input.tipo || "fisico"},${input.ip || null},${input.so || null},${input.cpu || null},${input.ram || null},${input.disco || null},${input.localizacao || null},${input.funcao || null},${input.observacoes || null},'online',NOW(),NOW())
         RETURNING *
       `;
     return rows[0];
@@ -91165,7 +91298,8 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    if (input.status) await client`UPDATE servidores_ti SET status=${input.status},"updatedAt"=NOW() WHERE id=${input.id} AND "empresaId"=${ctx.user.empresaId}`;
+    const empresaId = await resolveTiEmpresaId(ctx);
+    if (input.status) await client`UPDATE servidores_ti SET status=${input.status},"updatedAt"=NOW() WHERE id=${input.id} AND "empresaId"=${empresaId}`;
     return { success: true };
   }),
   // ══════════════════════════════════════════════════════════════════════════
@@ -91175,10 +91309,11 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
+    const empresaId = await resolveTiEmpresaId(ctx);
     return client`
       SELECT a.*, u.name as usuario_nome FROM acessos_ti a
       LEFT JOIN users u ON u.id = a."usuarioId"
-      WHERE a."empresaId"=${ctx.user.empresaId} AND a."deletedAt" IS NULL
+      WHERE a."empresaId"=${empresaId} AND a."deletedAt" IS NULL
       ORDER BY a."createdAt" DESC
     `.catch(() => []);
   }),
@@ -91195,9 +91330,10 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx);
     const rows = await client`
         INSERT INTO acessos_ti ("empresaId","usuarioId",nome,tipo,host,porta,usuario,anydesk_id,setor,observacoes,"createdAt","updatedAt")
-        VALUES (${ctx.user.empresaId},${ctx.user.id},${input.nome},${input.tipo || "outro"},${input.host || null},${input.porta || null},${input.usuario || null},${input.anydesk_id || null},${input.setor || null},${input.observacoes || null},NOW(),NOW())
+        VALUES (${empresaId},${ctx.user.id},${input.nome},${input.tipo || "outro"},${input.host || null},${input.porta || null},${input.usuario || null},${input.anydesk_id || null},${input.setor || null},${input.observacoes || null},NOW(),NOW())
         RETURNING *
       `;
     return rows[0];
@@ -91209,6 +91345,7 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
+    const empresaId = await resolveTiEmpresaId(ctx);
     return client`
       SELECT c.*,
         solicitante.name as solicitante_nome,
@@ -91216,7 +91353,7 @@ var tiRouter = router({
       FROM compras_ti c
       LEFT JOIN users solicitante ON solicitante.id = c."solicitanteId"
       LEFT JOIN users aprovador ON aprovador.id = c."aprovadorId"
-      WHERE c."empresaId"=${ctx.user.empresaId} AND c."deletedAt" IS NULL
+      WHERE c."empresaId"=${empresaId} AND c."deletedAt" IS NULL
       ORDER BY c."createdAt" DESC
     `.catch(() => []);
   }),
@@ -91224,12 +91361,13 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
+    const empresaId = await resolveTiEmpresaId(ctx);
     return client`
         SELECT h.*, u.name as autor_nome
         FROM compras_ti_historico h
         LEFT JOIN users u ON u.id = h."userId"
         WHERE h."compraId"=${input.compraId}
-          AND h."empresaId"=${ctx.user.empresaId}
+          AND h."empresaId"=${empresaId}
         ORDER BY h."createdAt" DESC, h.id DESC
       `.catch(() => []);
   }),
@@ -91245,6 +91383,7 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx);
     const quantidade = input.quantidade || 1;
     const valorUnitario = input.valorUnitario || 0;
     const valorTotal = quantidade * valorUnitario;
@@ -91253,13 +91392,13 @@ var tiRouter = router({
     const statusInicial = input.status || (needsApproval ? "em_aprovacao" : "solicitado");
     const rows = await client`
         INSERT INTO compras_ti ("empresaId","solicitanteId",item,fornecedor,quantidade,"valorUnitario","valorTotal",status,justificativa,observacoes,"nivelAlcada","createdAt","updatedAt")
-        VALUES (${ctx.user.empresaId},${ctx.user.id},${input.item},${input.fornecedor || null},${quantidade},${input.valorUnitario || null},${valorTotal},${statusInicial},${input.justificativa || null},${input.observacoes || null},${nivelAlcada},NOW(),NOW())
+        VALUES (${empresaId},${ctx.user.id},${input.item},${input.fornecedor || null},${quantidade},${input.valorUnitario || null},${valorTotal},${statusInicial},${input.justificativa || null},${input.observacoes || null},${nivelAlcada},NOW(),NOW())
         RETURNING *
       `;
     const compra = rows[0];
     await client`
         INSERT INTO compras_ti_historico ("compraId","empresaId","userId",acao,"statusAnterior","statusNovo",observacao,"createdAt")
-        VALUES (${compra.id},${ctx.user.empresaId},${ctx.user.id},'criada',${null},${statusInicial},${needsApproval ? "Compra entrou em fluxo de al\xE7ada." : "Compra criada sem necessidade de al\xE7ada."},NOW())
+        VALUES (${compra.id},${empresaId},${ctx.user.id},'criada',${null},${statusInicial},${needsApproval ? "Compra entrou em fluxo de al\xE7ada." : "Compra criada sem necessidade de al\xE7ada."},NOW())
       `.catch(() => {
     });
     return compra;
@@ -91272,9 +91411,10 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx);
     const rows = await client`
         SELECT * FROM compras_ti
-        WHERE id=${input.id} AND "empresaId"=${ctx.user.empresaId}
+        WHERE id=${input.id} AND "empresaId"=${empresaId}
         LIMIT 1
       `;
     const compra = rows[0];
@@ -91290,11 +91430,11 @@ var tiRouter = router({
             "aprovadoEm"=${isApproving ? /* @__PURE__ */ new Date() : compra.aprovadoEm},
             "observacaoAprovacao"=${input.observacao ?? compra.observacaoAprovacao ?? null},
             "updatedAt"=NOW()
-        WHERE id=${input.id} AND "empresaId"=${ctx.user.empresaId}
+        WHERE id=${input.id} AND "empresaId"=${empresaId}
       `;
     await client`
         INSERT INTO compras_ti_historico ("compraId","empresaId","userId",acao,"statusAnterior","statusNovo",observacao,"createdAt")
-        VALUES (${input.id},${ctx.user.empresaId},${ctx.user.id},'status_alterado',${compra.status ?? null},${input.status},${input.observacao ?? null},NOW())
+        VALUES (${input.id},${empresaId},${ctx.user.id},'status_alterado',${compra.status ?? null},${input.status},${input.observacao ?? null},NOW())
       `.catch(() => {
     });
     return { success: true };
@@ -91306,7 +91446,8 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
-    return client`SELECT * FROM cmdb_ti WHERE "empresaId"=${ctx.user.empresaId} AND "deletedAt" IS NULL ORDER BY "createdAt" DESC`.catch(() => []);
+    const empresaId = await resolveTiEmpresaId(ctx);
+    return client`SELECT * FROM cmdb_ti WHERE "empresaId"=${empresaId} AND "deletedAt" IS NULL ORDER BY "createdAt" DESC`.catch(() => []);
   }),
   createCmdb: protectedProcedure.input(external_exports.object({
     nome: external_exports.string().min(2),
@@ -91320,9 +91461,10 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx);
     const rows = await client`
         INSERT INTO cmdb_ti ("empresaId",nome,tipo,versao,ambiente,responsavel,dependencias,observacoes,"createdAt","updatedAt")
-        VALUES (${ctx.user.empresaId},${input.nome},${input.tipo || null},${input.versao || null},${input.ambiente || "producao"},${input.responsavel || null},${input.dependencias || null},${input.observacoes || null},NOW(),NOW())
+        VALUES (${empresaId},${input.nome},${input.tipo || null},${input.versao || null},${input.ambiente || "producao"},${input.responsavel || null},${input.dependencias || null},${input.observacoes || null},NOW(),NOW())
         RETURNING *
       `;
     return rows[0];
@@ -91334,10 +91476,11 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
+    const empresaId = await resolveTiEmpresaId(ctx);
     return client`
       SELECT m.*, u.name as tecnico_nome FROM manutencoes_ti m
       LEFT JOIN users u ON u.id = m."tecnicoId"
-      WHERE m."empresaId"=${ctx.user.empresaId} AND m."deletedAt" IS NULL
+      WHERE m."empresaId"=${empresaId} AND m."deletedAt" IS NULL
       ORDER BY m."createdAt" DESC
     `.catch(() => []);
   }),
@@ -91354,9 +91497,10 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx);
     const rows = await client`
         INSERT INTO manutencoes_ti ("empresaId","ativoId",tipo,descricao,"tecnicoId","agendadoPara","pecasUtilizadas",custo,observacoes,status,"createdAt","updatedAt")
-        VALUES (${ctx.user.empresaId},${input.ativoId || null},${input.tipo || "corretiva"},${input.descricao},${input.tecnicoId || ctx.user.id},${input.agendadoPara ? new Date(input.agendadoPara) : null},${input.pecasUtilizadas || null},${input.custo || null},${input.observacoes || null},'agendada',NOW(),NOW())
+        VALUES (${empresaId},${input.ativoId || null},${input.tipo || "corretiva"},${input.descricao},${input.tecnicoId || ctx.user.id},${input.agendadoPara ? new Date(input.agendadoPara) : null},${input.pecasUtilizadas || null},${input.custo || null},${input.observacoes || null},'agendada',NOW(),NOW())
         RETURNING *
       `;
     return rows[0];
@@ -91368,9 +91512,14 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
-    const empresaId = await resolveAccessibleEmpresaId(ctx, input?.empresaId);
+    const empresaId = await resolveTiEmpresaId(ctx, input?.empresaId);
     const fullRows = await client`
       SELECT a.*,
+        CASE
+          WHEN COALESCE(a."updatedAt", a."ultimoContato", NOW() - INTERVAL '365 days') >= NOW() - INTERVAL '10 minutes'
+            THEN 'online'
+          ELSE 'offline'
+        END as status_resolvido,
         (SELECT "coletadoEm" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as ultima_coleta,
         (SELECT "cpuUso" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as cpu_atual,
         (SELECT "ramUsoPct" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as ram_atual,
@@ -91385,13 +91534,22 @@ var tiRouter = router({
         (SELECT "memoriaSlots" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as memoria_slots
       FROM monitor_agentes a
       WHERE a."empresaId"=${empresaId}
+        AND a."deletedAt" IS NULL
+        AND COALESCE(a.ativo, true) = true
       ORDER BY a.hostname ASC
     `.catch(() => []);
     if (fullRows.length > 0) return fullRows;
     return client`
-      SELECT a.*
+      SELECT a.*,
+        CASE
+          WHEN COALESCE(a."updatedAt", a."ultimoContato", NOW() - INTERVAL '365 days') >= NOW() - INTERVAL '10 minutes'
+            THEN 'online'
+          ELSE 'offline'
+        END as status_resolvido
       FROM monitor_agentes a
       WHERE a."empresaId"=${empresaId}
+        AND a."deletedAt" IS NULL
+        AND COALESCE(a.ativo, true) = true
       ORDER BY a.hostname ASC
     `.catch(() => []);
   }),
@@ -91399,7 +91557,7 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return { metricas: [], ultima: null, picos: {} };
-    const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
+    const empresaId = await resolveTiEmpresaId(ctx, input.empresaId);
     const periodoMap = { "1h": "1 hour", "24h": "24 hours", "7d": "7 days", "30d": "30 days", "90d": "90 days" };
     const intervalo = periodoMap[input.periodo || "24h"] || "24 hours";
     const metricas = await client`
@@ -91430,11 +91588,23 @@ var tiRouter = router({
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     const token = `agent_${Date.now().toString(36)}_${Math.random().toString(36).slice(2)}`;
-    let empresaId = 1;
-    if (input.empresa_token) {
-      const rows2 = await client`SELECT id FROM empresas WHERE codigo=${input.empresa_token} LIMIT 1`.catch(() => []);
-      if (rows2[0]) empresaId = rows2[0].id;
+    if (!input.empresa_token) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Registro de agente exige c\xF3digo de empresa ou pareamento v\xE1lido."
+      });
     }
+    const empresaRows = await client`
+        SELECT id FROM empresas
+        WHERE codigo=${input.empresa_token}
+          AND "deletedAt" IS NULL
+          AND COALESCE(ativo, true) = true
+        LIMIT 1
+      `.catch(() => []);
+    if (!empresaRows[0]) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: "C\xF3digo de empresa inv\xE1lido." });
+    }
+    const empresaId = empresaRows[0].id;
     const rows = await client`
         INSERT INTO monitor_agentes ("empresaId",hostname,ip,so,mac,"versaoAgente","anydeskId",token,status,"createdAt","updatedAt")
         VALUES (${empresaId},${input.hostname},${input.ip || null},${input.so || null},${input.mac || null},${input.versao_agente || "1.0.0"},${input.anydesk_id || null},${token},'online',NOW(),NOW())
@@ -91471,7 +91641,13 @@ var tiRouter = router({
   })).mutation(async ({ input }) => {
     const client = await getRawClient();
     if (!client) return { received: 0 };
-    const agentes = await client`SELECT * FROM monitor_agentes WHERE token=${input.token} LIMIT 1`.catch(() => []);
+    const agentes = await client`
+        SELECT * FROM monitor_agentes
+        WHERE token=${input.token}
+          AND "deletedAt" IS NULL
+          AND COALESCE(ativo, true) = true
+        LIMIT 1
+      `.catch(() => []);
     const agente = agentes[0];
     if (!agente) return { received: 0, error: "Token inv\xE1lido" };
     await client`UPDATE monitor_agentes SET status='online',"updatedAt"=NOW() WHERE id=${agente.id}`.catch(() => {
@@ -91491,10 +91667,11 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
+    const empresaId = await resolveTiEmpresaId(ctx);
     return client`
         SELECT e.*, a.hostname FROM monitor_eventos e
         LEFT JOIN monitor_agentes a ON a.id=e."agenteId"
-        WHERE e."empresaId"=${ctx.user.empresaId}
+        WHERE e."empresaId"=${empresaId}
         ORDER BY e."ocorridoEm" DESC LIMIT ${input.limit || 50}
       `.catch(() => []);
   }),
@@ -91509,7 +91686,7 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
+    const empresaId = await resolveTiEmpresaId(ctx, input.empresaId);
     const userId = input.userId || ctx.user.id;
     const parte1 = Math.random().toString(36).slice(2, 6).toUpperCase();
     const parte2 = Math.random().toString(36).slice(2, 6).toUpperCase();
@@ -91526,7 +91703,7 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
-    const empresaId = await resolveAccessibleEmpresaId(ctx, input?.empresaId);
+    const empresaId = await resolveTiEmpresaId(ctx, input?.empresaId);
     return client`
         SELECT p.*, a.hostname as agente_hostname, a.ip as agente_ip
         FROM agent_pairing_codes p
@@ -91540,7 +91717,8 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    const conds = [eq(certificadosTi.empresaId, ctx.user.empresaId), isNull2(certificadosTi.deletedAt)];
+    const empresaId = await resolveTiEmpresaId(ctx);
+    const conds = [eq(certificadosTi.empresaId, empresaId), isNull2(certificadosTi.deletedAt)];
     if (input.search) conds.push(ilike(certificadosTi.nome, `%${input.search}%`));
     return db.select().from(certificadosTi).where(and(...conds)).orderBy(certificadosTi.vencimento);
   }),
@@ -91554,8 +91732,9 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx);
     const [novo] = await db.insert(certificadosTi).values({
-      empresaId: ctx.user.empresaId,
+      empresaId,
       nome: input.nome,
       tipo: input.tipo,
       vencimento: /* @__PURE__ */ new Date(`${input.vencimento}T12:00:00`),
@@ -91568,14 +91747,15 @@ var tiRouter = router({
     requireTiManager(ctx.user);
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    await db.update(certificadosTi).set({ deletedAt: /* @__PURE__ */ new Date() }).where(and(eq(certificadosTi.id, input.id), eq(certificadosTi.empresaId, ctx.user.empresaId)));
+    const empresaId = await resolveTiEmpresaId(ctx);
+    await db.update(certificadosTi).set({ deletedAt: /* @__PURE__ */ new Date() }).where(and(eq(certificadosTi.id, input.id), eq(certificadosTi.empresaId, empresaId)));
     return { success: true };
   }),
   revogarCodigoPareamento: protectedProcedure.input(external_exports.object({ id: external_exports.number(), empresaId: external_exports.number().optional() })).mutation(async ({ input, ctx }) => {
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
+    const empresaId = await resolveTiEmpresaId(ctx, input.empresaId);
     await client`DELETE FROM agent_pairing_codes WHERE id=${input.id} AND "empresaId"=${empresaId}`;
     return { success: true };
   }),
@@ -91616,23 +91796,26 @@ var tiRouter = router({
   }),
   // Obter token da empresa para o agente (após pareamento)
   getEmpresaAgentToken: protectedProcedure.query(async ({ ctx }) => {
+    requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return { token: null };
-    const empresas2 = await client`SELECT "agentToken" FROM empresas WHERE id=${ctx.user.empresaId} LIMIT 1`;
+    const empresaId = await resolveTiEmpresaId(ctx);
+    const empresas2 = await client`SELECT "agentToken" FROM empresas WHERE id=${empresaId} LIMIT 1`;
     let token = empresas2[0]?.agentToken;
     if (!token) {
-      token = `et_${ctx.user.empresaId}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
-      await client`UPDATE empresas SET "agentToken"=${token} WHERE id=${ctx.user.empresaId}`.catch(() => {
+      token = `et_${empresaId}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+      await client`UPDATE empresas SET "agentToken"=${token} WHERE id=${empresaId}`.catch(() => {
       });
     }
-    return { token, empresaId: ctx.user.empresaId };
+    return { token, empresaId };
   }),
   // ── Listar usuários da empresa (para atribuição de técnico) ────────────────────────
   listTecnicos: protectedProcedure.query(async ({ ctx }) => {
     requireTiManager(ctx.user);
     const client = await getRawClient();
     if (!client) return [];
-    return client`SELECT id, name, email FROM users WHERE "empresaId"=${ctx.user.empresaId} AND "deletedAt" IS NULL ORDER BY name ASC`.catch(() => []);
+    const empresaId = await resolveTiEmpresaId(ctx);
+    return client`SELECT id, name, email FROM users WHERE "empresaId"=${empresaId} AND "deletedAt" IS NULL ORDER BY name ASC`.catch(() => []);
   })
 });
 
@@ -95586,12 +95769,24 @@ var masterRouter = router({
 
 // routers/notifications.ts
 init_drizzle_orm();
+function notificationAccessSql(userId, empresaId) {
+  if (!empresaId) {
+    return sql`"userId" = ${userId}`;
+  }
+  return sql`
+    (
+      "userId" = ${userId}
+      OR ("empresaId" = ${empresaId} AND "userId" IS NULL)
+    )
+  `;
+}
 var notificationsRouter = router({
   list: protectedProcedure.input(external_exports.object({ limit: external_exports.number().min(1).max(50).default(20) }).optional()).query(async ({ input, ctx }) => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indispon\xEDvel" });
-    const empresaId = ctx.user.role === "master_admin" ? null : ctx.user.empresaId ?? null;
+    const empresaId = ctx.user.empresaId ?? null;
     const limit2 = input?.limit ?? 20;
+    const accessWhere = notificationAccessSql(ctx.user.id, empresaId);
     const rows = await db.execute(sql`
         SELECT
           id,
@@ -95603,10 +95798,7 @@ var notificationsRouter = router({
           "createdAt"
         FROM notifications
         WHERE "deletedAt" IS NULL
-          AND (
-            "userId" = ${ctx.user.id}
-            OR (${empresaId} IS NOT NULL AND "empresaId" = ${empresaId} AND "userId" IS NULL)
-          )
+          AND ${accessWhere}
         ORDER BY "createdAt" DESC
         LIMIT ${limit2}
       `);
@@ -95615,48 +95807,42 @@ var notificationsRouter = router({
   unreadCount: protectedProcedure.query(async ({ ctx }) => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indispon\xEDvel" });
-    const empresaId = ctx.user.role === "master_admin" ? null : ctx.user.empresaId ?? null;
+    const empresaId = ctx.user.empresaId ?? null;
+    const accessWhere = notificationAccessSql(ctx.user.id, empresaId);
     const rows = await db.execute(sql`
       SELECT count(*)::int AS total
       FROM notifications
       WHERE "deletedAt" IS NULL
         AND "readAt" IS NULL
-        AND (
-          "userId" = ${ctx.user.id}
-          OR (${empresaId} IS NOT NULL AND "empresaId" = ${empresaId} AND "userId" IS NULL)
-        )
+        AND ${accessWhere}
     `);
     return { total: rows[0]?.total ?? 0 };
   }),
   markRead: protectedProcedure.input(external_exports.object({ id: external_exports.number() })).mutation(async ({ input, ctx }) => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indispon\xEDvel" });
-    const empresaId = ctx.user.role === "master_admin" ? null : ctx.user.empresaId ?? null;
+    const empresaId = ctx.user.empresaId ?? null;
+    const accessWhere = notificationAccessSql(ctx.user.id, empresaId);
     await db.execute(sql`
         UPDATE notifications
         SET "readAt" = NOW()
         WHERE id = ${input.id}
           AND "deletedAt" IS NULL
-          AND (
-            "userId" = ${ctx.user.id}
-            OR (${empresaId} IS NOT NULL AND "empresaId" = ${empresaId} AND "userId" IS NULL)
-          )
+          AND ${accessWhere}
       `);
     return { success: true };
   }),
   markAllRead: protectedProcedure.mutation(async ({ ctx }) => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indispon\xEDvel" });
-    const empresaId = ctx.user.role === "master_admin" ? null : ctx.user.empresaId ?? null;
+    const empresaId = ctx.user.empresaId ?? null;
+    const accessWhere = notificationAccessSql(ctx.user.id, empresaId);
     await db.execute(sql`
       UPDATE notifications
       SET "readAt" = NOW()
       WHERE "readAt" IS NULL
         AND "deletedAt" IS NULL
-        AND (
-          "userId" = ${ctx.user.id}
-          OR (${empresaId} IS NOT NULL AND "empresaId" = ${empresaId} AND "userId" IS NULL)
-        )
+        AND ${accessWhere}
     `);
     return { success: true };
   })
@@ -97649,11 +97835,18 @@ var MIGRATION_STATEMENTS = [
   `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "gpus" jsonb`,
   `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "sensores" jsonb`,
   `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "memoriaSlots" jsonb`,
+  `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "discos" jsonb`,
+  `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "interfacesRede" jsonb`,
+  `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "ipLocal" varchar(50)`,
+  `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "serialNumber" varchar(200)`,
+  `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "assetTag" varchar(200)`,
   // Colunas extras para inventário resumido no agente
   `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "cpuModel" varchar(200)`,
   `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "gpuModel" varchar(200)`,
   `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "placaMaeModelo" varchar(200)`,
   `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "socketCpu" varchar(100)`,
+  `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "serialNumber" varchar(200)`,
+  `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "assetTag" varchar(200)`,
   // Adicionar agentToken à tabela de empresas para identificação do tenant
   `ALTER TABLE empresas ADD COLUMN IF NOT EXISTS "agentToken" varchar(64) UNIQUE`,
   `ALTER TABLE empresas ADD COLUMN IF NOT EXISTS "codigoConvite" varchar(50) UNIQUE`,
@@ -97848,9 +98041,9 @@ async function runInlineMigrations() {
   }
   let applied = 0;
   let errors = 0;
-  for (const sql5 of MIGRATION_STATEMENTS) {
+  for (const sql6 of MIGRATION_STATEMENTS) {
     try {
-      await client.unsafe(sql5);
+      await client.unsafe(sql6);
       applied++;
     } catch (err) {
       const msg = err?.message || "";
@@ -97877,8 +98070,47 @@ var ALLOWED_ORIGINS = [
   ...process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []
 ];
 var ANY_VERCEL_REGEX = /^https:\/\/.*\.vercel\.app$/;
-var AGENT_DIR = import_path39.default.join(process.cwd(), "agent");
-var UPLOADS_DIR = import_path39.default.join(process.cwd(), "uploads");
+var SERVICE_ROOT = import_path39.default.resolve(__dirname, "..");
+var REPO_ROOT = import_path39.default.resolve(SERVICE_ROOT, "..", "..", "..");
+var resolveFirstExistingDir = (candidates, fallback) => {
+  for (const candidate of candidates) {
+    if (import_fs2.default.existsSync(candidate)) {
+      return candidate;
+    }
+  }
+  return fallback;
+};
+var AGENT_DIR = resolveFirstExistingDir(
+  [
+    import_path39.default.join(SERVICE_ROOT, "agent"),
+    import_path39.default.join(process.cwd(), "agent"),
+    import_path39.default.join(REPO_ROOT, "agent")
+  ],
+  import_path39.default.join(SERVICE_ROOT, "agent")
+);
+var UPLOADS_DIR = resolveFirstExistingDir(
+  [
+    import_path39.default.join(SERVICE_ROOT, "uploads"),
+    import_path39.default.join(process.cwd(), "uploads"),
+    import_path39.default.join(REPO_ROOT, "uploads")
+  ],
+  import_path39.default.join(SERVICE_ROOT, "uploads")
+);
+var readAgentVersion = () => {
+  try {
+    const agentScriptPath = import_path39.default.join(AGENT_DIR, "synapse_agent.py");
+    if (!import_fs2.default.existsSync(agentScriptPath)) return "unknown";
+    const source = import_fs2.default.readFileSync(agentScriptPath, "utf-8");
+    const match = source.match(/^\s*VERSION\s*=\s*["']([^"']+)["']/m);
+    return match?.[1] || "unknown";
+  } catch {
+    return "unknown";
+  }
+};
+var AGENT_VERSION = readAgentVersion();
+console.log(`[BOOT] AGENT_DIR=${AGENT_DIR}`);
+console.log(`[BOOT] UPLOADS_DIR=${UPLOADS_DIR}`);
+console.log(`[BOOT] AGENT_VERSION=${AGENT_VERSION}`);
 if (!import_fs2.default.existsSync(UPLOADS_DIR)) {
   import_fs2.default.mkdirSync(UPLOADS_DIR, { recursive: true });
 }
@@ -97945,7 +98177,7 @@ app.use(
   })
 );
 app.options("*", (0, import_cors.default)());
-app.use(import_express.default.json({ limit: "10mb" }));
+app.use(import_express.default.json({ limit: "25mb" }));
 var getBaseUrl = (req) => `${req.protocol}://${req.get("host")}`;
 var FRONTEND_URL = process.env.FRONTEND_URL || "https://synapse-seven-nu.vercel.app";
 var getAuth0Config = () => ({
@@ -97987,6 +98219,9 @@ app.get("/api/auth/auth0/start", (req, res) => {
   };
   const provider = Object.prototype.hasOwnProperty.call(providerToConnection, providerParam) ? providerParam : "google";
   const connection2 = providerToConnection[provider] || cfg.connGoogle;
+  const loginHintRaw = String(req.query.login_hint || "").trim();
+  const loginHint = loginHintRaw.length > 0 ? loginHintRaw.slice(0, 254) : "";
+  const forceAccountSelection = String(req.query.force_account || "").trim() === "1";
   const state = `${provider}__${import_crypto5.default.randomBytes(24).toString("hex")}`;
   res.cookie("synapse-auth0-provider", provider, {
     httpOnly: true,
@@ -98011,7 +98246,14 @@ app.get("/api/auth/auth0/start", (req, res) => {
   authorizeUrl.searchParams.set("state", state);
   if (provider === "microsoft") {
     authorizeUrl.searchParams.set("prompt", "select_account");
+    authorizeUrl.searchParams.set("max_age", "0");
+    authorizeUrl.searchParams.set("domain_hint", "consumers");
+    if (loginHint) authorizeUrl.searchParams.set("login_hint", loginHint);
   } else if (provider === "google") {
+    authorizeUrl.searchParams.set("prompt", "select_account");
+    authorizeUrl.searchParams.set("max_age", "0");
+  }
+  if (forceAccountSelection) {
     authorizeUrl.searchParams.set("prompt", "select_account");
   }
   res.redirect(authorizeUrl.toString());
@@ -98144,7 +98386,17 @@ var requireAgent = async (req, res, next) => {
     if (!client) {
       return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
     }
-    const rows = await client`SELECT * FROM monitor_agentes WHERE token=${token} LIMIT 1`.catch(() => []);
+    const rows = await client`
+      SELECT id, "empresaId", hostname, token, user_id, department_id, status, online, "ultimoContato"
+      FROM monitor_agentes
+      WHERE token=${token}
+        AND "deletedAt" IS NULL
+        AND COALESCE(ativo, true) = true
+      LIMIT 1
+    `.catch((error48) => {
+      console.warn("[Agent Auth] Falha ao validar token:", error48?.message || error48);
+      return [];
+    });
     const agent = rows[0];
     if (!agent) {
       return res.status(401).json({ error: "TOKEN_INVALIDO" });
@@ -98155,14 +98407,52 @@ var requireAgent = async (req, res, next) => {
     res.status(401).json({ error: "TOKEN_INVALIDO" });
   }
 };
+var TI_MANAGER_ROLES = /* @__PURE__ */ new Set([
+  "master_admin",
+  "admin",
+  "administrador",
+  "ti",
+  "ti_master",
+  "supervisor_geral",
+  "supervisor_ti"
+]);
+var canManageTiRole = (role) => TI_MANAGER_ROLES.has(String(role || "").toLowerCase());
+var requireAgentTi = async (req, res, next) => {
+  try {
+    await requireAgent(req, res, async () => {
+      const agent = req.agent;
+      if (!agent?.user_id) {
+        return res.status(403).json({ error: "AGENT_TI_LOGIN_REQUIRED" });
+      }
+      const client = await getRawClient();
+      if (!client) {
+        return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+      }
+      const users2 = await client`
+        SELECT id, role, "empresaId", name, email
+        FROM users
+        WHERE id = ${Number(agent.user_id)}
+        LIMIT 1
+      `.catch(() => []);
+      const user = users2[0];
+      if (!user || !canManageTiRole(user.role)) {
+        return res.status(403).json({ error: "AGENT_TI_FORBIDDEN" });
+      }
+      req.agentUser = user;
+      next();
+    });
+  } catch {
+    res.status(403).json({ error: "AGENT_TI_FORBIDDEN" });
+  }
+};
 var mapLegacyMetric = (payload) => {
-  const disks = Array.isArray(payload.disks) ? payload.disks : [];
-  const diskTotalFromArray = disks.reduce((sum2, disk) => sum2 + Number(disk.total_gb || 0), 0);
-  const diskUsedFromArray = disks.reduce((sum2, disk) => sum2 + Number(disk.used_gb || 0), 0);
+  const disks = Array.isArray(payload.disks) ? payload.disks : Array.isArray(payload.discos) ? payload.discos : [];
+  const diskTotalFromArray = disks.reduce((sum2, disk) => sum2 + Number(disk.total_gb || disk.totalGb || 0), 0);
+  const diskUsedFromArray = disks.reduce((sum2, disk) => sum2 + Number(disk.used_gb || disk.usado_gb || disk.usedGb || 0), 0);
   const tempGroups = payload.temperatures ? Object.values(payload.temperatures) : [];
   const firstTempGroup = Array.isArray(tempGroups[0]) ? tempGroups[0] : [];
   const firstTemp = firstTempGroup[0]?.current ?? null;
-  const topProcesses = Array.isArray(payload.top_processes) ? payload.top_processes : Array.isArray(payload.topProcessos) ? payload.topProcessos : Array.isArray(payload.processes) ? payload.processes : [];
+  const topProcesses = Array.isArray(payload.top_processes) ? payload.top_processes : Array.isArray(payload.top_processos) ? payload.top_processos : Array.isArray(payload.topProcessos) ? payload.topProcessos : Array.isArray(payload.processes) ? payload.processes : [];
   const diskTotal = diskTotalFromArray || Number(payload.disk_total_gb || payload.disco_total_gb || 0);
   const diskUsed = diskUsedFromArray || Number(payload.disk_used_gb || payload.disco_usado_gb || 0);
   const cpuUso = payload.cpu?.percent ?? payload.cpu_percent ?? payload.cpu_uso ?? null;
@@ -98181,6 +98471,9 @@ var mapLegacyMetric = (payload) => {
   const gpus = Array.isArray(hardware.gpus) ? hardware.gpus : Array.isArray(payload.gpus) ? payload.gpus : [];
   const sensors = Array.isArray(payload.sensors) ? payload.sensors : Array.isArray(hardware.sensors) ? hardware.sensors : [];
   const memorySlots = Array.isArray(hardware.memory_slots) ? hardware.memory_slots : Array.isArray(payload.memory_slots) ? payload.memory_slots : [];
+  const interfacesRede = Array.isArray(payload.interfaces_rede) ? payload.interfaces_rede : Array.isArray(payload.network_interfaces) ? payload.network_interfaces : [];
+  const primaryIp = payload.ip || payload.ip_local || interfacesRede.find((iface) => iface?.ip && !String(iface.ip).startsWith("127."))?.ip || null;
+  const serialNumber = hardware.serial_number || hardware.asset_tag || motherboard.serial || payload.serial_number || payload.asset_tag || null;
   const collectedAtSource = payload.timestamp || payload.coletado_em;
   const coletadoEm = collectedAtSource ? new Date(collectedAtSource).toISOString() : (/* @__PURE__ */ new Date()).toISOString();
   return {
@@ -98210,7 +98503,14 @@ var mapLegacyMetric = (payload) => {
     sensores: sensors.length ? JSON.stringify(sensors) : null,
     memoriaSlots: memorySlots.length ? JSON.stringify(memorySlots) : null,
     cpuModel: hardware.cpu_model || payload.cpu_model || null,
-    gpuModel: gpus[0]?.name || gpus[0]?.model || payload.gpu_model || null
+    gpuModel: gpus[0]?.name || gpus[0]?.model || payload.gpu_model || null,
+    discos: disks.length ? JSON.stringify(disks) : null,
+    interfacesRede: interfacesRede.length ? JSON.stringify(interfacesRede) : null,
+    ipLocal: primaryIp,
+    so: payload.so || payload.os || null,
+    serialNumber,
+    assetTag: payload.asset_tag || hardware.asset_tag || serialNumber,
+    agentVersion: payload.agent_version || payload.versao_agente || payload.version || null
   };
 };
 async function resolveEmpresaIdForUser(client, user, requestedEmpresaId) {
@@ -98361,33 +98661,43 @@ var setNoCacheDownloadHeaders = (res) => {
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
 };
-app.get("/api/agent/download/windows", (_req, res) => {
+var sendAgentDownload = (res, filename, downloadName) => {
+  const filePath = import_path39.default.join(AGENT_DIR, filename);
+  if (!import_fs2.default.existsSync(filePath)) {
+    return res.status(404).json({
+      error: "AGENT_FILE_NOT_FOUND",
+      filename,
+      agentDir: AGENT_DIR
+    });
+  }
   setNoCacheDownloadHeaders(res);
-  res.download(import_path39.default.join(AGENT_DIR, "synapse-agent.exe"), "synapse-agent.exe");
+  res.setHeader("X-Synapse-Agent-Version", AGENT_VERSION);
+  res.download(filePath, downloadName);
+};
+app.get("/api/agent/version", (_req, res) => {
+  setNoCacheDownloadHeaders(res);
+  res.json({ version: AGENT_VERSION });
+});
+app.get("/api/agent/download/windows", (_req, res) => {
+  sendAgentDownload(res, "synapse-agent.exe", "synapse-agent.exe");
 });
 app.get("/api/agent/download/windows-installer", (_req, res) => {
-  setNoCacheDownloadHeaders(res);
-  res.download(import_path39.default.join(AGENT_DIR, "install_windows.bat"), "instalar_agente.bat");
+  sendAgentDownload(res, "install_windows.bat", "instalar_agente.bat");
 });
 app.get("/api/agent/download/windows-uninstaller", (_req, res) => {
-  setNoCacheDownloadHeaders(res);
-  res.download(import_path39.default.join(AGENT_DIR, "uninstall_windows.bat"), "desinstalar_agente.bat");
+  sendAgentDownload(res, "uninstall_windows.bat", "desinstalar_agente.bat");
 });
 app.get("/api/agent/download/windows-node-installer", (_req, res) => {
-  setNoCacheDownloadHeaders(res);
-  res.download(import_path39.default.join(AGENT_DIR, "install_synapse.js"), "instalar_agente_node.js");
+  sendAgentDownload(res, "install_synapse.js", "instalar_agente_node.js");
 });
 app.get("/api/agent/download/linux", (_req, res) => {
-  setNoCacheDownloadHeaders(res);
-  res.download(import_path39.default.join(AGENT_DIR, "install_linux.sh"), "install_linux.sh");
+  sendAgentDownload(res, "install_linux.sh", "install_linux.sh");
 });
 app.get("/api/agent/download/agent", (_req, res) => {
-  setNoCacheDownloadHeaders(res);
-  res.download(import_path39.default.join(AGENT_DIR, "synapse_agent.py"), "synapse_agent.py");
+  sendAgentDownload(res, "synapse_agent.py", "synapse_agent.py");
 });
 app.get("/api/agent/support/latest.py", (_req, res) => {
-  setNoCacheDownloadHeaders(res);
-  res.download(import_path39.default.join(AGENT_DIR, "synapse_agent.py"), "synapse_agent.py");
+  sendAgentDownload(res, "synapse_agent.py", "synapse_agent.py");
 });
 app.post("/api/omnichannel/webhook/:provider/:empresaId", async (req, res) => {
   try {
@@ -98499,6 +98809,9 @@ app.post("/api/agent/pair", async (req, res) => {
       SELECT * FROM monitor_agentes
       WHERE "empresaId"=${pairing.empresaId}
         AND (fingerprint=${fingerprint} OR hostname=${hostname3})
+        AND "deletedAt" IS NULL
+        AND COALESCE(ativo, true) = true
+      ORDER BY id DESC
       LIMIT 1
     `.catch(() => []);
     let deviceId = existingRows[0]?.id;
@@ -98559,13 +98872,14 @@ app.post("/api/agent/auth/login", async (req, res) => {
     const email3 = String(req.body?.email || "").trim().toLowerCase();
     const password = String(req.body?.password || "");
     const deviceId = Number(req.body?.deviceId || 0);
+    const agentToken = String(req.body?.token || "").trim();
     if (!email3 || !password) {
       return res.status(400).json({ error: "EMAIL_PASSWORD_REQUIRED" });
     }
     const client = await getRawClient();
     if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
     const users2 = await client`
-      SELECT id, email, password, "empresaId", name
+      SELECT id, email, password, "empresaId", name, role, status, "deletedAt"
       FROM users
       WHERE LOWER(email) = ${email3}
       LIMIT 1
@@ -98574,17 +98888,33 @@ app.post("/api/agent/auth/login", async (req, res) => {
     if (!user?.password) {
       return res.status(401).json({ error: "INVALID_CREDENTIALS" });
     }
+    if (user.deletedAt || user.status === "pending") {
+      return res.status(403).json({ error: "USER_NOT_ACTIVE" });
+    }
     const ok = await import_bcryptjs3.default.compare(password, user.password);
     if (!ok) {
       return res.status(401).json({ error: "INVALID_CREDENTIALS" });
     }
     if (deviceId > 0) {
-      await client`
+      if (!agentToken) {
+        return res.status(401).json({ error: "AGENT_TOKEN_REQUIRED" });
+      }
+      const updatedAgents = await client`
         UPDATE monitor_agentes
-        SET user_id = ${user.id}, "empresaId" = ${user.empresaId}, "updatedAt" = NOW()
+        SET user_id = ${user.id}, "updatedAt" = NOW()
         WHERE id = ${deviceId}
-      `.catch(() => {
-      });
+          AND token = ${agentToken}
+          AND (
+            ${user.role === "master_admin"}
+            OR "empresaId" = ${user.empresaId}
+          )
+          AND "deletedAt" IS NULL
+          AND COALESCE(ativo, true) = true
+        RETURNING id
+      `.catch(() => []);
+      if (!updatedAgents[0]) {
+        return res.status(403).json({ error: "DEVICE_NOT_AUTHORIZED_FOR_USER" });
+      }
     }
     return res.json({
       success: true,
@@ -98592,7 +98922,9 @@ app.post("/api/agent/auth/login", async (req, res) => {
         id: user.id,
         name: user.name,
         email: user.email,
-        empresaId: user.empresaId
+        empresaId: user.empresaId,
+        role: user.role,
+        isTiManager: canManageTiRole(user.role)
       }
     });
   } catch (error48) {
@@ -98600,14 +98932,24 @@ app.post("/api/agent/auth/login", async (req, res) => {
     return res.status(500).json({ error: "AGENT_LOGIN_FAILED" });
   }
 });
-app.post("/api/agent/metrics", async (req, res) => {
+app.post(["/api/agent/metrics", "/api/agent/heartbeat", "/api/agent/inventory", "/api/agent/telemetry"], async (req, res) => {
   try {
     const authHeader = req.headers.authorization || "";
     const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
     if (!token) return res.status(401).json({ error: "TOKEN_REQUIRED" });
     const client = await getRawClient();
     if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
-    const agents = await client`SELECT * FROM monitor_agentes WHERE token=${token} LIMIT 1`.catch(() => []);
+    const agents = await client`
+      SELECT id, "empresaId", hostname, token, user_id, department_id, status, online, "ultimoContato"
+      FROM monitor_agentes
+      WHERE token=${token}
+        AND "deletedAt" IS NULL
+        AND COALESCE(ativo, true) = true
+      LIMIT 1
+    `.catch((error48) => {
+      console.warn("[Agent Metrics] Falha ao validar token:", error48?.message || error48);
+      return [];
+    });
     const agent = agents[0];
     if (!agent) return res.status(401).json({ error: "TOKEN_INVALIDO" });
     const metric = mapLegacyMetric(req.body ?? {});
@@ -98619,7 +98961,8 @@ app.post("/api/agent/metrics", async (req, res) => {
           "discoUsoPct", "redeEnviadoKb", "redeRecebidoKb", "latenciaMs", processos,
           "anydeskId", "usuarioLogado", uptime, "topProcessos",
           "placaMaeModelo", "placaMaeFabricante", "socketCpu", "biosVersao",
-          gpus, sensores, "memoriaSlots"
+          gpus, sensores, "memoriaSlots", discos, "interfacesRede", "ipLocal",
+          "serialNumber", "assetTag"
         )
         VALUES (
           ${agent.id}, ${agent.empresaId}, ${metric.coletadoEm}, ${metric.cpuUso}, ${metric.cpuTemp}, ${metric.cpuFreqMhz},
@@ -98627,7 +98970,8 @@ app.post("/api/agent/metrics", async (req, res) => {
           ${metric.discoUsoPct}, ${metric.redeEnviadoKb}, ${metric.redeRecebidoKb}, ${metric.latenciaMs}, ${metric.processos},
           ${metric.anydeskId}, ${metric.usuarioLogado}, ${metric.uptime}, ${metric.topProcessos},
           ${metric.placaMaeModelo}, ${metric.placaMaeFabricante}, ${metric.socketCpu}, ${metric.biosVersao},
-          ${metric.gpus}, ${metric.sensores}, ${metric.memoriaSlots}
+          ${metric.gpus}, ${metric.sensores}, ${metric.memoriaSlots}, ${metric.discos}, ${metric.interfacesRede},
+          ${metric.ipLocal}, ${metric.serialNumber}, ${metric.assetTag}
         )
       `;
     } catch (insertError) {
@@ -98650,10 +98994,16 @@ app.post("/api/agent/metrics", async (req, res) => {
             online=true,
             "ultimoContato"=NOW(),
             "updatedAt"=NOW(),
+            ip=COALESCE(${metric.ipLocal}, ip),
+            so=COALESCE(${metric.so}, so),
+            "versaoAgente"=COALESCE(${metric.agentVersion}, "versaoAgente"),
+            "anydeskId"=COALESCE(${metric.anydeskId}, "anydeskId"),
             "cpuModel"=COALESCE(${metric.cpuModel}, "cpuModel"),
             "gpuModel"=COALESCE(${metric.gpuModel}, "gpuModel"),
             "placaMaeModelo"=COALESCE(${metric.placaMaeModelo}, "placaMaeModelo"),
-            "socketCpu"=COALESCE(${metric.socketCpu}, "socketCpu")
+            "socketCpu"=COALESCE(${metric.socketCpu}, "socketCpu"),
+            "serialNumber"=COALESCE(${metric.serialNumber}, "serialNumber"),
+            "assetTag"=COALESCE(${metric.assetTag}, "assetTag")
         WHERE id=${agent.id}
       `;
     } catch (updateError) {
@@ -98677,15 +99027,48 @@ app.get("/api/agent/profile", requireAgent, async (req, res) => {
   const agent = req.agent;
   const client = await getRawClient();
   if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+  const wantsTiProfile = String(req.headers["x-synapse-agent-mode"] || "").toLowerCase() === "ti";
+  const sanitizeAgentProfile = (profile) => ({
+    id: profile?.id,
+    empresaId: profile?.empresaId,
+    empresa_nome: profile?.empresa_nome,
+    usuario_nome: profile?.usuario_nome,
+    usuario_email: profile?.usuario_email,
+    versaoAgente: profile?.versaoAgente,
+    ultimoContato: profile?.ultimoContato,
+    online: profile?.online,
+    status: profile?.status,
+    technicalProfileAllowed: false
+  });
+  const sendProfile = (profile) => {
+    if (!profile) return res.json(null);
+    const canSeeTechnicalProfile = wantsTiProfile && canManageTiRole(profile.usuario_role);
+    return res.json(canSeeTechnicalProfile ? { ...profile, technicalProfileAllowed: true } : sanitizeAgentProfile(profile));
+  };
   const profileRows = await client`
-    SELECT a.*,
+    SELECT
+      a.id, a."empresaId", a."ativoId", a.hostname, a.ip, a.mac, a.so,
+      a."versaoAgente", a."ultimoContato", a.online, a.ativo,
+      a."createdAt", a."updatedAt", a."anydeskId", a.status, a."deletedAt",
+      a."pairingCode", a.fingerprint, a."ultimaVersao", a.setor,
+      a.user_id, a.department_id, a."cpuModel", a."gpuModel",
+      a."placaMaeModelo", a."socketCpu", a."serialNumber", a."assetTag",
       e.nome as empresa_nome,
       u.name as usuario_nome,
       u.email as usuario_email,
+      u.role as usuario_role,
       (
         SELECT row_to_json(mm)
         FROM (
-          SELECT "coletadoEm","cpuUso","ramUsoPct","discoUsoPct","anydeskId","usuarioLogado",uptime
+          SELECT
+            "coletadoEm", "cpuUso", "cpuTemp", "cpuFreqMhz",
+            "ramTotalMb", "ramUsadaMb", "ramUsoPct",
+            "discoTotalGb", "discoUsadoGb", "discoUsoPct",
+            "redeEnviadoKb", "redeRecebidoKb", "latenciaMs",
+            processos, "anydeskId", "usuarioLogado", uptime, "topProcessos",
+            "placaMaeModelo", "placaMaeFabricante", "socketCpu", "biosVersao",
+            gpus, sensores, "memoriaSlots", discos, "interfacesRede",
+            "ipLocal", "serialNumber", "assetTag"
           FROM monitor_metricas
           WHERE "agenteId" = a.id
           ORDER BY "coletadoEm" DESC
@@ -98694,19 +99077,41 @@ app.get("/api/agent/profile", requireAgent, async (req, res) => {
       ) as ultima_metrica
     FROM monitor_agentes a
     LEFT JOIN empresas e ON e.id = a."empresaId"
-    LEFT JOIN users u ON u.id = a.user_id
+    LEFT JOIN users u ON u.id::text = a.user_id::text
     WHERE a.id = ${agent.id}
+      AND a."deletedAt" IS NULL
+      AND COALESCE(a.ativo, true) = true
     LIMIT 1
-  `.catch(() => []);
-  if (profileRows[0]) return res.json(profileRows[0]);
+  `.catch((error48) => {
+    console.warn("[Agent Profile] Consulta completa falhou:", error48?.message || error48);
+    return [];
+  });
+  if (profileRows[0]) return sendProfile(profileRows[0]);
   const fallbackProfileRows = await client`
-    SELECT a.*, e.nome as empresa_nome
+    SELECT
+      a.id, a."empresaId", a."ativoId", a.hostname, a.ip, a.mac, a.so,
+      a."versaoAgente", a."ultimoContato", a.online, a.ativo,
+      a."createdAt", a."updatedAt", a."anydeskId", a.status, a."deletedAt",
+      a."pairingCode", a.fingerprint, a."ultimaVersao", a.setor,
+      a.user_id, a.department_id, a."cpuModel", a."gpuModel",
+      a."placaMaeModelo", a."socketCpu", a."serialNumber", a."assetTag",
+      e.nome as empresa_nome,
+      u.name as usuario_nome,
+      u.email as usuario_email,
+      u.role as usuario_role,
+      NULL as ultima_metrica
     FROM monitor_agentes a
     LEFT JOIN empresas e ON e.id = a."empresaId"
+    LEFT JOIN users u ON u.id::text = a.user_id::text
     WHERE a.id = ${agent.id}
+      AND a."deletedAt" IS NULL
+      AND COALESCE(a.ativo, true) = true
     LIMIT 1
-  `.catch(() => []);
-  return res.json(fallbackProfileRows[0] ?? null);
+  `.catch((error48) => {
+    console.warn("[Agent Profile] Consulta fallback falhou:", error48?.message || error48);
+    return [];
+  });
+  return sendProfile(fallbackProfileRows[0] ?? null);
 });
 app.get("/api/agent/tickets", requireAgent, async (req, res) => {
   const agent = req.agent;
@@ -98735,8 +99140,12 @@ app.post("/api/agent/tickets/open", requireAgent, async (req, res) => {
   }
   const titulo = String(req.body?.titulo || "").trim();
   const descricao = String(req.body?.descricao || "").trim();
-  const categoria = String(req.body?.categoria || "hardware");
-  const prioridade = String(req.body?.prioridade || "media");
+  const allowedCategorias = /* @__PURE__ */ new Set(["hardware", "software", "rede", "acesso", "email", "impressora", "outro"]);
+  const allowedPrioridades = /* @__PURE__ */ new Set(["baixa", "media", "alta", "critica"]);
+  const requestedCategoria = String(req.body?.categoria || "hardware").trim().toLowerCase();
+  const requestedPrioridade = String(req.body?.prioridade || "media").trim().toLowerCase();
+  const categoria = allowedCategorias.has(requestedCategoria) ? requestedCategoria : "outro";
+  const prioridade = allowedPrioridades.has(requestedPrioridade) ? requestedPrioridade : "media";
   if (!titulo || titulo.length < 2) {
     return res.status(400).json({ error: "Informe o t\xEDtulo do chamado." });
   }
@@ -98847,6 +99256,149 @@ app.post("/api/agent/tickets/:id/messages", requireAgent, async (req, res) => {
     RETURNING *
   `.catch(() => []);
   res.json(rows[0] ?? { success: false });
+});
+app.get("/api/agent/ti/tickets", requireAgentTi, async (req, res) => {
+  const agent = req.agent;
+  const client = await getRawClient();
+  if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+  const rows = await client`
+    SELECT t.id, t.protocolo, t.titulo, t.descricao, t.categoria, t.prioridade,
+      t.status, t."createdAt", t."updatedAt", t."resolvidoEm",
+      u.name as solicitante_nome, u.email as solicitante_email,
+      a.hostname as agente_hostname, a."anydeskId" as agente_anydesk_id
+    FROM tickets_ti t
+    LEFT JOIN users u ON u.id = t."solicitanteId"
+    LEFT JOIN monitor_agentes a ON a.user_id = t."solicitanteId"::text AND a."empresaId" = t."empresaId"
+    WHERE t."empresaId" = ${agent.empresaId}
+      AND t."deletedAt" IS NULL
+    ORDER BY t."updatedAt" DESC, t.id DESC
+    LIMIT 80
+  `.catch(() => []);
+  res.json(rows);
+});
+app.get("/api/agent/ti/tickets/:id/messages", requireAgentTi, async (req, res) => {
+  const agent = req.agent;
+  const client = await getRawClient();
+  if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+  const ticketId = Number(req.params.id);
+  const ticketRows = await client`
+    SELECT id
+    FROM tickets_ti
+    WHERE id = ${ticketId}
+      AND "empresaId" = ${agent.empresaId}
+      AND "deletedAt" IS NULL
+    LIMIT 1
+  `.catch(() => []);
+  if (!ticketRows[0]) return res.status(404).json({ error: "TICKET_NOT_FOUND" });
+  const rows = await client`
+    SELECT m.*, u.name as autor_nome, u.email as autor_email
+    FROM ticket_mensagens m
+    LEFT JOIN users u ON u.id = m."autorId"
+    WHERE m."ticketId" = ${ticketId}
+      AND m."empresaId" = ${agent.empresaId}
+    ORDER BY m."createdAt" ASC
+  `.catch(() => []);
+  res.json(rows);
+});
+app.post("/api/agent/ti/tickets/:id/messages", requireAgentTi, async (req, res) => {
+  const agent = req.agent;
+  const agentUser = req.agentUser;
+  const client = await getRawClient();
+  if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+  const ticketId = Number(req.params.id);
+  const conteudo = String(req.body?.conteudo || "").trim();
+  const fileUrl = String(req.body?.fileUrl || "").trim();
+  const fileName = String(req.body?.fileName || "").trim();
+  const fileType = String(req.body?.fileType || "").trim();
+  if (!conteudo && !fileUrl) return res.status(400).json({ error: "MESSAGE_REQUIRED" });
+  const ticketRows = await client`
+    SELECT id, status
+    FROM tickets_ti
+    WHERE id = ${ticketId}
+      AND "empresaId" = ${agent.empresaId}
+      AND "deletedAt" IS NULL
+    LIMIT 1
+  `.catch(() => []);
+  if (!ticketRows[0]) return res.status(404).json({ error: "TICKET_NOT_FOUND" });
+  const rows = await client`
+    INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"fileUrl","fileName","fileType","createdAt")
+    VALUES (
+      ${ticketId},
+      ${agent.empresaId},
+      ${Number(agentUser.id)},
+      ${conteudo || ""},
+      ${fileUrl ? "anexo" : "mensagem"},
+      ${fileUrl || null},
+      ${fileName || null},
+      ${fileType || null},
+      NOW()
+    )
+    RETURNING *
+  `.catch(() => []);
+  await client`
+    UPDATE tickets_ti
+    SET "updatedAt" = NOW(),
+        status = CASE
+          WHEN status IN ('aberto','aguardando_ti','triagem_ia') THEN 'aguardando_usuario'
+          ELSE status
+        END
+    WHERE id = ${ticketId} AND "empresaId" = ${agent.empresaId}
+  `.catch(() => {
+  });
+  res.json(rows[0] ?? { success: false });
+});
+app.patch("/api/agent/ti/tickets/:id/status", requireAgentTi, async (req, res) => {
+  const agent = req.agent;
+  const agentUser = req.agentUser;
+  const client = await getRawClient();
+  if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+  const ticketId = Number(req.params.id);
+  const status = String(req.body?.status || "").trim().toLowerCase();
+  const allowed = /* @__PURE__ */ new Set([
+    "aberto",
+    "triagem_ia",
+    "aguardando_usuario",
+    "aguardando_ti",
+    "em_andamento",
+    "acesso_remoto_solicitado",
+    "em_acesso_remoto",
+    "resolvido",
+    "encerrado",
+    "cancelado",
+    "reaberto"
+  ]);
+  if (!allowed.has(status)) return res.status(400).json({ error: "STATUS_INVALIDO" });
+  const currentRows = await client`
+    SELECT status
+    FROM tickets_ti
+    WHERE id = ${ticketId}
+      AND "empresaId" = ${agent.empresaId}
+      AND "deletedAt" IS NULL
+    LIMIT 1
+  `.catch(() => []);
+  const currentStatus = currentRows[0]?.status;
+  if (!currentRows[0]) return res.status(404).json({ error: "TICKET_NOT_FOUND" });
+  await client`
+    UPDATE tickets_ti
+    SET status = ${status},
+        "updatedAt" = NOW(),
+        "resolvidoEm" = CASE
+          WHEN ${status} IN ('resolvido','encerrado') THEN NOW()
+          ELSE "resolvidoEm"
+        END
+    WHERE id = ${ticketId} AND "empresaId" = ${agent.empresaId}
+  `;
+  await client`
+    INSERT INTO ticket_status_history ("ticketId","empresaId","changedBy","fromStatus","toStatus",motivo,"createdAt")
+    VALUES (${ticketId}, ${agent.empresaId}, ${Number(agentUser.id)}, ${currentStatus ?? null}, ${status}, ${"Alterado pelo agente Windows"}, NOW())
+  `.catch(() => {
+  });
+  await client`
+    INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
+    VALUES (${ticketId}, ${agent.empresaId}, ${Number(agentUser.id)}, ${`Status alterado para: ${status}`}, 'sistema', NOW())
+  `.catch(() => {
+  });
+  res.json({ success: true, status });
 });
 app.use(
   "/api/trpc",

@@ -12,6 +12,7 @@ import { Mail, Lock, LogIn, Building2, Key, CheckCircle, AlertCircle, Zap, Eye, 
 const AUTH_TOKEN_KEY = "synapse-auth-token";
 const USER_INFO_KEY = "app-user-info";
 const AUTH_AT_KEY = "synapse-auth-at";
+const SOCIAL_PROVIDER_KEY = "synapse-social-provider";
 
 export default function Login() {
   const { t } = useTranslation();
@@ -29,7 +30,10 @@ export default function Login() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const socialError = params.get("social_error");
-    const socialProvider = params.get("social_provider") || "google";
+    const socialProvider =
+      params.get("social_provider") ||
+      sessionStorage.getItem(SOCIAL_PROVIDER_KEY) ||
+      "google";
     if (!socialError) return;
     const providerLabel =
       socialProvider === "microsoft"
@@ -38,6 +42,11 @@ export default function Login() {
           ? "Apple"
           : "Google";
     toast.error(`Não foi possível entrar com ${providerLabel} no momento.`);
+    sessionStorage.removeItem(SOCIAL_PROVIDER_KEY);
+    params.delete("social_error");
+    params.delete("social_provider");
+    const cleaned = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ""}`;
+    window.history.replaceState({}, "", cleaned);
   }, []);
 
   const loginMutation = trpc.auth.login.useMutation({
@@ -106,7 +115,9 @@ export default function Login() {
   const isLoading = loginMutation.isPending || registerMutation.isPending;
 
   const handleSocialLogin = (provider: "google" | "microsoft" | "apple") => {
-    window.location.href = `${getBackendBaseUrl()}/api/auth/auth0/start?provider=${provider}`;
+    sessionStorage.setItem(SOCIAL_PROVIDER_KEY, provider);
+    const params = new URLSearchParams({ provider, force_account: "1" });
+    window.location.href = `${getBackendBaseUrl()}/api/auth/auth0/start?${params.toString()}`;
   };
 
   const limparSessaoAntiga = () => {
@@ -129,11 +140,13 @@ export default function Login() {
       <div className="w-full max-w-md relative z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 mb-4 shadow-lg shadow-blue-500/30">
-            <Zap className="h-7 w-7 text-white" />
-          </div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Synapse</h1>
-          <p className="text-white/40 mt-1 text-sm">Gestão Inteligente de Logística</p>
+          <a href="/" className="inline-block group" aria-label="Voltar para a página inicial">
+            <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 mb-4 shadow-lg shadow-blue-500/30 transition-transform group-hover:scale-105">
+              <Zap className="h-7 w-7 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold text-white tracking-tight group-hover:text-blue-300 transition-colors">Synapse</h1>
+            <p className="text-white/40 mt-1 text-sm group-hover:text-white/60 transition-colors">Gestão Inteligente de Logística</p>
+          </a>
         </div>
 
         {/* Card */}
@@ -217,6 +230,7 @@ export default function Login() {
                 <Mail className="absolute left-3 top-3.5 h-4 w-4 text-white/30" />
                 <Input
                   type="email"
+                  autoComplete="email"
                   placeholder="seu@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -232,6 +246,7 @@ export default function Login() {
                 <Lock className="absolute left-3 top-3.5 h-4 w-4 text-white/30" />
                 <Input
                   type={showPassword ? "text" : "password"}
+                  autoComplete={isLogin ? "current-password" : "new-password"}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

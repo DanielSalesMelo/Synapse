@@ -1391,6 +1391,26 @@ const MIGRATION_STATEMENTS: string[] = [
   // Colunas extras para monitor_metricas
   `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "anydeskId" varchar(50)`,
   `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "topProcessos" jsonb`,
+  `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "placaMaeModelo" varchar(200)`,
+  `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "placaMaeFabricante" varchar(200)`,
+  `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "socketCpu" varchar(100)`,
+  `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "biosVersao" varchar(120)`,
+  `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "gpus" jsonb`,
+  `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "sensores" jsonb`,
+  `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "memoriaSlots" jsonb`,
+  `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "discos" jsonb`,
+  `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "interfacesRede" jsonb`,
+  `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "ipLocal" varchar(50)`,
+  `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "serialNumber" varchar(200)`,
+  `ALTER TABLE monitor_metricas ADD COLUMN IF NOT EXISTS "assetTag" varchar(200)`,
+
+  // Colunas extras para inventário resumido no agente
+  `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "cpuModel" varchar(200)`,
+  `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "gpuModel" varchar(200)`,
+  `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "placaMaeModelo" varchar(200)`,
+  `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "socketCpu" varchar(100)`,
+  `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "serialNumber" varchar(200)`,
+  `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "assetTag" varchar(200)`,
 
   // Adicionar agentToken à tabela de empresas para identificação do tenant
   `ALTER TABLE empresas ADD COLUMN IF NOT EXISTS "agentToken" varchar(64) UNIQUE`,

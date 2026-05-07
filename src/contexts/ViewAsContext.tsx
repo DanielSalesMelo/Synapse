@@ -15,7 +15,7 @@ interface ViewAsContextType {
   enterAdminView: (empresaId: number, empresaNome: string) => void;
   exitAdminView: () => void;
   isSimulating: boolean;
-  /** empresaId efetivo para queries — usa o simulado se estiver simulando */
+  /** empresaId efetivo para queries. Zero significa que o contexto ainda nao carregou. */
   effectiveEmpresaId: number;
 }
 
@@ -24,7 +24,7 @@ const ViewAsContext = createContext<ViewAsContextType>({
   enterAdminView: () => {},
   exitAdminView: () => {},
   isSimulating: false,
-  effectiveEmpresaId: 1,
+  effectiveEmpresaId: 0,
 });
 
 export function ViewAsProvider({ children }: { children: ReactNode }) {
@@ -52,8 +52,10 @@ export function ViewAsProvider({ children }: { children: ReactNode }) {
   });
 
   const isSimulating = viewAs.mode === "admin";
-  
-  const userEmpresaId = (me as any)?.empresaId ?? 1;
+
+  const meAny = me as any;
+  const fallbackEmpresaId = meAny?.accessibleCompanies?.[0]?.empresaId ?? 0;
+  const userEmpresaId = Number(meAny?.empresaId ?? meAny?.currentEmpresaId ?? fallbackEmpresaId ?? 0);
   
   const effectiveEmpresaId = isSimulating
     ? (viewAs.empresaId ?? userEmpresaId)

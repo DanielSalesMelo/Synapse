@@ -8,6 +8,8 @@ dist/
 build/
 .next/
 out/
+agents/**/bin/
+agents/**/obj/
 
 # Environment files
 .env
@@ -39,3 +41,13 @@ Thumbs.db
 # Misc
 .cache/
 coverage/
+.vercel
+tmp/
+test-results/
+__pycache__/
+**/__pycache__/
+*.zip
+packages/services/legacy-api/.deploy_tmp/
+packages/services/legacy-api/deploy_backend.zip
+tmp_index_live.js
+agent/synapse-agent.exe

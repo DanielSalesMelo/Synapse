@@ -138,11 +138,10 @@ function TicketChat({ ticketId, empresaId }: { ticketId: number; empresaId: numb
 
   const handleSend = () => {
     if (!msg.trim() && !preview) return;
-    const isImg = preview && /\.(jpg|jpeg|png|gif|webp|bmp|svg)/i.test(preview.url);
     sendMsg.mutate({
       ticketId,
-      conteudo: msg || (preview ? `📎 ${preview.nome}` : ""),
-      tipo: preview ? (isImg ? "imagem" : "anexo") : "texto",
+      conteudo: msg || (preview ? `Anexo: ${preview.nome}` : ""),
+      tipo: preview ? "anexo" : "mensagem",
       anexoUrl: preview?.url,
       anexoNome: preview?.nome,
     });
@@ -168,7 +167,10 @@ function TicketChat({ ticketId, empresaId }: { ticketId: number; empresaId: numb
       <ScrollArea className="flex-1 p-3">
         <div className="space-y-3">
           {(mensagensQ.data ?? []).map((m: any) => {
-            const isMine = m.autorId === user?.id;
+            const fileUrl = m.anexoUrl ?? m.fileUrl;
+            const fileName = m.anexoNome ?? m.fileName ?? "Arquivo";
+            const authorName = m.autorNome ?? m.autor_nome ?? "Usuário";
+            const isMine = Number(m.autorId) === Number(user?.id);
             return (
               <div key={m.id} className={`flex gap-2 ${isMine ? "flex-row-reverse" : ""} ${m.tipo === "sistema" ? "justify-center" : ""}`}>
                 {m.tipo === "sistema" ? (
@@ -178,26 +180,26 @@ function TicketChat({ ticketId, empresaId }: { ticketId: number; empresaId: numb
                     <div className={`h-7 w-7 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold ${
                       isMine ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
                     }`}>
-                      {(m.autorNome ?? "?")[0].toUpperCase()}
+                      {(authorName ?? "?")[0].toUpperCase()}
                     </div>
                     <div className={`flex-1 min-w-0 max-w-[75%] ${isMine ? "items-end" : "items-start"} flex flex-col`}>
                       <div className={`flex items-center gap-2 mb-0.5 ${isMine ? "flex-row-reverse" : ""}`}>
-                        <span className="text-xs font-medium">{isMine ? "Você" : (m.autorNome ?? "Usuário")}</span>
+                        <span className="text-xs font-medium">{isMine ? "Você" : authorName}</span>
                         {m.isInterno && <Badge variant="outline" className="text-xs py-0 h-4">Interno</Badge>}
                         <span className="text-xs text-muted-foreground">
                           {new Date(m.createdAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
                         </span>
                       </div>
-                      {m.tipo === "imagem" || (m.anexoUrl && isImage(m.anexoUrl)) ? (
+                      {m.tipo === "imagem" || (fileUrl && isImage(fileUrl)) ? (
                         <div className={isMine ? "self-end" : ""}>
-                          {m.conteudo && !m.conteudo.startsWith("📎") && <p className="text-sm mb-1">{m.conteudo}</p>}
-                          <img src={m.anexoUrl} alt="Imagem" className="max-w-[240px] max-h-[180px] rounded-lg cursor-pointer hover:opacity-90 transition-opacity border" onClick={() => setLightbox(m.anexoUrl)} />
+                          {m.conteudo && !m.conteudo.startsWith("Anexo:") && <p className="text-sm mb-1">{m.conteudo}</p>}
+                          <img src={fileUrl} alt="Imagem" className="max-w-[240px] max-h-[180px] rounded-lg cursor-pointer hover:opacity-90 transition-opacity border" onClick={() => setLightbox(fileUrl)} />
                         </div>
-                      ) : m.anexoUrl ? (
-                        <a href={m.anexoUrl} target="_blank" rel="noreferrer" className={`text-sm underline text-primary flex items-center gap-1 ${
+                      ) : fileUrl ? (
+                        <a href={fileUrl} target="_blank" rel="noreferrer" className={`text-sm underline text-primary flex items-center gap-1 ${
                           isMine ? "self-end" : ""
                         }`}>
-                          <FileText className="h-3.5 w-3.5" />{m.anexoNome ?? "Arquivo"}
+                          <FileText className="h-3.5 w-3.5" />{fileName}
                         </a>
                       ) : (
                         <p className={`text-sm rounded-xl px-3 py-2 break-words ${
@@ -537,10 +539,12 @@ function TicketDetail({ ticket, onClose, empresaId, isTiManager }: { ticket: any
 export default function TI({ params }: { params?: { tab?: string } }) {
   const { user } = useAuth();
   const { effectiveEmpresaId } = useViewAs();
-  const empresaId = Number(effectiveEmpresaId || user?.empresaId || 1);
+  const empresaId = Number(effectiveEmpresaId || user?.empresaId || 0);
+  const hasEmpresaContext = Number.isFinite(empresaId) && empresaId > 0;
   const userRole = String(user?.role || "").toLowerCase();
   const isTiManager = TI_MANAGER_ROLES.has(userRole);
   const backendBaseUrl = getBackendBaseUrl();
+  const [agentVersion, setAgentVersion] = useState<string>("latest");
   const TAB_ALIASES: Record<string, string> = {
     agente: "agentes",
     agentes: "agentes",
@@ -581,6 +585,25 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   };
 
   const [tab, setTab] = useState(getInitialTab());
+
+  useEffect(() => {
+    let active = true;
+    const fetchVersion = async () => {
+      try {
+        const response = await fetch(`${backendBaseUrl}/api/agent/version`, { cache: "no-store" });
+        const payload = await response.json();
+        if (!active) return;
+        const version = String(payload?.version || "").trim();
+        if (version) setAgentVersion(version);
+      } catch {
+        if (active) setAgentVersion("latest");
+      }
+    };
+    fetchVersion();
+    return () => {
+      active = false;
+    };
+  }, [backendBaseUrl]);
 
   useEffect(() => {
     const currentTab = getInitialTab();
@@ -626,6 +649,10 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   };
 
   const handleGenerateCodeSubmit = async () => {
+    if (!hasEmpresaContext) {
+      toast.error("Selecione uma empresa ativa para gerar código de pareamento.");
+      return;
+    }
     if (!generateCodeForm.userId) {
       toast.error("Selecione um usuário");
       return;
@@ -674,6 +701,25 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const [usuarios, setUsuarios] = useState<any[]>([]);
   const [usuariosLoading, setUsuariosLoading] = useState(false);
   const [remoteStatusFilter, setRemoteStatusFilter] = useState("todos");
+  const agentStatus = (a: any) => String(a?.status_resolvido || a?.status || "offline");
+  const agentLastCollected = (a: any) => a?.ultima_coleta || a?.ultimaColeta || a?.updatedAt || a?.ultimoContato || null;
+  const metricValue = (...values: any[]) => {
+    for (const value of values) {
+      if (value === null || value === undefined || value === "") continue;
+      const numeric = Number(value);
+      if (Number.isFinite(numeric)) return numeric;
+    }
+    return null;
+  };
+  const agentCpuUsage = (a: any) => metricValue(a?.cpuUso, a?.cpu_atual, a?.cpuAtual);
+  const agentRamUsage = (a: any) => metricValue(a?.ramUsoPct, a?.ram_atual, a?.ramAtual);
+  const agentDiskUsage = (a: any) => metricValue(a?.discoUsoPct, a?.disco_atual, a?.discoAtual);
+  const agentCpuTemp = (a: any) => metricValue(a?.cpuTemp, a?.cpu_temp);
+  const agentAnyDesk = (a: any) => a?.anydeskId || a?.anydesk_id_atual || a?.anydesk || a?.anydesk_id || "";
+  const metricTimestamp = (m: any) => m?.coletadoEm || m?.hora || m?.timestamp || null;
+  const metricCpuUsage = (m: any) => metricValue(m?.cpuUso, m?.cpu_medio, m?.cpuAtual);
+  const metricRamUsage = (m: any) => metricValue(m?.ramUsoPct, m?.ram_medio, m?.ramAtual);
+  const metricDiskUsage = (m: any) => metricValue(m?.discoUsoPct, m?.disco_medio, m?.discoAtual);
 
   // ── Queries ──
   const dashboard = trpc.ti.dashboard.useQuery(undefined, { refetchInterval: 30000 }) as any;
@@ -689,14 +735,14 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     { status: remoteStatusFilter === "todos" ? undefined : remoteStatusFilter },
     { refetchInterval: 15000, enabled: isTiManager }
   ) as any;
-  const agentesQ = trpc.ti.listAgentes.useQuery({ empresaId }, { refetchInterval: 5000, enabled: isTiManager }) as any;
+  const agentesQ = trpc.ti.listAgentes.useQuery({ empresaId }, { refetchInterval: 5000, enabled: isTiManager && hasEmpresaContext }) as any;
   const alertasQ = trpc.ti.listAlertas.useQuery({ limit: 20 }, { refetchInterval: 15000, enabled: isTiManager }) as any;
   const manutencoesQ = trpc.ti.listManutencoes.useQuery(undefined, { refetchInterval: 60000, enabled: isTiManager }) as any;
-  const codigosQ = trpc.ti.listCodigosPareamento.useQuery({ empresaId }, { refetchInterval: 10000, enabled: isTiManager }) as any;
+  const codigosQ = trpc.ti.listCodigosPareamento.useQuery({ empresaId }, { refetchInterval: 10000, enabled: isTiManager && hasEmpresaContext }) as any;
   const certificadosQ = trpc.ti.listCertificados.useQuery({ search }, { refetchInterval: 60000, enabled: isTiManager }) as any;
   const agenteMetricas = trpc.ti.getAgenteMetricas.useQuery(
     { agenteId: selectedAgente?.id, periodo: "24h", empresaId },
-    { enabled: isTiManager && !!selectedAgente?.id, refetchInterval: 30000 }
+    { enabled: isTiManager && hasEmpresaContext && !!selectedAgente?.id, refetchInterval: 30000 }
   ) as any;
 
   // ── Mutations ──
@@ -896,6 +942,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const [certificadoForm, setCertificadoForm] = useState({
     nome: "", tipo: "A1", vencimento: "", senha: "", observacoes: "",
   });
+  const agentDownloadSuffix = `?v=${encodeURIComponent(agentVersion)}&ts=${Date.now()}`;
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -909,7 +956,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const kpiAndamento = dashboard.data?.tickets?.emAndamento ?? 0;
   const kpiResolvidos = dashboard.data?.tickets?.resolvidos ?? 0;
   const kpiAtivos = ativosQ.data?.length ?? 0;
-  const kpiOnline = (agentesQ.data ?? []).filter((a: any) => a.status === "online").length;
+  const kpiOnline = (agentesQ.data ?? []).filter((a: any) => agentStatus(a) === "online").length;
   const kpiAtencao = (alertasQ.data ?? []).filter((a: any) => a.severidade === "atencao").length;
   const kpiCriticos = (alertasQ.data ?? []).filter((a: any) => a.severidade === "critico").length;
   const kpiLicencas = licencasQ.data?.length ?? 0;
@@ -1100,13 +1147,15 @@ export default function TI({ params }: { params?: { tab?: string } }) {
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                 {(agentesQ.data ?? []).slice(0, 8).map((a: any) => (
-                  <div key={a.id} className={`p-2 rounded-lg border cursor-pointer hover:bg-muted/50 ${a.status === "online" ? "border-green-200" : "border-gray-200"}`} onClick={() => { setSelectedAgente(a); setTab("monitoramento"); }}>
+                  <div key={a.id} className={`p-2 rounded-lg border cursor-pointer hover:bg-muted/50 ${agentStatus(a) === "online" ? "border-green-200" : "border-gray-200"}`} onClick={() => { setSelectedAgente(a); setTab("monitoramento"); }}>
                     <div className="flex items-center gap-1.5 mb-1">
-                      <div className={`h-2 w-2 rounded-full ${a.status === "online" ? "bg-green-500" : "bg-gray-400"}`} />
+                      <div className={`h-2 w-2 rounded-full ${agentStatus(a) === "online" ? "bg-green-500" : "bg-gray-400"}`} />
                       <span className="text-xs font-mono font-medium truncate">{a.hostname}</span>
                     </div>
-                    {a.cpuUso != null && (
-                      <div className="text-xs text-muted-foreground">CPU: {a.cpuUso}% · RAM: {a.ramUsoPct}%</div>
+                    {agentCpuUsage(a) != null && (
+                      <div className="text-xs text-muted-foreground">
+                        CPU: {agentCpuUsage(a)}% · RAM: {agentRamUsage(a) ?? "—"}%
+                      </div>
                     )}
                   </div>
                 ))}
@@ -1274,9 +1323,9 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                       ) : <span className="text-muted-foreground text-xs">—</span>}
                     </TableCell>
                     <TableCell>
-                      <div className={`flex items-center gap-1.5 text-xs font-medium ${a.status === "online" ? "text-green-600" : a.status === "atencao" ? "text-yellow-600" : a.status === "critico" ? "text-red-600" : "text-gray-500"}`}>
-                        <div className={`h-2 w-2 rounded-full ${a.status === "online" ? "bg-green-500" : a.status === "atencao" ? "bg-yellow-500" : a.status === "critico" ? "bg-red-500" : "bg-gray-400"}`} />
-                        {a.status ?? "offline"}
+                      <div className={`flex items-center gap-1.5 text-xs font-medium ${agentStatus(a) === "online" ? "text-green-600" : agentStatus(a) === "atencao" ? "text-yellow-600" : agentStatus(a) === "critico" ? "text-red-600" : "text-gray-500"}`}>
+                        <div className={`h-2 w-2 rounded-full ${agentStatus(a) === "online" ? "bg-green-500" : agentStatus(a) === "atencao" ? "bg-yellow-500" : agentStatus(a) === "critico" ? "bg-red-500" : "bg-gray-400"}`} />
+                        {agentStatus(a)}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -1329,22 +1378,22 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
                   <div><span className="text-muted-foreground">IP:</span> <span className="font-mono">{selectedAgente.ip}</span></div>
                   <div><span className="text-muted-foreground">SO:</span> <span>{selectedAgente.so}</span></div>
-                  <div><span className="text-muted-foreground">AnyDesk:</span> {selectedAgente.anydeskId ? (
-                    <a href={`anydesk://${selectedAgente.anydeskId}`} className="text-blue-600 hover:underline font-mono">{selectedAgente.anydeskId}</a>
+                  <div><span className="text-muted-foreground">AnyDesk:</span> {agentAnyDesk(selectedAgente) ? (
+                    <a href={`anydesk://${agentAnyDesk(selectedAgente)}`} className="text-blue-600 hover:underline font-mono">{agentAnyDesk(selectedAgente)}</a>
                   ) : "—"}</div>
                   <div><span className="text-muted-foreground">Versão:</span> <span>{selectedAgente.versaoAgente}</span></div>
                 </div>
                 {/* Métricas em tempo real */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {[
-                    { label: "CPU", value: selectedAgente.cpuUso, unit: "%", warn: 80, crit: 90 },
-                    { label: "RAM", value: selectedAgente.ramUsoPct, unit: "%", warn: 80, crit: 90 },
-                    { label: "Disco", value: selectedAgente.discoUsoPct, unit: "%", warn: 80, crit: 90 },
+                    { label: "CPU", value: agentCpuUsage(selectedAgente), unit: "%", warn: 80, crit: 90 },
+                    { label: "RAM", value: agentRamUsage(selectedAgente), unit: "%", warn: 80, crit: 90 },
+                    { label: "Disco", value: agentDiskUsage(selectedAgente), unit: "%", warn: 80, crit: 90 },
                   ].map((m) => (
                     <div key={m.label} className="space-y-1">
                       <div className="flex justify-between text-xs">
                         <span>{m.label}</span>
-                        <span className={m.value > m.crit ? "text-red-600 font-bold" : m.value > m.warn ? "text-yellow-600" : "text-muted-foreground"}>
+                        <span className={(m.value ?? 0) > m.crit ? "text-red-600 font-bold" : (m.value ?? 0) > m.warn ? "text-yellow-600" : "text-muted-foreground"}>
                           {m.value ?? "—"}{m.value != null ? m.unit : ""}
                         </span>
                       </div>
@@ -1368,13 +1417,13 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {(agenteMetricas.data?.metricas ?? []).slice(-20).reverse().map((m: any) => (
-                            <TableRow key={m.id}>
-                              <TableCell className="text-xs font-mono">{new Date(m.coletadoEm).toLocaleTimeString("pt-BR")}</TableCell>
-                              <TableCell className={`text-xs ${m.cpuUso > 80 ? "text-red-600 font-bold" : ""}`}>{m.cpuUso}%</TableCell>
-                              <TableCell className={`text-xs ${m.ramUsoPct > 80 ? "text-red-600 font-bold" : ""}`}>{m.ramUsoPct}%</TableCell>
-                              <TableCell className="text-xs">{m.discoUsoPct}%</TableCell>
-                              <TableCell className="text-xs">{m.redeEnviadoKb}↑ / {m.redeRecebidoKb}↓</TableCell>
+                          {(agenteMetricas.data?.metricas ?? []).slice(-20).reverse().map((m: any, index: number) => (
+                            <TableRow key={m.id ?? metricTimestamp(m) ?? index}>
+                              <TableCell className="text-xs font-mono">{metricTimestamp(m) ? new Date(metricTimestamp(m)).toLocaleTimeString("pt-BR") : "—"}</TableCell>
+                              <TableCell className={`text-xs ${(metricCpuUsage(m) ?? 0) > 80 ? "text-red-600 font-bold" : ""}`}>{metricCpuUsage(m) ?? "—"}%</TableCell>
+                              <TableCell className={`text-xs ${(metricRamUsage(m) ?? 0) > 80 ? "text-red-600 font-bold" : ""}`}>{metricRamUsage(m) ?? "—"}%</TableCell>
+                              <TableCell className="text-xs">{metricDiskUsage(m) ?? "—"}%</TableCell>
+                              <TableCell className="text-xs">{m.redeEnviadoKb ?? "—"}↑ / {m.redeRecebidoKb ?? "—"}↓</TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
@@ -1387,42 +1436,42 @@ export default function TI({ params }: { params?: { tab?: string } }) {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {(agentesQ.data ?? []).map((a: any) => (
-                <Card key={a.id} className={`border-l-4 cursor-pointer hover:shadow-md transition-shadow ${a.status === "online" ? "border-l-green-500" : a.status === "atencao" ? "border-l-yellow-500" : "border-l-gray-400"}`} onClick={() => setSelectedAgente(a)}>
+                <Card key={a.id} className={`border-l-4 cursor-pointer hover:shadow-md transition-shadow ${agentStatus(a) === "online" ? "border-l-green-500" : agentStatus(a) === "atencao" ? "border-l-yellow-500" : "border-l-gray-400"}`} onClick={() => setSelectedAgente(a)}>
                   <CardHeader className="pb-2">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-sm font-mono">{a.hostname}</CardTitle>
                       <div className="flex items-center gap-2">
-                        {a.anydeskId && (
-                          <a href={`anydesk://${a.anydeskId}`} className="text-blue-600 hover:text-blue-800" title={`AnyDesk: ${a.anydeskId}`} onClick={(e) => e.stopPropagation()}>
+                        {agentAnyDesk(a) && (
+                          <a href={`anydesk://${agentAnyDesk(a)}`} className="text-blue-600 hover:text-blue-800" title={`AnyDesk: ${agentAnyDesk(a)}`} onClick={(e) => e.stopPropagation()}>
                             <ExternalLink className="h-4 w-4" />
                           </a>
                         )}
-                        <div className={`h-2.5 w-2.5 rounded-full ${a.status === "online" ? "bg-green-500" : "bg-gray-400"}`} />
+                        <div className={`h-2.5 w-2.5 rounded-full ${agentStatus(a) === "online" ? "bg-green-500" : "bg-gray-400"}`} />
                       </div>
                     </div>
                     <p className="text-xs text-muted-foreground">{a.so} · {a.ip}</p>
                   </CardHeader>
                   <CardContent className="space-y-2">
                     {[
-                      { label: "CPU", value: a.cpuUso, icon: <Cpu className="h-3 w-3" /> },
-                      { label: "RAM", value: a.ramUsoPct, icon: <Server className="h-3 w-3" /> },
-                      { label: "Disco", value: a.discoUsoPct, icon: <HardDrive className="h-3 w-3" /> },
+                      { label: "CPU", value: agentCpuUsage(a), icon: <Cpu className="h-3 w-3" /> },
+                      { label: "RAM", value: agentRamUsage(a), icon: <Server className="h-3 w-3" /> },
+                      { label: "Disco", value: agentDiskUsage(a), icon: <HardDrive className="h-3 w-3" /> },
                     ].map((m) => (
                       <div key={m.label} className="space-y-0.5">
                         <div className="flex justify-between text-xs">
                           <span className="flex items-center gap-1">{m.icon}{m.label}</span>
-                          <span className={m.value > 80 ? "text-red-600 font-bold" : "text-muted-foreground"}>{m.value != null ? `${m.value}%` : "—"}</span>
+                          <span className={(m.value ?? 0) > 80 ? "text-red-600 font-bold" : "text-muted-foreground"}>{m.value != null ? `${m.value}%` : "—"}</span>
                         </div>
                         <Progress value={m.value ?? 0} className="h-1.5" />
                       </div>
                     ))}
-                    {a.cpuTemp && (
+                    {agentCpuTemp(a) != null && (
                       <div className="flex items-center gap-1 text-xs text-muted-foreground pt-1 border-t">
-                        <Thermometer className="h-3 w-3" />{a.cpuTemp}°C
-                        {a.anydeskId && <span className="ml-auto font-mono">{a.anydeskId}</span>}
+                        <Thermometer className="h-3 w-3" />{agentCpuTemp(a)}°C
+                        {agentAnyDesk(a) && <span className="ml-auto font-mono">{agentAnyDesk(a)}</span>}
                       </div>
                     )}
-                    <p className="text-xs text-muted-foreground">Última coleta: {a.ultimaColeta ? new Date(a.ultimaColeta).toLocaleTimeString("pt-BR") : "—"}</p>
+                    <p className="text-xs text-muted-foreground">Última coleta: {agentLastCollected(a) ? new Date(agentLastCollected(a)).toLocaleTimeString("pt-BR") : "—"}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -2080,28 +2129,31 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                 <div className="flex flex-col gap-2">
                     <div className="flex gap-2">
                       <Button size="sm" className="flex-1" asChild>
-                        <a href={`${backendBaseUrl}/api/agent/download/windows-installer`} download="instalar_agente.bat">
+                        <a href={`${backendBaseUrl}/api/agent/download/windows-installer${agentDownloadSuffix}`} download="instalar_agente.bat">
                           <Download className="h-4 w-4 mr-2" />Instalador .bat
                         </a>
                       </Button>
                       <Button size="sm" variant="outline" className="flex-1" asChild>
-                        <a href={`${backendBaseUrl}/api/agent/download/windows`} download="synapse-agent.exe">
+                        <a href={`${backendBaseUrl}/api/agent/download/windows${agentDownloadSuffix}`} download={`synapse-agent-v${agentVersion}.exe`}>
                           <Download className="h-4 w-4 mr-2" />Agente .exe
                         </a>
                       </Button>
                     </div>
                     <div className="flex gap-2">
                       <Button size="sm" variant="outline" className="flex-1" asChild>
-                        <a href={`${backendBaseUrl}/api/agent/download/windows-node-installer`} download="instalar_agente_node.js">
+                        <a href={`${backendBaseUrl}/api/agent/download/windows-node-installer${agentDownloadSuffix}`} download="instalar_agente_node.js">
                           <FileText className="h-4 w-4 mr-2" />Instalador Node
                         </a>
                       </Button>
                       <Button size="sm" variant="outline" className="flex-1" asChild>
-                        <a href={`${backendBaseUrl}/api/agent/download/agent`} download="synapse_agent.py">
+                        <a href={`${backendBaseUrl}/api/agent/download/agent${agentDownloadSuffix}`} download="synapse_agent.py">
                           <FileText className="h-4 w-4 mr-2" />Script Python
                         </a>
                       </Button>
                     </div>
+                    <p className="text-xs text-muted-foreground">
+                      Versão do agente publicada: <span className="font-mono">{agentVersion}</span>
+                    </p>
                 </div>
               </CardContent>
             </Card>
@@ -2115,14 +2167,25 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   </CardTitle>
                   <Button
                     size="sm"
-                    onClick={() => gerarCodigo.mutate({ empresaId, userId: Number(user?.id || 0) || undefined })}
-                    disabled={gerarCodigo.isPending}
+                    onClick={() => {
+                      if (!hasEmpresaContext) {
+                        toast.error("Selecione uma empresa ativa para continuar.");
+                        return;
+                      }
+                      gerarCodigo.mutate({ empresaId, userId: Number(user?.id || 0) || undefined });
+                    }}
+                    disabled={gerarCodigo.isPending || !hasEmpresaContext}
                   >
                     <Plus className="h-4 w-4 mr-1" />Gerar Código
                   </Button>
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
+                {!hasEmpresaContext && (
+                  <div className="rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                    Nenhuma empresa ativa selecionada. Escolha uma empresa no topo para gerar e listar códigos de pareamento.
+                  </div>
+                )}
                 <p className="text-xs text-muted-foreground">
                   Gere um código único para vincular um PC ao Synapse. O código expira em 24h após o uso.
                 </p>
@@ -2209,21 +2272,21 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                         </div>
                       </TableCell>
                       <TableCell>
-                        {a.anydeskId ? (
-                          <a href={`anydesk://${a.anydeskId}`} className="font-mono text-xs text-blue-600 hover:underline flex items-center gap-1">
-                            <ExternalLink className="h-3 w-3" />{a.anydeskId}
+                        {agentAnyDesk(a) ? (
+                          <a href={`anydesk://${agentAnyDesk(a)}`} className="font-mono text-xs text-blue-600 hover:underline flex items-center gap-1">
+                            <ExternalLink className="h-3 w-3" />{agentAnyDesk(a)}
                           </a>
                         ) : <span className="text-muted-foreground text-xs">—</span>}
                       </TableCell>
                       <TableCell className="text-xs">{a.versaoAgente}</TableCell>
                       <TableCell>
-                        <div className={`flex items-center gap-1.5 text-xs ${a.status === "online" ? "text-green-600" : "text-gray-500"}`}>
-                          <div className={`h-2 w-2 rounded-full ${a.status === "online" ? "bg-green-500 animate-pulse" : "bg-gray-400"}`} />
-                          {a.status ?? "offline"}
+                        <div className={`flex items-center gap-1.5 text-xs ${agentStatus(a) === "online" ? "text-green-600" : "text-gray-500"}`}>
+                          <div className={`h-2 w-2 rounded-full ${agentStatus(a) === "online" ? "bg-green-500 animate-pulse" : "bg-gray-400"}`} />
+                          {agentStatus(a)}
                         </div>
                       </TableCell>
                       <TableCell className="text-xs text-muted-foreground">
-                        {a.ultimaColeta ? new Date(a.ultimaColeta).toLocaleString("pt-BR") : "—"}
+                        {agentLastCollected(a) ? new Date(agentLastCollected(a)).toLocaleString("pt-BR") : "—"}
                       </TableCell>
                       <TableCell>
                         <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => { setSelectedAgente(a); setTab("monitoramento"); }}>
@@ -2338,13 +2401,13 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                     <TableCell className="text-sm">{a.userName ? `${a.userName} ${a.userLastName}` : <span className="text-muted-foreground">—</span>}</TableCell>
                     <TableCell className="text-sm">{a.department_id || <span className="text-muted-foreground">—</span>}</TableCell>
                     <TableCell>
-                      <div className={`flex items-center gap-1.5 text-xs ${a.status === "online" ? "text-green-600" : "text-gray-500"}`}>
-                        <div className={`h-2 w-2 rounded-full ${a.status === "online" ? "bg-green-500 animate-pulse" : "bg-gray-400"}`} />
-                        {a.status ?? "offline"}
+                      <div className={`flex items-center gap-1.5 text-xs ${agentStatus(a) === "online" ? "text-green-600" : "text-gray-500"}`}>
+                        <div className={`h-2 w-2 rounded-full ${agentStatus(a) === "online" ? "bg-green-500 animate-pulse" : "bg-gray-400"}`} />
+                        {agentStatus(a)}
                       </div>
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground">
-                      {a.updatedAt ? new Date(a.updatedAt).toLocaleString("pt-BR") : "—"}
+                      {agentLastCollected(a) ? new Date(agentLastCollected(a)).toLocaleString("pt-BR") : "—"}
                     </TableCell>
                     <TableCell>
                       <Dialog open={showAssociateModal && selectedAgenteForAssociate?.id === a.id} onOpenChange={(open) => { if (!open) setShowAssociateModal(false); }}>

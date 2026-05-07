@@ -17,7 +17,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { createRoot } from "react-dom/client";
 import superjson from "superjson";
-import { registerSW } from "virtual:pwa-register";
 import App from "./App";
 import { Toaster } from "sonner";
 import "./index.css";
@@ -28,6 +27,35 @@ const AUTH_TOKEN_KEY = "synapse-auth-token";
 const USER_INFO_KEY = "app-user-info";
 const UNAUTHED_ERR_MSG = 'Please login (10001)';
 const UPDATE_GUARD_KEY = "synapse-update-recovering";
+const RUNTIME_RECOVERY_KEY = "synapse-runtime-recovery-once";
+const BLANK_SCREEN_RECOVERY_KEY = "synapse-blank-screen-recovery-once";
+
+type GlobalWithFallbacks = typeof globalThis & Record<string, unknown>;
+const fallbackIcon = () => null;
+const runtimeFallbacks: Record<string, unknown> = {
+  MapPin: fallbackIcon,
+  Banknote: fallbackIcon,
+  Crown: fallbackIcon,
+  UserPlus: fallbackIcon,
+  Badge: fallbackIcon,
+  pagar: 0,
+};
+try {
+  const g = globalThis as GlobalWithFallbacks;
+  for (const [name, value] of Object.entries(runtimeFallbacks)) {
+    if (!(name in g)) {
+      Object.defineProperty(g, name, {
+        value,
+        configurable: true,
+        enumerable: false,
+        writable: true,
+      });
+    }
+  }
+} catch {
+  // noop: ambiente sem permissão para definir globals
+}
+
 function getPersistedUser() {
   try {
     const raw = localStorage.getItem(USER_INFO_KEY);
@@ -88,6 +116,15 @@ const recoverFromBrokenUpdate = () => {
 
 window.addEventListener("load", () => {
   sessionStorage.removeItem(UPDATE_GUARD_KEY);
+  sessionStorage.removeItem(RUNTIME_RECOVERY_KEY);
+  // Migração segura: remove SW legado para evitar tela branca por cache antigo.
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.getRegistrations().then((regs) => {
+      regs.forEach((r) => void r.unregister());
+    }).catch(() => {
+      // noop
+    });
+  }
 });
 
 window.addEventListener("vite:preloadError", (event) => {
@@ -99,6 +136,11 @@ window.addEventListener("error", (event) => {
   const message = String(event.error?.message || event.message || "");
   if (message.includes("Loading chunk") || message.includes("Failed to fetch dynamically imported module")) {
     recoverFromBrokenUpdate();
+    return;
+  }
+  // Fallback para runtime quebrado por referência indefinida após deploy/caching.
+  if (message.includes("is not defined")) {
+    void recoverFromBlankScreen();
   }
 });
 
@@ -110,15 +152,20 @@ window.addEventListener("unhandledrejection", (event) => {
   }
 });
 
-registerSW({
-  immediate: true,
-  onNeedRefresh() {
-    recoverFromBrokenUpdate();
-  },
-  onOfflineReady() {
-    sessionStorage.removeItem(UPDATE_GUARD_KEY);
-  },
-});
+const recoverFromBlankScreen = async () => {
+  try {
+    if (sessionStorage.getItem(BLANK_SCREEN_RECOVERY_KEY) === "1") return;
+    sessionStorage.setItem(BLANK_SCREEN_RECOVERY_KEY, "1");
+    if ("serviceWorker" in navigator) {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map((r) => r.unregister()));
+    }
+  } catch {
+    // noop
+  } finally {
+    window.location.reload();
+  }
+};
 
 const trpcClient = trpc.createClient({
   links: [
@@ -143,3 +190,14 @@ createRoot(document.getElementById("root")!).render(
     </QueryClientProvider>
   </trpc.Provider>
 );
+
+window.setTimeout(() => {
+  const root = document.getElementById("root");
+  if (!root) return;
+  const isBlank = (root.innerHTML || "").trim().length === 0;
+  if (isBlank) {
+    void recoverFromBlankScreen();
+  } else {
+    sessionStorage.removeItem(BLANK_SCREEN_RECOVERY_KEY);
+  }
+}, 4000);

@@ -345,8 +345,21 @@ export async function resolveAccessibleEmpresaId(
   }
 
   if (ctx.user.role === "master_admin") {
-    if (requestedEmpresaId) return requestedEmpresaId;
-    if (ctx.user.empresaId) return ctx.user.empresaId;
+    if (requestedEmpresaId && requestedEmpresaId > 0) {
+      const accessible = await listAccessibleCompanyIds(ctx.user);
+      if (!accessible.includes(requestedEmpresaId)) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Empresa selecionada não está ativa ou não existe.",
+        });
+      }
+      return requestedEmpresaId;
+    }
+    if (ctx.user.empresaId && ctx.user.empresaId > 0) return ctx.user.empresaId;
+    const summary = await getAccessibleCompanySummary(ctx.user);
+    if (summary.length > 0 && summary[0].empresaId > 0) {
+      return summary[0].empresaId;
+    }
     throw new TRPCError({
       code: "BAD_REQUEST",
       message: "Selecione uma empresa para continuar.",

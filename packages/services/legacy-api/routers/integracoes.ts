@@ -37,6 +37,7 @@ const integrationTypeSchema = z.enum([
   "mercadopago",
   "asaas",
   "clicksign",
+  "intelbras_pabx",
 ]);
 const integrationStatusSchema = z.enum(["ativa", "inativa", "erro", "configurando"]);
 
@@ -222,6 +223,7 @@ export const integracoesRouter = router({
       { tipo: "mercadopago", nome: "Mercado Pago", descricao: "Cobrança, links de pagamento e recebimentos.", campos: ["accessToken", "publicKey", "webhookSecret"] },
       { tipo: "asaas", nome: "Asaas", descricao: "Cobranças recorrentes, PIX e boletos integrados ao financeiro.", campos: ["apiKey", "walletId", "webhookSecret"] },
       { tipo: "clicksign", nome: "Clicksign", descricao: "Assinatura eletrônica para contratos e documentos.", campos: ["apiKey", "sandbox", "folderId"] },
+      { tipo: "intelbras_pabx", nome: "Intelbras PABX", descricao: "Integração de telefonia corporativa para atendimento e registros de chamadas.", campos: ["apiUrl", "token", "ramalPadrao", "filaAtendimento"] },
     ];
   }),
 });

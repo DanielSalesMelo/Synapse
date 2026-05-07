@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { BadgeCheck, Building2, CheckCircle, FileText, Globe2, Key, Link2, Loader2, MessageCircleMore, Search, Settings, ShieldCheck, Smartphone, XCircle, Zap } from "lucide-react";
+import { BadgeCheck, Building2, CheckCircle, FileText, Globe2, Key, Link2, Loader2, MessageCircleMore, Search, Settings, ShieldCheck, Smartphone, XCircle, Zap, User, Mail, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { useViewAs } from "@/contexts/ViewAsContext";
 import { trpc } from "@/lib/trpc";
@@ -46,7 +46,30 @@ const TEMPLATE_META: Record<string, { categoria: string; icon: any; destaque: st
   mercadopago: { categoria: "Financeiro", icon: Zap, destaque: "Cobrança online" },
   asaas: { categoria: "Financeiro", icon: Zap, destaque: "Recorrência e boletos" },
   clicksign: { categoria: "Documentos", icon: FileText, destaque: "Assinatura eletrônica" },
+  intelbras_pabx: { categoria: "Telefonia", icon: Smartphone, destaque: "PABX e chamadas internas" },
+  fusion_carga: { categoria: "Logística", icon: Globe2, destaque: "Rastreamento de caminhão em rota" },
 };
+
+function normalizeFieldLabel(field: string) {
+  const key = field.toLowerCase().trim();
+  if (key.includes("email")) return "E-mail";
+  if (key.includes("senha") || key.includes("password")) return "Senha";
+  if (key.includes("login") || key.includes("usuario")) return "Login / Usuário";
+  if (key.includes("nome")) return "Nome";
+  if (key.includes("token")) return "Token de acesso";
+  if (key.includes("secret") || key.includes("chave")) return "Chave secreta";
+  if (key.includes("host")) return "Host / URL";
+  if (key.includes("webhook")) return "URL de webhook";
+  return field.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+}
+
+function getFieldIcon(field: string) {
+  const key = field.toLowerCase();
+  if (key.includes("email")) return Mail;
+  if (key.includes("senha") || key.includes("password") || key.includes("secret") || key.includes("token")) return Lock;
+  if (key.includes("login") || key.includes("usuario") || key.includes("nome")) return User;
+  return Key;
+}
 
 function GenericIntegrationCard({
   empresaId,
@@ -122,11 +145,17 @@ function GenericIntegrationCard({
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {template.campos.map((field) => (
             <div key={field} className="space-y-1.5">
-              <Label>{field}</Label>
+              <Label className="flex items-center gap-1.5">
+                {(() => {
+                  const FieldIcon = getFieldIcon(field);
+                  return <FieldIcon className="h-3.5 w-3.5 text-muted-foreground" />;
+                })()}
+                {normalizeFieldLabel(field)}
+              </Label>
               <Input
                 value={values[field] ?? ""}
                 onChange={(e) => setValues((current) => ({ ...current, [field]: e.target.value }))}
-                placeholder={`Informe ${field}`}
+                placeholder={`Informe ${normalizeFieldLabel(field).toLowerCase()}`}
                 type={field.toLowerCase().includes("secret") || field.toLowerCase().includes("password") || field.toLowerCase().includes("token") ? "password" : "text"}
               />
             </div>
@@ -155,6 +184,13 @@ const WINTHOR_ROUTINAS = [
   { codigo: "917", descricao: "Simulador de Frete", modulo: "Rota / Frete" },
   { codigo: "934", descricao: "Ficha de Viagem", modulo: "Expedição" },
   { codigo: "1474", descricao: "Emissão de CT-e", modulo: "Rota / Frete" },
+  { codigo: "1301", descricao: "Consulta de Saldo e Estoque", modulo: "Estoque" },
+  { codigo: "1407", descricao: "Romaneio de Entrega", modulo: "Expedição" },
+  { codigo: "1430", descricao: "Roteirização por Região", modulo: "Rota / Frete" },
+  { codigo: "1508", descricao: "Ocorrências de Entrega", modulo: "SAC / Operação" },
+  { codigo: "1702", descricao: "Controle de Devoluções", modulo: "Pós-entrega" },
+  { codigo: "1771", descricao: "Acompanhamento de Motorista", modulo: "Monitoramento" },
+  { codigo: "1880", descricao: "Conferência de Carregamento", modulo: "Carregamento" },
 ];
 
 function ArquiveiTab({ empresaId }: { empresaId: number }) {
@@ -386,6 +422,8 @@ export default function Integracoes() {
   const meQ = trpc.auth.me.useQuery();
   const templatesQ = trpc.integracoes.templates.useQuery(undefined, { staleTime: 1000 * 60 * 10 });
   const integrationsQ = trpc.integracoes.list.useQuery({ empresaId: effectiveEmpresaId }, { enabled: !!effectiveEmpresaId });
+  const [catalogSearch, setCatalogSearch] = useState("");
+  const [categoriaAtiva, setCategoriaAtiva] = useState<string>("todas");
   const canAccess = (meQ.data as any)?.role === "admin" || (meQ.data as any)?.role === "master_admin";
 
   if (meQ.isLoading) return null;
@@ -448,9 +486,63 @@ export default function Integracoes() {
               </p>
             </div>
 
+            <div className="rounded-2xl border p-4 space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label>Buscar integração</Label>
+                  <Input
+                    value={catalogSearch}
+                    onChange={(e) => setCatalogSearch(e.target.value)}
+                    placeholder="Ex: WhatsApp, Serasa, SEFAZ, Intelbras..."
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Categoria</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {["todas", "Mensageria", "Financeiro", "Fiscal", "RH", "Telefonia", "TI", "Marketing", "Logística"].map((cat) => (
+                      <Button
+                        key={cat}
+                        type="button"
+                        size="sm"
+                        variant={categoriaAtiva === cat ? "default" : "outline"}
+                        onClick={() => setCategoriaAtiva(cat)}
+                      >
+                        {cat}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {["whatsapp", "telegram", "serasa", "sefaz_xml", "intelbras_pabx", "controle_de_ponto", "ponto_mobile"].map((tipo) => {
+                  const nome = (templatesQ.data ?? []).find((t: any) => t.tipo === tipo)?.nome ?? tipo;
+                  const exists = (integrationsQ.data ?? []).some((item: any) => item.tipo === tipo);
+                  return (
+                    <Badge key={tipo} variant={exists ? "secondary" : "outline"} className={exists ? "bg-green-50 text-green-700" : ""}>
+                      {nome}: {exists ? "Configurada" : "Pendente"}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
               {(templatesQ.data ?? [])
                 .filter((template: any) => !["arquivei", "winthor"].includes(template.tipo))
+                .filter((template: any) => {
+                  const term = catalogSearch.trim().toLowerCase();
+                  if (!term) return true;
+                  return (
+                    String(template.nome ?? "").toLowerCase().includes(term) ||
+                    String(template.descricao ?? "").toLowerCase().includes(term) ||
+                    String(template.tipo ?? "").toLowerCase().includes(term)
+                  );
+                })
+                .filter((template: any) => {
+                  if (categoriaAtiva === "todas") return true;
+                  const meta = TEMPLATE_META[template.tipo];
+                  return meta?.categoria === categoriaAtiva;
+                })
                 .map((template: any) => (
                   <GenericIntegrationCard
                     key={template.tipo}

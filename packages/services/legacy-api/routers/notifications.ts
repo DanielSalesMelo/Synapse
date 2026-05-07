@@ -4,6 +4,19 @@ import { getDb } from "../db";
 import { sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 
+function notificationAccessSql(userId: number, empresaId: number | null) {
+  if (!empresaId) {
+    return sql`"userId" = ${userId}`;
+  }
+
+  return sql`
+    (
+      "userId" = ${userId}
+      OR ("empresaId" = ${empresaId} AND "userId" IS NULL)
+    )
+  `;
+}
+
 export const notificationsRouter = router({
   list: protectedProcedure
     .input(z.object({ limit: z.number().min(1).max(50).default(20) }).optional())
@@ -11,8 +24,9 @@ export const notificationsRouter = router({
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
 
-      const empresaId = ctx.user.role === "master_admin" ? null : (ctx.user.empresaId ?? null);
+      const empresaId = ctx.user.empresaId ?? null;
       const limit = input?.limit ?? 20;
+      const accessWhere = notificationAccessSql(ctx.user.id, empresaId);
 
       const rows = await db.execute(sql`
         SELECT
@@ -25,10 +39,7 @@ export const notificationsRouter = router({
           "createdAt"
         FROM notifications
         WHERE "deletedAt" IS NULL
-          AND (
-            "userId" = ${ctx.user.id}
-            OR (${empresaId} IS NOT NULL AND "empresaId" = ${empresaId} AND "userId" IS NULL)
-          )
+          AND ${accessWhere}
         ORDER BY "createdAt" DESC
         LIMIT ${limit}
       `);
@@ -40,16 +51,14 @@ export const notificationsRouter = router({
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
 
-    const empresaId = ctx.user.role === "master_admin" ? null : (ctx.user.empresaId ?? null);
+    const empresaId = ctx.user.empresaId ?? null;
+    const accessWhere = notificationAccessSql(ctx.user.id, empresaId);
     const rows = await db.execute(sql`
       SELECT count(*)::int AS total
       FROM notifications
       WHERE "deletedAt" IS NULL
         AND "readAt" IS NULL
-        AND (
-          "userId" = ${ctx.user.id}
-          OR (${empresaId} IS NOT NULL AND "empresaId" = ${empresaId} AND "userId" IS NULL)
-        )
+        AND ${accessWhere}
     `);
 
     return { total: (rows as any[])[0]?.total ?? 0 };
@@ -61,16 +70,14 @@ export const notificationsRouter = router({
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
 
-      const empresaId = ctx.user.role === "master_admin" ? null : (ctx.user.empresaId ?? null);
+      const empresaId = ctx.user.empresaId ?? null;
+      const accessWhere = notificationAccessSql(ctx.user.id, empresaId);
       await db.execute(sql`
         UPDATE notifications
         SET "readAt" = NOW()
         WHERE id = ${input.id}
           AND "deletedAt" IS NULL
-          AND (
-            "userId" = ${ctx.user.id}
-            OR (${empresaId} IS NOT NULL AND "empresaId" = ${empresaId} AND "userId" IS NULL)
-          )
+          AND ${accessWhere}
       `);
 
       return { success: true };
@@ -80,16 +87,14 @@ export const notificationsRouter = router({
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
 
-    const empresaId = ctx.user.role === "master_admin" ? null : (ctx.user.empresaId ?? null);
+    const empresaId = ctx.user.empresaId ?? null;
+    const accessWhere = notificationAccessSql(ctx.user.id, empresaId);
     await db.execute(sql`
       UPDATE notifications
       SET "readAt" = NOW()
       WHERE "readAt" IS NULL
         AND "deletedAt" IS NULL
-        AND (
-          "userId" = ${ctx.user.id}
-          OR (${empresaId} IS NOT NULL AND "empresaId" = ${empresaId} AND "userId" IS NULL)
-        )
+        AND ${accessWhere}
     `);
 
     return { success: true };

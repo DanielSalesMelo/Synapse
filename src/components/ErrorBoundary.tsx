@@ -11,6 +11,8 @@ interface State {
   error: Error | null;
 }
 
+const RUNTIME_RECOVERY_KEY = "synapse-runtime-recovery-once";
+
 class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -19,6 +21,25 @@ class ErrorBoundary extends Component<Props, State> {
 
   static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error) {
+    const message = String(error?.message || "");
+    const shouldAutoRecover =
+      message.includes("Loading chunk") ||
+      message.includes("Failed to fetch dynamically imported module") ||
+      message.includes("crown is not defined") ||
+      message.includes("Crown is not defined");
+
+    if (!shouldAutoRecover) return;
+
+    try {
+      if (sessionStorage.getItem(RUNTIME_RECOVERY_KEY) === "1") return;
+      sessionStorage.setItem(RUNTIME_RECOVERY_KEY, "1");
+      window.location.reload();
+    } catch {
+      window.location.reload();
+    }
   }
 
   private recoverPage = () => {

@@ -26,6 +26,13 @@ export default function DeviceDetails() {
   ) as any;
 
   const agente = (agentesQ.data ?? []).find((a: any) => a.id === Number(agentId)) ?? null;
+  const safeParse = (value: any) => {
+    if (!value) return null;
+    if (Array.isArray(value) || typeof value === "object") return value;
+    try { return JSON.parse(String(value)); } catch { return null; }
+  };
+  const gpus = safeParse(agente?.gpus) as any[] | null;
+  const memoriaSlots = safeParse(agente?.memoria_slots) as any[] | null;
   const metrics = (metricasQ.data?.metricas ?? []).map((m: any) => ({
     ...m,
     timestamp: m.hora,
@@ -98,7 +105,7 @@ export default function DeviceDetails() {
               <SelectItem value="30d">Último mês</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" size="sm" onClick={() => fetchData(true)} disabled={refreshing}>
+          <Button variant="outline" size="sm" onClick={() => fetchData()} disabled={refreshing}>
             <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
             Atualizar
           </Button>
@@ -157,6 +164,35 @@ export default function DeviceDetails() {
               {agente.ram_total_mb ? `${(Number(agente.ram_total_mb) / 1024).toFixed(1)} GB` : "N/A"}
             </div>
             <p className="text-xs text-muted-foreground">Capacidade total instalada</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">Inventário de Hardware</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2 text-sm">
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">Placa-mãe</span><span className="font-medium text-right">{agente.placa_mae_modelo || agente.placaMaeModelo || "Não informado"}</span></div>
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">Fabricante</span><span className="font-medium text-right">{agente.placa_mae_fabricante || "Não informado"}</span></div>
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">Socket CPU</span><span className="font-medium text-right">{agente.socket_cpu || agente.socketCpu || "Não informado"}</span></div>
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">BIOS</span><span className="font-medium text-right">{agente.bios_versao || "Não informado"}</span></div>
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">GPU principal</span><span className="font-medium text-right">{agente.gpuModel || gpus?.[0]?.name || gpus?.[0]?.model || "Não informado"}</span></div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">Memória e Slots</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2 text-sm">
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">RAM instalada</span><span className="font-medium text-right">{agente.ram_total_mb ? `${(Number(agente.ram_total_mb) / 1024).toFixed(1)} GB` : "Não informado"}</span></div>
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">Slots detectados</span><span className="font-medium text-right">{memoriaSlots?.length ?? 0}</span></div>
+            {(memoriaSlots ?? []).slice(0, 4).map((slot: any, idx: number) => (
+              <div key={idx} className="rounded border p-2 text-xs">
+                Slot {slot.slot || idx + 1}: {slot.size_gb || slot.sizeGb || "?"} GB {slot.speed_mhz || slot.speedMhz ? `· ${slot.speed_mhz || slot.speedMhz} MHz` : ""}
+              </div>
+            ))}
           </CardContent>
         </Card>
       </div>

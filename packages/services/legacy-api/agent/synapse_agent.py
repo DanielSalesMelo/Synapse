@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 """
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    SYNAPSE MONITORING AGENT v2.2.0                         ║
-║                                                                              ║
-║  Coleta métricas do PC e envia para o servidor Synapse.                     ║
-║  Buffer SQLite local: nunca perde dados mesmo sem internet.                 ║
-║  Funciona como serviço Windows (NSSM) ou daemon Linux (systemd).           ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+SYNAPSE MONITORING AGENT.
 
-Dependências: pip install psutil requests
+Coleta metricas do PC e envia para o servidor Synapse.
+Usa buffer SQLite local para nao perder dados sem internet.
+Pode rodar como servico no Windows (NSSM) ou daemon Linux (systemd).
+
+Dependencias: pip install psutil requests
 """
 
 import os
@@ -28,7 +26,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 
-# ─── Tenta importar psutil ────────────────────────────────────────────────────
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+
+# --- Tenta importar psutil ----------------------------------------------------
 try:
     import psutil
     HAS_PSUTIL = True
@@ -43,8 +47,8 @@ except ImportError:
     HAS_REQUESTS = False
     print("[WARN] requests não instalado. Execute: pip install psutil requests")
 
-# ─── Configuração ─────────────────────────────────────────────────────────────
-VERSION = "2.2.4"
+# --- Configuração -------------------------------------------------------------
+VERSION = "2.3.0"
 AGENT_DIR = Path(os.environ.get("SYNAPSE_AGENT_DIR", Path.home() / ".synapse-agent"))
 CONFIG_FILE = AGENT_DIR / "config.json"
 DB_FILE = AGENT_DIR / "buffer.db"
@@ -60,10 +64,11 @@ DEFAULT_CONFIG = {
     "retry_interval": 30,        # segundos entre tentativas de reenvio
     "anydesk_path": "",          # caminho do AnyDesk (auto-detectado)
     "agent_mode": "simple",      # simple=usuário final | ti=avançado
+    "allow_local_shell": False,  # shell local só é liberado por configuração explícita
     "debug": False,
 }
 
-# ─── Logging ──────────────────────────────────────────────────────────────────
+# --- Logging ------------------------------------------------------------------
 AGENT_DIR.mkdir(parents=True, exist_ok=True)
 logging.basicConfig(
     level=logging.INFO,
@@ -105,7 +110,56 @@ def get_last_buffered_metrics() -> Optional[Dict[str, Any]]:
     except Exception:
         return None
 
-# ─── Buffer SQLite ────────────────────────────────────────────────────────────
+TI_MANAGER_ROLES = {
+    "master_admin",
+    "admin",
+    "administrador",
+    "ti",
+    "ti_master",
+    "supervisor_geral",
+    "supervisor_ti",
+}
+
+def is_ti_user(config: Dict) -> bool:
+    role = str(config.get("user_role") or "").strip().lower()
+    return bool(config.get("user_is_ti") or role in TI_MANAGER_ROLES)
+
+def is_ti_scope(config: Dict) -> bool:
+    return str(config.get("agent_mode") or "simple").lower() == "ti" and is_ti_user(config)
+
+def _coerce_bool(value: Any) -> bool:
+    if isinstance(value, bool):
+        return value
+    return str(value).strip().lower() in {"1", "true", "sim", "yes", "on", "enabled"}
+
+def hidden_subprocess_kwargs() -> Dict[str, Any]:
+    """Evita janelas de console para coletas auxiliares no Windows."""
+    if platform.system() != "Windows":
+        return {}
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    startupinfo.wShowWindow = 0
+    return {
+        "startupinfo": startupinfo,
+        "creationflags": getattr(subprocess, "CREATE_NO_WINDOW", 0),
+    }
+
+def get_primary_ip() -> Optional[str]:
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+            sock.settimeout(0.2)
+            sock.connect(("8.8.8.8", 80))
+            return sock.getsockname()[0]
+    except Exception:
+        try:
+            ip = socket.gethostbyname(socket.gethostname())
+            if ip and not ip.startswith("127."):
+                return ip
+        except Exception:
+            pass
+    return None
+
+# --- Buffer SQLite ------------------------------------------------------------
 def init_db():
     conn = sqlite3.connect(DB_FILE)
     conn.execute("""
@@ -184,7 +238,7 @@ def cleanup_old_records(max_size: int):
     conn.commit()
     conn.close()
 
-# ─── Detecção de AnyDesk ──────────────────────────────────────────────────────
+# --- Detecção de AnyDesk ------------------------------------------------------
 def get_anydesk_id() -> Optional[str]:
     """Tenta obter o ID do AnyDesk instalado na máquina."""
     try:
@@ -206,7 +260,7 @@ def get_anydesk_id() -> Optional[str]:
             # Tenta via processo
             result = subprocess.run(
                 ["C:/Program Files (x86)/AnyDesk/AnyDesk.exe", "--get-id"],
-                capture_output=True, text=True, timeout=5
+                capture_output=True, text=True, timeout=5, **hidden_subprocess_kwargs()
             )
             if result.returncode == 0:
                 return result.stdout.strip()
@@ -227,7 +281,7 @@ def get_anydesk_id() -> Optional[str]:
         pass
     return None
 
-# ─── Coleta de métricas ───────────────────────────────────────────────────────
+# --- Coleta de métricas -------------------------------------------------------
 _prev_net = None
 _prev_net_time = None
 
@@ -239,8 +293,9 @@ def _collect_windows_hardware_info(metrics: Dict[str, Any]) -> None:
         ps_script = r"""
 $ErrorActionPreference = "SilentlyContinue"
 $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1 Name,SocketDesignation
-$mb = Get-CimInstance Win32_BaseBoard | Select-Object -First 1 Manufacturer,Product
-$bios = Get-CimInstance Win32_BIOS | Select-Object -First 1 SMBIOSBIOSVersion
+$mb = Get-CimInstance Win32_BaseBoard | Select-Object -First 1 Manufacturer,Product,SerialNumber
+$bios = Get-CimInstance Win32_BIOS | Select-Object -First 1 SMBIOSBIOSVersion,SerialNumber
+$system = Get-CimInstance Win32_ComputerSystemProduct | Select-Object -First 1 UUID,IdentifyingNumber,Vendor,Name
 $gpu = Get-CimInstance Win32_VideoController | Select-Object Name
 $mem = Get-CimInstance Win32_PhysicalMemory | Select-Object Capacity,Speed,Manufacturer,PartNumber
 $obj = [PSCustomObject]@{
@@ -248,7 +303,10 @@ $obj = [PSCustomObject]@{
   socket_cpu = $cpu.SocketDesignation
   placa_mae_fabricante = $mb.Manufacturer
   placa_mae_modelo = $mb.Product
+  placa_mae_serial = $mb.SerialNumber
   bios_versao = $bios.SMBIOSBIOSVersion
+  serial_number = $(if ($bios.SerialNumber) { $bios.SerialNumber } elseif ($system.IdentifyingNumber) { $system.IdentifyingNumber } else { $mb.SerialNumber })
+  asset_tag = $system.UUID
   gpus = @($gpu | ForEach-Object { @{ name = $_.Name } })
   memory_slots = @($mem | ForEach-Object {
     @{
@@ -262,10 +320,11 @@ $obj = [PSCustomObject]@{
 $obj | ConvertTo-Json -Depth 6 -Compress
 """
         result = subprocess.run(
-            ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", ps_script],
+            ["powershell.exe", "-NoLogo", "-NoProfile", "-NonInteractive", "-WindowStyle", "Hidden", "-ExecutionPolicy", "Bypass", "-Command", ps_script],
             capture_output=True,
             text=True,
             timeout=10,
+            **hidden_subprocess_kwargs(),
         )
         if result.returncode == 0 and result.stdout.strip():
             info = json.loads(result.stdout.strip())
@@ -274,6 +333,8 @@ $obj | ConvertTo-Json -Depth 6 -Compress
             metrics["placa_mae_fabricante"] = info.get("placa_mae_fabricante")
             metrics["placa_mae_modelo"] = info.get("placa_mae_modelo")
             metrics["bios_versao"] = info.get("bios_versao")
+            metrics["serial_number"] = info.get("serial_number") or info.get("placa_mae_serial")
+            metrics["asset_tag"] = info.get("asset_tag") or metrics.get("serial_number")
             metrics["gpus"] = info.get("gpus") or []
             metrics["memory_slots"] = info.get("memory_slots") or []
             metrics["hardware"] = {
@@ -282,8 +343,11 @@ $obj | ConvertTo-Json -Depth 6 -Compress
                 "motherboard": {
                     "vendor": metrics.get("placa_mae_fabricante"),
                     "model": metrics.get("placa_mae_modelo"),
+                    "serial": info.get("placa_mae_serial"),
                 },
                 "bios": {"version": metrics.get("bios_versao")},
+                "serial_number": metrics.get("serial_number"),
+                "asset_tag": metrics.get("asset_tag"),
                 "gpus": metrics.get("gpus") or [],
                 "memory_slots": metrics.get("memory_slots") or [],
             }
@@ -295,9 +359,11 @@ def collect_metrics(config: Dict) -> Dict:
 
     metrics = {
         "hostname": socket.gethostname(),
+        "ip": get_primary_ip(),
         "coletado_em": datetime.now(timezone.utc).isoformat(),
         "anydesk_id": get_anydesk_id(),
         "so": f"{platform.system()} {platform.release()}",
+        "agent_version": VERSION,
         "usuario_logado": None,
         "uptime": None,
         "cpu_uso": None,
@@ -324,6 +390,8 @@ def collect_metrics(config: Dict) -> Dict:
         "gpus": [],
         "memory_slots": [],
         "hardware": {},
+        "serial_number": None,
+        "asset_tag": None,
     }
 
     if not HAS_PSUTIL:
@@ -443,7 +511,7 @@ def collect_metrics(config: Dict) -> Dict:
 
     return metrics
 
-# ─── Detecção de eventos ──────────────────────────────────────────────────────
+# --- Detecção de eventos ------------------------------------------------------
 _prev_metrics = {}
 
 def detect_events(metrics: Dict):
@@ -471,7 +539,7 @@ def detect_events(metrics: Dict):
 
     _prev_metrics = metrics
 
-# ─── Envio para o servidor ────────────────────────────────────────────────────
+# --- Envio para o servidor ----------------------------------------------------
 def send_batch(config: Dict, pending: List[Dict]) -> bool:
     """Envia lote de métricas para o servidor."""
     if not HAS_REQUESTS or not config.get("token") or not config.get("server_url"):
@@ -491,7 +559,7 @@ def send_batch(config: Dict, pending: List[Dict]) -> bool:
 
         if sent_ids:
             mark_sent(sent_ids)
-            log.info(f"[Send] ✅ {len(sent_ids)} métricas enviadas")
+            log.info(f"[Send] [OK] {len(sent_ids)} metricas enviadas")
             return True
         return False
     except requests.exceptions.ConnectionError:
@@ -514,7 +582,7 @@ def get_hardware_fingerprint() -> str:
     if platform.system() == "Windows":
         try:
             result = subprocess.run(["wmic","baseboard","get","serialnumber"],
-                capture_output=True, text=True, timeout=5)
+                capture_output=True, text=True, timeout=5, **hidden_subprocess_kwargs())
             serial = result.stdout.strip().split('\n')[-1].strip()
             if serial and serial.lower() not in ('serialnumber',''):
                 parts.append(f"mb:{serial}")
@@ -539,10 +607,7 @@ def pair_agent(config: Dict, codigo: str) -> Optional[Dict[str, Any]]:
         # Tenta o endpoint de API direta primeiro (mais comum em versões novas)
         url = f"{config['server_url'].rstrip('/')}/api/agent/pair"
         hostname = socket.gethostname()
-        try:
-            ip = socket.gethostbyname(hostname)
-        except Exception:
-            ip = "0.0.0.0"
+        ip = get_primary_ip() or "0.0.0.0"
         
         payload = {
             "pairCode": codigo,
@@ -572,7 +637,7 @@ def pair_agent(config: Dict, codigo: str) -> Optional[Dict[str, Any]]:
             result = data.get("result", {}).get("data", {}).get("json", data.get("result", {}).get("data", data))
             token = result.get("token") if isinstance(result, dict) else None
             if token:
-                log.info(f"[Pair] ✅ Pareamento realizado! Token: {token[:16]}...")
+                log.info(f"[Pair] [OK] Pareamento realizado! Token: {token[:16]}...")
                 return {
                     "token": token,
                     "device_id": result.get("deviceId") or result.get("agenteId"),
@@ -609,7 +674,7 @@ def register_agent(config: Dict) -> Optional[str]:
             data = resp.json()
             token = data.get("result", {}).get("data", {}).get("json", {}).get("token")
             if token:
-                log.info(f"[Register] ✅ Agente registrado com token: {token[:8]}...")
+                log.info(f"[Register] [OK] Agente registrado com token: {token[:8]}...")
                 return token
     except Exception as e:
         log.error(f"[Register] Erro: {e}")
@@ -623,7 +688,10 @@ def agent_request(config: Dict, method: str, path: str, payload: Optional[Dict[s
         response = requests.request(
             method.upper(),
             url,
-            headers={"Authorization": f"Bearer {config['token']}"},
+            headers={
+                "Authorization": f"Bearer {config['token']}",
+                "X-Synapse-Agent-Mode": "ti" if is_ti_scope(config) else "simple",
+            },
             json=payload,
             timeout=20,
         )
@@ -640,7 +708,8 @@ def fetch_agent_profile(config: Dict) -> Optional[Dict[str, Any]]:
     return result if isinstance(result, dict) else None
 
 def fetch_agent_tickets(config: Dict) -> List[Dict[str, Any]]:
-    result = agent_request(config, "GET", "/api/agent/tickets")
+    path = "/api/agent/ti/tickets" if is_ti_scope(config) else "/api/agent/tickets"
+    result = agent_request(config, "GET", path)
     return result if isinstance(result, list) else []
 
 def open_support_ticket(config: Dict, titulo: str, descricao: str, categoria: str = "hardware", prioridade: str = "media") -> Optional[Dict[str, Any]]:
@@ -657,28 +726,42 @@ def open_support_ticket(config: Dict, titulo: str, descricao: str, categoria: st
     )
 
 def fetch_ticket_messages(config: Dict, ticket_id: int) -> List[Dict[str, Any]]:
-    result = agent_request(config, "GET", f"/api/agent/tickets/{ticket_id}/messages")
+    base = "/api/agent/ti/tickets" if is_ti_scope(config) else "/api/agent/tickets"
+    result = agent_request(config, "GET", f"{base}/{ticket_id}/messages")
     return result if isinstance(result, list) else []
 
 def send_ticket_message(config: Dict, ticket_id: int, conteudo: str) -> Optional[Dict[str, Any]]:
+    base = "/api/agent/ti/tickets" if is_ti_scope(config) else "/api/agent/tickets"
     return agent_request(
         config,
         "POST",
-        f"/api/agent/tickets/{ticket_id}/messages",
+        f"{base}/{ticket_id}/messages",
         {"conteudo": conteudo},
     )
 
 def send_ticket_attachment(config: Dict, ticket_id: int, file_name: str, file_type: str, data_url: str, conteudo: str = "") -> Optional[Dict[str, Any]]:
+    base = "/api/agent/ti/tickets" if is_ti_scope(config) else "/api/agent/tickets"
     return agent_request(
         config,
         "POST",
-        f"/api/agent/tickets/{ticket_id}/messages",
+        f"{base}/{ticket_id}/messages",
         {
             "conteudo": conteudo or "",
             "fileUrl": data_url,
             "fileName": file_name,
             "fileType": file_type or "application/octet-stream",
         },
+    )
+
+def update_ticket_status(config: Dict, ticket_id: int, status: str) -> Optional[Dict[str, Any]]:
+    if not is_ti_scope(config):
+        log.warning("[Agent API] Tentativa de alterar status fora do modo TI autorizado.")
+        return None
+    return agent_request(
+        config,
+        "PATCH",
+        f"/api/agent/ti/tickets/{ticket_id}/status",
+        {"status": status},
     )
 
 def agent_login(config: Dict, email: str, password: str) -> Optional[Dict[str, Any]]:
@@ -690,6 +773,7 @@ def agent_login(config: Dict, email: str, password: str) -> Optional[Dict[str, A
             "email": email.strip().lower(),
             "password": password,
             "deviceId": config.get("device_id"),
+            "token": config.get("token"),
         }
         resp = requests.post(url, json=payload, timeout=20)
         if resp.status_code >= 400:
@@ -739,6 +823,9 @@ def launch_support_center():
     title = tk.Label(header, text="Synapse Support Center", fg="white", bg="#0f172a", font=("Segoe UI", 18, "bold"))
     title.pack(anchor="w")
     is_ti_mode = str(config.get("agent_mode") or "simple").lower() == "ti"
+    def is_ti_authorized() -> bool:
+        return is_ti_scope(config)
+
     subtitle_text = "Abra chamados e converse com o TI em tempo real."
     if is_ti_mode:
         subtitle_text = "Modo TI avançado: chat/chamados e painel técnico local."
@@ -780,7 +867,8 @@ def launch_support_center():
     actions_card = tk.LabelFrame(body, text=" Ações rápidas ", bg="#111827", fg="white", padx=12, pady=10, font=("Segoe UI", 10, "bold"))
     actions_card.grid(row=0, column=1, sticky="nsew", pady=(0, 10))
 
-    tickets_card = tk.LabelFrame(body, text=" Chamados deste usuário ", bg="#111827", fg="white", padx=12, pady=10, font=("Segoe UI", 10, "bold"))
+    tickets_title = " Chamados do Synapse " if is_ti_mode else " Chamados deste usuário "
+    tickets_card = tk.LabelFrame(body, text=tickets_title, bg="#111827", fg="white", padx=12, pady=10, font=("Segoe UI", 10, "bold"))
     tickets_card.grid(row=1, column=0, sticky="nsew", padx=(0, 10))
     chat_card = tk.LabelFrame(body, text=" Conversa do chamado ", bg="#111827", fg="white", padx=12, pady=10, font=("Segoe UI", 10, "bold"))
     chat_card.grid(row=1, column=1, sticky="nsew")
@@ -808,18 +896,34 @@ def launch_support_center():
         data = get_last_buffered_metrics() or {}
         lines = [
             f"Hostname: {data.get('hostname', socket.gethostname())}",
+            f"IP: {data.get('ip') or get_primary_ip() or '—'}",
             f"Usuário logado: {data.get('usuario_logado') or '—'}",
             f"SO: {data.get('so') or f'{platform.system()} {platform.release()}'}",
             f"CPU: {data.get('cpu_uso') or 0}%",
             f"RAM: {data.get('ram_uso_pct') or 0}%",
             f"Disco: {data.get('disco_uso_pct') or 0}%",
             f"AnyDesk: {data.get('anydesk_id') or 'não identificado'}",
+            f"Serial/Asset: {data.get('serial_number') or data.get('asset_tag') or 'não identificado'}",
+            f"Versão: {VERSION}",
         ]
         metrics_var.set("\n".join(lines))
 
     def refresh_profile():
         profile = fetch_agent_profile(config)
         if profile:
+            if not is_ti_mode or not is_ti_authorized():
+                if profile.get("usuario_nome"):
+                    logged_user["name"] = profile.get("usuario_nome") or ""
+                    logged_user["email"] = profile.get("usuario_email") or ""
+                info_var.set(
+                    f"Atendimento conectado"
+                    + (f" · Usuário: {profile.get('usuario_nome')}" if profile.get("usuario_nome") else "")
+                )
+                return
+            if is_ti_mode and is_ti_authorized() and not profile.get("technicalProfileAllowed"):
+                info_var.set("Perfil técnico restrito. Faça login novamente com usuário TI/Admin autorizado.")
+                metrics_var.set("Dados técnicos indisponíveis para esta sessão.")
+                return
             info_var.set(
                 f"PC: {profile.get('hostname') or socket.gethostname()} · Empresa: {profile.get('empresa_nome') or '—'} · "
                 f"Usuário: {profile.get('usuario_nome') or 'não vinculado'}"
@@ -828,16 +932,19 @@ def launch_support_center():
             if profile.get("usuario_nome"):
                 logged_user["name"] = profile.get("usuario_nome") or ""
                 logged_user["email"] = profile.get("usuario_email") or ""
-            if latest:
+            if is_ti_mode and is_ti_authorized() and latest:
                 metrics_var.set(
                     "\n".join(
                         [
                             f"Hostname: {profile.get('hostname') or socket.gethostname()}",
+                            f"IP: {profile.get('ip') or latest.get('ipLocal') or '—'}",
                             f"Usuário logado: {latest.get('usuarioLogado') or '—'}",
                             f"CPU: {latest.get('cpuUso') or 0}%",
                             f"RAM: {latest.get('ramUsoPct') or 0}%",
                             f"Disco: {latest.get('discoUsoPct') or 0}%",
                             f"AnyDesk: {latest.get('anydeskId') or 'não identificado'}",
+                            f"Serial/Asset: {profile.get('serialNumber') or profile.get('assetTag') or latest.get('serialNumber') or 'não identificado'}",
+                            f"Versão: {profile.get('versaoAgente') or VERSION}",
                         ]
                     )
                 )
@@ -859,6 +966,8 @@ def launch_support_center():
         user = result.get("user") or {}
         logged_user["name"] = user.get("name") or ""
         logged_user["email"] = user.get("email") or ""
+        config["user_role"] = user.get("role") or ""
+        config["user_is_ti"] = bool(user.get("isTiManager"))
         config["user_email"] = logged_user["email"] or email
         config["user_name"] = logged_user["name"] or ""
         save_config(config)
@@ -900,12 +1009,19 @@ def launch_support_center():
 
     def refresh_tickets():
         nonlocal tickets_cache
+        if is_ti_mode and not is_ti_authorized():
+            tickets_cache = []
+            tickets_list.delete(0, tk.END)
+            tickets_list.insert(tk.END, "Modo TI requer login com usuário TI/Admin do Synapse.")
+            selected_ticket["id"] = None
+            return
         tickets_cache = fetch_agent_tickets(config)
         tickets_list.delete(0, tk.END)
         for ticket in tickets_cache:
             tickets_list.insert(
                 tk.END,
                 f"#{ticket.get('id')} · {ticket.get('titulo')} · {ticket.get('status')}"
+                + (f" · {ticket.get('solicitante_nome')}" if ticket.get("solicitante_nome") else "")
             )
         if not tickets_cache:
             tickets_list.insert(tk.END, "Nenhum chamado associado a este usuário ainda.")
@@ -916,10 +1032,14 @@ def launch_support_center():
         chat_text.configure(state="normal")
         chat_text.delete("1.0", tk.END)
         for message in messages:
-            author = message.get("autor_nome") or "Synapse"
+            author = message.get("autor_nome") or message.get("autorNome") or "Synapse"
             when = str(message.get("createdAt") or "")[:16].replace("T", " ")
             content = message.get("conteudo") or ""
+            file_url = message.get("fileUrl") or message.get("anexoUrl")
+            file_name = message.get("fileName") or message.get("anexoNome")
             chat_text.insert(tk.END, f"{author} · {when}\n{content}\n\n")
+            if file_url:
+                chat_text.insert(tk.END, f"Anexo: {file_name or file_url}\n\n")
         chat_text.configure(state="disabled")
         chat_text.see(tk.END)
 
@@ -932,6 +1052,8 @@ def launch_support_center():
             return
         ticket = tickets_cache[idx]
         selected_ticket["id"] = ticket.get("id")
+        if ticket.get("status"):
+            status_var.set(str(ticket.get("status")))
         render_messages(selected_ticket["id"])
 
     def send_message_action():
@@ -1123,12 +1245,113 @@ def launch_support_center():
         ttk.Button(btns, text="Abrir chamado", command=submit_ticket).pack(side="right", padx=(0, 10))
         title_entry.focus_set()
 
+    STATUS_OPTIONS = [
+        "aberto",
+        "aguardando_usuario",
+        "aguardando_ti",
+        "em_andamento",
+        "acesso_remoto_solicitado",
+        "em_acesso_remoto",
+        "resolvido",
+        "encerrado",
+    ]
+    status_var = tk.StringVar(value="em_andamento")
+
+    def change_status_action():
+        if not is_ti_authorized():
+            messagebox.showwarning("Synapse", "Faça login com um usuário TI/Admin para alterar status.")
+            return
+        if not selected_ticket["id"]:
+            messagebox.showwarning("Synapse", "Selecione um chamado antes de alterar o status.")
+            return
+        status = status_var.get().strip()
+        result = update_ticket_status(config, int(selected_ticket["id"]), status)
+        if not result:
+            messagebox.showerror("Synapse", "Não foi possível alterar o status.")
+            return
+        refresh_tickets()
+        render_messages(int(selected_ticket["id"]))
+
+    def copy_anydesk_action():
+        data = get_last_buffered_metrics() or {}
+        anydesk = data.get("anydesk_id") or ""
+        if not anydesk:
+            profile = fetch_agent_profile(config) or {}
+            latest = profile.get("ultima_metrica") or {}
+            anydesk = profile.get("anydeskId") or latest.get("anydeskId") or ""
+        if not anydesk:
+            messagebox.showinfo("Synapse", "AnyDesk ID ainda não identificado neste computador.")
+            return
+        root.clipboard_clear()
+        root.clipboard_append(str(anydesk))
+        messagebox.showinfo("Synapse", f"AnyDesk ID copiado: {anydesk}")
+
+    def open_shell_action():
+        if not is_ti_authorized():
+            messagebox.showwarning("Synapse", "Shell local exige modo TI/Admin autenticado.")
+            return
+        if not _coerce_bool(config.get("allow_local_shell")):
+            messagebox.showwarning(
+                "Synapse",
+                "Shell local bloqueado por política. Libere explicitamente com --config allow_local_shell true.",
+            )
+            return
+        if platform.system() != "Windows":
+            messagebox.showwarning("Synapse", "Abertura de shell local está disponível apenas no Windows.")
+            return
+        subprocess.Popen(["powershell.exe"], creationflags=getattr(subprocess, "CREATE_NEW_CONSOLE", 0))
+
+    def setup_tray_icon():
+        if platform.system() != "Windows":
+            return
+        try:
+            from PIL import Image, ImageDraw  # type: ignore
+            import pystray  # type: ignore
+        except Exception:
+            return
+
+        image = Image.new("RGB", (64, 64), "#0f172a")
+        draw = ImageDraw.Draw(image)
+        draw.ellipse((10, 10, 54, 54), fill="#2563eb")
+        draw.text((25, 19), "S", fill="white")
+
+        def show_window(_icon=None, _item=None):
+            root.after(0, lambda: [root.deiconify(), root.lift(), root.focus_force()])
+
+        def quit_window(icon=None, _item=None):
+            try:
+                if icon:
+                    icon.stop()
+            except Exception:
+                pass
+            root.after(0, root.destroy)
+
+        icon = pystray.Icon(
+            "SynapseAgent",
+            image,
+            f"Synapse Agent v{VERSION}",
+            menu=pystray.Menu(
+                pystray.MenuItem("Abrir Synapse Suporte", show_window),
+                pystray.MenuItem("Sair da janela", quit_window),
+            ),
+        )
+        threading.Thread(target=icon.run, daemon=True).start()
+
+        def minimize_to_tray():
+            root.withdraw()
+
+        root.protocol("WM_DELETE_WINDOW", minimize_to_tray)
+
     ttk.Button(actions_card, text="Atualizar agora", command=lambda: [refresh_profile(), refresh_tickets()]).pack(side="left", padx=(0, 8))
     ttk.Button(actions_card, text="Parear novamente", command=repair_pairing_action).pack(side="left", padx=(0, 8))
     ttk.Button(actions_card, text="Entrar com Synapse", command=login_action).pack(side="left", padx=(0, 8))
     ttk.Button(actions_card, text="Abrir chamado", command=open_ticket_action).pack(side="left", padx=(0, 8))
     if is_ti_mode:
         ttk.Button(actions_card, text="Ver desempenho", command=render_metrics).pack(side="left")
+        ttk.Button(actions_card, text="Copiar AnyDesk", command=copy_anydesk_action).pack(side="left", padx=(8, 0))
+        ttk.Combobox(actions_card, textvariable=status_var, values=STATUS_OPTIONS, state="readonly", width=22).pack(side="left", padx=(8, 0))
+        ttk.Button(actions_card, text="Alterar status", command=change_status_action).pack(side="left", padx=(8, 0))
+        ttk.Button(actions_card, text="PowerShell", command=open_shell_action).pack(side="left", padx=(8, 0))
     ttk.Button(composer, text="Enviar", command=send_message_action).pack(side="right")
 
     tickets_list.bind("<<ListboxSelect>>", on_select_ticket)
@@ -1150,6 +1373,7 @@ def launch_support_center():
         root.after(15000, auto_sync_loop)
 
     root.after(15000, auto_sync_loop)
+    setup_tray_icon()
     root.mainloop()
 
 def get_mac_address() -> str:
@@ -1160,24 +1384,53 @@ def get_mac_address() -> str:
     except Exception:
         return ""
 
-# ─── Loop principal ───────────────────────────────────────────────────────────
+# --- Loop principal -----------------------------------------------------------
 _running = True
+_single_instance_handle = None
 
 def signal_handler(sig, frame):
     global _running
     log.info("[Agent] Recebido sinal de parada. Encerrando...")
     _running = False
 
+def acquire_single_instance_lock() -> bool:
+    """Impede dois loops de monitoramento do agente legado no mesmo Windows."""
+    global _single_instance_handle
+    if platform.system() != "Windows":
+        return True
+    try:
+        import ctypes
+
+        safe_host = "".join(ch if ch.isalnum() else "_" for ch in socket.gethostname()) or "default"
+        mutex_name = f"Local\\SynapseAgentLegacy_{safe_host}"
+        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        handle = kernel32.CreateMutexW(None, False, mutex_name)
+        if not handle:
+            return True
+        already_exists = ctypes.get_last_error() == 183
+        if already_exists:
+            kernel32.CloseHandle(handle)
+            log.warning("[Agent] Já existe uma instância de monitoramento ativa. Encerrando duplicata.")
+            return False
+        _single_instance_handle = handle
+        return True
+    except Exception as exc:
+        log.warning(f"[Agent] Não foi possível validar instância única: {exc}")
+        return True
+
 def main():
     global _running
+
+    if not acquire_single_instance_lock():
+        return
 
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
 
-    log.info(f"╔══════════════════════════════════════════╗")
-    log.info(f"║  Synapse Monitoring Agent v{VERSION}        ║")
-    log.info(f"║  Hostname: {socket.gethostname():<30}║")
-    log.info(f"╚══════════════════════════════════════════╝")
+    log.info("==========================================")
+    log.info(f" Synapse Monitoring Agent v{VERSION}")
+    log.info(f" Hostname: {socket.gethostname()}")
+    log.info("==========================================")
 
     if not HAS_PSUTIL or not HAS_REQUESTS:
         log.error("Dependências faltando. Execute: pip install psutil requests")
@@ -1232,7 +1485,7 @@ def main():
 
     log.info("[Agent] Agente encerrado.")
 
-# ─── Instalador Windows ───────────────────────────────────────────────────────
+# --- Instalador Windows -------------------------------------------------------
 def install_windows():
     """Instala o agente como serviço Windows usando NSSM."""
     print("\n=== Instalador Synapse Agent (Windows) ===\n")
@@ -1271,7 +1524,7 @@ def install_windows():
         subprocess.run([str(nssm_path), "set", "SynapseAgent", "DisplayName", "Synapse Monitoring Agent"])
         subprocess.run([str(nssm_path), "set", "SynapseAgent", "Description", "Agente de monitoramento Synapse"])
         subprocess.run([str(nssm_path), "start", "SynapseAgent"])
-        print("\n✅ Serviço SynapseAgent instalado e iniciado!")
+        print("\n[OK] Servico SynapseAgent instalado e iniciado!")
 
     print(f"\nConfiguração salva em: {CONFIG_FILE}")
     print(f"Logs em: {LOG_FILE}")
@@ -1323,7 +1576,7 @@ WantedBy=multi-user.target
         subprocess.run(["systemctl", "daemon-reload"])
         subprocess.run(["systemctl", "enable", "synapse-agent"])
         subprocess.run(["systemctl", "start", "synapse-agent"])
-        print("\n✅ Serviço synapse-agent instalado e iniciado!")
+        print("\n[OK] Servico synapse-agent instalado e iniciado!")
         print("  Status: systemctl status synapse-agent")
         print("  Logs:   journalctl -u synapse-agent -f")
     except PermissionError:
@@ -1334,7 +1587,7 @@ WantedBy=multi-user.target
     print(f"\nConfiguração salva em: {CONFIG_FILE}")
     print(f"Logs em: {LOG_FILE}")
 
-# ─── Ponto de entrada ─────────────────────────────────────────────────────────
+# --- Ponto de entrada ---------------------------------------------------------
 if __name__ == "__main__":
     # Suporte a flags do instalador legado
     if "--config" in sys.argv:
@@ -1401,13 +1654,13 @@ if __name__ == "__main__":
                 if pair_result.get("empresa_id"):
                     config["empresa_id"] = pair_result["empresa_id"]
                 save_config(config)
-                print(f"\n✅ PC vinculado com sucesso!")
+                print(f"\n[OK] PC vinculado com sucesso!")
                 if "--pair-only" in sys.argv:
                     sys.exit(0)
                 print(f"\nIniciando monitoramento...")
                 main()
             else:
-                print("\n❌ Falha no pareamento. Verifique o código e a URL do servidor.")
+                print("\n[ERRO] Falha no pareamento. Verifique o codigo e a URL do servidor.")
                 sys.exit(1)
         elif cmd == "--install":
             if platform.system() == "Windows":
@@ -1450,7 +1703,7 @@ if __name__ == "__main__":
                 key, value = sys.argv[2], sys.argv[3]
                 config[key] = value
                 save_config(config)
-                print(f"✅ {key} = {value}")
+                print(f"[OK] {key} = {value}")
             else:
                 print(json.dumps(config, indent=2))
         elif cmd == "--mode" and len(sys.argv) > 2:
@@ -1461,7 +1714,7 @@ if __name__ == "__main__":
                 sys.exit(1)
             config["agent_mode"] = mode
             save_config(config)
-            print(f"✅ Modo do agente definido para: {mode}")
+            print(f"[OK] Modo do agente definido para: {mode}")
         elif cmd == "--test":
             print("Testando coleta de métricas...")
             config = load_config()

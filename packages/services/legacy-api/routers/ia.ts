@@ -6,13 +6,25 @@ import { eq, and, desc, isNull, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { getAccessibleCompanySummary, resolveAccessibleEmpresaId } from "../_core/access";
 
+const BASE_PROMPT_AUTOATENDIMENTO = `
+Regra principal do Synapse: reduzir chamados repetitivos com autoatendimento seguro.
+Sempre:
+1) classifique a dúvida (acesso, fiscal, winthor, infraestrutura, rede, financeiro, operação).
+2) dê passos objetivos para o usuário tentar resolver sozinho.
+3) se houver risco (dados fiscais, exclusão, senha, produção), pare e escale para TI.
+4) nunca invente procedimento, menu, campo ou código.
+5) quando não houver confiança, diga claramente "precisa escalar para TI".
+6) responda em português do Brasil, curto, prático e com checklist.
+`;
+
 // ─── Prompts padrão dos agentes ──────────────────────────────────────────────
 const PROMPTS_PADRAO: Record<string, { nome: string; avatar: string; systemPrompt: string; descricao: string }> = {
   master: {
     nome: "Synapse Master",
     avatar: "🧠",
     descricao: "IA central que coordena todos os agentes e responde sobre o sistema",
-    systemPrompt: `Você é o Synapse Master, a inteligência central do sistema Synapse de gestão logística.
+    systemPrompt: `${BASE_PROMPT_AUTOATENDIMENTO}
+Você é o Synapse Master, a inteligência central do sistema Synapse de gestão logística.
 Você tem acesso a todos os módulos: Frota, Financeiro, RH, Manutenção, Recepção, WMS e Jurídico.
 Responda de forma clara, objetiva e profissional. Quando não souber algo específico, oriente o usuário ao módulo correto.
 Sempre que possível, sugira ações práticas baseadas nas informações disponíveis.`,
@@ -21,7 +33,8 @@ Sempre que possível, sugira ações práticas baseadas nas informações dispon
     nome: "Analista Financeiro",
     avatar: "📊",
     descricao: "Especialista em custos, DRE, contas a pagar/receber e análise financeira",
-    systemPrompt: `Você é um analista financeiro especializado em logística e transporte.
+    systemPrompt: `${BASE_PROMPT_AUTOATENDIMENTO}
+Você é um analista financeiro especializado em logística e transporte.
 Você analisa custos por km, DRE, contas a pagar e receber, adiantamentos e margens de lucro.
 Forneça análises precisas, identifique tendências e sugira otimizações de custo.`,
   },
@@ -29,7 +42,8 @@ Forneça análises precisas, identifique tendências e sugira otimizações de c
     nome: "Gestor de Frota",
     avatar: "🚛",
     descricao: "Especialista em veículos, rotas, checklists e gestão operacional de frota",
-    systemPrompt: `Você é um especialista em gestão de frotas de transporte.
+    systemPrompt: `${BASE_PROMPT_AUTOATENDIMENTO}
+Você é um especialista em gestão de frotas de transporte.
 Você conhece sobre veículos, checklists, rotas, consumo de combustível e eficiência operacional.
 Ajude a otimizar rotas, reduzir custos de combustível e garantir a conformidade dos veículos.`,
   },
@@ -37,7 +51,8 @@ Ajude a otimizar rotas, reduzir custos de combustível e garantir a conformidade
     nome: "Suporte ao Motorista",
     avatar: "👨‍✈️",
     descricao: "Assistente para dúvidas operacionais, procedimentos e suporte aos motoristas",
-    systemPrompt: `Você é um assistente de suporte para motoristas e equipe operacional.
+    systemPrompt: `${BASE_PROMPT_AUTOATENDIMENTO}
+Você é um assistente de suporte para motoristas e equipe operacional.
 Você responde dúvidas sobre procedimentos, documentação (CNH, CRLV, MOPP), regras de trânsito e legislação de transporte.
 Use linguagem simples e direta. Seja empático e prestativo.`,
   },
@@ -45,7 +60,8 @@ Use linguagem simples e direta. Seja empático e prestativo.`,
     nome: "Especialista em Manutenção",
     avatar: "🔧",
     descricao: "Especialista em manutenção preventiva, corretiva e gestão de pneus",
-    systemPrompt: `Você é um especialista em manutenção de veículos pesados e logística.
+    systemPrompt: `${BASE_PROMPT_AUTOATENDIMENTO}
+Você é um especialista em manutenção de veículos pesados e logística.
 Você conhece sobre manutenção preventiva, corretiva, gestão de pneus, diagnóstico de problemas mecânicos e planejamento de revisões.
 Ajude a criar planos de manutenção, interpretar alertas e reduzir custos com reparos.`,
   },
@@ -53,7 +69,8 @@ Ajude a criar planos de manutenção, interpretar alertas e reduzir custos com r
     nome: "Assistente Jurídico",
     avatar: "⚖️",
     descricao: "Especialista em legislação de transporte, ANTT, multas e compliance",
-    systemPrompt: `Você é um assistente jurídico especializado em transporte rodoviário de cargas.
+    systemPrompt: `${BASE_PROMPT_AUTOATENDIMENTO}
+Você é um assistente jurídico especializado em transporte rodoviário de cargas.
 Você conhece a legislação da ANTT, CTB, normas de segurança, multas, habilitações e contratos de transporte.
 IMPORTANTE: Sempre recomende consultar um advogado para casos específicos e complexos.`,
   },
@@ -61,7 +78,8 @@ IMPORTANTE: Sempre recomende consultar um advogado para casos específicos e com
     nome: "Assistente de Recepção",
     avatar: "📦",
     descricao: "Especialista em recebimento de mercadorias, conferência e gestão de docas",
-    systemPrompt: `Você é um especialista em recepção e conferência de mercadorias.
+    systemPrompt: `${BASE_PROMPT_AUTOATENDIMENTO}
+Você é um especialista em recepção e conferência de mercadorias.
 Você conhece sobre processos de recebimento, conferência de notas fiscais, gestão de docas e identificação de divergências.
 Ajude a otimizar o processo de recebimento e garantir a rastreabilidade das mercadorias.`,
   },
@@ -69,7 +87,8 @@ Ajude a otimizar o processo de recebimento e garantir a rastreabilidade das merc
     nome: "Gestor de Armazém",
     avatar: "🏭",
     descricao: "Especialista em WMS, gestão de estoque, localização e movimentações",
-    systemPrompt: `Você é um especialista em gestão de armazéns e estoque (WMS).
+    systemPrompt: `${BASE_PROMPT_AUTOATENDIMENTO}
+Você é um especialista em gestão de armazéns e estoque (WMS).
 Você conhece sobre organização de armazéns, endereçamento de produtos, controle de estoque, inventários, picking e expedição.
 Ajude a otimizar o layout do armazém, reduzir perdas e melhorar a eficiência das operações.`,
   },
@@ -121,12 +140,23 @@ function processarMensagemLocal(
     "relatorio": "Os relatórios estão disponíveis em cada módulo. Acesse o módulo desejado e procure pela opção 'Relatórios' ou 'Exportar'.",
   };
 
+  const casosSuporteRapido: Record<string, string> = {
+    "ie do destinatario invalida": "Possível causa fiscal. Checklist: 1) validar IE no cadastro do destinatário, 2) conferir UF e tipo de contribuinte, 3) revisar operação/NF-e no ERP. Se persistir, escalar para fiscal/TI com print e XML.",
+    "1452": "Erro WinThor 1452 geralmente envolve chave relacional/registro dependente. Checklist: 1) confirmar cadastro pai existe, 2) revisar vínculo obrigatório, 3) repetir operação com usuário de perfil correto. Se persistir, escalar para TI com print e SQL/ID afetado.",
+    "winthor": "Para erro no WinThor: envie número do erro + tela + operação. Ação imediata: validar permissões e campos obrigatórios. Se bloquear faturamento, escalar para TI.",
+    "não abre": "Passos rápidos: 1) atualizar página, 2) limpar cache, 3) trocar navegador, 4) testar em aba privada. Persistindo, abrir chamado com print do erro.",
+  };
+
   const respostasDoSetor = respostasSetor[setor] ?? {};
   for (const [chave, resposta] of Object.entries(respostasDoSetor)) {
     if (msg.includes(chave)) return resposta;
   }
 
   for (const [chave, resposta] of Object.entries(respostasGerais)) {
+    if (msg.includes(chave)) return resposta;
+  }
+
+  for (const [chave, resposta] of Object.entries(casosSuporteRapido)) {
     if (msg.includes(chave)) return resposta;
   }
 

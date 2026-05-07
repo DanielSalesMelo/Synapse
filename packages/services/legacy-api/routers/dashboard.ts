@@ -1,5 +1,5 @@
 import { protectedProcedure, router } from "../_core/trpc";
-import { getDb } from "../db";
+import { getDb, getRawClient } from "../db";
 import {
   abastecimentos,
   contasPagar,
@@ -18,80 +18,82 @@ export const dashboardRouter = router({
   resumo: protectedProcedure
     .input(z.object({ empresaId: z.number() }))
     .query(async ({ input, ctx }) => {
-      const db = await getDb();
-      if (!db) return null;
+      const client = await getRawClient();
+      if (!client) return null;
 
       const empresaId = await resolveAccessibleEmpresaId(ctx, input.empresaId);
       const hoje = new Date();
       const inicioMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
       const em7dias = new Date(hoje);
       em7dias.setDate(hoje.getDate() + 7);
+      const hojeIso = hoje.toISOString().slice(0, 10);
+      const inicioMesIso = inicioMes.toISOString().slice(0, 10);
+      const em7diasIso = em7dias.toISOString().slice(0, 10);
 
-      const [veiculosResumo] = await db
-        .select({ total: sql<number>`COUNT(*)` })
-        .from(veiculos)
-        .where(and(eq(veiculos.empresaId, empresaId), eq(veiculos.ativo, true), isNull(veiculos.deletedAt)));
+      const [veiculosResumo] = await client`
+        SELECT COUNT(*)::int as total
+        FROM veiculos
+        WHERE "empresaId"=${empresaId}
+          AND COALESCE(ativo, true) = true
+          AND "deletedAt" IS NULL
+      `.catch(() => [{ total: 0 }]);
 
-      const funcionariosResumo = await db
-        .select({
-          funcao: funcionarios.funcao,
-          total: sql<number>`COUNT(*)`,
-        })
-        .from(funcionarios)
-        .where(and(eq(funcionarios.empresaId, empresaId), eq(funcionarios.ativo, true), isNull(funcionarios.deletedAt)))
-        .groupBy(funcionarios.funcao);
+      const funcionariosResumo = await client`
+        SELECT funcao::text as funcao, COUNT(*)::int as total
+        FROM funcionarios
+        WHERE "empresaId"=${empresaId}
+          AND COALESCE(ativo, true) = true
+          AND "deletedAt" IS NULL
+        GROUP BY funcao
+      `.catch(() => []);
 
-      const [abastecimentosResumo] = await db
-        .select({
-          total: sql<number>`SUM(${abastecimentos.valorTotal})`,
-          litros: sql<number>`SUM(${abastecimentos.quantidade})`,
-        })
-        .from(abastecimentos)
-        .where(and(eq(abastecimentos.empresaId, empresaId), isNull(abastecimentos.deletedAt), gte(abastecimentos.data, inicioMes)));
+      const [abastecimentosResumo] = await client`
+        SELECT
+          COALESCE(SUM("valorTotal"), 0)::float8 as total,
+          COALESCE(SUM(quantidade), 0)::float8 as litros
+        FROM abastecimentos
+        WHERE "empresaId"=${empresaId}
+          AND "deletedAt" IS NULL
+          AND data >= ${inicioMesIso}::date
+      `.catch(() => [{ total: 0, litros: 0 }]);
 
-      const [manutencoesResumo] = await db
-        .select({
-          total: sql<number>`SUM(${manutencoes.valor})`,
-          count: sql<number>`COUNT(*)`,
-        })
-        .from(manutencoes)
-        .where(and(eq(manutencoes.empresaId, empresaId), isNull(manutencoes.deletedAt), gte(manutencoes.data, inicioMes)));
+      const [manutencoesResumo] = await client`
+        SELECT
+          COALESCE(SUM(valor), 0)::float8 as total,
+          COUNT(*)::int as count
+        FROM manutencoes
+        WHERE "empresaId"=${empresaId}
+          AND "deletedAt" IS NULL
+          AND data >= ${inicioMesIso}::date
+      `.catch(() => [{ total: 0, count: 0 }]);
 
-      const viagensResumo = await db
-        .select({
-          status: viagens.status,
-          total: sql<number>`COUNT(*)`,
-        })
-        .from(viagens)
-        .where(and(eq(viagens.empresaId, empresaId), isNull(viagens.deletedAt)))
-        .groupBy(viagens.status);
+      const viagensResumo = await client`
+        SELECT status::text as status, COUNT(*)::int as total
+        FROM viagens
+        WHERE "empresaId"=${empresaId}
+          AND "deletedAt" IS NULL
+        GROUP BY status
+      `.catch(() => []);
 
-      const [contasVencendo] = await db
-        .select({
-          total: sql<number>`COUNT(*)`,
-          valor: sql<number>`SUM(${contasPagar.valor})`,
-        })
-        .from(contasPagar)
-        .where(
-          and(
-            eq(contasPagar.empresaId, empresaId),
-            eq(contasPagar.status, "pendente"),
-            lte(contasPagar.dataVencimento, em7dias),
-            gte(contasPagar.dataVencimento, hoje),
-            isNull(contasPagar.deletedAt)
-          )
-        );
+      const [contasVencendo] = await client`
+        SELECT
+          COUNT(*)::int as total,
+          COALESCE(SUM(valor), 0)::float8 as valor
+        FROM contas_pagar
+        WHERE "empresaId"=${empresaId}
+          AND status::text = 'pendente'
+          AND "dataVencimento" <= ${em7diasIso}::date
+          AND "dataVencimento" >= ${hojeIso}::date
+          AND "deletedAt" IS NULL
+      `.catch(() => [{ total: 0, valor: 0 }]);
 
-      const freelancers = await db
-        .select()
-        .from(funcionarios)
-        .where(
-          and(
-            eq(funcionarios.empresaId, empresaId),
-            eq(funcionarios.tipoContrato, "freelancer"),
-            isNull(funcionarios.deletedAt)
-          )
-        );
+      const freelancers = await client`
+        SELECT "diaPagamento"
+        FROM funcionarios
+        WHERE "empresaId"=${empresaId}
+          AND "tipoContrato"::text = 'freelancer'
+          AND "deletedAt" IS NULL
+      `.catch(() => []);
 
       const freelancersParaPagar = freelancers.filter(funcionario => {
         if (!funcionario.diaPagamento) return false;
@@ -99,29 +101,23 @@ export const dashboardRouter = router({
         return diff >= 0 && diff <= 7;
       });
 
-      const [cnhVencendo] = await db
-        .select({ count: sql<number>`COUNT(*)` })
-        .from(funcionarios)
-        .where(
-          and(
-            eq(funcionarios.empresaId, empresaId),
-            isNull(funcionarios.deletedAt),
-            lte(funcionarios.vencimentoCnh, em7dias),
-            gte(funcionarios.vencimentoCnh, hoje)
-          )
-        );
+      const [cnhVencendo] = await client`
+        SELECT COUNT(*)::int as count
+        FROM funcionarios
+        WHERE "empresaId"=${empresaId}
+          AND "deletedAt" IS NULL
+          AND "vencimentoCnh" <= ${em7diasIso}::date
+          AND "vencimentoCnh" >= ${hojeIso}::date
+      `.catch(() => [{ count: 0 }]);
 
-      const [crlvVencendo] = await db
-        .select({ count: sql<number>`COUNT(*)` })
-        .from(veiculos)
-        .where(
-          and(
-            eq(veiculos.empresaId, empresaId),
-            isNull(veiculos.deletedAt),
-            lte(veiculos.vencimentoCrlv, em7dias),
-            gte(veiculos.vencimentoCrlv, hoje)
-          )
-        );
+      const [crlvVencendo] = await client`
+        SELECT COUNT(*)::int as count
+        FROM veiculos
+        WHERE "empresaId"=${empresaId}
+          AND "deletedAt" IS NULL
+          AND "vencimentoCrlv" <= ${em7diasIso}::date
+          AND "vencimentoCrlv" >= ${hojeIso}::date
+      `.catch(() => [{ count: 0 }]);
 
       return {
         veiculos: {

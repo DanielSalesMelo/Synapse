@@ -29,8 +29,54 @@ const ALLOWED_ORIGINS = [
 ];
 
 const ANY_VERCEL_REGEX = /^https:\/\/.*\.vercel\.app$/;
-const AGENT_DIR = path.join(process.cwd(), "agent");
-const UPLOADS_DIR = path.join(process.cwd(), "uploads");
+
+const SERVICE_ROOT = path.resolve(__dirname, "..");
+const REPO_ROOT = path.resolve(SERVICE_ROOT, "..", "..", "..");
+
+const resolveFirstExistingDir = (candidates: string[], fallback: string) => {
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) {
+      return candidate;
+    }
+  }
+  return fallback;
+};
+
+const AGENT_DIR = resolveFirstExistingDir(
+  [
+    path.join(SERVICE_ROOT, "agent"),
+    path.join(process.cwd(), "agent"),
+    path.join(REPO_ROOT, "agent"),
+  ],
+  path.join(SERVICE_ROOT, "agent")
+);
+
+const UPLOADS_DIR = resolveFirstExistingDir(
+  [
+    path.join(SERVICE_ROOT, "uploads"),
+    path.join(process.cwd(), "uploads"),
+    path.join(REPO_ROOT, "uploads"),
+  ],
+  path.join(SERVICE_ROOT, "uploads")
+);
+
+const readAgentVersion = () => {
+  try {
+    const agentScriptPath = path.join(AGENT_DIR, "synapse_agent.py");
+    if (!fs.existsSync(agentScriptPath)) return "unknown";
+    const source = fs.readFileSync(agentScriptPath, "utf-8");
+    const match = source.match(/^\s*VERSION\s*=\s*["']([^"']+)["']/m);
+    return match?.[1] || "unknown";
+  } catch {
+    return "unknown";
+  }
+};
+
+const AGENT_VERSION = readAgentVersion();
+
+console.log(`[BOOT] AGENT_DIR=${AGENT_DIR}`);
+console.log(`[BOOT] UPLOADS_DIR=${UPLOADS_DIR}`);
+console.log(`[BOOT] AGENT_VERSION=${AGENT_VERSION}`);
 
 if (!fs.existsSync(UPLOADS_DIR)) {
   fs.mkdirSync(UPLOADS_DIR, { recursive: true });
@@ -106,7 +152,7 @@ app.use(
 );
 
 app.options("*", cors());
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json({ limit: "25mb" }));
 
 const getBaseUrl = (req: Request) => `${req.protocol}://${req.get("host")}`;
 
@@ -158,6 +204,9 @@ app.get("/api/auth/auth0/start", (req, res) => {
     ? providerParam
     : "google";
   const connection = providerToConnection[provider] || cfg.connGoogle;
+  const loginHintRaw = String(req.query.login_hint || "").trim();
+  const loginHint = loginHintRaw.length > 0 ? loginHintRaw.slice(0, 254) : "";
+  const forceAccountSelection = String(req.query.force_account || "").trim() === "1";
 
   const state = `${provider}__${crypto.randomBytes(24).toString("hex")}`;
   res.cookie("synapse-auth0-provider", provider, {
@@ -183,9 +232,16 @@ app.get("/api/auth/auth0/start", (req, res) => {
   authorizeUrl.searchParams.set("connection", connection);
   authorizeUrl.searchParams.set("state", state);
   if (provider === "microsoft") {
-    // Força seletor de contas da Microsoft para o usuário escolher o e-mail.
+    // Evita auto-login em conta errada e força escolha/autenticação da conta.
     authorizeUrl.searchParams.set("prompt", "select_account");
+    authorizeUrl.searchParams.set("max_age", "0");
+    authorizeUrl.searchParams.set("domain_hint", "consumers");
+    if (loginHint) authorizeUrl.searchParams.set("login_hint", loginHint);
   } else if (provider === "google") {
+    authorizeUrl.searchParams.set("prompt", "select_account");
+    authorizeUrl.searchParams.set("max_age", "0");
+  }
+  if (forceAccountSelection) {
     authorizeUrl.searchParams.set("prompt", "select_account");
   }
   res.redirect(authorizeUrl.toString());
@@ -343,7 +399,17 @@ const requireAgent = async (req: Request, res: Response, next: NextFunction) => 
       return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
     }
 
-    const rows = await client`SELECT * FROM monitor_agentes WHERE token=${token} LIMIT 1`.catch(() => []);
+    const rows = await client`
+      SELECT id, "empresaId", hostname, token, user_id, department_id, status, online, "ultimoContato"
+      FROM monitor_agentes
+      WHERE token=${token}
+        AND "deletedAt" IS NULL
+        AND COALESCE(ativo, true) = true
+      LIMIT 1
+    `.catch((error) => {
+      console.warn("[Agent Auth] Falha ao validar token:", error?.message || error);
+      return [];
+    });
     const agent = rows[0];
     if (!agent) {
       return res.status(401).json({ error: "TOKEN_INVALIDO" });
@@ -356,20 +422,70 @@ const requireAgent = async (req: Request, res: Response, next: NextFunction) => 
   }
 };
 
+const TI_MANAGER_ROLES = new Set([
+  "master_admin",
+  "admin",
+  "administrador",
+  "ti",
+  "ti_master",
+  "supervisor_geral",
+  "supervisor_ti",
+]);
+
+const canManageTiRole = (role: unknown) => TI_MANAGER_ROLES.has(String(role || "").toLowerCase());
+
+const requireAgentTi = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await requireAgent(req, res, async () => {
+      const agent = (req as any).agent;
+      if (!agent?.user_id) {
+        return res.status(403).json({ error: "AGENT_TI_LOGIN_REQUIRED" });
+      }
+
+      const client = await getRawClient();
+      if (!client) {
+        return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+      }
+
+      const users = await client`
+        SELECT id, role, "empresaId", name, email
+        FROM users
+        WHERE id = ${Number(agent.user_id)}
+        LIMIT 1
+      `.catch(() => []);
+      const user = users[0];
+      if (!user || !canManageTiRole(user.role)) {
+        return res.status(403).json({ error: "AGENT_TI_FORBIDDEN" });
+      }
+
+      (req as any).agentUser = user;
+      next();
+    });
+  } catch {
+    res.status(403).json({ error: "AGENT_TI_FORBIDDEN" });
+  }
+};
+
 const mapLegacyMetric = (payload: any) => {
-  const disks = Array.isArray(payload.disks) ? payload.disks : [];
-  const diskTotalFromArray = disks.reduce((sum: number, disk: any) => sum + Number(disk.total_gb || 0), 0);
-  const diskUsedFromArray = disks.reduce((sum: number, disk: any) => sum + Number(disk.used_gb || 0), 0);
+  const disks = Array.isArray(payload.disks)
+    ? payload.disks
+    : Array.isArray(payload.discos)
+      ? payload.discos
+      : [];
+  const diskTotalFromArray = disks.reduce((sum: number, disk: any) => sum + Number(disk.total_gb || disk.totalGb || 0), 0);
+  const diskUsedFromArray = disks.reduce((sum: number, disk: any) => sum + Number(disk.used_gb || disk.usado_gb || disk.usedGb || 0), 0);
   const tempGroups = payload.temperatures ? Object.values(payload.temperatures) : [];
   const firstTempGroup = Array.isArray(tempGroups[0]) ? (tempGroups[0] as any[]) : [];
   const firstTemp = firstTempGroup[0]?.current ?? null;
   const topProcesses = Array.isArray(payload.top_processes)
     ? payload.top_processes
-    : Array.isArray(payload.topProcessos)
-      ? payload.topProcessos
-      : Array.isArray(payload.processes)
-        ? payload.processes
-        : [];
+    : Array.isArray(payload.top_processos)
+      ? payload.top_processos
+      : Array.isArray(payload.topProcessos)
+        ? payload.topProcessos
+        : Array.isArray(payload.processes)
+          ? payload.processes
+          : [];
 
   const diskTotal = diskTotalFromArray || Number(payload.disk_total_gb || payload.disco_total_gb || 0);
   const diskUsed = diskUsedFromArray || Number(payload.disk_used_gb || payload.disco_usado_gb || 0);
@@ -399,6 +515,21 @@ const mapLegacyMetric = (payload: any) => {
   const gpus = Array.isArray(hardware.gpus) ? hardware.gpus : Array.isArray(payload.gpus) ? payload.gpus : [];
   const sensors = Array.isArray(payload.sensors) ? payload.sensors : Array.isArray(hardware.sensors) ? hardware.sensors : [];
   const memorySlots = Array.isArray(hardware.memory_slots) ? hardware.memory_slots : Array.isArray(payload.memory_slots) ? payload.memory_slots : [];
+  const interfacesRede = Array.isArray(payload.interfaces_rede)
+    ? payload.interfaces_rede
+    : Array.isArray(payload.network_interfaces)
+      ? payload.network_interfaces
+      : [];
+  const primaryIp = payload.ip
+    || payload.ip_local
+    || interfacesRede.find((iface: any) => iface?.ip && !String(iface.ip).startsWith("127."))?.ip
+    || null;
+  const serialNumber = hardware.serial_number
+    || hardware.asset_tag
+    || motherboard.serial
+    || payload.serial_number
+    || payload.asset_tag
+    || null;
 
   const collectedAtSource = payload.timestamp || payload.coletado_em;
   const coletadoEm = collectedAtSource
@@ -433,6 +564,13 @@ const mapLegacyMetric = (payload: any) => {
     memoriaSlots: memorySlots.length ? JSON.stringify(memorySlots) : null,
     cpuModel: hardware.cpu_model || payload.cpu_model || null,
     gpuModel: gpus[0]?.name || gpus[0]?.model || payload.gpu_model || null,
+    discos: disks.length ? JSON.stringify(disks) : null,
+    interfacesRede: interfacesRede.length ? JSON.stringify(interfacesRede) : null,
+    ipLocal: primaryIp,
+    so: payload.so || payload.os || null,
+    serialNumber,
+    assetTag: payload.asset_tag || hardware.asset_tag || serialNumber,
+    agentVersion: payload.agent_version || payload.versao_agente || payload.version || null,
   };
 };
 
@@ -625,39 +763,51 @@ const setNoCacheDownloadHeaders = (res: Response) => {
   res.setHeader("Expires", "0");
 };
 
-app.get("/api/agent/download/windows", (_req, res) => {
+const sendAgentDownload = (res: Response, filename: string, downloadName: string) => {
+  const filePath = path.join(AGENT_DIR, filename);
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({
+      error: "AGENT_FILE_NOT_FOUND",
+      filename,
+      agentDir: AGENT_DIR,
+    });
+  }
   setNoCacheDownloadHeaders(res);
-  res.download(path.join(AGENT_DIR, "synapse-agent.exe"), "synapse-agent.exe");
+  res.setHeader("X-Synapse-Agent-Version", AGENT_VERSION);
+  res.download(filePath, downloadName);
+};
+
+app.get("/api/agent/version", (_req, res) => {
+  setNoCacheDownloadHeaders(res);
+  res.json({ version: AGENT_VERSION });
+});
+
+app.get("/api/agent/download/windows", (_req, res) => {
+  sendAgentDownload(res, "synapse-agent.exe", "synapse-agent.exe");
 });
 
 app.get("/api/agent/download/windows-installer", (_req, res) => {
-  setNoCacheDownloadHeaders(res);
-  res.download(path.join(AGENT_DIR, "install_windows.bat"), "instalar_agente.bat");
+  sendAgentDownload(res, "install_windows.bat", "instalar_agente.bat");
 });
 
 app.get("/api/agent/download/windows-uninstaller", (_req, res) => {
-  setNoCacheDownloadHeaders(res);
-  res.download(path.join(AGENT_DIR, "uninstall_windows.bat"), "desinstalar_agente.bat");
+  sendAgentDownload(res, "uninstall_windows.bat", "desinstalar_agente.bat");
 });
 
 app.get("/api/agent/download/windows-node-installer", (_req, res) => {
-  setNoCacheDownloadHeaders(res);
-  res.download(path.join(AGENT_DIR, "install_synapse.js"), "instalar_agente_node.js");
+  sendAgentDownload(res, "install_synapse.js", "instalar_agente_node.js");
 });
 
 app.get("/api/agent/download/linux", (_req, res) => {
-  setNoCacheDownloadHeaders(res);
-  res.download(path.join(AGENT_DIR, "install_linux.sh"), "install_linux.sh");
+  sendAgentDownload(res, "install_linux.sh", "install_linux.sh");
 });
 
 app.get("/api/agent/download/agent", (_req, res) => {
-  setNoCacheDownloadHeaders(res);
-  res.download(path.join(AGENT_DIR, "synapse_agent.py"), "synapse_agent.py");
+  sendAgentDownload(res, "synapse_agent.py", "synapse_agent.py");
 });
 
 app.get("/api/agent/support/latest.py", (_req, res) => {
-  setNoCacheDownloadHeaders(res);
-  res.download(path.join(AGENT_DIR, "synapse_agent.py"), "synapse_agent.py");
+  sendAgentDownload(res, "synapse_agent.py", "synapse_agent.py");
 });
 
 app.post("/api/omnichannel/webhook/:provider/:empresaId", async (req, res) => {
@@ -781,6 +931,9 @@ app.post("/api/agent/pair", async (req, res) => {
       SELECT * FROM monitor_agentes
       WHERE "empresaId"=${pairing.empresaId}
         AND (fingerprint=${fingerprint} OR hostname=${hostname})
+        AND "deletedAt" IS NULL
+        AND COALESCE(ativo, true) = true
+      ORDER BY id DESC
       LIMIT 1
     `.catch(() => []);
 
@@ -846,6 +999,7 @@ app.post("/api/agent/auth/login", async (req, res) => {
     const email = String(req.body?.email || "").trim().toLowerCase();
     const password = String(req.body?.password || "");
     const deviceId = Number(req.body?.deviceId || 0);
+    const agentToken = String(req.body?.token || "").trim();
 
     if (!email || !password) {
       return res.status(400).json({ error: "EMAIL_PASSWORD_REQUIRED" });
@@ -855,7 +1009,7 @@ app.post("/api/agent/auth/login", async (req, res) => {
     if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
 
     const users = await client`
-      SELECT id, email, password, "empresaId", name
+      SELECT id, email, password, "empresaId", name, role, status, "deletedAt"
       FROM users
       WHERE LOWER(email) = ${email}
       LIMIT 1
@@ -864,6 +1018,9 @@ app.post("/api/agent/auth/login", async (req, res) => {
     if (!user?.password) {
       return res.status(401).json({ error: "INVALID_CREDENTIALS" });
     }
+    if (user.deletedAt || user.status === "pending") {
+      return res.status(403).json({ error: "USER_NOT_ACTIVE" });
+    }
 
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) {
@@ -871,11 +1028,25 @@ app.post("/api/agent/auth/login", async (req, res) => {
     }
 
     if (deviceId > 0) {
-      await client`
+      if (!agentToken) {
+        return res.status(401).json({ error: "AGENT_TOKEN_REQUIRED" });
+      }
+      const updatedAgents = await client`
         UPDATE monitor_agentes
-        SET user_id = ${user.id}, "empresaId" = ${user.empresaId}, "updatedAt" = NOW()
+        SET user_id = ${user.id}, "updatedAt" = NOW()
         WHERE id = ${deviceId}
-      `.catch(() => {});
+          AND token = ${agentToken}
+          AND (
+            ${user.role === "master_admin"}
+            OR "empresaId" = ${user.empresaId}
+          )
+          AND "deletedAt" IS NULL
+          AND COALESCE(ativo, true) = true
+        RETURNING id
+      `.catch(() => []);
+      if (!updatedAgents[0]) {
+        return res.status(403).json({ error: "DEVICE_NOT_AUTHORIZED_FOR_USER" });
+      }
     }
 
     return res.json({
@@ -885,6 +1056,8 @@ app.post("/api/agent/auth/login", async (req, res) => {
         name: user.name,
         email: user.email,
         empresaId: user.empresaId,
+        role: user.role,
+        isTiManager: canManageTiRole(user.role),
       },
     });
   } catch (error) {
@@ -893,7 +1066,7 @@ app.post("/api/agent/auth/login", async (req, res) => {
   }
 });
 
-app.post("/api/agent/metrics", async (req, res) => {
+app.post(["/api/agent/metrics", "/api/agent/heartbeat", "/api/agent/inventory", "/api/agent/telemetry"], async (req, res) => {
   try {
     const authHeader = req.headers.authorization || "";
     const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
@@ -902,7 +1075,17 @@ app.post("/api/agent/metrics", async (req, res) => {
     const client = await getRawClient();
     if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
 
-    const agents = await client`SELECT * FROM monitor_agentes WHERE token=${token} LIMIT 1`.catch(() => []);
+    const agents = await client`
+      SELECT id, "empresaId", hostname, token, user_id, department_id, status, online, "ultimoContato"
+      FROM monitor_agentes
+      WHERE token=${token}
+        AND "deletedAt" IS NULL
+        AND COALESCE(ativo, true) = true
+      LIMIT 1
+    `.catch((error) => {
+      console.warn("[Agent Metrics] Falha ao validar token:", error?.message || error);
+      return [];
+    });
     const agent = agents[0];
     if (!agent) return res.status(401).json({ error: "TOKEN_INVALIDO" });
 
@@ -916,7 +1099,8 @@ app.post("/api/agent/metrics", async (req, res) => {
           "discoUsoPct", "redeEnviadoKb", "redeRecebidoKb", "latenciaMs", processos,
           "anydeskId", "usuarioLogado", uptime, "topProcessos",
           "placaMaeModelo", "placaMaeFabricante", "socketCpu", "biosVersao",
-          gpus, sensores, "memoriaSlots"
+          gpus, sensores, "memoriaSlots", discos, "interfacesRede", "ipLocal",
+          "serialNumber", "assetTag"
         )
         VALUES (
           ${agent.id}, ${agent.empresaId}, ${metric.coletadoEm}, ${metric.cpuUso}, ${metric.cpuTemp}, ${metric.cpuFreqMhz},
@@ -924,7 +1108,8 @@ app.post("/api/agent/metrics", async (req, res) => {
           ${metric.discoUsoPct}, ${metric.redeEnviadoKb}, ${metric.redeRecebidoKb}, ${metric.latenciaMs}, ${metric.processos},
           ${metric.anydeskId}, ${metric.usuarioLogado}, ${metric.uptime}, ${metric.topProcessos},
           ${metric.placaMaeModelo}, ${metric.placaMaeFabricante}, ${metric.socketCpu}, ${metric.biosVersao},
-          ${metric.gpus}, ${metric.sensores}, ${metric.memoriaSlots}
+          ${metric.gpus}, ${metric.sensores}, ${metric.memoriaSlots}, ${metric.discos}, ${metric.interfacesRede},
+          ${metric.ipLocal}, ${metric.serialNumber}, ${metric.assetTag}
         )
       `;
     } catch (insertError) {
@@ -949,10 +1134,16 @@ app.post("/api/agent/metrics", async (req, res) => {
             online=true,
             "ultimoContato"=NOW(),
             "updatedAt"=NOW(),
+            ip=COALESCE(${metric.ipLocal}, ip),
+            so=COALESCE(${metric.so}, so),
+            "versaoAgente"=COALESCE(${metric.agentVersion}, "versaoAgente"),
+            "anydeskId"=COALESCE(${metric.anydeskId}, "anydeskId"),
             "cpuModel"=COALESCE(${metric.cpuModel}, "cpuModel"),
             "gpuModel"=COALESCE(${metric.gpuModel}, "gpuModel"),
             "placaMaeModelo"=COALESCE(${metric.placaMaeModelo}, "placaMaeModelo"),
-            "socketCpu"=COALESCE(${metric.socketCpu}, "socketCpu")
+            "socketCpu"=COALESCE(${metric.socketCpu}, "socketCpu"),
+            "serialNumber"=COALESCE(${metric.serialNumber}, "serialNumber"),
+            "assetTag"=COALESCE(${metric.assetTag}, "assetTag")
         WHERE id=${agent.id}
       `;
     } catch (updateError) {
@@ -980,16 +1171,49 @@ app.get("/api/agent/profile", requireAgent, async (req, res) => {
   const agent = (req as any).agent;
   const client = await getRawClient();
   if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+  const wantsTiProfile = String(req.headers["x-synapse-agent-mode"] || "").toLowerCase() === "ti";
+  const sanitizeAgentProfile = (profile: any) => ({
+    id: profile?.id,
+    empresaId: profile?.empresaId,
+    empresa_nome: profile?.empresa_nome,
+    usuario_nome: profile?.usuario_nome,
+    usuario_email: profile?.usuario_email,
+    versaoAgente: profile?.versaoAgente,
+    ultimoContato: profile?.ultimoContato,
+    online: profile?.online,
+    status: profile?.status,
+    technicalProfileAllowed: false,
+  });
+  const sendProfile = (profile: any) => {
+    if (!profile) return res.json(null);
+    const canSeeTechnicalProfile = wantsTiProfile && canManageTiRole(profile.usuario_role);
+    return res.json(canSeeTechnicalProfile ? { ...profile, technicalProfileAllowed: true } : sanitizeAgentProfile(profile));
+  };
 
   const profileRows = await client`
-    SELECT a.*,
+    SELECT
+      a.id, a."empresaId", a."ativoId", a.hostname, a.ip, a.mac, a.so,
+      a."versaoAgente", a."ultimoContato", a.online, a.ativo,
+      a."createdAt", a."updatedAt", a."anydeskId", a.status, a."deletedAt",
+      a."pairingCode", a.fingerprint, a."ultimaVersao", a.setor,
+      a.user_id, a.department_id, a."cpuModel", a."gpuModel",
+      a."placaMaeModelo", a."socketCpu", a."serialNumber", a."assetTag",
       e.nome as empresa_nome,
       u.name as usuario_nome,
       u.email as usuario_email,
+      u.role as usuario_role,
       (
         SELECT row_to_json(mm)
         FROM (
-          SELECT "coletadoEm","cpuUso","ramUsoPct","discoUsoPct","anydeskId","usuarioLogado",uptime
+          SELECT
+            "coletadoEm", "cpuUso", "cpuTemp", "cpuFreqMhz",
+            "ramTotalMb", "ramUsadaMb", "ramUsoPct",
+            "discoTotalGb", "discoUsadoGb", "discoUsoPct",
+            "redeEnviadoKb", "redeRecebidoKb", "latenciaMs",
+            processos, "anydeskId", "usuarioLogado", uptime, "topProcessos",
+            "placaMaeModelo", "placaMaeFabricante", "socketCpu", "biosVersao",
+            gpus, sensores, "memoriaSlots", discos, "interfacesRede",
+            "ipLocal", "serialNumber", "assetTag"
           FROM monitor_metricas
           WHERE "agenteId" = a.id
           ORDER BY "coletadoEm" DESC
@@ -998,19 +1222,41 @@ app.get("/api/agent/profile", requireAgent, async (req, res) => {
       ) as ultima_metrica
     FROM monitor_agentes a
     LEFT JOIN empresas e ON e.id = a."empresaId"
-    LEFT JOIN users u ON u.id = a.user_id
+    LEFT JOIN users u ON u.id::text = a.user_id::text
     WHERE a.id = ${agent.id}
+      AND a."deletedAt" IS NULL
+      AND COALESCE(a.ativo, true) = true
     LIMIT 1
-  `.catch(() => []);
-  if (profileRows[0]) return res.json(profileRows[0]);
+  `.catch((error) => {
+    console.warn("[Agent Profile] Consulta completa falhou:", error?.message || error);
+    return [];
+  });
+  if (profileRows[0]) return sendProfile(profileRows[0]);
   const fallbackProfileRows = await client`
-    SELECT a.*, e.nome as empresa_nome
+    SELECT
+      a.id, a."empresaId", a."ativoId", a.hostname, a.ip, a.mac, a.so,
+      a."versaoAgente", a."ultimoContato", a.online, a.ativo,
+      a."createdAt", a."updatedAt", a."anydeskId", a.status, a."deletedAt",
+      a."pairingCode", a.fingerprint, a."ultimaVersao", a.setor,
+      a.user_id, a.department_id, a."cpuModel", a."gpuModel",
+      a."placaMaeModelo", a."socketCpu", a."serialNumber", a."assetTag",
+      e.nome as empresa_nome,
+      u.name as usuario_nome,
+      u.email as usuario_email,
+      u.role as usuario_role,
+      NULL as ultima_metrica
     FROM monitor_agentes a
     LEFT JOIN empresas e ON e.id = a."empresaId"
+    LEFT JOIN users u ON u.id::text = a.user_id::text
     WHERE a.id = ${agent.id}
+      AND a."deletedAt" IS NULL
+      AND COALESCE(a.ativo, true) = true
     LIMIT 1
-  `.catch(() => []);
-  return res.json(fallbackProfileRows[0] ?? null);
+  `.catch((error) => {
+    console.warn("[Agent Profile] Consulta fallback falhou:", error?.message || error);
+    return [];
+  });
+  return sendProfile(fallbackProfileRows[0] ?? null);
 });
 
 app.get("/api/agent/tickets", requireAgent, async (req, res) => {
@@ -1044,8 +1290,12 @@ app.post("/api/agent/tickets/open", requireAgent, async (req, res) => {
 
   const titulo = String(req.body?.titulo || "").trim();
   const descricao = String(req.body?.descricao || "").trim();
-  const categoria = String(req.body?.categoria || "hardware");
-  const prioridade = String(req.body?.prioridade || "media");
+  const allowedCategorias = new Set(["hardware", "software", "rede", "acesso", "email", "impressora", "outro"]);
+  const allowedPrioridades = new Set(["baixa", "media", "alta", "critica"]);
+  const requestedCategoria = String(req.body?.categoria || "hardware").trim().toLowerCase();
+  const requestedPrioridade = String(req.body?.prioridade || "media").trim().toLowerCase();
+  const categoria = allowedCategorias.has(requestedCategoria) ? requestedCategoria : "outro";
+  const prioridade = allowedPrioridades.has(requestedPrioridade) ? requestedPrioridade : "media";
 
   if (!titulo || titulo.length < 2) {
     return res.status(400).json({ error: "Informe o título do chamado." });
@@ -1169,6 +1419,166 @@ app.post("/api/agent/tickets/:id/messages", requireAgent, async (req, res) => {
   `.catch(() => []);
 
   res.json(rows[0] ?? { success: false });
+});
+
+app.get("/api/agent/ti/tickets", requireAgentTi, async (req, res) => {
+  const agent = (req as any).agent;
+  const client = await getRawClient();
+  if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+
+  const rows = await client`
+    SELECT t.id, t.protocolo, t.titulo, t.descricao, t.categoria, t.prioridade,
+      t.status, t."createdAt", t."updatedAt", t."resolvidoEm",
+      u.name as solicitante_nome, u.email as solicitante_email,
+      a.hostname as agente_hostname, a."anydeskId" as agente_anydesk_id
+    FROM tickets_ti t
+    LEFT JOIN users u ON u.id = t."solicitanteId"
+    LEFT JOIN monitor_agentes a ON a.user_id = t."solicitanteId"::text AND a."empresaId" = t."empresaId"
+    WHERE t."empresaId" = ${agent.empresaId}
+      AND t."deletedAt" IS NULL
+    ORDER BY t."updatedAt" DESC, t.id DESC
+    LIMIT 80
+  `.catch(() => []);
+
+  res.json(rows);
+});
+
+app.get("/api/agent/ti/tickets/:id/messages", requireAgentTi, async (req, res) => {
+  const agent = (req as any).agent;
+  const client = await getRawClient();
+  if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+
+  const ticketId = Number(req.params.id);
+  const ticketRows = await client`
+    SELECT id
+    FROM tickets_ti
+    WHERE id = ${ticketId}
+      AND "empresaId" = ${agent.empresaId}
+      AND "deletedAt" IS NULL
+    LIMIT 1
+  `.catch(() => []);
+  if (!ticketRows[0]) return res.status(404).json({ error: "TICKET_NOT_FOUND" });
+
+  const rows = await client`
+    SELECT m.*, u.name as autor_nome, u.email as autor_email
+    FROM ticket_mensagens m
+    LEFT JOIN users u ON u.id = m."autorId"
+    WHERE m."ticketId" = ${ticketId}
+      AND m."empresaId" = ${agent.empresaId}
+    ORDER BY m."createdAt" ASC
+  `.catch(() => []);
+
+  res.json(rows);
+});
+
+app.post("/api/agent/ti/tickets/:id/messages", requireAgentTi, async (req, res) => {
+  const agent = (req as any).agent;
+  const agentUser = (req as any).agentUser;
+  const client = await getRawClient();
+  if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+
+  const ticketId = Number(req.params.id);
+  const conteudo = String(req.body?.conteudo || "").trim();
+  const fileUrl = String(req.body?.fileUrl || "").trim();
+  const fileName = String(req.body?.fileName || "").trim();
+  const fileType = String(req.body?.fileType || "").trim();
+  if (!conteudo && !fileUrl) return res.status(400).json({ error: "MESSAGE_REQUIRED" });
+
+  const ticketRows = await client`
+    SELECT id, status
+    FROM tickets_ti
+    WHERE id = ${ticketId}
+      AND "empresaId" = ${agent.empresaId}
+      AND "deletedAt" IS NULL
+    LIMIT 1
+  `.catch(() => []);
+  if (!ticketRows[0]) return res.status(404).json({ error: "TICKET_NOT_FOUND" });
+
+  const rows = await client`
+    INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"fileUrl","fileName","fileType","createdAt")
+    VALUES (
+      ${ticketId},
+      ${agent.empresaId},
+      ${Number(agentUser.id)},
+      ${conteudo || ""},
+      ${fileUrl ? "anexo" : "mensagem"},
+      ${fileUrl || null},
+      ${fileName || null},
+      ${fileType || null},
+      NOW()
+    )
+    RETURNING *
+  `.catch(() => []);
+
+  await client`
+    UPDATE tickets_ti
+    SET "updatedAt" = NOW(),
+        status = CASE
+          WHEN status IN ('aberto','aguardando_ti','triagem_ia') THEN 'aguardando_usuario'
+          ELSE status
+        END
+    WHERE id = ${ticketId} AND "empresaId" = ${agent.empresaId}
+  `.catch(() => {});
+
+  res.json(rows[0] ?? { success: false });
+});
+
+app.patch("/api/agent/ti/tickets/:id/status", requireAgentTi, async (req, res) => {
+  const agent = (req as any).agent;
+  const agentUser = (req as any).agentUser;
+  const client = await getRawClient();
+  if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+
+  const ticketId = Number(req.params.id);
+  const status = String(req.body?.status || "").trim().toLowerCase();
+  const allowed = new Set([
+    "aberto",
+    "triagem_ia",
+    "aguardando_usuario",
+    "aguardando_ti",
+    "em_andamento",
+    "acesso_remoto_solicitado",
+    "em_acesso_remoto",
+    "resolvido",
+    "encerrado",
+    "cancelado",
+    "reaberto",
+  ]);
+  if (!allowed.has(status)) return res.status(400).json({ error: "STATUS_INVALIDO" });
+
+  const currentRows = await client`
+    SELECT status
+    FROM tickets_ti
+    WHERE id = ${ticketId}
+      AND "empresaId" = ${agent.empresaId}
+      AND "deletedAt" IS NULL
+    LIMIT 1
+  `.catch(() => []);
+  const currentStatus = currentRows[0]?.status;
+  if (!currentRows[0]) return res.status(404).json({ error: "TICKET_NOT_FOUND" });
+
+  await client`
+    UPDATE tickets_ti
+    SET status = ${status},
+        "updatedAt" = NOW(),
+        "resolvidoEm" = CASE
+          WHEN ${status} IN ('resolvido','encerrado') THEN NOW()
+          ELSE "resolvidoEm"
+        END
+    WHERE id = ${ticketId} AND "empresaId" = ${agent.empresaId}
+  `;
+
+  await client`
+    INSERT INTO ticket_status_history ("ticketId","empresaId","changedBy","fromStatus","toStatus",motivo,"createdAt")
+    VALUES (${ticketId}, ${agent.empresaId}, ${Number(agentUser.id)}, ${currentStatus ?? null}, ${status}, ${"Alterado pelo agente Windows"}, NOW())
+  `.catch(() => {});
+
+  await client`
+    INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
+    VALUES (${ticketId}, ${agent.empresaId}, ${Number(agentUser.id)}, ${`Status alterado para: ${status}`}, 'sistema', NOW())
+  `.catch(() => {});
+
+  res.json({ success: true, status });
 });
 
 app.use(
