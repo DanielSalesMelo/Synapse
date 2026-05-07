@@ -542,7 +542,11 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const empresaId = Number(effectiveEmpresaId || user?.empresaId || 0);
   const hasEmpresaContext = Number.isFinite(empresaId) && empresaId > 0;
   const userRole = String(user?.role || "").toLowerCase();
+  const isMasterAdmin = userRole === "master_admin" || userRole === "ti_master";
   const isTiManager = TI_MANAGER_ROLES.has(userRole);
+  const hasTiOperationalContext = isMasterAdmin || hasEmpresaContext;
+  const tiEmpresaInput = hasEmpresaContext ? { empresaId } : undefined;
+  const optionalEmpresaPayload = hasEmpresaContext ? { empresaId } : {};
   const backendBaseUrl = getBackendBaseUrl();
   const [agentVersion, setAgentVersion] = useState<string>("latest");
   const TAB_ALIASES: Record<string, string> = {
@@ -649,7 +653,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   };
 
   const handleGenerateCodeSubmit = async () => {
-    if (!hasEmpresaContext) {
+    if (!hasTiOperationalContext) {
       toast.error("Selecione uma empresa ativa para gerar código de pareamento.");
       return;
     }
@@ -735,14 +739,14 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     { status: remoteStatusFilter === "todos" ? undefined : remoteStatusFilter },
     { refetchInterval: 15000, enabled: isTiManager }
   ) as any;
-  const agentesQ = trpc.ti.listAgentes.useQuery({ empresaId }, { refetchInterval: 5000, enabled: isTiManager && hasEmpresaContext }) as any;
+  const agentesQ = trpc.ti.listAgentes.useQuery(tiEmpresaInput, { refetchInterval: 5000, enabled: isTiManager && hasTiOperationalContext }) as any;
   const alertasQ = trpc.ti.listAlertas.useQuery({ limit: 20 }, { refetchInterval: 15000, enabled: isTiManager }) as any;
   const manutencoesQ = trpc.ti.listManutencoes.useQuery(undefined, { refetchInterval: 60000, enabled: isTiManager }) as any;
-  const codigosQ = trpc.ti.listCodigosPareamento.useQuery({ empresaId }, { refetchInterval: 10000, enabled: isTiManager && hasEmpresaContext }) as any;
+  const codigosQ = trpc.ti.listCodigosPareamento.useQuery(tiEmpresaInput, { refetchInterval: 10000, enabled: isTiManager && hasTiOperationalContext }) as any;
   const certificadosQ = trpc.ti.listCertificados.useQuery({ search }, { refetchInterval: 60000, enabled: isTiManager }) as any;
   const agenteMetricas = trpc.ti.getAgenteMetricas.useQuery(
-    { agenteId: selectedAgente?.id, periodo: "24h", empresaId },
-    { enabled: isTiManager && hasEmpresaContext && !!selectedAgente?.id, refetchInterval: 30000 }
+    { agenteId: selectedAgente?.id, periodo: "24h", ...(hasEmpresaContext ? { empresaId } : {}) },
+    { enabled: isTiManager && hasTiOperationalContext && !!selectedAgente?.id, refetchInterval: 30000 }
   ) as any;
 
   // ── Mutations ──
@@ -2093,66 +2097,76 @@ export default function TI({ params }: { params?: { tab?: string } }) {
         <TabsContent value="agentes" className="space-y-4 mt-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Download do agente */}
-            <Card>
+            <Card className="overflow-hidden border-slate-800/60 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-50 shadow-2xl shadow-slate-950/20">
               <CardHeader>
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <Download className="h-4 w-4" />Instalar Agente Synapse
-                </CardTitle>
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <Badge variant="outline" className="mb-3 border-cyan-400/30 bg-cyan-400/10 text-cyan-200">
+                      Centro de implantação
+                    </Badge>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Download className="h-5 w-5 text-cyan-300" />Instalar Agente Synapse
+                    </CardTitle>
+                    <p className="mt-1 text-sm text-slate-400">
+                      Instalador oficial para conectar este Windows ao Synapse com monitoramento, suporte e pareamento seguro.
+                    </p>
+                  </div>
+                  <Badge className="bg-emerald-400/10 text-emerald-200 border border-emerald-400/20">
+                    v{agentVersion}
+                  </Badge>
+                </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-sm text-muted-foreground">
-                  O agente Synapse cria um dispositivo monitorado no sistema. Em termos práticos, agente e dispositivo são o mesmo ativo:
-                  o agente é o software instalado no PC e o dispositivo é o registro visível no módulo TI.
-                  Ele coleta métricas do PC (CPU, RAM, disco, rede, temperatura) e envia para o Synapse.
-                  Funciona offline com buffer local.
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  {[
+                    { label: "Instalação guiada", value: "Windows" },
+                    { label: "Status", value: "Pronto" },
+                    { label: "Canal", value: "Produção" },
+                  ].map((item) => (
+                    <div key={item.label} className="rounded-xl border border-white/10 bg-white/[0.04] p-3">
+                      <p className="text-[11px] uppercase tracking-[0.2em] text-slate-500">{item.label}</p>
+                      <p className="mt-1 text-sm font-semibold text-slate-100">{item.value}</p>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-sm text-slate-300">
+                  O agente cria o dispositivo monitorado no Synapse, mantém heartbeat, inventário e métricas básicas em segundo plano,
+                  e fica preparado para suporte local sem expor detalhes técnicos ao usuário final.
                 </p>
                 <div className="space-y-2">
-                  <p className="text-xs font-medium text-muted-foreground">COMO INSTALAR (WINDOWS):</p>
-                  <div className="bg-muted rounded-lg p-3 space-y-2 text-xs font-mono">
-                    <p className="text-muted-foreground"># 1. Baixe o Instalador .bat abaixo</p>
-                    <p className="text-muted-foreground"># 2. Execute o instalador e informe o código de pareamento</p>
-                    <p className="text-muted-foreground"># 3. A instalação agora usa a pasta do usuário para evitar travas de permissão</p>
+                  <p className="text-xs font-medium uppercase tracking-[0.22em] text-slate-500">Como instalar no Windows</p>
+                  <div className="rounded-2xl border border-white/10 bg-black/25 p-3 space-y-2 text-xs text-slate-300">
+                    <p>1. Baixe o instalador oficial abaixo.</p>
+                    <p>2. Execute o instalador e informe o código de pareamento.</p>
+                    <p>3. O agente será configurado no perfil do usuário e ficará sincronizado com o Synapse.</p>
                     <div className="space-y-1">
-                      <p className="text-muted-foreground"># 4. URL do Servidor:</p>
+                      <p className="text-slate-500">Servidor Synapse</p>
                       <div className="flex items-center gap-2">
-                        <Input value={backendBaseUrl} readOnly className="h-8 text-xs font-mono" />
-                        <Button type="button" variant="outline" size="sm" onClick={() => copyToClipboard(backendBaseUrl)}>
+                        <Input value={backendBaseUrl} readOnly className="h-8 text-xs font-mono border-white/10 bg-white/[0.04] text-slate-200" />
+                        <Button type="button" variant="outline" size="sm" className="border-white/10 bg-white/[0.04] text-slate-100 hover:bg-white/10" onClick={() => copyToClipboard(backendBaseUrl)}>
                           {copiedCode === backendBaseUrl ? <Check className="h-3.5 w-3.5 mr-1 text-green-600" /> : <Copy className="h-3.5 w-3.5 mr-1" />}
                           Copiar
                         </Button>
                       </div>
                     </div>
-                    <p className="text-muted-foreground"># 5. O instalador tenta criar “Synapse Suporte” na área de trabalho e deixa o agente em {backendBaseUrl}</p>
-                    <p className="text-muted-foreground"># 6. Se o atalho não aparecer, rode manualmente: synapse-agent.exe --support</p>
+                    <p>4. O atalho “Synapse Suporte” será criado para atendimento local quando disponível.</p>
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                    <div className="flex gap-2">
-                      <Button size="sm" className="flex-1" asChild>
-                        <a href={`${backendBaseUrl}/api/agent/download/windows-installer${agentDownloadSuffix}`} download="instalar_agente.bat">
-                          <Download className="h-4 w-4 mr-2" />Instalador .bat
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <Button size="sm" className="flex-1 bg-cyan-400 text-slate-950 hover:bg-cyan-300" asChild>
+                        <a href={`${backendBaseUrl}/api/agent/download/windows-installer${agentDownloadSuffix}`} download="Synapse-Agent-Setup-Windows.bat">
+                          <Download className="h-4 w-4 mr-2" />Instalador Windows
                         </a>
                       </Button>
-                      <Button size="sm" variant="outline" className="flex-1" asChild>
-                        <a href={`${backendBaseUrl}/api/agent/download/windows${agentDownloadSuffix}`} download={`synapse-agent-v${agentVersion}.exe`}>
-                          <Download className="h-4 w-4 mr-2" />Agente .exe
-                        </a>
-                      </Button>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline" className="flex-1" asChild>
-                        <a href={`${backendBaseUrl}/api/agent/download/windows-node-installer${agentDownloadSuffix}`} download="instalar_agente_node.js">
-                          <FileText className="h-4 w-4 mr-2" />Instalador Node
-                        </a>
-                      </Button>
-                      <Button size="sm" variant="outline" className="flex-1" asChild>
-                        <a href={`${backendBaseUrl}/api/agent/download/agent${agentDownloadSuffix}`} download="synapse_agent.py">
-                          <FileText className="h-4 w-4 mr-2" />Script Python
+                      <Button size="sm" variant="outline" className="flex-1 border-white/10 bg-white/[0.04] text-slate-100 hover:bg-white/10" asChild>
+                        <a href={`${backendBaseUrl}/api/agent/download/windows${agentDownloadSuffix}`} download={`Synapse-Agent-Windows-${agentVersion}.exe`}>
+                          <Download className="h-4 w-4 mr-2" />Download do Agente
                         </a>
                       </Button>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      Versão do agente publicada: <span className="font-mono">{agentVersion}</span>
+                    <p className="text-xs text-slate-500">
+                      Versão publicada: <span className="font-mono text-slate-300">{agentVersion}</span>. Componentes legados ficam disponíveis apenas como compatibilidade técnica interna.
                     </p>
                 </div>
               </CardContent>
@@ -2168,20 +2182,25 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   <Button
                     size="sm"
                     onClick={() => {
-                      if (!hasEmpresaContext) {
+                      if (!hasTiOperationalContext) {
                         toast.error("Selecione uma empresa ativa para continuar.");
                         return;
                       }
-                      gerarCodigo.mutate({ empresaId, userId: Number(user?.id || 0) || undefined });
+                      gerarCodigo.mutate({ ...optionalEmpresaPayload, userId: Number(user?.id || 0) || undefined });
                     }}
-                    disabled={gerarCodigo.isPending || !hasEmpresaContext}
+                    disabled={gerarCodigo.isPending || !hasTiOperationalContext}
                   >
                     <Plus className="h-4 w-4 mr-1" />Gerar Código
                   </Button>
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
-                {!hasEmpresaContext && (
+                {isMasterAdmin && !hasEmpresaContext && (
+                  <div className="rounded-md border border-cyan-400/30 bg-cyan-400/10 px-3 py-2 text-xs text-cyan-900 dark:text-cyan-100">
+                    Contexto global master ativo. O backend resolve a empresa operacional segura para pareamento; usuários comuns e TI continuam filtrados por tenant.
+                  </div>
+                )}
+                {!isMasterAdmin && !hasEmpresaContext && (
                   <div className="rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800">
                     Nenhuma empresa ativa selecionada. Escolha uma empresa no topo para gerar e listar códigos de pareamento.
                   </div>
@@ -2210,7 +2229,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                           {copiedCode === c.codigo ? <Check className="h-3.5 w-3.5 text-green-600" /> : <Copy className="h-3.5 w-3.5" />}
                         </Button>
                       )}
-                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-red-500 hover:text-red-700" onClick={() => revogarCodigo.mutate({ id: c.id, empresaId })}>
+                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-red-500 hover:text-red-700" onClick={() => revogarCodigo.mutate({ id: c.id, ...optionalEmpresaPayload })}>
                         <X className="h-3.5 w-3.5" />
                       </Button>
                     </div>

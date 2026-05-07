@@ -783,31 +783,31 @@ app.get("/api/agent/version", (_req, res) => {
 });
 
 app.get("/api/agent/download/windows", (_req, res) => {
-  sendAgentDownload(res, "synapse-agent.exe", "synapse-agent.exe");
+  sendAgentDownload(res, "synapse-agent.exe", "Synapse-Agent-Windows.exe");
 });
 
 app.get("/api/agent/download/windows-installer", (_req, res) => {
-  sendAgentDownload(res, "install_windows.bat", "instalar_agente.bat");
+  sendAgentDownload(res, "install_windows.bat", "Synapse-Agent-Setup-Windows.bat");
 });
 
 app.get("/api/agent/download/windows-uninstaller", (_req, res) => {
-  sendAgentDownload(res, "uninstall_windows.bat", "desinstalar_agente.bat");
+  sendAgentDownload(res, "uninstall_windows.bat", "Synapse-Agent-Remover-Windows.bat");
 });
 
 app.get("/api/agent/download/windows-node-installer", (_req, res) => {
-  sendAgentDownload(res, "install_synapse.js", "instalar_agente_node.js");
+  sendAgentDownload(res, "install_synapse.js", "Synapse-Agent-Compatibilidade-Windows.js");
 });
 
 app.get("/api/agent/download/linux", (_req, res) => {
-  sendAgentDownload(res, "install_linux.sh", "install_linux.sh");
+  sendAgentDownload(res, "install_linux.sh", "Synapse-Agent-Setup-Linux.sh");
 });
 
 app.get("/api/agent/download/agent", (_req, res) => {
-  sendAgentDownload(res, "synapse_agent.py", "synapse_agent.py");
+  sendAgentDownload(res, "synapse_agent.py", "Synapse-Agent-Compatibilidade.py");
 });
 
 app.get("/api/agent/support/latest.py", (_req, res) => {
-  sendAgentDownload(res, "synapse_agent.py", "synapse_agent.py");
+  sendAgentDownload(res, "synapse_agent.py", "Synapse-Agent-Compatibilidade.py");
 });
 
 app.post("/api/omnichannel/webhook/:provider/:empresaId", async (req, res) => {
