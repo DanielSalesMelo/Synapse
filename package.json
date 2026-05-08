@@ -8,6 +8,9 @@
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "desktop:build": "npm run desktop:build:renderer && set CSC_IDENTITY_AUTO_DISCOVERY=false&& electron-builder --projectDir apps/synapse-desktop --config electron-builder.yml",
+    "desktop:build:renderer": "vite build --config apps/synapse-desktop/vite.config.ts",
+    "desktop:dev": "set SYNAPSE_DESKTOP_DEV_URL=http://127.0.0.1:5174&& vite --config apps/synapse-desktop/vite.config.ts --host 127.0.0.1 --port 5174",
     "server:dev": "cd packages/services/legacy-api && npm run dev",
     "server:build": "cd packages/services/legacy-api && npm run build",
     "server:start": "cd packages/services/legacy-api && npm run start"
@@ -93,6 +96,8 @@
     "@types/react-dom": "^18.2.19",
     "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.17",
+    "electron": "^42.0.0",
+    "electron-builder": "^26.8.1",
     "postcss": "^8.4.35",
     "prisma": "^7.8.0",
     "tailwindcss": "^4.2.2",

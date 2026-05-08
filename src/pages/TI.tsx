@@ -805,6 +805,15 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const metricCpuUsage = (m: any) => metricValue(m?.cpuUso, m?.cpu_medio, m?.cpuAtual);
   const metricRamUsage = (m: any) => metricValue(m?.ramUsoPct, m?.ram_medio, m?.ramAtual);
   const metricDiskUsage = (m: any) => metricValue(m?.discoUsoPct, m?.disco_medio, m?.discoAtual);
+  const metricNetworkSent = (m: any) => metricValue(m?.redeEnviadoKb, m?.rede_enviado_kb, m?.redeEnviadoAtualKb, m?.rede_enviado_atual_kb);
+  const metricNetworkRecv = (m: any) => metricValue(m?.redeRecebidoKb, m?.rede_recebido_kb, m?.redeRecebidoAtualKb, m?.rede_recebido_atual_kb);
+  const formatNetworkKb = (value: any) => {
+    const numeric = metricValue(value);
+    if (numeric == null) return "—";
+    if (numeric >= 1024 * 1024) return `${(numeric / 1024 / 1024).toFixed(1)} GB`;
+    if (numeric >= 1024) return `${(numeric / 1024).toFixed(1)} MB`;
+    return `${numeric.toFixed(0)} KB`;
+  };
 
   // ── Queries ──
   const dashboard = trpc.ti.dashboard.useQuery(undefined, { refetchInterval: 30000 }) as any;
@@ -1026,7 +1035,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-64">
+          <DropdownMenuContent align="end" className="w-64" onClick={(event) => event.stopPropagation()}>
             <DropdownMenuItem onClick={() => executarAcaoAgente(a, "limpar_vinculo")}>
               <RotateCcw className="h-4 w-4 mr-2" />Limpar vínculo antigo
             </DropdownMenuItem>
@@ -1742,17 +1751,20 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   <div><span className="text-muted-foreground">Versão:</span> <span>{selectedAgente.versaoAgente}</span></div>
                 </div>
                 {/* Métricas em tempo real */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   {[
                     { label: "CPU", value: agentCpuUsage(selectedAgente), unit: "%", warn: 80, crit: 90 },
                     { label: "RAM", value: agentRamUsage(selectedAgente), unit: "%", warn: 80, crit: 90 },
                     { label: "Disco", value: agentDiskUsage(selectedAgente), unit: "%", warn: 80, crit: 90 },
+                    { label: "Rede", value: null, unit: "", warn: 0, crit: 0 },
                   ].map((m) => (
                     <div key={m.label} className="space-y-1">
                       <div className="flex justify-between text-xs">
                         <span>{m.label}</span>
                         <span className={(m.value ?? 0) > m.crit ? "text-red-600 font-bold" : (m.value ?? 0) > m.warn ? "text-yellow-600" : "text-muted-foreground"}>
-                          {m.value ?? "—"}{m.value != null ? m.unit : ""}
+                          {m.label === "Rede"
+                            ? `${formatNetworkKb(selectedAgente.rede_enviado_atual_kb)} ↑ / ${formatNetworkKb(selectedAgente.rede_recebido_atual_kb)} ↓`
+                            : `${m.value ?? "—"}${m.value != null ? m.unit : ""}`}
                         </span>
                       </div>
                       <Progress value={m.value ?? 0} className="h-2" />
@@ -1781,7 +1793,9 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                               <TableCell className={`text-xs ${(metricCpuUsage(m) ?? 0) > 80 ? "text-red-600 font-bold" : ""}`}>{metricCpuUsage(m) ?? "—"}%</TableCell>
                               <TableCell className={`text-xs ${(metricRamUsage(m) ?? 0) > 80 ? "text-red-600 font-bold" : ""}`}>{metricRamUsage(m) ?? "—"}%</TableCell>
                               <TableCell className="text-xs">{metricDiskUsage(m) ?? "—"}%</TableCell>
-                              <TableCell className="text-xs">{m.redeEnviadoKb ?? "—"}↑ / {m.redeRecebidoKb ?? "—"}↓</TableCell>
+                              <TableCell className="text-xs">
+                                {formatNetworkKb(metricNetworkSent(m))} ↑ / {formatNetworkKb(metricNetworkRecv(m))} ↓
+                              </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
@@ -1815,11 +1829,14 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                       { label: "CPU", value: agentCpuUsage(a), icon: <Cpu className="h-3 w-3" /> },
                       { label: "RAM", value: agentRamUsage(a), icon: <Server className="h-3 w-3" /> },
                       { label: "Disco", value: agentDiskUsage(a), icon: <HardDrive className="h-3 w-3" /> },
+                      { label: "Rede", value: null, icon: <Wifi className="h-3 w-3" /> },
                     ].map((m) => (
                       <div key={m.label} className="space-y-0.5">
                         <div className="flex justify-between text-xs">
                           <span className="flex items-center gap-1">{m.icon}{m.label}</span>
-                          <span className={(m.value ?? 0) > 80 ? "text-red-600 font-bold" : "text-muted-foreground"}>{m.value != null ? `${m.value}%` : "—"}</span>
+                          <span className={(m.value ?? 0) > 80 ? "text-red-600 font-bold" : "text-muted-foreground"}>
+                            {m.label === "Rede" ? `${formatNetworkKb(a.rede_enviado_atual_kb)} ↑ / ${formatNetworkKb(a.rede_recebido_atual_kb)} ↓` : m.value != null ? `${m.value}%` : "—"}
+                          </span>
                         </div>
                         <Progress value={m.value ?? 0} className="h-1.5" />
                       </div>

@@ -1126,6 +1126,9 @@ export const tiRouter = router({
         (SELECT "cpuUso" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as cpu_atual,
         (SELECT "ramUsoPct" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as ram_atual,
         (SELECT "discoUsoPct" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as disco_atual,
+        (SELECT "redeEnviadoKb" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as rede_enviado_atual_kb,
+        (SELECT "redeRecebidoKb" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as rede_recebido_atual_kb,
+        (SELECT "latenciaMs" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as latencia_atual_ms,
         (SELECT "anydeskId" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as anydesk_id_atual,
         (SELECT "placaMaeModelo" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as placa_mae_modelo,
         (SELECT "placaMaeFabricante" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as placa_mae_fabricante,
@@ -1294,6 +1297,10 @@ export const tiRouter = router({
           round(avg("cpuUso")::numeric,1) as cpu_medio, round(max("cpuUso")::numeric,1) as cpu_pico,
           round(avg("ramUsoPct")::numeric,1) as ram_medio, round(max("ramUsoPct")::numeric,1) as ram_pico,
           round(avg("discoUsoPct")::numeric,1) as disco_medio,
+          round(avg("redeEnviadoKb")::numeric,2) as rede_enviado_kb,
+          round(avg("redeRecebidoKb")::numeric,2) as rede_recebido_kb,
+          round(max("redeEnviadoKb")::numeric,2) as rede_enviado_pico_kb,
+          round(max("redeRecebidoKb")::numeric,2) as rede_recebido_pico_kb,
           round(avg("latenciaMs")::numeric,0) as latencia_media, count(*) as amostras
         FROM monitor_metricas
         WHERE "agenteId"=${input.agenteId} AND "empresaId"=${empresaId}
@@ -1301,7 +1308,20 @@ export const tiRouter = router({
         GROUP BY date_trunc('hour',"coletadoEm") ORDER BY hora ASC
       `.catch(()=>[]);
       const ultima = await client`SELECT * FROM monitor_metricas WHERE "agenteId"=${input.agenteId} AND "empresaId"=${empresaId} ORDER BY "coletadoEm" DESC LIMIT 1`.catch(()=>[null]).then(r=>r[0]||null);
-      const picos = await client`SELECT max("cpuUso") as cpu_max,max("ramUsoPct") as ram_max,max("discoUsoPct") as disco_max FROM monitor_metricas WHERE "agenteId"=${input.agenteId} AND "empresaId"=${empresaId} AND "coletadoEm">=NOW()-${intervalo}::interval`.catch(()=>[{}]).then(r=>r[0]||{});
+      const picos = await client`
+        SELECT
+          max("cpuUso") as cpu_max,
+          max("ramUsoPct") as ram_max,
+          max("discoUsoPct") as disco_max,
+          max("redeEnviadoKb") as rede_enviado_pico_kb,
+          max("redeRecebidoKb") as rede_recebido_pico_kb,
+          avg("redeEnviadoKb") as rede_enviado_medio_kb,
+          avg("redeRecebidoKb") as rede_recebido_medio_kb
+        FROM monitor_metricas
+        WHERE "agenteId"=${input.agenteId}
+          AND "empresaId"=${empresaId}
+          AND "coletadoEm">=NOW()-${intervalo}::interval
+      `.catch(()=>[{}]).then(r=>r[0]||{});
       return { metricas, ultima, picos };
     }),
 

@@ -1,0 +1,38 @@
+appId: br.com.synapse.windows
+productName: Synapse para Windows
+copyright: Copyright © 2026 Synapse
+electronVersion: 42.0.0
+directories:
+  output: ../../packages/services/legacy-api/agent/electron-dist
+files:
+  - package.json
+  - dist/**/*
+  - electron/**/*
+extraResources:
+  - from: ../../packages/services/legacy-api/agent/synapse-agent.exe
+    to: worker/synapse-agent.exe
+  - from: ../../packages/services/legacy-api/agent/synapse_agent.py
+    to: worker/synapse_agent.py
+extraMetadata:
+  name: synapse-desktop
+  version: 2.4.0
+  main: electron/main.cjs
+win:
+  signAndEditExecutable: false
+  target:
+    - target: nsis
+      arch:
+        - x64
+  artifactName: SynapseSetup-2.4.0.${ext}
+nsis:
+  include: installer.nsh
+  oneClick: false
+  perMachine: false
+  allowElevation: true
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: Synapse
+  menuCategory: Synapse
+  uninstallDisplayName: Synapse para Windows
+  runAfterFinish: true

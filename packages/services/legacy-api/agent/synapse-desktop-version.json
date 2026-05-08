@@ -1,0 +1,7 @@
+{
+  "version": "2.4.0",
+  "artifact": "SynapseSetup-2.4.0.exe",
+  "productName": "Synapse para Windows",
+  "runtime": "electron",
+  "worker": "python-legacy"
+}

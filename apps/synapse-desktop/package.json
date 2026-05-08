@@ -1,0 +1,9 @@
+{
+  "name": "synapse-desktop",
+  "version": "2.4.0",
+  "private": true,
+  "main": "electron/main.cjs",
+  "description": "Synapse para Windows",
+  "author": "Synapse",
+  "license": "UNLICENSED"
+}

@@ -62,6 +62,12 @@ const UPLOADS_DIR = resolveFirstExistingDir(
 
 const readAgentVersion = () => {
   try {
+    const desktopVersionPath = path.join(AGENT_DIR, "synapse-desktop-version.json");
+    if (fs.existsSync(desktopVersionPath)) {
+      const metadata = JSON.parse(fs.readFileSync(desktopVersionPath, "utf-8")) as { version?: string };
+      if (metadata.version) return metadata.version;
+    }
+
     const agentScriptPath = path.join(AGENT_DIR, "synapse_agent.py");
     if (!fs.existsSync(agentScriptPath)) return "unknown";
     const source = fs.readFileSync(agentScriptPath, "utf-8");
@@ -467,6 +473,14 @@ const requireAgentTi = async (req: Request, res: Response, next: NextFunction) =
 };
 
 const mapLegacyMetric = (payload: any) => {
+  const firstDefinedNumber = (...values: any[]) => {
+    for (const value of values) {
+      if (value === undefined || value === null || value === "") continue;
+      const numeric = Number(value);
+      if (Number.isFinite(numeric)) return numeric;
+    }
+    return null;
+  };
   const disks = Array.isArray(payload.disks)
     ? payload.disks
     : Array.isArray(payload.discos)
@@ -498,13 +512,23 @@ const mapLegacyMetric = (payload: any) => {
     ? Math.round(Number(payload.ram.used_gb) * 1024)
     : payload.memory_used_mb ?? payload.ram_usada_mb ?? null;
   const ramUsoPct = payload.ram?.percent ?? payload.memory_percent ?? payload.ram_uso_pct ?? null;
-  const redeEnviadoKb = payload.network?.bytes_sent_mb
-    ? Number(payload.network.bytes_sent_mb) * 1024
-    : payload.bytes_sent_kb ?? payload.rede_enviado_kb ?? null;
-  const redeRecebidoKb = payload.network?.bytes_recv_mb
-    ? Number(payload.network.bytes_recv_mb) * 1024
-    : payload.bytes_recv_kb ?? payload.rede_recebido_kb ?? null;
-  const latenciaMs = payload.network?.latency_ms ?? payload.network_latency_ms ?? payload.latencia_ms ?? null;
+  const redeEnviadoKb = firstDefinedNumber(
+    payload.network?.bytes_sent_mb != null ? Number(payload.network.bytes_sent_mb) * 1024 : null,
+    payload.network?.sent_kb,
+    payload.network?.upload_kb,
+    payload.bytes_sent_kb,
+    payload.rede_enviado_kb,
+    payload.upload_kb,
+  );
+  const redeRecebidoKb = firstDefinedNumber(
+    payload.network?.bytes_recv_mb != null ? Number(payload.network.bytes_recv_mb) * 1024 : null,
+    payload.network?.recv_kb,
+    payload.network?.download_kb,
+    payload.bytes_recv_kb,
+    payload.rede_recebido_kb,
+    payload.download_kb,
+  );
+  const latenciaMs = firstDefinedNumber(payload.network?.latency_ms, payload.network_latency_ms, payload.latencia_ms);
   const usuarioLogado = payload.logged_user ?? payload.user_name ?? payload.usuario_logado ?? null;
   const uptime = payload.uptime_hours
     ? Math.round(Number(payload.uptime_hours) * 3600)
@@ -788,7 +812,13 @@ const sendAgentDownload = (res: Response, filename: string, downloadName: string
 
 app.get("/api/agent/version", (_req, res) => {
   setNoCacheDownloadHeaders(res);
-  res.json({ version: AGENT_VERSION });
+  res.json({
+    version: AGENT_VERSION,
+    productName: "Synapse para Windows",
+    artifact: `SynapseSetup-${AGENT_VERSION}.exe`,
+    runtime: "electron",
+    worker: "python-legacy",
+  });
 });
 
 app.get("/api/agent/download", (_req, res) => {

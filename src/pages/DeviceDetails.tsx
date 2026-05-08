@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   ChevronLeft, RefreshCw, Cpu, HardDrive, Activity, 
-  Monitor, User, Building2, Clock, Calendar
+  Monitor, User, Building2, Clock, Calendar, Wifi
 } from "lucide-react";
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, 
@@ -33,12 +33,35 @@ export default function DeviceDetails() {
   };
   const gpus = safeParse(agente?.gpus) as any[] | null;
   const memoriaSlots = safeParse(agente?.memoria_slots) as any[] | null;
+  const formatDateTimeBR = (value?: string | Date | null) => {
+    if (!value) return "Nunca";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "Nunca";
+    return new Intl.DateTimeFormat("pt-BR", {
+      timeZone: "America/Sao_Paulo",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date);
+  };
+  const formatNetworkKb = (value: any) => {
+    const numeric = Number(value ?? 0);
+    if (!Number.isFinite(numeric) || numeric <= 0) return "—";
+    if (numeric >= 1024 * 1024) return `${(numeric / 1024 / 1024).toFixed(1)} GB`;
+    if (numeric >= 1024) return `${(numeric / 1024).toFixed(1)} MB`;
+    return `${numeric.toFixed(0)} KB`;
+  };
   const metrics = (metricasQ.data?.metricas ?? []).map((m: any) => ({
     ...m,
     timestamp: m.hora,
     cpuUsage: Number(m.cpu_medio ?? 0),
     ramUsedGb: Number(m.ram_medio ?? 0),
+    networkDownloadKb: Number(m.rede_recebido_kb ?? m.redeRecebidoKb ?? 0),
+    networkUploadKb: Number(m.rede_enviado_kb ?? m.redeEnviadoKb ?? 0),
     time: new Date(m.hora).toLocaleTimeString("pt-BR", {
+      timeZone: "America/Sao_Paulo",
       hour: "2-digit",
       minute: "2-digit",
       day: period !== "24h" ? "2-digit" : undefined,
@@ -138,7 +161,7 @@ export default function DeviceDetails() {
               {agente.status?.toUpperCase() || "OFFLINE"}
             </Badge>
             <p className="text-xs text-muted-foreground mt-1">
-              Visto por último: {(agente.ultima_coleta || agente.updatedAt) ? new Date(agente.ultima_coleta || agente.updatedAt).toLocaleString("pt-BR") : "Nunca"}
+              Visto por último: {formatDateTimeBR(agente.ultima_coleta || agente.updatedAt)}
             </p>
           </CardContent>
         </Card>
@@ -198,7 +221,7 @@ export default function DeviceDetails() {
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card>
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
@@ -256,6 +279,31 @@ export default function DeviceDetails() {
                   dot={false} 
                   activeDot={{ r: 4 }}
                 />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <Wifi className="h-4 w-4" /> Rede
+            </CardTitle>
+            <CardDescription>Download/upload médio e picos coletados pelo agente</CardDescription>
+          </CardHeader>
+          <CardContent className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={metrics}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="time" fontSize={10} tickMargin={10} />
+                <YAxis fontSize={10} tickFormatter={(value) => formatNetworkKb(value)} />
+                <Tooltip
+                  formatter={(value: any, name: any) => [formatNetworkKb(value), name === "networkDownloadKb" ? "Download" : "Upload"]}
+                  contentStyle={{ backgroundColor: 'hsl(var(--background))', borderColor: 'hsl(var(--border))' }}
+                />
+                <Legend />
+                <Line type="monotone" dataKey="networkDownloadKb" name="Download" stroke="#22c55e" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="networkUploadKb" name="Upload" stroke="#38bdf8" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>

@@ -91526,6 +91526,9 @@ var tiRouter = router({
         (SELECT "cpuUso" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as cpu_atual,
         (SELECT "ramUsoPct" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as ram_atual,
         (SELECT "discoUsoPct" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as disco_atual,
+        (SELECT "redeEnviadoKb" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as rede_enviado_atual_kb,
+        (SELECT "redeRecebidoKb" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as rede_recebido_atual_kb,
+        (SELECT "latenciaMs" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as latencia_atual_ms,
         (SELECT "anydeskId" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as anydesk_id_atual,
         (SELECT "placaMaeModelo" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as placa_mae_modelo,
         (SELECT "placaMaeFabricante" FROM monitor_metricas WHERE "agenteId"=a.id ORDER BY "coletadoEm" DESC LIMIT 1) as placa_mae_fabricante,
@@ -91677,6 +91680,10 @@ var tiRouter = router({
           round(avg("cpuUso")::numeric,1) as cpu_medio, round(max("cpuUso")::numeric,1) as cpu_pico,
           round(avg("ramUsoPct")::numeric,1) as ram_medio, round(max("ramUsoPct")::numeric,1) as ram_pico,
           round(avg("discoUsoPct")::numeric,1) as disco_medio,
+          round(avg("redeEnviadoKb")::numeric,2) as rede_enviado_kb,
+          round(avg("redeRecebidoKb")::numeric,2) as rede_recebido_kb,
+          round(max("redeEnviadoKb")::numeric,2) as rede_enviado_pico_kb,
+          round(max("redeRecebidoKb")::numeric,2) as rede_recebido_pico_kb,
           round(avg("latenciaMs")::numeric,0) as latencia_media, count(*) as amostras
         FROM monitor_metricas
         WHERE "agenteId"=${input.agenteId} AND "empresaId"=${empresaId}
@@ -91684,7 +91691,20 @@ var tiRouter = router({
         GROUP BY date_trunc('hour',"coletadoEm") ORDER BY hora ASC
       `.catch(() => []);
     const ultima = await client`SELECT * FROM monitor_metricas WHERE "agenteId"=${input.agenteId} AND "empresaId"=${empresaId} ORDER BY "coletadoEm" DESC LIMIT 1`.catch(() => [null]).then((r) => r[0] || null);
-    const picos = await client`SELECT max("cpuUso") as cpu_max,max("ramUsoPct") as ram_max,max("discoUsoPct") as disco_max FROM monitor_metricas WHERE "agenteId"=${input.agenteId} AND "empresaId"=${empresaId} AND "coletadoEm">=NOW()-${intervalo}::interval`.catch(() => [{}]).then((r) => r[0] || {});
+    const picos = await client`
+        SELECT
+          max("cpuUso") as cpu_max,
+          max("ramUsoPct") as ram_max,
+          max("discoUsoPct") as disco_max,
+          max("redeEnviadoKb") as rede_enviado_pico_kb,
+          max("redeRecebidoKb") as rede_recebido_pico_kb,
+          avg("redeEnviadoKb") as rede_enviado_medio_kb,
+          avg("redeRecebidoKb") as rede_recebido_medio_kb
+        FROM monitor_metricas
+        WHERE "agenteId"=${input.agenteId}
+          AND "empresaId"=${empresaId}
+          AND "coletadoEm">=NOW()-${intervalo}::interval
+      `.catch(() => [{}]).then((r) => r[0] || {});
     return { metricas, ultima, picos };
   }),
   // ── Registro de agente (público — chamado pelo agente instalado no PC) ────
@@ -98249,6 +98269,11 @@ var UPLOADS_DIR = resolveFirstExistingDir(
 );
 var readAgentVersion = () => {
   try {
+    const desktopVersionPath = import_path39.default.join(AGENT_DIR, "synapse-desktop-version.json");
+    if (import_fs2.default.existsSync(desktopVersionPath)) {
+      const metadata = JSON.parse(import_fs2.default.readFileSync(desktopVersionPath, "utf-8"));
+      if (metadata.version) return metadata.version;
+    }
     const agentScriptPath = import_path39.default.join(AGENT_DIR, "synapse_agent.py");
     if (!import_fs2.default.existsSync(agentScriptPath)) return "unknown";
     const source = import_fs2.default.readFileSync(agentScriptPath, "utf-8");
@@ -98597,6 +98622,14 @@ var requireAgentTi = async (req, res, next) => {
   }
 };
 var mapLegacyMetric = (payload) => {
+  const firstDefinedNumber = (...values2) => {
+    for (const value of values2) {
+      if (value === void 0 || value === null || value === "") continue;
+      const numeric2 = Number(value);
+      if (Number.isFinite(numeric2)) return numeric2;
+    }
+    return null;
+  };
   const disks = Array.isArray(payload.disks) ? payload.disks : Array.isArray(payload.discos) ? payload.discos : [];
   const diskTotalFromArray = disks.reduce((sum2, disk) => sum2 + Number(disk.total_gb || disk.totalGb || 0), 0);
   const diskUsedFromArray = disks.reduce((sum2, disk) => sum2 + Number(disk.used_gb || disk.usado_gb || disk.usedGb || 0), 0);
@@ -98611,9 +98644,23 @@ var mapLegacyMetric = (payload) => {
   const ramTotalMb = payload.ram?.total_gb ? Math.round(Number(payload.ram.total_gb) * 1024) : payload.memory_total_mb ?? payload.ram_total_mb ?? null;
   const ramUsadaMb = payload.ram?.used_gb ? Math.round(Number(payload.ram.used_gb) * 1024) : payload.memory_used_mb ?? payload.ram_usada_mb ?? null;
   const ramUsoPct = payload.ram?.percent ?? payload.memory_percent ?? payload.ram_uso_pct ?? null;
-  const redeEnviadoKb = payload.network?.bytes_sent_mb ? Number(payload.network.bytes_sent_mb) * 1024 : payload.bytes_sent_kb ?? payload.rede_enviado_kb ?? null;
-  const redeRecebidoKb = payload.network?.bytes_recv_mb ? Number(payload.network.bytes_recv_mb) * 1024 : payload.bytes_recv_kb ?? payload.rede_recebido_kb ?? null;
-  const latenciaMs = payload.network?.latency_ms ?? payload.network_latency_ms ?? payload.latencia_ms ?? null;
+  const redeEnviadoKb = firstDefinedNumber(
+    payload.network?.bytes_sent_mb != null ? Number(payload.network.bytes_sent_mb) * 1024 : null,
+    payload.network?.sent_kb,
+    payload.network?.upload_kb,
+    payload.bytes_sent_kb,
+    payload.rede_enviado_kb,
+    payload.upload_kb
+  );
+  const redeRecebidoKb = firstDefinedNumber(
+    payload.network?.bytes_recv_mb != null ? Number(payload.network.bytes_recv_mb) * 1024 : null,
+    payload.network?.recv_kb,
+    payload.network?.download_kb,
+    payload.bytes_recv_kb,
+    payload.rede_recebido_kb,
+    payload.download_kb
+  );
+  const latenciaMs = firstDefinedNumber(payload.network?.latency_ms, payload.network_latency_ms, payload.latencia_ms);
   const usuarioLogado = payload.logged_user ?? payload.user_name ?? payload.usuario_logado ?? null;
   const uptime = payload.uptime_hours ? Math.round(Number(payload.uptime_hours) * 3600) : payload.uptime ?? null;
   const hardware = payload.hardware || payload.inventario || {};
@@ -98835,7 +98882,13 @@ var sendAgentDownload = (res, filename, downloadName) => {
 };
 app.get("/api/agent/version", (_req, res) => {
   setNoCacheDownloadHeaders(res);
-  res.json({ version: AGENT_VERSION });
+  res.json({
+    version: AGENT_VERSION,
+    productName: "Synapse para Windows",
+    artifact: `SynapseSetup-${AGENT_VERSION}.exe`,
+    runtime: "electron",
+    worker: "python-legacy"
+  });
 });
 app.get("/api/agent/download", (_req, res) => {
   sendAgentDownload(res, "synapse-setup.exe", `SynapseSetup-${AGENT_VERSION}.exe`);
