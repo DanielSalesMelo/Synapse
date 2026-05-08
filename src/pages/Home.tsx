@@ -54,7 +54,7 @@ const ROLES = [
   { role: "Motorista",   color: "text-cyan-400",   bg: "bg-cyan-500/10",   border: "border-cyan-500/20",   desc: "Viagens + Checklist" },
   { role: "Op. WMS",     color: "text-teal-400",   bg: "bg-teal-500/10",   border: "border-teal-500/20",   desc: "Estoque + Logística" },
   { role: "RH",          color: "text-rose-400",   bg: "bg-rose-500/10",   border: "border-rose-500/20",   desc: "Pessoas + Ponto" },
-  { role: "Monitor",     color: "text-amber-400",  bg: "bg-amber-500/10",  border: "border-amber-500/20",  desc: "Dashboard + BI (leitura)" },
+  { role: "Monitor",     color: "text-amber-400",  bg: "bg-amber-500/10",  border: "border-amber-500/20",  desc: "Painel + BI (leitura)" },
 ];
 
 export default function Home() {
@@ -280,7 +280,7 @@ export default function Home() {
           </h2>
           <p className="text-white/40 mb-8">Acesse agora e veja como o Synapse pode unificar todos os setores da sua empresa em uma única plataforma inteligente.</p>
           <Button onClick={handleAccess} size="lg" className="bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 border-0 shadow-xl shadow-blue-500/30 text-base px-10 h-12">
-            {user ? "Ir para o Dashboard" : "Acessar o Sistema"} <ArrowRight className="h-5 w-5 ml-2" />
+            {user ? "Ir para o Painel" : "Acessar o Sistema"} <ArrowRight className="h-5 w-5 ml-2" />
           </Button>
         </div>
       </section>

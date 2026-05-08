@@ -93059,7 +93059,7 @@ var permissoesRouter = router({
     return MODULOS.map((m) => ({
       id: m,
       nome: {
-        dashboard: "Dashboard",
+        dashboard: "Painel",
         frota: "Frota",
         viagens: "Viagens",
         funcionarios: "RH / Funcion\xE1rios",
@@ -96563,6 +96563,463 @@ var omnichannelRouter = router({
   })
 });
 
+// routers/corporativo.ts
+var ADMIN_ROLES = /* @__PURE__ */ new Set([
+  "master_admin",
+  "admin",
+  "admin_empresa",
+  "administrador",
+  "supervisor_geral",
+  "ti",
+  "supervisor_ti"
+]);
+var UNIT_TYPES = [
+  "empresa",
+  "filial",
+  "unidade",
+  "setor",
+  "equipe",
+  "grupo",
+  "centro_custo"
+];
+function canManageCorporate(user) {
+  const role = String(user?.role || "").toLowerCase();
+  return ADMIN_ROLES.has(role);
+}
+function requireCorporateManager(user) {
+  if (!canManageCorporate(user)) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Acesso restrito a administradores, TI e supervisores."
+    });
+  }
+}
+async function ensureCorporateSchema(client) {
+  await client`
+    CREATE TABLE IF NOT EXISTS "organizational_units" (
+      "id" serial PRIMARY KEY,
+      "empresaId" integer NOT NULL,
+      "parentId" integer,
+      "type" varchar(40) NOT NULL DEFAULT 'setor',
+      "name" varchar(160) NOT NULL,
+      "code" varchar(60),
+      "responsibleUserId" integer,
+      "costCenter" varchar(80),
+      "status" varchar(30) NOT NULL DEFAULT 'ativo',
+      "metadata" jsonb,
+      "createdBy" integer,
+      "createdAt" timestamptz NOT NULL DEFAULT now(),
+      "updatedAt" timestamptz NOT NULL DEFAULT now(),
+      "deletedAt" timestamptz,
+      "deletedBy" integer,
+      "deleteReason" text
+    )
+  `;
+  await client`CREATE INDEX IF NOT EXISTS idx_organizational_units_empresa ON "organizational_units"("empresaId")`;
+  await client`CREATE INDEX IF NOT EXISTS idx_organizational_units_parent ON "organizational_units"("parentId")`;
+  await client`CREATE INDEX IF NOT EXISTS idx_organizational_units_status ON "organizational_units"("status")`;
+  await client`ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "organizationalUnitId" integer`;
+  await client`ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "organizationalUnitId" integer`.catch(() => {
+  });
+  await client`ALTER TABLE "monitor_agentes" ADD COLUMN IF NOT EXISTS "organizationalUnitId" integer`.catch(() => {
+  });
+  await client`
+    CREATE TABLE IF NOT EXISTS "corporate_audit_events" (
+      "id" bigserial PRIMARY KEY,
+      "empresaId" integer,
+      "actorUserId" integer,
+      "action" varchar(80) NOT NULL,
+      "entityType" varchar(80) NOT NULL,
+      "entityId" varchar(120),
+      "summary" text,
+      "metadata" jsonb,
+      "createdAt" timestamptz NOT NULL DEFAULT now()
+    )
+  `;
+  await client`CREATE INDEX IF NOT EXISTS idx_corporate_audit_empresa ON "corporate_audit_events"("empresaId")`;
+}
+async function resolveCorporateScope(ctx, requestedEmpresaId) {
+  if (ctx.user?.role === "master_admin" && !requestedEmpresaId && !ctx.user?.empresaId) {
+    return { empresaId: null, global: true };
+  }
+  const empresaId = await resolveAccessibleEmpresaId(
+    ctx,
+    requestedEmpresaId ?? ctx.user?.empresaId ?? void 0
+  );
+  return { empresaId, global: false };
+}
+function scopeWhere(scope, alias) {
+  if (scope.global) return { sql: "TRUE", params: [] };
+  const prefix = alias ? `${alias}.` : "";
+  return { sql: `${prefix}"empresaId" = $1`, params: [scope.empresaId] };
+}
+function numberFrom(row, key) {
+  const value = Number(row?.[key] ?? 0);
+  return Number.isFinite(value) ? value : 0;
+}
+function clampScore(value) {
+  return Math.max(0, Math.min(100, Math.round(value)));
+}
+function buildInsight(params) {
+  const insights = [];
+  if (params.chamadosCriticos > 0) {
+    insights.push({
+      tipo: "risco",
+      titulo: "Chamados cr\xEDticos exigem aten\xE7\xE3o",
+      descricao: `${params.chamadosCriticos} chamado(s) cr\xEDtico(s) ainda est\xE3o abertos. Priorize triagem, respons\xE1vel e SLA.`
+    });
+  }
+  if (params.agentesOffline > 0) {
+    insights.push({
+      tipo: "risco",
+      titulo: "Ativos sem contato recente",
+      descricao: `${params.agentesOffline} agente(s) aparecem offline. Verifique heartbeat, v\xEDnculo e conectividade por setor.`
+    });
+  }
+  if (params.unidades === 0) {
+    insights.push({
+      tipo: "acao",
+      titulo: "Cadastre setores para ganhar vis\xE3o preventiva",
+      descricao: "Sem setores/unidades, o Synapse n\xE3o consegue apontar qual \xE1rea abre mais chamados, consome mais suporte ou tem mais risco."
+    });
+  }
+  if (params.setoresSemDono > 0) {
+    insights.push({
+      tipo: "acao",
+      titulo: "Setores sem respons\xE1vel",
+      descricao: `${params.setoresSemDono} setor(es) ainda n\xE3o t\xEAm respons\xE1vel definido. Isso reduz rastreabilidade e governan\xE7a.`
+    });
+  }
+  if (params.chamadosAbertos === 0 && params.agentesOffline === 0) {
+    insights.push({
+      tipo: "oportunidade",
+      titulo: "Opera\xE7\xE3o est\xE1vel",
+      descricao: "Boa janela para manuten\xE7\xE3o preventiva, invent\xE1rio fino e cria\xE7\xE3o de automa\xE7\xF5es seguras."
+    });
+  }
+  return insights;
+}
+async function audit(client, params) {
+  await client`
+    INSERT INTO "corporate_audit_events" (
+      "empresaId", "actorUserId", "action", "entityType", "entityId", "summary", "metadata", "createdAt"
+    ) VALUES (
+      ${params.empresaId}, ${params.actorUserId}, ${params.action}, ${params.entityType},
+      ${params.entityId == null ? null : String(params.entityId)}, ${params.summary},
+      ${params.metadata ? JSON.stringify(params.metadata) : null}, now()
+    )
+  `.catch(() => {
+  });
+}
+var corporativoRouter = router({
+  resumoExecutivo: protectedProcedure.input(external_exports.object({ empresaId: external_exports.number().optional() }).optional()).query(async ({ ctx, input }) => {
+    requireCorporateManager(ctx.user);
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indispon\xEDvel." });
+    await ensureCorporateSchema(client);
+    const scope = await resolveCorporateScope(ctx, input?.empresaId);
+    const scoped = scopeWhere(scope);
+    const params = scoped.params;
+    const [tickets] = await client.unsafe(`
+        SELECT
+          COUNT(*)::int as total,
+          COUNT(*) FILTER (WHERE status IN ('aberto','triagem_ia','aguardando_ti','aguardando_usuario','em_andamento','reaberto'))::int as abertos,
+          COUNT(*) FILTER (WHERE prioridade = 'critica' AND status NOT IN ('encerrado','cancelado','resolvido'))::int as criticos,
+          COUNT(*) FILTER (WHERE status = 'resolvido')::int as resolvidos,
+          COUNT(*) FILTER (WHERE "createdAt" >= NOW() - INTERVAL '7 days')::int as ultimos_7d
+        FROM tickets_ti
+        WHERE ${scoped.sql} AND "deletedAt" IS NULL
+      `, params).catch(() => [{ total: 0, abertos: 0, criticos: 0, resolvidos: 0, ultimos_7d: 0 }]);
+    const [agents] = await client.unsafe(`
+        SELECT
+          COUNT(*)::int as total,
+          COUNT(*) FILTER (WHERE COALESCE(ativo, true) = true)::int as monitorados,
+          COUNT(*) FILTER (WHERE COALESCE(online, false) = true OR status = 'online')::int as online,
+          COUNT(*) FILTER (
+            WHERE COALESCE(ativo, true) = true
+              AND NOT (COALESCE(online, false) = true OR status = 'online')
+          )::int as offline,
+          COUNT(*) FILTER (
+            WHERE COALESCE("updatedAt", "ultimoContato", NOW() - INTERVAL '365 days') < NOW() - INTERVAL '7 days'
+          )::int as sem_heartbeat_7d
+        FROM monitor_agentes
+        WHERE ${scoped.sql} AND "deletedAt" IS NULL
+      `, params).catch(() => [{ total: 0, monitorados: 0, online: 0, offline: 0, sem_heartbeat_7d: 0 }]);
+    const [units] = await client.unsafe(`
+        SELECT
+          COUNT(*)::int as total,
+          COUNT(*) FILTER (WHERE status = 'ativo')::int as ativos,
+          COUNT(*) FILTER (WHERE status = 'arquivado')::int as arquivados,
+          COUNT(*) FILTER (WHERE "responsibleUserId" IS NULL AND status = 'ativo')::int as sem_responsavel
+        FROM organizational_units
+        WHERE ${scoped.sql} AND "deletedAt" IS NULL
+      `, params).catch(() => [{ total: 0, ativos: 0, arquivados: 0, sem_responsavel: 0 }]);
+    const [security] = await client.unsafe(`
+        SELECT
+          COUNT(*) FILTER (WHERE COALESCE(ativo, true) = true AND status IN ('critico','critical'))::int as criticos,
+          COUNT(*) FILTER (WHERE COALESCE(ativo, true) = true AND status IN ('atencao','warning','degraded'))::int as atencao
+        FROM monitor_agentes
+        WHERE ${scoped.sql} AND "deletedAt" IS NULL
+      `, params).catch(() => [{ criticos: 0, atencao: 0 }]);
+    const ticketRows = await client.unsafe(`
+        SELECT COALESCE(NULLIF(TRIM(setor), ''), 'Sem setor') as setor,
+          COUNT(*)::int as chamados,
+          COUNT(*) FILTER (WHERE status IN ('aberto','triagem_ia','aguardando_ti','aguardando_usuario','em_andamento','reaberto'))::int as abertos,
+          COUNT(*) FILTER (WHERE prioridade = 'critica' AND status NOT IN ('encerrado','cancelado','resolvido'))::int as criticos
+        FROM tickets_ti
+        WHERE ${scoped.sql} AND "deletedAt" IS NULL
+        GROUP BY COALESCE(NULLIF(TRIM(setor), ''), 'Sem setor')
+      `, params).catch(() => []);
+    const agentRows = await client.unsafe(`
+        SELECT COALESCE(NULLIF(TRIM(setor), ''), NULLIF(TRIM(department_id), ''), 'Sem setor') as setor,
+          COUNT(*)::int as ativos,
+          COUNT(*) FILTER (WHERE COALESCE(online, false) = true OR status = 'online')::int as online,
+          COUNT(*) FILTER (WHERE COALESCE(ativo, true) = true AND NOT (COALESCE(online, false) = true OR status = 'online'))::int as offline
+        FROM monitor_agentes
+        WHERE ${scoped.sql} AND "deletedAt" IS NULL
+        GROUP BY COALESCE(NULLIF(TRIM(setor), ''), NULLIF(TRIM(department_id), ''), 'Sem setor')
+      `, params).catch(() => []);
+    const setores = /* @__PURE__ */ new Map();
+    for (const row of ticketRows) {
+      setores.set(row.setor, {
+        setor: row.setor,
+        chamados: numberFrom(row, "chamados"),
+        chamadosAbertos: numberFrom(row, "abertos"),
+        chamadosCriticos: numberFrom(row, "criticos"),
+        ativos: 0,
+        online: 0,
+        offline: 0
+      });
+    }
+    for (const row of agentRows) {
+      const current = setores.get(row.setor) || {
+        setor: row.setor,
+        chamados: 0,
+        chamadosAbertos: 0,
+        chamadosCriticos: 0,
+        ativos: 0,
+        online: 0,
+        offline: 0
+      };
+      current.ativos = numberFrom(row, "ativos");
+      current.online = numberFrom(row, "online");
+      current.offline = numberFrom(row, "offline");
+      setores.set(row.setor, current);
+    }
+    const chamadosCriticos = numberFrom(tickets, "criticos");
+    const agentesOffline = numberFrom(agents, "offline");
+    const score = clampScore(100 - chamadosCriticos * 9 - agentesOffline * 5 - numberFrom(agents, "sem_heartbeat_7d") * 3 - numberFrom(units, "sem_responsavel") * 2);
+    const statusGeral = score >= 85 ? "saudavel" : score >= 70 ? "atencao" : score >= 45 ? "risco" : "critico";
+    return {
+      contexto: {
+        global: scope.global,
+        empresaId: scope.empresaId,
+        label: scope.global ? "Vis\xE3o global administrativa" : "Empresa ativa"
+      },
+      score,
+      statusGeral,
+      tickets: {
+        total: numberFrom(tickets, "total"),
+        abertos: numberFrom(tickets, "abertos"),
+        criticos: chamadosCriticos,
+        resolvidos: numberFrom(tickets, "resolvidos"),
+        ultimos7d: numberFrom(tickets, "ultimos_7d")
+      },
+      ativos: {
+        total: numberFrom(agents, "total"),
+        monitorados: numberFrom(agents, "monitorados"),
+        online: numberFrom(agents, "online"),
+        offline: agentesOffline,
+        semHeartbeat7d: numberFrom(agents, "sem_heartbeat_7d")
+      },
+      unidades: {
+        total: numberFrom(units, "total"),
+        ativos: numberFrom(units, "ativos"),
+        arquivados: numberFrom(units, "arquivados"),
+        semResponsavel: numberFrom(units, "sem_responsavel")
+      },
+      seguranca: {
+        criticos: numberFrom(security, "criticos"),
+        atencao: numberFrom(security, "atencao")
+      },
+      setores: Array.from(setores.values()).sort((a, b2) => {
+        const impactA = a.chamadosCriticos * 5 + a.offline * 3 + a.chamadosAbertos;
+        const impactB = b2.chamadosCriticos * 5 + b2.offline * 3 + b2.chamadosAbertos;
+        return impactB - impactA;
+      }),
+      modulos: [
+        { key: "atendimento", nome: "Atendimento / Helpdesk", status: "ativo", sinal: numberFrom(tickets, "abertos") > 0 ? "movimento" : "estavel" },
+        { key: "monitoramento", nome: "Monitoramento", status: "ativo", sinal: agentesOffline > 0 ? "atencao" : "estavel" },
+        { key: "inventario", nome: "Invent\xE1rio", status: "ativo", sinal: numberFrom(agents, "total") > 0 ? "estavel" : "configurar" },
+        { key: "rede", nome: "Rede", status: "planejado", sinal: "preparado" },
+        { key: "seguranca", nome: "Seguran\xE7a", status: "planejado", sinal: numberFrom(security, "criticos") > 0 ? "risco" : "preparado" },
+        { key: "impressoras", nome: "Impressoras", status: "planejado", sinal: "preparado" },
+        { key: "estoque", nome: "Estoque", status: "ativo", sinal: "estavel" },
+        { key: "auditoria", nome: "Auditoria", status: "ativo", sinal: "estavel" },
+        { key: "ia", nome: "IA Operacional", status: "preparado", sinal: "aprendizado" },
+        { key: "automacao", nome: "Automa\xE7\xE3o", status: "preparado", sinal: "governado" },
+        { key: "preventivo", nome: "Preventivo", status: "preparado", sinal: "evoluir" },
+        { key: "executivo", nome: "Painel Executivo", status: "ativo", sinal: statusGeral }
+      ],
+      insights: buildInsight({
+        chamadosCriticos,
+        agentesOffline,
+        chamadosAbertos: numberFrom(tickets, "abertos"),
+        unidades: numberFrom(units, "total"),
+        setoresSemDono: numberFrom(units, "sem_responsavel")
+      })
+    };
+  }),
+  listarUnidades: protectedProcedure.input(external_exports.object({ empresaId: external_exports.number().optional(), incluirArquivadas: external_exports.boolean().optional() }).optional()).query(async ({ ctx, input }) => {
+    requireCorporateManager(ctx.user);
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indispon\xEDvel." });
+    await ensureCorporateSchema(client);
+    const scope = await resolveCorporateScope(ctx, input?.empresaId);
+    const scoped = scopeWhere(scope, "ou");
+    const archivedFilter = input?.incluirArquivadas ? "" : "AND ou.status <> 'arquivado'";
+    return client.unsafe(`
+        SELECT ou.*,
+          e.nome as empresa_nome,
+          parent.name as parent_name,
+          u.name as responsible_name
+        FROM organizational_units ou
+        LEFT JOIN empresas e ON e.id = ou."empresaId"
+        LEFT JOIN organizational_units parent ON parent.id = ou."parentId"
+        LEFT JOIN users u ON u.id = ou."responsibleUserId"
+        WHERE ${scoped.sql}
+          AND ou."deletedAt" IS NULL
+          ${archivedFilter}
+        ORDER BY e.nome NULLS LAST, ou."type", ou.name
+      `, scoped.params).catch(() => []);
+  }),
+  criarUnidade: protectedProcedure.input(external_exports.object({
+    empresaId: external_exports.number().optional(),
+    parentId: external_exports.number().nullable().optional(),
+    type: external_exports.enum(UNIT_TYPES).default("setor"),
+    name: external_exports.string().min(2).max(160),
+    code: external_exports.string().max(60).optional(),
+    responsibleUserId: external_exports.number().nullable().optional(),
+    costCenter: external_exports.string().max(80).optional()
+  })).mutation(async ({ ctx, input }) => {
+    requireCorporateManager(ctx.user);
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indispon\xEDvel." });
+    await ensureCorporateSchema(client);
+    const scope = await resolveCorporateScope(ctx, input.empresaId);
+    if (scope.global || !scope.empresaId) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Selecione uma empresa para cadastrar uma unidade."
+      });
+    }
+    const [row] = await client`
+        INSERT INTO "organizational_units" (
+          "empresaId", "parentId", "type", "name", "code", "responsibleUserId",
+          "costCenter", "status", "createdBy", "createdAt", "updatedAt"
+        ) VALUES (
+          ${scope.empresaId}, ${input.parentId ?? null}, ${input.type}, ${input.name.trim()},
+          ${input.code?.trim() || null}, ${input.responsibleUserId ?? null},
+          ${input.costCenter?.trim() || null}, 'ativo', ${ctx.user.id}, now(), now()
+        )
+        RETURNING *
+      `;
+    await audit(client, {
+      empresaId: scope.empresaId,
+      actorUserId: ctx.user.id,
+      action: "organizational_unit.created",
+      entityType: "organizational_unit",
+      entityId: row?.id,
+      summary: `Unidade ${input.name.trim()} criada.`,
+      metadata: input
+    });
+    return row;
+  }),
+  atualizarUnidade: protectedProcedure.input(external_exports.object({
+    id: external_exports.number(),
+    empresaId: external_exports.number().optional(),
+    parentId: external_exports.number().nullable().optional(),
+    type: external_exports.enum(UNIT_TYPES).optional(),
+    name: external_exports.string().min(2).max(160).optional(),
+    code: external_exports.string().max(60).nullable().optional(),
+    responsibleUserId: external_exports.number().nullable().optional(),
+    costCenter: external_exports.string().max(80).nullable().optional(),
+    status: external_exports.enum(["ativo", "arquivado", "inativo"]).optional()
+  })).mutation(async ({ ctx, input }) => {
+    requireCorporateManager(ctx.user);
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indispon\xEDvel." });
+    await ensureCorporateSchema(client);
+    const scope = await resolveCorporateScope(ctx, input.empresaId);
+    if (scope.global) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: "Selecione uma empresa para editar unidades." });
+    }
+    const existing = await client`
+        SELECT id FROM "organizational_units"
+        WHERE id=${input.id} AND "empresaId"=${scope.empresaId} AND "deletedAt" IS NULL
+        LIMIT 1
+      `;
+    if (!existing[0]) throw new TRPCError({ code: "NOT_FOUND", message: "Unidade n\xE3o encontrada." });
+    const sets = ['"updatedAt" = now()'];
+    const params = [];
+    const addSet = (column, value) => {
+      params.push(value);
+      sets.push(`"${column}" = $${params.length}`);
+    };
+    if (input.parentId !== void 0) addSet("parentId", input.parentId);
+    if (input.type !== void 0) addSet("type", input.type);
+    if (input.name !== void 0) addSet("name", input.name.trim());
+    if (input.code !== void 0) addSet("code", input.code?.trim() || null);
+    if (input.responsibleUserId !== void 0) addSet("responsibleUserId", input.responsibleUserId);
+    if (input.costCenter !== void 0) addSet("costCenter", input.costCenter?.trim() || null);
+    if (input.status !== void 0) addSet("status", input.status);
+    params.push(input.id, scope.empresaId);
+    const [row] = await client.unsafe(`
+        UPDATE "organizational_units"
+        SET ${sets.join(", ")}
+        WHERE id=$${params.length - 1} AND "empresaId"=$${params.length}
+        RETURNING *
+      `, params);
+    await audit(client, {
+      empresaId: scope.empresaId,
+      actorUserId: ctx.user.id,
+      action: "organizational_unit.updated",
+      entityType: "organizational_unit",
+      entityId: input.id,
+      summary: `Unidade ${row?.name ?? input.id} atualizada.`,
+      metadata: input
+    });
+    return row;
+  }),
+  arquivarUnidade: protectedProcedure.input(external_exports.object({ id: external_exports.number(), empresaId: external_exports.number().optional(), motivo: external_exports.string().optional() })).mutation(async ({ ctx, input }) => {
+    requireCorporateManager(ctx.user);
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indispon\xEDvel." });
+    await ensureCorporateSchema(client);
+    const scope = await resolveCorporateScope(ctx, input.empresaId);
+    if (scope.global) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: "Selecione uma empresa para arquivar unidades." });
+    }
+    const [row] = await client`
+        UPDATE "organizational_units"
+        SET "status"='arquivado', "deletedBy"=${ctx.user.id}, "deleteReason"=${input.motivo ?? null}, "updatedAt"=now()
+        WHERE id=${input.id} AND "empresaId"=${scope.empresaId} AND "deletedAt" IS NULL
+        RETURNING *
+      `;
+    if (!row) throw new TRPCError({ code: "NOT_FOUND", message: "Unidade n\xE3o encontrada." });
+    await audit(client, {
+      empresaId: scope.empresaId,
+      actorUserId: ctx.user.id,
+      action: "organizational_unit.archived",
+      entityType: "organizational_unit",
+      entityId: input.id,
+      summary: `Unidade ${row.name} arquivada.`,
+      metadata: { motivo: input.motivo }
+    });
+    return { success: true, message: "Unidade arquivada. Hist\xF3rico preservado.", unidade: row };
+  })
+});
+
 // routers.ts
 var appRouter = router({
   system: systemRouter,
@@ -96608,7 +97065,8 @@ var appRouter = router({
   notifications: notificationsRouter,
   imports: importsRouter,
   simulador: simuladorRouter,
-  omnichannel: omnichannelRouter
+  omnichannel: omnichannelRouter,
+  corporativo: corporativoRouter
 });
 
 // _core/context.ts
@@ -98169,9 +98627,44 @@ var MIGRATION_STATEMENTS = [
   `ALTER TABLE agent_pairing_codes ADD COLUMN IF NOT EXISTS "hostnameVinculado" varchar(200)`,
   `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "user_id" varchar(255)`,
   `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "department_id" varchar(255)`,
+  `ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "organizationalUnitId" integer`,
   `ALTER TABLE agent_pairing_codes ADD COLUMN IF NOT EXISTS "user_id" varchar(255)`,
   `ALTER TABLE agent_pairing_codes ADD COLUMN IF NOT EXISTS "department_id" varchar(255)`,
   `ALTER TABLE agent_pairing_codes ADD COLUMN IF NOT EXISTS "is_used" boolean DEFAULT false`,
+  `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "organizationalUnitId" integer`,
+  `CREATE TABLE IF NOT EXISTS "organizational_units" (
+    "id" serial PRIMARY KEY,
+    "empresaId" integer NOT NULL,
+    "parentId" integer,
+    "type" varchar(40) NOT NULL DEFAULT 'setor',
+    "name" varchar(160) NOT NULL,
+    "code" varchar(60),
+    "responsibleUserId" integer,
+    "costCenter" varchar(80),
+    "status" varchar(30) NOT NULL DEFAULT 'ativo',
+    "metadata" jsonb,
+    "createdBy" integer,
+    "createdAt" timestamptz NOT NULL DEFAULT now(),
+    "updatedAt" timestamptz NOT NULL DEFAULT now(),
+    "deletedAt" timestamptz,
+    "deletedBy" integer,
+    "deleteReason" text
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_organizational_units_empresa ON "organizational_units"("empresaId")`,
+  `CREATE INDEX IF NOT EXISTS idx_organizational_units_parent ON "organizational_units"("parentId")`,
+  `CREATE INDEX IF NOT EXISTS idx_organizational_units_status ON "organizational_units"("status")`,
+  `CREATE TABLE IF NOT EXISTS "corporate_audit_events" (
+    "id" bigserial PRIMARY KEY,
+    "empresaId" integer,
+    "actorUserId" integer,
+    "action" varchar(80) NOT NULL,
+    "entityType" varchar(80) NOT NULL,
+    "entityId" varchar(120),
+    "summary" text,
+    "metadata" jsonb,
+    "createdAt" timestamptz NOT NULL DEFAULT now()
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_corporate_audit_empresa ON "corporate_audit_events"("empresaId")`,
   // --- TICKETS_TI: Correção de colunas faltantes ---
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "status" varchar(30) NOT NULL DEFAULT 'aberto'`,
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "prioridade" varchar(20) NOT NULL DEFAULT 'media'`,
@@ -98185,6 +98678,7 @@ var MIGRATION_STATEMENTS = [
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "tempoResolucaoMin" integer`,
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "ativoId" integer`,
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "setor" varchar(100)`,
+  `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "organizationalUnitId" integer`,
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "impacto" varchar(50) DEFAULT 'medio'`,
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "numeroOS" varchar(30)`,
   `ALTER TABLE "tickets_ti" ADD COLUMN IF NOT EXISTS "deletedAt" timestamp`,

@@ -196,7 +196,7 @@ export default function WMS() {
 
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="flex-wrap h-auto gap-1">
-          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+          <TabsTrigger value="dashboard">Painel</TabsTrigger>
           <TabsTrigger value="armazens"><Warehouse className="h-4 w-4 mr-1" />Armazéns</TabsTrigger>
           <TabsTrigger value="produtos"><Box className="h-4 w-4 mr-1" />Produtos</TabsTrigger>
           <TabsTrigger value="estoque"><Package className="h-4 w-4 mr-1" />Estoque</TabsTrigger>

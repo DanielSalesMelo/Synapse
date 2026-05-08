@@ -99,7 +99,7 @@ export const permissoesRouter = router({
     return MODULOS.map(m => ({
       id: m,
       nome: {
-        dashboard: "Dashboard", frota: "Frota", viagens: "Viagens", funcionarios: "RH / Funcionários",
+        dashboard: "Painel", frota: "Frota", viagens: "Viagens", funcionarios: "RH / Funcionários",
         financeiro: "Financeiro", wms: "WMS / Estoque", recepcionista: "Recepcionista",
         logistica: "Logística / SAC", crm: "CRM", vendas: "Vendas", auditoria: "Auditoria",
         bi: "BI / Inteligência", ti: "TI / Suporte", ponto: "Ponto Eletrônico",

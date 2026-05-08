@@ -206,7 +206,7 @@ export default function Logistica() {
 
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="flex-wrap h-auto gap-1">
-          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+          <TabsTrigger value="dashboard">Painel</TabsTrigger>
           <TabsTrigger value="viagens"><Route className="h-4 w-4 mr-1" />Viagens</TabsTrigger>
           <TabsTrigger value="carregamentos"><Package className="h-4 w-4 mr-1" />Carregamentos</TabsTrigger>
           <TabsTrigger value="sac"><Headphones className="h-4 w-4 mr-1" />SAC</TabsTrigger>

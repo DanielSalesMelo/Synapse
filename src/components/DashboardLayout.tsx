@@ -22,7 +22,7 @@ import {
   HeartHandshake, Award, Clipboard, Microscope, Thermometer, Leaf,
   Globe, Plug, Zap, Search, ChevronDown, ChevronUp, X, CheckCircle,
   Info, Ticket, Crown, Wrench as WrenchIcon,
-  UsersRound, Rocket,
+  UsersRound, Rocket, Sparkles,
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useViewAs } from "@/contexts/ViewAsContext";
@@ -64,7 +64,8 @@ const getMenuGroups = (t: any): MenuGroup[] => [
     label: "Início",
     icon: LayoutDashboard,
     items: [
-      { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
+      { icon: LayoutDashboard, label: "Painel", path: "/dashboard" },
+      { icon: Sparkles, label: "Centro Operacional", path: "/executivo" },
       { icon: Brain, label: "IA Synapse", path: "/ia" },
       { icon: MessageSquare, label: "Chat", path: "/chat" },
       { icon: Globe, label: "Omnichannel", path: "/omnichannel" },
@@ -224,6 +225,7 @@ const getMenuGroups = (t: any): MenuGroup[] => [
     icon: Settings,
     items: [
       { icon: UserCog, label: "Usuários", path: "/usuarios" },
+      { icon: Building2, label: "Setores e Unidades", path: "/gestao/setores" },
       { icon: Settings, label: "Configurações", path: "/configuracoes" },
       { icon: Plug, label: "Integrações", path: "/integracoes" },
       { icon: HelpCircle, label: "Ajuda", path: "/ajuda" },

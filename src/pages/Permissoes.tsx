@@ -12,7 +12,7 @@ import { Shield, Plus, Users, Check, X } from "lucide-react";
 import { toast } from "sonner";
 
 const modulosSistema = [
-  { key: "dashboard", label: "Dashboard" },
+  { key: "dashboard", label: "Painel" },
   { key: "despachante_entrega", label: "Saída de Entrega" },
   { key: "despachante_viagem", label: "Saída de Viagem" },
   { key: "despachante_retorno", label: "Retorno de Veículo" },

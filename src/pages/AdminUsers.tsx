@@ -67,7 +67,7 @@ export default function AdminUsers() {
     { value: "wms_operator",  label: "Operador WMS",      desc: "Estoque + Logística" },
     { value: "rh",            label: "RH",                desc: "Pessoas + Ponto" },
     { value: "ti",            label: "TI",                desc: "TI da empresa" },
-    { value: "monitor",       label: "Monitor",           desc: "Dashboard + BI (leitura)" },
+    { value: "monitor",       label: "Monitor",           desc: "Painel + BI (leitura)" },
     { value: "user",          label: "Usuário",           desc: "Acesso básico" },
   ];
   const [showCreateDialog, setShowCreateDialog] = useState(false);

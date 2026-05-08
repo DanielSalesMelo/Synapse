@@ -477,7 +477,7 @@ export default function RH() {
 
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="flex-wrap h-auto gap-1">
-          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+          <TabsTrigger value="dashboard">Painel</TabsTrigger>
           <TabsTrigger value="colaboradores">Colaboradores</TabsTrigger>
           <TabsTrigger value="folha">Folha</TabsTrigger>
           <TabsTrigger value="vencimentos">Vencimentos</TabsTrigger>

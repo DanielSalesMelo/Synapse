@@ -52,6 +52,7 @@ const Auditoria = lazy(() => import("./pages/Auditoria"));
 const BI = lazy(() => import("./pages/BI"));
 const TI = lazy(() => import("./pages/TI"));
 const DeviceDetails = lazy(() => import("./pages/DeviceDetails"));
+const ExecutiveOps = lazy(() => import("./pages/ExecutiveOps"));
 const Ponto = lazy(() => import("./pages/Ponto"));
 const ConferenciaVeiculos = lazy(() => import("./pages/ConferenciaVeiculos"));
 const Recepcionista = lazy(() => import("./pages/Recepcionista"));
@@ -148,6 +149,8 @@ export default function DashboardRoutes() {
 
           <Route path="/auditoria" component={Auditoria} />
           <Route path="/bi" component={BI} />
+          <Route path="/executivo" component={ExecutiveOps} />
+          <Route path="/gestao/setores" component={ExecutiveOps} />
 
           <Route path="/ti/dispositivos/:agentId" component={DeviceDetails} />
           <Route path="/ti/:tab?">{(params) => <TI params={params as any} />}</Route>

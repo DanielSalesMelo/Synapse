@@ -44,6 +44,7 @@ import { notificationsRouter } from "./routers/notifications";
 import { importsRouter } from "./routers/imports";
 import { simuladorRouter } from "./routers/simulador";
 import { omnichannelRouter } from "./routers/omnichannel";
+import { corporativoRouter } from "./routers/corporativo";
 
 export const appRouter = router({
   system: systemRouter,
@@ -92,6 +93,7 @@ export const appRouter = router({
   imports: importsRouter,
   simulador: simuladorRouter,
   omnichannel: omnichannelRouter,
+  corporativo: corporativoRouter,
 });
 
 export type AppRouter = typeof appRouter;
