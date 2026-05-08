@@ -17,7 +17,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import {
   Plus, Monitor, Headphones, AlertCircle, CheckCircle2, Search,
   Wrench, Cpu, HardDrive, Server, Key, Shield, ShoppingCart,
@@ -70,7 +70,16 @@ const TI_MANAGER_ROLES = new Set([
   "supervisor_ti",
 ]);
 
-type AgentLifecycleAction = "remover_monitoramento" | "desparear" | "arquivar" | "reativar" | "limpar_vinculo";
+type AgentLifecycleAction =
+  | "remover_monitoramento"
+  | "desparear"
+  | "arquivar"
+  | "reativar"
+  | "limpar_vinculo"
+  | "descartar"
+  | "excluir_definitivo";
+
+type AgentFilter = "todos" | "online" | "offline" | "arquivados" | "removidos" | "duplicados" | "sem_heartbeat";
 
 const formatDateTimeBR = (value?: string | Date | null) => {
   if (!value) return "-";
@@ -590,6 +599,8 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     agentes: "agentes",
     dispositivo: "dispositivos",
     dispositivos: "dispositivos",
+    limpeza: "limpeza-agentes",
+    "limpeza-agentes": "limpeza-agentes",
     chamado: "tickets",
     chamados: "tickets",
   };
@@ -604,6 +615,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     "manutencao",
     "agentes",
     "dispositivos",
+    "limpeza-agentes",
     "certificados",
     "alertas",
   ]);
@@ -738,22 +750,44 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const [generateCodeForm, setGenerateCodeForm] = useState({ userId: "", departmentId: "" });
   const [generatedCode, setGeneratedCode] = useState<{ code: string; expiresAt: string } | null>(null);
   const [showOnlyUnassociated, setShowOnlyUnassociated] = useState(false);
+  const [agentFilter, setAgentFilter] = useState<AgentFilter>("todos");
+  const [agentStaleDays, setAgentStaleDays] = useState(7);
+  const [cleanupKeepByGroup, setCleanupKeepByGroup] = useState<Record<string, number>>({});
   const [usuarios, setUsuarios] = useState<any[]>([]);
   const [usuariosLoading, setUsuariosLoading] = useState(false);
   const [remoteStatusFilter, setRemoteStatusFilter] = useState("todos");
-  const agentIsArchived = (a: any) => a?.ativo === false || String(a?.status || "").toLowerCase() === "arquivado";
-  const agentStatus = (a: any) => agentIsArchived(a) ? "arquivado" : String(a?.status_resolvido || a?.status || "offline");
+  const agentLifecycleStatuses = new Set(["arquivado", "removido", "descartado", "despareado", "aguardando", "excluido"]);
+  const agentStatus = (a: any) => {
+    const rawStatus = String(a?.status_resolvido || a?.status || "offline").toLowerCase();
+    if (agentLifecycleStatuses.has(rawStatus)) return rawStatus;
+    if (a?.ativo === false) return "arquivado";
+    return rawStatus;
+  };
+  const agentIsArchived = (a: any) => agentStatus(a) === "arquivado";
+  const agentIsInactive = (a: any) => ["arquivado", "removido", "descartado", "excluido"].includes(agentStatus(a));
   const agentStatusLabel = (status: string) => ({
     online: "conectado",
     offline: "desconectado",
     arquivado: "arquivado",
     removido: "removido",
+    descartado: "descartado",
     despareado: "despareado",
     aguardando: "aguardando pareamento",
+    excluido: "excluído",
     atencao: "atenção",
     critico: "crítico",
   }[status] ?? status);
   const agentLastCollected = (a: any) => a?.ultima_coleta || a?.ultimaColeta || a?.updatedAt || a?.ultimoContato || null;
+  const agentIdentifier = (value: any) => String(value ?? "").trim().toUpperCase();
+  const agentFingerprint = (a: any) => agentIdentifier(a?.fingerprint || a?.mac || a?.serial || "");
+  const agentHostname = (a: any) => agentIdentifier(a?.hostname || a?.displayName || "");
+  const agentDaysSinceHeartbeat = (a: any) => {
+    const last = agentLastCollected(a);
+    if (!last) return Number.POSITIVE_INFINITY;
+    const timestamp = new Date(last).getTime();
+    if (!Number.isFinite(timestamp)) return Number.POSITIVE_INFINITY;
+    return Math.floor((Date.now() - timestamp) / 86400000);
+  };
   const metricValue = (...values: any[]) => {
     for (const value of values) {
       if (value === null || value === undefined || value === "") continue;
@@ -886,18 +920,69 @@ export default function TI({ params }: { params?: { tab?: string } }) {
         efeito: "Volta o ativo para a operação. Se o token tiver sido invalidado, será necessário reinstalar ou parear novamente.",
       },
       limpar_vinculo: {
-        titulo: "Limpar vínculo para reinstalar",
+        titulo: "Limpar vínculo antigo",
         efeito: "Libera este mesmo PC para reinstalação sem criar duplicidade, mantendo fingerprint/hostname para reutilizar o registro.",
+      },
+      descartar: {
+        titulo: "Marcar como equipamento descartado",
+        efeito: "Remove o equipamento da operação ativa, invalida token e mantém o histórico para auditoria.",
+      },
+      excluir_definitivo: {
+        titulo: "Excluir definitivamente",
+        efeito: "Remove o registro da operação. Por segurança, o backend só permite em registros de teste ou sem histórico técnico.",
       },
     };
     const info = detalhes[acao];
+    if (acao === "excluir_definitivo") {
+      const confirmacao = `EXCLUIR ${agente.hostname}`;
+      const typed = window.prompt(`${info.titulo}\n\nAtivo: ${agente.hostname}\n\n${info.efeito}\n\nDigite exatamente:\n${confirmacao}`);
+      if (typed !== confirmacao) {
+        toast.info("Exclusão definitiva cancelada.");
+        return;
+      }
+      gerenciarAgente.mutate({
+        agenteId: Number(agente.id),
+        acao,
+        motivo: `Confirmação forte: ${confirmacao}`,
+        ...optionalEmpresaPayload,
+      });
+      return;
+    }
     const ok = window.confirm(`${info.titulo}\n\nAtivo: ${agente.hostname}\n\n${info.efeito}\n\nDeseja continuar?`);
     if (!ok) return;
     gerenciarAgente.mutate({ agenteId: Number(agente.id), acao, ...optionalEmpresaPayload });
   };
 
+  const executarAcaoGrupoAgentes = async (
+    group: { agentes: any[]; suggestedKeepId?: number },
+    manterAgenteId: number,
+    acao: Exclude<AgentLifecycleAction, "reativar" | "excluir_definitivo">,
+  ) => {
+    const alvos = group.agentes.filter((agente: any) => Number(agente.id) !== Number(manterAgenteId));
+    if (alvos.length === 0) {
+      toast.info("Nenhum duplicado para limpar neste grupo.");
+      return;
+    }
+    const label = acao === "limpar_vinculo"
+      ? "limpar tokens e vínculos antigos"
+      : acao === "remover_monitoramento"
+        ? "remover o monitoramento"
+        : "arquivar";
+    const ok = window.confirm(`Limpeza de duplicados\n\nManter: #${manterAgenteId}\nAplicar "${label}" em ${alvos.length} registro(s) duplicado(s).\n\nEssa ação preserva o histórico, exceto exclusão definitiva que não é usada em lote.\n\nDeseja continuar?`);
+    if (!ok) return;
+    try {
+      for (const agente of alvos) {
+        await gerenciarAgente.mutateAsync({ agenteId: Number(agente.id), acao, ...optionalEmpresaPayload });
+      }
+      await agentesQ.refetch();
+      toast.success("Limpeza de duplicados concluída.");
+    } catch (err) {
+      toast.error("Falha ao limpar duplicados: " + ((err as any)?.message || "tente novamente"));
+    }
+  };
+
   const renderAgenteActions = (a: any, options: { showView?: boolean; showAssociate?: boolean } = {}) => {
-    const archived = agentIsArchived(a);
+    const inactive = agentIsInactive(a);
     return (
       <div className="flex items-center gap-1" onClick={(event) => event.stopPropagation()}>
         {options.showView && (
@@ -943,13 +1028,13 @@ export default function TI({ params }: { params?: { tab?: string } }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-64">
             <DropdownMenuItem onClick={() => executarAcaoAgente(a, "limpar_vinculo")}>
-              <RotateCcw className="h-4 w-4 mr-2" />Limpar vínculo para reinstalar
+              <RotateCcw className="h-4 w-4 mr-2" />Limpar vínculo antigo
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => executarAcaoAgente(a, "desparear")}>
               <Unlink className="h-4 w-4 mr-2" />Desparear este PC
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            {archived ? (
+            {inactive ? (
               <DropdownMenuItem onClick={() => executarAcaoAgente(a, "reativar")}>
                 <RefreshCw className="h-4 w-4 mr-2" />Reativar ativo
               </DropdownMenuItem>
@@ -958,14 +1043,50 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                 <Archive className="h-4 w-4 mr-2" />Arquivar ativo
               </DropdownMenuItem>
             )}
+            <DropdownMenuItem onClick={() => executarAcaoAgente(a, "descartar")}>
+              <Package className="h-4 w-4 mr-2" />Marcar como equipamento descartado
+            </DropdownMenuItem>
             <DropdownMenuItem className="text-red-600 focus:text-red-600" onClick={() => executarAcaoAgente(a, "remover_monitoramento")}>
               <Trash2 className="h-4 w-4 mr-2" />Remover monitoramento
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="text-red-700 focus:text-red-700" onClick={() => executarAcaoAgente(a, "excluir_definitivo")}>
+              <AlertTriangle className="h-4 w-4 mr-2" />Excluir definitivamente
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
     );
   };
+
+  const renderAgentFilterBar = () => (
+    <div className="flex flex-wrap items-center gap-2 rounded-xl border bg-muted/20 p-2">
+      {agentFilterOptions.map((option) => (
+        <Button
+          key={option.value}
+          type="button"
+          variant={agentFilter === option.value ? "default" : "outline"}
+          size="sm"
+          className="h-8 text-xs"
+          onClick={() => setAgentFilter(option.value)}
+        >
+          {option.label}
+          <Badge variant="secondary" className="ml-2 text-[10px]">{option.count}</Badge>
+        </Button>
+      ))}
+      <div className="flex items-center gap-2 ml-auto">
+        <Label className="text-xs text-muted-foreground whitespace-nowrap">Dias sem heartbeat</Label>
+        <Input
+          type="number"
+          min={1}
+          max={365}
+          value={agentStaleDays}
+          onChange={(event) => setAgentStaleDays(Math.max(1, Number(event.target.value) || 1))}
+          className="h-8 w-20 text-xs"
+        />
+      </div>
+    </div>
+  );
   
   // Funções para associar agente e gerar código
   const associateAgente = {
@@ -1018,6 +1139,76 @@ export default function TI({ params }: { params?: { tab?: string } }) {
       toast.error("Falha ao carregar dispositivos. Clique em Atualizar para tentar novamente.");
     }
   }, [agentesQ.isError]);
+
+  const agentDuplicateInfo = useMemo(() => {
+    const rows = agentesQ.data ?? [];
+    const groups = new Map<string, any[]>();
+    for (const agente of rows) {
+      const fingerprint = agentFingerprint(agente);
+      const hostname = agentHostname(agente);
+      const keys = [
+        fingerprint && fingerprint !== "UNKNOWN" ? `fingerprint:${fingerprint}` : "",
+        hostname ? `hostname:${hostname}` : "",
+      ].filter(Boolean);
+      for (const key of keys) {
+        const current = groups.get(key) ?? [];
+        current.push(agente);
+        groups.set(key, current);
+      }
+    }
+    const duplicateGroups = Array.from(groups.entries())
+      .filter(([, group]) => group.length > 1)
+      .map(([key, group]) => {
+        const [reason, value] = key.split(":");
+        const sorted = [...group].sort((a, b) => {
+          const statusScore = (agentStatus(b) === "online" ? 2 : b?.ativo !== false ? 1 : 0)
+            - (agentStatus(a) === "online" ? 2 : a?.ativo !== false ? 1 : 0);
+          if (statusScore !== 0) return statusScore;
+          return new Date(agentLastCollected(b) ?? 0).getTime() - new Date(agentLastCollected(a) ?? 0).getTime();
+        });
+        return {
+          key,
+          reason: reason === "fingerprint" ? "fingerprint" : "hostname",
+          value,
+          agentes: sorted,
+          suggestedKeepId: sorted[0]?.id,
+        };
+      });
+    const ids = new Set<string>();
+    duplicateGroups.forEach((group) => group.agentes.forEach((agente: any) => ids.add(String(agente.id))));
+    return { groups: duplicateGroups, ids };
+  }, [agentesQ.data]);
+
+  const agentFilterOptions: { value: AgentFilter; label: string; count: number }[] = [
+    { value: "todos", label: "Todos", count: (agentesQ.data ?? []).length },
+    { value: "online", label: "Online", count: (agentesQ.data ?? []).filter((a: any) => agentStatus(a) === "online").length },
+    { value: "offline", label: "Offline", count: (agentesQ.data ?? []).filter((a: any) => agentStatus(a) === "offline").length },
+    { value: "arquivados", label: "Arquivados", count: (agentesQ.data ?? []).filter((a: any) => agentStatus(a) === "arquivado").length },
+    { value: "removidos", label: "Removidos", count: (agentesQ.data ?? []).filter((a: any) => ["removido", "descartado"].includes(agentStatus(a))).length },
+    { value: "duplicados", label: "Duplicados", count: agentDuplicateInfo.ids.size },
+    { value: "sem_heartbeat", label: `Sem heartbeat há ${agentStaleDays}+ dias`, count: (agentesQ.data ?? []).filter((a: any) => agentDaysSinceHeartbeat(a) >= agentStaleDays).length },
+  ];
+
+  const filteredAgentes = useMemo(() => {
+    const rows = agentesQ.data ?? [];
+    return rows.filter((agente: any) => {
+      const status = agentStatus(agente);
+      if (agentFilter === "online") return status === "online";
+      if (agentFilter === "offline") return status === "offline";
+      if (agentFilter === "arquivados") return status === "arquivado";
+      if (agentFilter === "removidos") return ["removido", "descartado"].includes(status);
+      if (agentFilter === "duplicados") return agentDuplicateInfo.ids.has(String(agente.id));
+      if (agentFilter === "sem_heartbeat") return agentDaysSinceHeartbeat(agente) >= agentStaleDays;
+      return true;
+    });
+  }, [agentesQ.data, agentDuplicateInfo.ids, agentFilter, agentStaleDays]);
+
+  const vinculoAgentes = useMemo(() => {
+    return filteredAgentes.filter((agente: any) => {
+      if (!showOnlyUnassociated) return true;
+      return !agente.user_id && !agente.userId && !agente.userName;
+    });
+  }, [filteredAgentes, showOnlyUnassociated]);
 
   // Buscar usuários
   useEffect(() => {
@@ -1260,6 +1451,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
               <TabsTrigger value="manutencao"><Wrench className="h-4 w-4 mr-1" />Manutenção</TabsTrigger>
               <TabsTrigger value="agentes"><Network className="h-4 w-4 mr-1" />Dispositivos</TabsTrigger>
               <TabsTrigger value="dispositivos"><Monitor className="h-4 w-4 mr-1" />Vínculos e Inventário</TabsTrigger>
+              <TabsTrigger value="limpeza-agentes"><Trash2 className="h-4 w-4 mr-1" />Limpeza de agentes</TabsTrigger>
               <TabsTrigger value="certificados"><Shield className="h-4 w-4 mr-1" />Certificados</TabsTrigger>
               <TabsTrigger value="alertas" className="relative">
                 <Bell className="h-4 w-4 mr-1" />Alertas
@@ -1513,7 +1705,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
         <TabsContent value="monitoramento" className="space-y-4 mt-4">
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
-              {(agentesQ.data ?? []).length} dispositivo(s) · Atualização automática a cada 30s
+              {filteredAgentes.length} de {(agentesQ.data ?? []).length} dispositivo(s) · Atualização automática a cada 30s
             </p>
             <Button
               variant="outline"
@@ -1526,6 +1718,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
               <RefreshCw className="h-4 w-4 mr-2" />Atualizar
             </Button>
           </div>
+          {renderAgentFilterBar()}
           {selectedAgente ? (
             <Card>
               <CardHeader>
@@ -1600,7 +1793,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-              {(agentesQ.data ?? []).map((a: any) => (
+              {filteredAgentes.map((a: any) => (
                 <Card key={a.id} className={`border-l-4 cursor-pointer hover:shadow-md transition-shadow ${agentStatus(a) === "online" ? "border-l-green-500" : agentStatus(a) === "atencao" ? "border-l-yellow-500" : "border-l-gray-400"}`} onClick={() => setSelectedAgente(a)}>
                   <CardHeader className="pb-2">
                     <div className="flex items-center justify-between">
@@ -1641,11 +1834,11 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   </CardContent>
                 </Card>
               ))}
-              {(agentesQ.data ?? []).length === 0 && (
+              {filteredAgentes.length === 0 && (
                 <div className="col-span-3 text-center py-12 text-muted-foreground">
                   <Network className="h-12 w-12 mx-auto mb-3 opacity-30" />
-                  <p className="font-medium">Nenhum dispositivo sincronizado</p>
-                  <p className="text-sm mt-1">Vá em <strong>Dispositivos</strong> para baixar o Synapse para Windows.</p>
+                  <p className="font-medium">Nenhum dispositivo encontrado neste filtro</p>
+                  <p className="text-sm mt-1">Troque o filtro ou vá em <strong>Dispositivos</strong> para baixar o Synapse para Windows.</p>
                   <Button className="mt-4" size="sm" onClick={() => setTab("agentes")}>Ir para Dispositivos</Button>
                 </div>
               )}
@@ -2397,9 +2590,12 @@ export default function TI({ params }: { params?: { tab?: string } }) {
           {/* Lista de agentes registrados */}
           <Card>
             <CardHeader>
+              <div className="space-y-3">
                 <CardTitle className="text-sm flex items-center gap-2">
-                <Monitor className="h-4 w-4" />Ativos Monitorados ({(agentesQ.data ?? []).length})
+                  <Monitor className="h-4 w-4" />Ativos Monitorados ({filteredAgentes.length}/{(agentesQ.data ?? []).length})
               </CardTitle>
+                {renderAgentFilterBar()}
+              </div>
             </CardHeader>
             <CardContent>
               <Table>
@@ -2417,7 +2613,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {(agentesQ.data ?? []).map((a: any) => (
+                  {filteredAgentes.map((a: any) => (
                     <TableRow key={a.id}>
                       <TableCell className="font-mono text-sm font-medium">
                       <button 
@@ -2467,10 +2663,10 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                       </TableCell>
                     </TableRow>
                   ))}
-                  {(agentesQ.data ?? []).length === 0 && (
+                  {filteredAgentes.length === 0 && (
                     <TableRow>
                       <TableCell colSpan={9} className="text-center text-muted-foreground py-8 space-y-2">
-                        <p>Nenhum dispositivo sincronizado.</p>
+                        <p>Nenhum dispositivo encontrado neste filtro.</p>
                         <p className="text-xs">
                           Verifique se o código de pareamento foi usado e clique em <strong>Atualizar</strong>.
                         </p>
@@ -2488,7 +2684,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-2">
               <p className="text-sm text-muted-foreground">Gerenciar vínculos dos ativos monitorados aos usuários. O software instalado e o dispositivo exibido são tratados como o mesmo item.</p>
-              <Badge variant="secondary" className="text-xs">{agentes.length}</Badge>
+              <Badge variant="secondary" className="text-xs">{vinculoAgentes.length}/{agentes.length}</Badge>
             </div>
             <div className="flex gap-2">
               <Dialog open={showGenerateCodeModal} onOpenChange={setShowGenerateCodeModal}>
@@ -2539,6 +2735,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
               <span className="text-sm text-muted-foreground">Apenas não vinculados</span>
             </label>
           </div>
+          {renderAgentFilterBar()}
           <Card>
             <Table>
               <TableHeader>
@@ -2556,9 +2753,9 @@ export default function TI({ params }: { params?: { tab?: string } }) {
               <TableBody>
                 {agentesLoading ? (
                   <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">Carregando...</TableCell></TableRow>
-                ) : (agentes ?? []).length === 0 ? (
+                ) : vinculoAgentes.length === 0 ? (
                   <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">Nenhum dispositivo sincronizado</TableCell></TableRow>
-                ) : (agentes ?? []).map((a: any) => (
+                ) : vinculoAgentes.map((a: any) => (
                   <TableRow key={a.id}>
                     <TableCell className="font-mono text-sm font-medium">
                       <button 
@@ -2586,6 +2783,174 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                 ))}
               </TableBody>
             </Table>
+          </Card>
+        </TabsContent>
+
+        {/* ══ LIMPEZA DE AGENTES ══ */}
+        <TabsContent value="limpeza-agentes" className="space-y-4 mt-4">
+          <div className="flex items-start justify-between flex-wrap gap-3">
+            <div>
+              <h2 className="text-lg font-semibold">Limpeza de agentes</h2>
+              <p className="text-sm text-muted-foreground">
+                Encontre duplicados por hostname/fingerprint, escolha qual registro manter e libere o PC para reinstalação sem criar duplicidade.
+              </p>
+            </div>
+            <Button variant="outline" size="sm" onClick={() => agentesQ.refetch()}>
+              <RefreshCw className="h-4 w-4 mr-2" />Atualizar
+            </Button>
+          </div>
+
+          {renderAgentFilterBar()}
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <Card>
+              <CardHeader className="pb-2"><CardTitle className="text-xs text-muted-foreground">Duplicados</CardTitle></CardHeader>
+              <CardContent><div className="text-2xl font-bold">{agentDuplicateInfo.ids.size}</div></CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2"><CardTitle className="text-xs text-muted-foreground">Arquivados</CardTitle></CardHeader>
+              <CardContent><div className="text-2xl font-bold">{agentFilterOptions.find((f) => f.value === "arquivados")?.count ?? 0}</div></CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2"><CardTitle className="text-xs text-muted-foreground">Removidos/descartados</CardTitle></CardHeader>
+              <CardContent><div className="text-2xl font-bold">{agentFilterOptions.find((f) => f.value === "removidos")?.count ?? 0}</div></CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2"><CardTitle className="text-xs text-muted-foreground">Sem heartbeat</CardTitle></CardHeader>
+              <CardContent><div className="text-2xl font-bold">{agentFilterOptions.find((f) => f.value === "sem_heartbeat")?.count ?? 0}</div></CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 text-yellow-500" />Duplicados detectados
+              </CardTitle>
+              <p className="text-xs text-muted-foreground">
+                O Synapse recomenda manter o registro online ou com heartbeat mais recente. Os demais podem ser arquivados, removidos do monitoramento ou ter vínculo/token limpo.
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {agentDuplicateInfo.groups.length === 0 && (
+                <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+                  Nenhum duplicado encontrado por hostname ou fingerprint.
+                </div>
+              )}
+              {agentDuplicateInfo.groups.map((group) => {
+                const keepId = cleanupKeepByGroup[group.key] ?? Number(group.suggestedKeepId);
+                return (
+                  <div key={group.key} className="rounded-xl border bg-muted/20 p-3 space-y-3">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div>
+                        <p className="text-sm font-semibold">
+                          {group.reason === "fingerprint" ? "Fingerprint duplicado" : "Hostname duplicado"}: <span className="font-mono">{group.value}</span>
+                        </p>
+                        <p className="text-xs text-muted-foreground">{group.agentes.length} registros encontrados. Escolha um para manter.</p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <Button size="sm" variant="outline" onClick={() => executarAcaoGrupoAgentes(group, keepId, "arquivar")}>
+                          <Archive className="h-3.5 w-3.5 mr-1" />Arquivar demais
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => executarAcaoGrupoAgentes(group, keepId, "remover_monitoramento")}>
+                          <Trash2 className="h-3.5 w-3.5 mr-1" />Remover monitoramento
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => executarAcaoGrupoAgentes(group, keepId, "limpar_vinculo")}>
+                          <RotateCcw className="h-3.5 w-3.5 mr-1" />Limpar vínculos
+                        </Button>
+                      </div>
+                    </div>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Manter</TableHead>
+                          <TableHead>Hostname</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Último heartbeat</TableHead>
+                          <TableHead>Fingerprint</TableHead>
+                          <TableHead>Ações</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {group.agentes.map((agente: any) => (
+                          <TableRow key={`${group.key}-${agente.id}`}>
+                            <TableCell>
+                              <input
+                                type="radio"
+                                name={`keep-${group.key}`}
+                                checked={Number(agente.id) === Number(keepId)}
+                                onChange={() => setCleanupKeepByGroup((prev) => ({ ...prev, [group.key]: Number(agente.id) }))}
+                                aria-label={`Manter ${agente.hostname}`}
+                              />
+                            </TableCell>
+                            <TableCell className="font-mono text-xs">{agente.hostname}</TableCell>
+                            <TableCell>
+                              <Badge variant={agentStatus(agente) === "online" ? "default" : "secondary"} className="text-xs">
+                                {agentStatusLabel(agentStatus(agente))}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-xs text-muted-foreground">{formatDateTimeBR(agentLastCollected(agente))}</TableCell>
+                            <TableCell className="font-mono text-[11px] max-w-[180px] truncate" title={agente.fingerprint || "Sem fingerprint"}>
+                              {agente.fingerprint || "—"}
+                            </TableCell>
+                            <TableCell>{renderAgenteActions(agente, { showView: true })}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                );
+              })}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">Registros filtrados para limpeza ({filteredAgentes.length})</CardTitle>
+              <p className="text-xs text-muted-foreground">
+                Use esta lista para desparear, arquivar, descartar, remover monitoramento ou reativar ativos que não existem mais.
+              </p>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Hostname</TableHead>
+                    <TableHead>IP</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Último heartbeat</TableHead>
+                    <TableHead>Dias sem heartbeat</TableHead>
+                    <TableHead>Versão</TableHead>
+                    <TableHead>Ações</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredAgentes.map((agente: any) => (
+                    <TableRow key={`cleanup-${agente.id}`}>
+                      <TableCell className="font-mono text-sm">{agente.hostname}</TableCell>
+                      <TableCell className="font-mono text-xs">{agente.ip || "—"}</TableCell>
+                      <TableCell>
+                        <Badge variant={agentStatus(agente) === "online" ? "default" : "secondary"} className="text-xs">
+                          {agentStatusLabel(agentStatus(agente))}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{formatDateTimeBR(agentLastCollected(agente))}</TableCell>
+                      <TableCell className="text-xs">
+                        {Number.isFinite(agentDaysSinceHeartbeat(agente)) ? `${agentDaysSinceHeartbeat(agente)} dia(s)` : "sem coleta"}
+                      </TableCell>
+                      <TableCell className="text-xs">{agente.versaoAgente || "—"}</TableCell>
+                      <TableCell>{renderAgenteActions(agente, { showView: true })}</TableCell>
+                    </TableRow>
+                  ))}
+                  {filteredAgentes.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                        Nenhum agente encontrado no filtro atual.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
           </Card>
         </TabsContent>
 

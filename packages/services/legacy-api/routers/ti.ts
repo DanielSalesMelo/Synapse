@@ -1116,7 +1116,7 @@ export const tiRouter = router({
     const fullRows = await client`
       SELECT a.*,
         CASE
-          WHEN COALESCE(a.ativo, true) = false OR a.status IN ('arquivado','removido')
+          WHEN COALESCE(a.ativo, true) = false OR a.status IN ('arquivado','removido','descartado','despareado','aguardando')
             THEN COALESCE(a.status, 'arquivado')
           WHEN COALESCE(a."updatedAt", a."ultimoContato", NOW() - INTERVAL '365 days') >= NOW() - INTERVAL '10 minutes'
             THEN 'online'
@@ -1144,7 +1144,7 @@ export const tiRouter = router({
     return client`
       SELECT a.*,
         CASE
-          WHEN COALESCE(a.ativo, true) = false OR a.status IN ('arquivado','removido')
+          WHEN COALESCE(a.ativo, true) = false OR a.status IN ('arquivado','removido','descartado','despareado','aguardando')
             THEN COALESCE(a.status, 'arquivado')
           WHEN COALESCE(a."updatedAt", a."ultimoContato", NOW() - INTERVAL '365 days') >= NOW() - INTERVAL '10 minutes'
             THEN 'online'
@@ -1160,7 +1160,15 @@ export const tiRouter = router({
   gerenciarAgente: protectedProcedure
     .input(z.object({
       agenteId: z.number(),
-      acao: z.enum(["remover_monitoramento", "desparear", "arquivar", "reativar", "limpar_vinculo"]),
+      acao: z.enum([
+        "remover_monitoramento",
+        "desparear",
+        "arquivar",
+        "reativar",
+        "limpar_vinculo",
+        "descartar",
+        "excluir_definitivo",
+      ]),
       empresaId: z.number().optional(),
       motivo: z.string().optional(),
     }))
@@ -1170,7 +1178,7 @@ export const tiRouter = router({
       if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       const empresaId = await resolveTiEmpresaId(ctx, input.empresaId);
       const rows = await client`
-        SELECT id, hostname, fingerprint, token, ativo, status
+        SELECT id, hostname, fingerprint, token, ativo, status, "pairingCode", "ultimoContato", "createdAt"
         FROM monitor_agentes
         WHERE id=${input.agenteId}
           AND "empresaId"=${empresaId}
@@ -1187,10 +1195,10 @@ export const tiRouter = router({
         await client`
           UPDATE monitor_agentes
           SET token=${revokedToken}, online=false, ativo=false, status='removido',
-              "deletedAt"=NOW(), "updatedAt"=NOW()
+              "pairingCode"=NULL, "updatedAt"=NOW()
           WHERE id=${agente.id} AND "empresaId"=${empresaId}
         `;
-        return { success: true, action: input.acao, message: "Monitoramento removido. Histórico técnico permanece preservado para auditoria." };
+        return { success: true, action: input.acao, message: "Monitoramento removido da operação ativa. Histórico técnico permanece preservado para auditoria." };
       }
 
       if (input.acao === "desparear") {
@@ -1221,6 +1229,43 @@ export const tiRouter = router({
           WHERE id=${agente.id} AND "empresaId"=${empresaId}
         `;
         return { success: true, action: input.acao, message: "Ativo arquivado. Ele pode ser reativado depois." };
+      }
+
+      if (input.acao === "descartar") {
+        await client`
+          UPDATE monitor_agentes
+          SET token=${revokedToken}, "pairingCode"=NULL, online=false, ativo=false, status='descartado',
+              "updatedAt"=NOW()
+          WHERE id=${agente.id} AND "empresaId"=${empresaId}
+        `;
+        return { success: true, action: input.acao, message: "Equipamento marcado como descartado. O histórico foi mantido e o token foi invalidado." };
+      }
+
+      if (input.acao === "excluir_definitivo") {
+        const metricRows = await client`
+          SELECT COUNT(*)::int as total
+          FROM monitor_metricas
+          WHERE "agenteId"=${agente.id} AND "empresaId"=${empresaId}
+        `.catch(() => [{ total: 0 }]);
+        const metricCount = Number(metricRows[0]?.total ?? 0);
+        const safetyText = `${agente.hostname ?? ""} ${agente.fingerprint ?? ""} ${agente.pairingCode ?? ""} ${input.motivo ?? ""}`.toLowerCase();
+        const looksLikeTestRecord = /\b(demo|teste|test|qa|homolog|sandbox|pc-demo)\b/.test(safetyText);
+        const hasNoHistory = metricCount === 0 && !agente.ultimoContato;
+
+        if (!looksLikeTestRecord && !hasNoHistory) {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "Exclusão definitiva bloqueada por segurança. Arquive, despareie ou remova o monitoramento para preservar histórico real.",
+          });
+        }
+
+        await client`
+          UPDATE monitor_agentes
+          SET token=${revokedToken}, "pairingCode"=NULL, online=false, ativo=false, status='excluido',
+              "deletedAt"=NOW(), "updatedAt"=NOW()
+          WHERE id=${agente.id} AND "empresaId"=${empresaId}
+        `;
+        return { success: true, action: input.acao, message: "Registro excluído da operação. Use esta ação somente para dados de teste ou registros sem histórico." };
       }
 
       if (input.acao === "reativar") {
@@ -1479,18 +1524,55 @@ export const tiRouter = router({
       const pairing = codes[0];
       // Gera token permanente único
       const token = `agent_${pairing.empresaId}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,10)}`;
-      // Registra o agente
-      const agentes = await client`
-        INSERT INTO monitor_agentes ("empresaId",hostname,ip,so,mac,"versaoAgente","anydeskId",fingerprint,"pairingCode",token,status,"ultimoContato",online,ativo,"createdAt","updatedAt")
-        VALUES (${pairing.empresaId},${input.hostname},${input.ip||null},${input.so||null},${input.mac||null},${input.versao_agente||'1.0.0'},${input.anydesk_id||null},${input.fingerprint||null},${input.codigo},${token},'online',NOW(),true,true,NOW(),NOW())
-        ON CONFLICT DO NOTHING
-        RETURNING *
-      `;
-      let agente = agentes[0];
-      if (!agente) {
-        // Já existia, retorna o existente
-        const existentes = await client`SELECT * FROM monitor_agentes WHERE fingerprint=${input.fingerprint||''} AND "empresaId"=${pairing.empresaId} LIMIT 1`;
-        agente = existentes[0];
+      const fingerprint = input.fingerprint || "";
+      const mac = input.mac || "";
+      const existentes = await client`
+        SELECT *
+        FROM monitor_agentes
+        WHERE "empresaId"=${pairing.empresaId}
+          AND "deletedAt" IS NULL
+          AND (
+            (${fingerprint} <> '' AND fingerprint=${fingerprint})
+            OR (
+              lower(hostname)=lower(${input.hostname})
+              AND (${mac} = '' OR COALESCE(mac,'')=${mac})
+            )
+          )
+        ORDER BY
+          CASE WHEN ${fingerprint} <> '' AND fingerprint=${fingerprint} THEN 0 ELSE 1 END,
+          CASE WHEN status IN ('online','offline','aguardando','despareado') OR COALESCE(ativo,true)=true THEN 0 ELSE 1 END,
+          COALESCE("ultimoContato","updatedAt","createdAt") DESC
+        LIMIT 1
+      `.catch(()=>[]);
+      let agente = existentes[0];
+      if (agente) {
+        const updated = await client`
+          UPDATE monitor_agentes
+          SET hostname=${input.hostname},
+              ip=${input.ip||null},
+              so=${input.so||null},
+              mac=${input.mac||null},
+              "versaoAgente"=${input.versao_agente||'1.0.0'},
+              "anydeskId"=${input.anydesk_id||null},
+              fingerprint=${input.fingerprint||agente.fingerprint||null},
+              "pairingCode"=${input.codigo},
+              token=${token},
+              status='online',
+              "ultimoContato"=NOW(),
+              online=true,
+              ativo=true,
+              "updatedAt"=NOW()
+          WHERE id=${agente.id} AND "empresaId"=${pairing.empresaId}
+          RETURNING *
+        `;
+        agente = updated[0] || agente;
+      } else {
+        const agentes = await client`
+          INSERT INTO monitor_agentes ("empresaId",hostname,ip,so,mac,"versaoAgente","anydeskId",fingerprint,"pairingCode",token,status,"ultimoContato",online,ativo,"createdAt","updatedAt")
+          VALUES (${pairing.empresaId},${input.hostname},${input.ip||null},${input.so||null},${input.mac||null},${input.versao_agente||'1.0.0'},${input.anydesk_id||null},${input.fingerprint||null},${input.codigo},${token},'online',NOW(),true,true,NOW(),NOW())
+          RETURNING *
+        `;
+        agente = agentes[0];
       }
       // Marca código como usado
       await client`UPDATE agent_pairing_codes SET usado=true,"agenteId"=${agente?.id||null},"usadoEm"=NOW() WHERE id=${pairing.id}`;

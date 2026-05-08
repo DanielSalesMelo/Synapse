@@ -956,9 +956,15 @@ app.post("/api/agent/pair", async (req, res) => {
     const existingRows = await client`
       SELECT * FROM monitor_agentes
       WHERE "empresaId"=${pairing.empresaId}
-        AND (fingerprint=${fingerprint} OR hostname=${hostname})
         AND "deletedAt" IS NULL
-      ORDER BY id DESC
+        AND (
+          (${fingerprint} <> '' AND fingerprint=${fingerprint})
+          OR lower(hostname)=lower(${hostname})
+        )
+      ORDER BY
+        CASE WHEN ${fingerprint} <> '' AND fingerprint=${fingerprint} THEN 0 ELSE 1 END,
+        CASE WHEN status IN ('online','offline','aguardando','despareado') OR COALESCE(ativo,true)=true THEN 0 ELSE 1 END,
+        COALESCE("ultimoContato","updatedAt","createdAt") DESC
       LIMIT 1
     `.catch(() => []);
 
