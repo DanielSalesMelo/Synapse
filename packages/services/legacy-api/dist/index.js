@@ -91516,6 +91516,8 @@ var tiRouter = router({
     const fullRows = await client`
       SELECT a.*,
         CASE
+          WHEN COALESCE(a.ativo, true) = false OR a.status IN ('arquivado','removido')
+            THEN COALESCE(a.status, 'arquivado')
           WHEN COALESCE(a."updatedAt", a."ultimoContato", NOW() - INTERVAL '365 days') >= NOW() - INTERVAL '10 minutes'
             THEN 'online'
           ELSE 'offline'
@@ -91535,13 +91537,14 @@ var tiRouter = router({
       FROM monitor_agentes a
       WHERE a."empresaId"=${empresaId}
         AND a."deletedAt" IS NULL
-        AND COALESCE(a.ativo, true) = true
       ORDER BY a.hostname ASC
     `.catch(() => []);
     if (fullRows.length > 0) return fullRows;
     return client`
       SELECT a.*,
         CASE
+          WHEN COALESCE(a.ativo, true) = false OR a.status IN ('arquivado','removido')
+            THEN COALESCE(a.status, 'arquivado')
           WHEN COALESCE(a."updatedAt", a."ultimoContato", NOW() - INTERVAL '365 days') >= NOW() - INTERVAL '10 minutes'
             THEN 'online'
           ELSE 'offline'
@@ -91549,9 +91552,77 @@ var tiRouter = router({
       FROM monitor_agentes a
       WHERE a."empresaId"=${empresaId}
         AND a."deletedAt" IS NULL
-        AND COALESCE(a.ativo, true) = true
       ORDER BY a.hostname ASC
     `.catch(() => []);
+  }),
+  gerenciarAgente: protectedProcedure.input(external_exports.object({
+    agenteId: external_exports.number(),
+    acao: external_exports.enum(["remover_monitoramento", "desparear", "arquivar", "reativar", "limpar_vinculo"]),
+    empresaId: external_exports.number().optional(),
+    motivo: external_exports.string().optional()
+  })).mutation(async ({ ctx, input }) => {
+    requireTiManager(ctx.user);
+    const client = await getRawClient();
+    if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    const empresaId = await resolveTiEmpresaId(ctx, input.empresaId);
+    const rows = await client`
+        SELECT id, hostname, fingerprint, token, ativo, status
+        FROM monitor_agentes
+        WHERE id=${input.agenteId}
+          AND "empresaId"=${empresaId}
+          AND "deletedAt" IS NULL
+        LIMIT 1
+      `.catch(() => []);
+    const agente = rows[0];
+    if (!agente) {
+      throw new TRPCError({ code: "NOT_FOUND", message: "Ativo monitorado n\xE3o encontrado." });
+    }
+    const revokedToken = `revoked_${agente.id}_${Date.now().toString(36)}`;
+    if (input.acao === "remover_monitoramento") {
+      await client`
+          UPDATE monitor_agentes
+          SET token=${revokedToken}, online=false, ativo=false, status='removido',
+              "deletedAt"=NOW(), "updatedAt"=NOW()
+          WHERE id=${agente.id} AND "empresaId"=${empresaId}
+        `;
+      return { success: true, action: input.acao, message: "Monitoramento removido. Hist\xF3rico t\xE9cnico permanece preservado para auditoria." };
+    }
+    if (input.acao === "desparear") {
+      await client`
+          UPDATE monitor_agentes
+          SET token=${revokedToken}, "pairingCode"=NULL, online=false, status='despareado',
+              "updatedAt"=NOW()
+          WHERE id=${agente.id} AND "empresaId"=${empresaId}
+        `;
+      return { success: true, action: input.acao, message: "PC despareado. O agente local precisar\xE1 de novo c\xF3digo SYNC." };
+    }
+    if (input.acao === "limpar_vinculo") {
+      await client`
+          UPDATE monitor_agentes
+          SET token=${revokedToken}, "pairingCode"=NULL, user_id=NULL, department_id=NULL,
+              online=false, ativo=true, status='aguardando', "updatedAt"=NOW()
+          WHERE id=${agente.id} AND "empresaId"=${empresaId}
+        `;
+      return { success: true, action: input.acao, message: "V\xEDnculo limpo. Este mesmo PC pode ser reinstalado sem criar duplicidade." };
+    }
+    if (input.acao === "arquivar") {
+      await client`
+          UPDATE monitor_agentes
+          SET token=${revokedToken}, online=false, ativo=false, status='arquivado',
+              "updatedAt"=NOW()
+          WHERE id=${agente.id} AND "empresaId"=${empresaId}
+        `;
+      return { success: true, action: input.acao, message: "Ativo arquivado. Ele pode ser reativado depois." };
+    }
+    if (input.acao === "reativar") {
+      await client`
+          UPDATE monitor_agentes
+          SET ativo=true, online=false, status='offline', "updatedAt"=NOW()
+          WHERE id=${agente.id} AND "empresaId"=${empresaId}
+        `;
+      return { success: true, action: input.acao, message: "Ativo reativado. Reinstale ou pareie novamente se necess\xE1rio." };
+    }
+    return { success: true, action: input.acao };
   }),
   getAgenteMetricas: protectedProcedure.input(external_exports.object({ agenteId: external_exports.number(), periodo: external_exports.enum(["1h", "24h", "7d", "30d", "90d"]).optional(), empresaId: external_exports.number().optional() })).query(async ({ input, ctx }) => {
     requireTiManager(ctx.user);
@@ -98660,6 +98731,8 @@ var setNoCacheDownloadHeaders = (res) => {
   res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
+  res.setHeader("Surrogate-Control", "no-store");
+  res.setHeader("CDN-Cache-Control", "no-store");
 };
 var sendAgentDownload = (res, filename, downloadName) => {
   const filePath = import_path39.default.join(AGENT_DIR, filename);
@@ -98672,6 +98745,12 @@ var sendAgentDownload = (res, filename, downloadName) => {
   }
   setNoCacheDownloadHeaders(res);
   res.setHeader("X-Synapse-Agent-Version", AGENT_VERSION);
+  res.setHeader("X-Synapse-Artifact", filename);
+  try {
+    const hash2 = import_crypto5.default.createHash("sha256").update(import_fs2.default.readFileSync(filePath)).digest("hex").toUpperCase();
+    res.setHeader("X-Synapse-Artifact-SHA256", hash2);
+  } catch {
+  }
   res.download(filePath, downloadName);
 };
 app.get("/api/agent/version", (_req, res) => {
@@ -98679,13 +98758,16 @@ app.get("/api/agent/version", (_req, res) => {
   res.json({ version: AGENT_VERSION });
 });
 app.get("/api/agent/download", (_req, res) => {
-  sendAgentDownload(res, "install_windows.bat", "Synapse-Agent-Setup-Windows.bat");
+  sendAgentDownload(res, "synapse-setup.exe", `SynapseSetup-${AGENT_VERSION}.exe`);
 });
 app.get("/api/agent/download/windows", (_req, res) => {
   sendAgentDownload(res, "synapse-agent.exe", "Synapse-Agent-Windows.exe");
 });
 app.get("/api/agent/download/windows-installer", (_req, res) => {
-  sendAgentDownload(res, "install_windows.bat", "Synapse-Agent-Setup-Windows.bat");
+  sendAgentDownload(res, "synapse-setup.exe", `SynapseSetup-${AGENT_VERSION}.exe`);
+});
+app.get("/api/agent/download/windows-legacy-installer", (_req, res) => {
+  sendAgentDownload(res, "install_windows.bat", "Synapse-Agent-Setup-Legacy-Windows.bat");
 });
 app.get("/api/agent/download/windows-uninstaller", (_req, res) => {
   sendAgentDownload(res, "uninstall_windows.bat", "Synapse-Agent-Remover-Windows.bat");
@@ -98820,7 +98902,6 @@ app.post("/api/agent/pair", async (req, res) => {
       WHERE "empresaId"=${pairing.empresaId}
         AND (fingerprint=${fingerprint} OR hostname=${hostname3})
         AND "deletedAt" IS NULL
-        AND COALESCE(ativo, true) = true
       ORDER BY id DESC
       LIMIT 1
     `.catch(() => []);

@@ -10,6 +10,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Plus, Monitor, Headphones, AlertCircle, CheckCircle2, Search,
@@ -19,7 +26,8 @@ import {
   RefreshCw, TrendingUp, Eye, Edit, Trash2, Send, Paperclip,
   Download, Link2, QrCode, Copy, Check, X, ChevronRight,
   BarChart2, Database, Settings, Zap, Bell, BellRing,
-  Image as ImageIcon, MessageSquare, Calendar, Tag,
+  Image as ImageIcon, MessageSquare, Calendar, Tag, MoreHorizontal,
+  Archive, Unlink, RotateCcw,
 } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
@@ -61,6 +69,8 @@ const TI_MANAGER_ROLES = new Set([
   "supervisor_geral",
   "supervisor_ti",
 ]);
+
+type AgentLifecycleAction = "remover_monitoramento" | "desparear" | "arquivar" | "reativar" | "limpar_vinculo";
 
 const formatDateTimeBR = (value?: string | Date | null) => {
   if (!value) return "-";
@@ -669,12 +679,12 @@ export default function TI({ params }: { params?: { tab?: string } }) {
         userId: associateForm.userId,
         departmentId: associateForm.departmentId,
       });
-      toast.success("Agente associado com sucesso!");
+      toast.success("Dispositivo associado com sucesso!");
       setShowAssociateModal(false);
-      // Recarregar agentes
+      // Recarregar dispositivos
       await agentesQ.refetch();
     } catch (err) {
-      toast.error("Erro ao associar agente: " + (err as any).message);
+      toast.error("Erro ao associar dispositivo: " + (err as any).message);
     }
   };
 
@@ -731,7 +741,18 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const [usuarios, setUsuarios] = useState<any[]>([]);
   const [usuariosLoading, setUsuariosLoading] = useState(false);
   const [remoteStatusFilter, setRemoteStatusFilter] = useState("todos");
-  const agentStatus = (a: any) => String(a?.status_resolvido || a?.status || "offline");
+  const agentIsArchived = (a: any) => a?.ativo === false || String(a?.status || "").toLowerCase() === "arquivado";
+  const agentStatus = (a: any) => agentIsArchived(a) ? "arquivado" : String(a?.status_resolvido || a?.status || "offline");
+  const agentStatusLabel = (status: string) => ({
+    online: "conectado",
+    offline: "desconectado",
+    arquivado: "arquivado",
+    removido: "removido",
+    despareado: "despareado",
+    aguardando: "aguardando pareamento",
+    atencao: "atenção",
+    critico: "crítico",
+  }[status] ?? status);
   const agentLastCollected = (a: any) => a?.ultima_coleta || a?.ultimaColeta || a?.updatedAt || a?.ultimoContato || null;
   const metricValue = (...values: any[]) => {
     for (const value of values) {
@@ -834,6 +855,117 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const revogarCodigo = trpc.ti.revogarCodigoPareamento.useMutation({
     onSuccess: () => { codigosQ.refetch(); toast.success("Código revogado!"); },
   });
+  const gerenciarAgente = trpc.ti.gerenciarAgente.useMutation({
+    onSuccess: (result: any) => {
+      agentesQ.refetch();
+      dashboard.refetch();
+      toast.success(result?.message || "Ação aplicada ao ativo monitorado.");
+    },
+    onError: (err) => toast.error("Erro ao gerenciar ativo: " + (err.message || "tente novamente")),
+  });
+
+  const executarAcaoAgente = (
+    agente: any,
+    acao: AgentLifecycleAction,
+  ) => {
+    const detalhes: Record<AgentLifecycleAction, { titulo: string; efeito: string }> = {
+      remover_monitoramento: {
+        titulo: "Remover monitoramento",
+        efeito: "Oculta este ativo do painel e invalida o token atual. O histórico técnico permanece preservado para auditoria.",
+      },
+      desparear: {
+        titulo: "Desparear este PC",
+        efeito: "Remove o vínculo/token atual. O usuário precisará parear novamente com um novo código SYNC.",
+      },
+      arquivar: {
+        titulo: "Arquivar ativo",
+        efeito: "Oculta o ativo da operação ativa sem apagar histórico. Pode ser reativado depois.",
+      },
+      reativar: {
+        titulo: "Reativar ativo",
+        efeito: "Volta o ativo para a operação. Se o token tiver sido invalidado, será necessário reinstalar ou parear novamente.",
+      },
+      limpar_vinculo: {
+        titulo: "Limpar vínculo para reinstalar",
+        efeito: "Libera este mesmo PC para reinstalação sem criar duplicidade, mantendo fingerprint/hostname para reutilizar o registro.",
+      },
+    };
+    const info = detalhes[acao];
+    const ok = window.confirm(`${info.titulo}\n\nAtivo: ${agente.hostname}\n\n${info.efeito}\n\nDeseja continuar?`);
+    if (!ok) return;
+    gerenciarAgente.mutate({ agenteId: Number(agente.id), acao, ...optionalEmpresaPayload });
+  };
+
+  const renderAgenteActions = (a: any, options: { showView?: boolean; showAssociate?: boolean } = {}) => {
+    const archived = agentIsArchived(a);
+    return (
+      <div className="flex items-center gap-1" onClick={(event) => event.stopPropagation()}>
+        {options.showView && (
+          <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => { setSelectedAgente(a); setTab("monitoramento"); }}>
+            <Eye className="h-3 w-3 mr-1" />Ver
+          </Button>
+        )}
+        {options.showAssociate && (
+          <Dialog open={showAssociateModal && selectedAgenteForAssociate?.id === a.id} onOpenChange={(open) => { if (!open) setShowAssociateModal(false); }}>
+            <DialogTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => handleAssociateClick(a)}>
+                <Edit className="h-3 w-3 mr-1" />Vincular
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-sm">
+              <DialogHeader><DialogTitle>Vincular dispositivo</DialogTitle></DialogHeader>
+              <form onSubmit={(e) => { e.preventDefault(); handleAssociateSubmit(); }} className="space-y-4">
+                <div>
+                  <Label>Usuário *</Label>
+                  <Select value={associateForm.userId} onValueChange={(v) => setAssociateForm((p) => ({ ...p, userId: v }))}>
+                    <SelectTrigger><SelectValue placeholder="Selecione um usuário..." /></SelectTrigger>
+                    <SelectContent>
+                      {usuarios.map((u: any) => (
+                        <SelectItem key={u.id} value={u.id.toString()}>{u.name} {u.lastName}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Departamento (opcional)</Label>
+                  <Input value={associateForm.departmentId} onChange={(e) => setAssociateForm((p) => ({ ...p, departmentId: e.target.value }))} placeholder="Ex: TI, RH" />
+                </div>
+                <Button type="submit" className="w-full">Vincular</Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+        )}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="h-7 w-7 p-0" disabled={gerenciarAgente.isPending} aria-label="Ações do dispositivo">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-64">
+            <DropdownMenuItem onClick={() => executarAcaoAgente(a, "limpar_vinculo")}>
+              <RotateCcw className="h-4 w-4 mr-2" />Limpar vínculo para reinstalar
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => executarAcaoAgente(a, "desparear")}>
+              <Unlink className="h-4 w-4 mr-2" />Desparear este PC
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            {archived ? (
+              <DropdownMenuItem onClick={() => executarAcaoAgente(a, "reativar")}>
+                <RefreshCw className="h-4 w-4 mr-2" />Reativar ativo
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem onClick={() => executarAcaoAgente(a, "arquivar")}>
+                <Archive className="h-4 w-4 mr-2" />Arquivar ativo
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuItem className="text-red-600 focus:text-red-600" onClick={() => executarAcaoAgente(a, "remover_monitoramento")}>
+              <Trash2 className="h-4 w-4 mr-2" />Remover monitoramento
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    );
+  };
   
   // Funções para associar agente e gerar código
   const associateAgente = {
@@ -883,7 +1015,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   }, [agentesQ.data, agentesQ.isLoading]);
   useEffect(() => {
     if (agentesQ.isError) {
-      toast.error("Falha ao carregar agentes. Clique em Atualizar para tentar novamente.");
+      toast.error("Falha ao carregar dispositivos. Clique em Atualizar para tentar novamente.");
     }
   }, [agentesQ.isError]);
 
@@ -1126,7 +1258,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
               <TabsTrigger value="licencas"><Shield className="h-4 w-4 mr-1" />Licenças</TabsTrigger>
               <TabsTrigger value="compras"><ShoppingCart className="h-4 w-4 mr-1" />Compras</TabsTrigger>
               <TabsTrigger value="manutencao"><Wrench className="h-4 w-4 mr-1" />Manutenção</TabsTrigger>
-              <TabsTrigger value="agentes"><Network className="h-4 w-4 mr-1" />Agentes e Dispositivos</TabsTrigger>
+              <TabsTrigger value="agentes"><Network className="h-4 w-4 mr-1" />Dispositivos</TabsTrigger>
               <TabsTrigger value="dispositivos"><Monitor className="h-4 w-4 mr-1" />Vínculos e Inventário</TabsTrigger>
               <TabsTrigger value="certificados"><Shield className="h-4 w-4 mr-1" />Certificados</TabsTrigger>
               <TabsTrigger value="alertas" className="relative">
@@ -1171,9 +1303,9 @@ export default function TI({ params }: { params?: { tab?: string } }) {
               </CardContent>
             </Card>
           </div>
-          {/* Agentes online */}
+          {/* Dispositivos online */}
           <Card>
-            <CardHeader><CardTitle className="text-sm flex items-center gap-2"><Network className="h-4 w-4 text-green-500" />Agentes Monitorados</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-sm flex items-center gap-2"><Network className="h-4 w-4 text-green-500" />Dispositivos monitorados</CardTitle></CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                 {(agentesQ.data ?? []).slice(0, 8).map((a: any) => (
@@ -1191,7 +1323,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                 ))}
                 {(agentesQ.data ?? []).length === 0 && (
                   <div className="col-span-4 text-center py-6 text-muted-foreground text-sm">
-                    Nenhum agente instalado. Vá em <strong>Agentes</strong> para baixar e instalar.
+                    Nenhum dispositivo sincronizado. Vá em <strong>Dispositivos</strong> para baixar o Synapse para Windows.
                   </div>
                 )}
               </div>
@@ -1355,7 +1487,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                     <TableCell>
                       <div className={`flex items-center gap-1.5 text-xs font-medium ${agentStatus(a) === "online" ? "text-green-600" : agentStatus(a) === "atencao" ? "text-yellow-600" : agentStatus(a) === "critico" ? "text-red-600" : "text-gray-500"}`}>
                         <div className={`h-2 w-2 rounded-full ${agentStatus(a) === "online" ? "bg-green-500" : agentStatus(a) === "atencao" ? "bg-yellow-500" : agentStatus(a) === "critico" ? "bg-red-500" : "bg-gray-400"}`} />
-                        {agentStatus(a)}
+                        {agentStatusLabel(agentStatus(a))}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -1381,14 +1513,14 @@ export default function TI({ params }: { params?: { tab?: string } }) {
         <TabsContent value="monitoramento" className="space-y-4 mt-4">
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
-              {(agentesQ.data ?? []).length} agente(s) · Atualização automática a cada 30s
+              {(agentesQ.data ?? []).length} dispositivo(s) · Atualização automática a cada 30s
             </p>
             <Button
               variant="outline"
               size="sm"
               onClick={async () => {
                 const result = await agentesQ.refetch();
-                toast.success(`Atualização concluída: ${(result.data ?? []).length} agente(s) carregado(s).`);
+                toast.success(`Atualização concluída: ${(result.data ?? []).length} dispositivo(s) carregado(s).`);
               }}
             >
               <RefreshCw className="h-4 w-4 mr-2" />Atualizar
@@ -1399,9 +1531,12 @@ export default function TI({ params }: { params?: { tab?: string } }) {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-mono">{selectedAgente.hostname}</CardTitle>
-                  <Button variant="ghost" size="sm" onClick={() => setSelectedAgente(null)}>
-                    <X className="h-4 w-4" />
-                  </Button>
+                  <div className="flex items-center gap-1">
+                    {renderAgenteActions(selectedAgente)}
+                    <Button variant="ghost" size="sm" onClick={() => setSelectedAgente(null)}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -1477,6 +1612,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                           </a>
                         )}
                         <div className={`h-2.5 w-2.5 rounded-full ${agentStatus(a) === "online" ? "bg-green-500" : "bg-gray-400"}`} />
+                        {renderAgenteActions(a)}
                       </div>
                     </div>
                     <p className="text-xs text-muted-foreground">{a.so} · {a.ip}</p>
@@ -1508,9 +1644,9 @@ export default function TI({ params }: { params?: { tab?: string } }) {
               {(agentesQ.data ?? []).length === 0 && (
                 <div className="col-span-3 text-center py-12 text-muted-foreground">
                   <Network className="h-12 w-12 mx-auto mb-3 opacity-30" />
-                  <p className="font-medium">Nenhum agente instalado</p>
-                  <p className="text-sm mt-1">Vá em <strong>Agentes</strong> para baixar e instalar o agente nos PCs.</p>
-                  <Button className="mt-4" size="sm" onClick={() => setTab("agentes")}>Ir para Agentes</Button>
+                  <p className="font-medium">Nenhum dispositivo sincronizado</p>
+                  <p className="text-sm mt-1">Vá em <strong>Dispositivos</strong> para baixar o Synapse para Windows.</p>
+                  <Button className="mt-4" size="sm" onClick={() => setTab("agentes")}>Ir para Dispositivos</Button>
                 </div>
               )}
             </div>
@@ -2119,10 +2255,10 @@ export default function TI({ params }: { params?: { tab?: string } }) {
           </Card>
         </TabsContent>
 
-        {/* ══ AGENTES ══ */}
+        {/* ══ DISPOSITIVOS ══ */}
         <TabsContent value="agentes" className="space-y-4 mt-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Download do agente */}
+            {/* Download do Synapse para Windows */}
             <Card className="overflow-hidden border-slate-800/60 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-50 shadow-2xl shadow-slate-950/20">
               <CardHeader>
                 <div className="flex items-start justify-between gap-3">
@@ -2131,7 +2267,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                       Centro de implantação
                     </Badge>
                     <CardTitle className="text-lg flex items-center gap-2">
-                      <Download className="h-5 w-5 text-cyan-300" />Instalar Agente Synapse
+                      <Download className="h-5 w-5 text-cyan-300" />Baixar Synapse para Windows
                     </CardTitle>
                     <p className="mt-1 text-sm text-slate-400">
                       Instalador oficial para conectar este Windows ao Synapse com monitoramento, suporte e pareamento seguro.
@@ -2145,7 +2281,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   {[
-                    { label: "Instalação guiada", value: "Windows" },
+                    { label: "Aplicativo Windows", value: "Tudo em um" },
                     { label: "Status", value: "Pronto" },
                     { label: "Canal", value: "Produção" },
                   ].map((item) => (
@@ -2156,15 +2292,15 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   ))}
                 </div>
                 <p className="text-sm text-slate-300">
-                  O agente cria o dispositivo monitorado no Synapse, mantém heartbeat, inventário e métricas básicas em segundo plano,
-                  e fica preparado para suporte local sem expor detalhes técnicos ao usuário final.
+                  O Synapse para Windows instala suporte local, chat, pareamento, monitoramento, reparo, remoção e limpeza de vínculo antigo em uma experiência única.
+                  O modo usuário comum ou TI/Admin é resolvido automaticamente pelas permissões da conta.
                 </p>
                 <div className="space-y-2">
                   <p className="text-xs font-medium uppercase tracking-[0.22em] text-slate-500">Como instalar no Windows</p>
                   <div className="rounded-2xl border border-white/10 bg-black/25 p-3 space-y-2 text-xs text-slate-300">
-                    <p>1. Baixe o instalador oficial abaixo.</p>
-                    <p>2. Execute o instalador e informe o código de pareamento.</p>
-                    <p>3. O agente será configurado no perfil do usuário e ficará sincronizado com o Synapse.</p>
+                    <p>1. Baixe o Synapse para Windows abaixo.</p>
+                    <p>2. Execute o aplicativo e informe o código de pareamento quando solicitado.</p>
+                    <p>3. O dispositivo ficará sincronizado com suporte, monitoramento e notificações do Synapse.</p>
                     <div className="space-y-1">
                       <p className="text-slate-500">Servidor Synapse</p>
                       <div className="flex items-center gap-2">
@@ -2175,24 +2311,17 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                         </Button>
                       </div>
                     </div>
-                    <p>4. O atalho “Synapse Suporte” será criado para atendimento local quando disponível.</p>
+                    <p>4. O aplicativo também permite reparar, remover ou limpar um vínculo antigo sem expor detalhes técnicos ao usuário.</p>
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <Button size="sm" className="flex-1 bg-cyan-400 text-slate-950 hover:bg-cyan-300" asChild>
-                        <a href={`${backendBaseUrl}/api/agent/download/windows-installer${agentDownloadSuffix}`} download="Synapse-Agent-Setup-Windows.bat">
-                          <Download className="h-4 w-4 mr-2" />Instalador Windows
-                        </a>
-                      </Button>
-                      <Button size="sm" variant="outline" className="flex-1 border-white/10 bg-white/[0.04] text-slate-100 hover:bg-white/10" asChild>
-                        <a href={`${backendBaseUrl}/api/agent/download/windows${agentDownloadSuffix}`} download={`Synapse-Agent-Windows-${agentVersion}.exe`}>
-                          <Download className="h-4 w-4 mr-2" />Download do Agente
-                        </a>
-                      </Button>
-                    </div>
+                    <Button size="sm" className="w-full bg-cyan-400 text-slate-950 hover:bg-cyan-300" asChild>
+                      <a href={`${backendBaseUrl}/api/agent/download${agentDownloadSuffix}`} download={`SynapseSetup-${agentVersion}.exe`}>
+                        <Download className="h-4 w-4 mr-2" />Baixar Synapse para Windows
+                      </a>
+                    </Button>
                     <p className="text-xs text-slate-500">
-                      Versão publicada: <span className="font-mono text-slate-300">{agentVersion}</span>. Componentes legados ficam disponíveis apenas como compatibilidade técnica interna.
+                      Versão publicada: <span className="font-mono text-slate-300">{agentVersion}</span>. Componentes de compatibilidade ficam disponíveis apenas internamente para suporte técnico.
                     </p>
                 </div>
               </CardContent>
@@ -2327,23 +2456,21 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                       <TableCell>
                         <div className={`flex items-center gap-1.5 text-xs ${agentStatus(a) === "online" ? "text-green-600" : "text-gray-500"}`}>
                           <div className={`h-2 w-2 rounded-full ${agentStatus(a) === "online" ? "bg-green-500 animate-pulse" : "bg-gray-400"}`} />
-                          {agentStatus(a)}
+                          {agentStatusLabel(agentStatus(a))}
                         </div>
                       </TableCell>
                       <TableCell className="text-xs text-muted-foreground">
                         {formatDateTimeBR(agentLastCollected(a))}
                       </TableCell>
                       <TableCell>
-                        <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => { setSelectedAgente(a); setTab("monitoramento"); }}>
-                          <Eye className="h-3 w-3 mr-1" />Ver
-                        </Button>
+                        {renderAgenteActions(a, { showView: true })}
                       </TableCell>
                     </TableRow>
                   ))}
                   {(agentesQ.data ?? []).length === 0 && (
                     <TableRow>
                       <TableCell colSpan={9} className="text-center text-muted-foreground py-8 space-y-2">
-                        <p>Nenhum agente registrado.</p>
+                        <p>Nenhum dispositivo sincronizado.</p>
                         <p className="text-xs">
                           Verifique se o código de pareamento foi usado e clique em <strong>Atualizar</strong>.
                         </p>
@@ -2430,7 +2557,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                 {agentesLoading ? (
                   <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">Carregando...</TableCell></TableRow>
                 ) : (agentes ?? []).length === 0 ? (
-                  <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">Nenhum agente registrado</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">Nenhum dispositivo sincronizado</TableCell></TableRow>
                 ) : (agentes ?? []).map((a: any) => (
                   <TableRow key={a.id}>
                     <TableCell className="font-mono text-sm font-medium">
@@ -2448,42 +2575,13 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                     <TableCell>
                       <div className={`flex items-center gap-1.5 text-xs ${agentStatus(a) === "online" ? "text-green-600" : "text-gray-500"}`}>
                         <div className={`h-2 w-2 rounded-full ${agentStatus(a) === "online" ? "bg-green-500 animate-pulse" : "bg-gray-400"}`} />
-                        {agentStatus(a)}
+                        {agentStatusLabel(agentStatus(a))}
                       </div>
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground">
                       {formatDateTimeBR(agentLastCollected(a))}
                     </TableCell>
-                    <TableCell>
-                      <Dialog open={showAssociateModal && selectedAgenteForAssociate?.id === a.id} onOpenChange={(open) => { if (!open) setShowAssociateModal(false); }}>
-                        <DialogTrigger asChild>
-                          <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => handleAssociateClick(a)}>
-                            <Edit className="h-3 w-3 mr-1" />Vincular
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-sm">
-                          <DialogHeader><DialogTitle>Vincular Agente</DialogTitle></DialogHeader>
-                          <form onSubmit={(e) => { e.preventDefault(); handleAssociateSubmit(); }} className="space-y-4">
-                            <div>
-                              <Label>Usuário *</Label>
-                              <Select value={associateForm.userId} onValueChange={(v) => setAssociateForm((p) => ({ ...p, userId: v }))}>
-                                <SelectTrigger><SelectValue placeholder="Selecione um usuário..." /></SelectTrigger>
-                                <SelectContent>
-                                  {usuarios.map((u: any) => (
-                                    <SelectItem key={u.id} value={u.id.toString()}>{u.name} {u.lastName}</SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            <div>
-                              <Label>Departamento (opcional)</Label>
-                              <Input value={associateForm.departmentId} onChange={(e) => setAssociateForm((p) => ({ ...p, departmentId: e.target.value }))} placeholder="Ex: TI, RH" />
-                            </div>
-                            <Button type="submit" className="w-full">Vincular</Button>
-                          </form>
-                        </DialogContent>
-                      </Dialog>
-                    </TableCell>
+                    <TableCell>{renderAgenteActions(a, { showAssociate: true })}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

@@ -33,9 +33,9 @@
   },
   "menu": {
     "principal": "Principal",
-    "despachante": "Despachante",
+    "despachante": "Operações",
     "operacional": "Operacional",
-    "frota": "Frota",
+    "frota": "Ativos",
     "gestao": "Gestão",
     "sistema": "Sistema",
     "financeiro": "Financeiro",
@@ -44,16 +44,16 @@
   },
   "pages": {
     "saida_entrega": "Saída de Entrega",
-    "saida_viagem": "Saída de Viagem",
-    "retorno_veiculo": "Retorno de Veículo",
-    "viagens": "Viagens",
+    "saida_viagem": "Operação Externa",
+    "retorno_veiculo": "Retorno de Ativo",
+    "viagens": "Operações",
     "abastecimentos": "Abastecimentos",
-    "simulador_viagem": "Simulador de Viagem",
-    "veiculos": "Veículos",
-    "motoristas": "Motoristas",
+    "simulador_viagem": "Simulador Operacional",
+    "veiculos": "Ativos",
+    "motoristas": "Equipe de Campo",
     "manutencoes": "Manutenções",
     "plano_manutencao": "Plano Manutenção",
-    "estoque_combustivel": "Estoque Combustível",
+    "estoque_combustivel": "Estoque Operacional",
     "multas": "Multas",
     "acidentes": "Acidentes",
     "acertos": "Acertos",
@@ -71,8 +71,8 @@
     "permissoes": "Permissões",
     "integracoes": "Integrações",
     "notas_fiscais": "Notas Fiscais",
-    "acerto_carga": "Acerto de Carga",
-    "carregamento": "Carregamento"
+    "acerto_carga": "Acerto Operacional",
+    "carregamento": "Gestão Operacional"
   },
   "chat": {
     "messages": "Mensagens",
@@ -82,7 +82,7 @@
     "select_chat": "Selecione uma conversa para começar"
   },
   "home": {
-    "manage_fleet": "Gerencie sua frota de forma inteligente e eficiente."
+    "manage_fleet": "Gerencie suporte, operações e ativos com inteligência."
   },
   "dashboard": {
     "overview": "Visão geral da operação — "

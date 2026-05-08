@@ -1116,6 +1116,8 @@ export const tiRouter = router({
     const fullRows = await client`
       SELECT a.*,
         CASE
+          WHEN COALESCE(a.ativo, true) = false OR a.status IN ('arquivado','removido')
+            THEN COALESCE(a.status, 'arquivado')
           WHEN COALESCE(a."updatedAt", a."ultimoContato", NOW() - INTERVAL '365 days') >= NOW() - INTERVAL '10 minutes'
             THEN 'online'
           ELSE 'offline'
@@ -1135,7 +1137,6 @@ export const tiRouter = router({
       FROM monitor_agentes a
       WHERE a."empresaId"=${empresaId}
         AND a."deletedAt" IS NULL
-        AND COALESCE(a.ativo, true) = true
       ORDER BY a.hostname ASC
     `.catch(()=>[]);
     if (fullRows.length > 0) return fullRows;
@@ -1143,6 +1144,8 @@ export const tiRouter = router({
     return client`
       SELECT a.*,
         CASE
+          WHEN COALESCE(a.ativo, true) = false OR a.status IN ('arquivado','removido')
+            THEN COALESCE(a.status, 'arquivado')
           WHEN COALESCE(a."updatedAt", a."ultimoContato", NOW() - INTERVAL '365 days') >= NOW() - INTERVAL '10 minutes'
             THEN 'online'
           ELSE 'offline'
@@ -1150,10 +1153,87 @@ export const tiRouter = router({
       FROM monitor_agentes a
       WHERE a."empresaId"=${empresaId}
         AND a."deletedAt" IS NULL
-        AND COALESCE(a.ativo, true) = true
       ORDER BY a.hostname ASC
     `.catch(()=>[]);
   }),
+
+  gerenciarAgente: protectedProcedure
+    .input(z.object({
+      agenteId: z.number(),
+      acao: z.enum(["remover_monitoramento", "desparear", "arquivar", "reativar", "limpar_vinculo"]),
+      empresaId: z.number().optional(),
+      motivo: z.string().optional(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      requireTiManager(ctx.user);
+      const client = await getRawClient();
+      if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const empresaId = await resolveTiEmpresaId(ctx, input.empresaId);
+      const rows = await client`
+        SELECT id, hostname, fingerprint, token, ativo, status
+        FROM monitor_agentes
+        WHERE id=${input.agenteId}
+          AND "empresaId"=${empresaId}
+          AND "deletedAt" IS NULL
+        LIMIT 1
+      `.catch(()=>[]);
+      const agente = rows[0];
+      if (!agente) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Ativo monitorado não encontrado." });
+      }
+
+      const revokedToken = `revoked_${agente.id}_${Date.now().toString(36)}`;
+      if (input.acao === "remover_monitoramento") {
+        await client`
+          UPDATE monitor_agentes
+          SET token=${revokedToken}, online=false, ativo=false, status='removido',
+              "deletedAt"=NOW(), "updatedAt"=NOW()
+          WHERE id=${agente.id} AND "empresaId"=${empresaId}
+        `;
+        return { success: true, action: input.acao, message: "Monitoramento removido. Histórico técnico permanece preservado para auditoria." };
+      }
+
+      if (input.acao === "desparear") {
+        await client`
+          UPDATE monitor_agentes
+          SET token=${revokedToken}, "pairingCode"=NULL, online=false, status='despareado',
+              "updatedAt"=NOW()
+          WHERE id=${agente.id} AND "empresaId"=${empresaId}
+        `;
+        return { success: true, action: input.acao, message: "PC despareado. O agente local precisará de novo código SYNC." };
+      }
+
+      if (input.acao === "limpar_vinculo") {
+        await client`
+          UPDATE monitor_agentes
+          SET token=${revokedToken}, "pairingCode"=NULL, user_id=NULL, department_id=NULL,
+              online=false, ativo=true, status='aguardando', "updatedAt"=NOW()
+          WHERE id=${agente.id} AND "empresaId"=${empresaId}
+        `;
+        return { success: true, action: input.acao, message: "Vínculo limpo. Este mesmo PC pode ser reinstalado sem criar duplicidade." };
+      }
+
+      if (input.acao === "arquivar") {
+        await client`
+          UPDATE monitor_agentes
+          SET token=${revokedToken}, online=false, ativo=false, status='arquivado',
+              "updatedAt"=NOW()
+          WHERE id=${agente.id} AND "empresaId"=${empresaId}
+        `;
+        return { success: true, action: input.acao, message: "Ativo arquivado. Ele pode ser reativado depois." };
+      }
+
+      if (input.acao === "reativar") {
+        await client`
+          UPDATE monitor_agentes
+          SET ativo=true, online=false, status='offline', "updatedAt"=NOW()
+          WHERE id=${agente.id} AND "empresaId"=${empresaId}
+        `;
+        return { success: true, action: input.acao, message: "Ativo reativado. Reinstale ou pareie novamente se necessário." };
+      }
+
+      return { success: true, action: input.acao };
+    }),
 
   getAgenteMetricas: protectedProcedure
     .input(z.object({ agenteId: z.number(), periodo: z.enum(["1h","24h","7d","30d","90d"]).optional(), empresaId: z.number().optional() }))

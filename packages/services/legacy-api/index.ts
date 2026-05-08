@@ -761,6 +761,8 @@ const setNoCacheDownloadHeaders = (res: Response) => {
   res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
+  res.setHeader("Surrogate-Control", "no-store");
+  res.setHeader("CDN-Cache-Control", "no-store");
 };
 
 const sendAgentDownload = (res: Response, filename: string, downloadName: string) => {
@@ -774,6 +776,13 @@ const sendAgentDownload = (res: Response, filename: string, downloadName: string
   }
   setNoCacheDownloadHeaders(res);
   res.setHeader("X-Synapse-Agent-Version", AGENT_VERSION);
+  res.setHeader("X-Synapse-Artifact", filename);
+  try {
+    const hash = crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex").toUpperCase();
+    res.setHeader("X-Synapse-Artifact-SHA256", hash);
+  } catch {
+    // Hash header is best-effort; the download should not fail if hashing does.
+  }
   res.download(filePath, downloadName);
 };
 
@@ -783,7 +792,7 @@ app.get("/api/agent/version", (_req, res) => {
 });
 
 app.get("/api/agent/download", (_req, res) => {
-  sendAgentDownload(res, "install_windows.bat", "Synapse-Agent-Setup-Windows.bat");
+  sendAgentDownload(res, "synapse-setup.exe", `SynapseSetup-${AGENT_VERSION}.exe`);
 });
 
 app.get("/api/agent/download/windows", (_req, res) => {
@@ -791,7 +800,11 @@ app.get("/api/agent/download/windows", (_req, res) => {
 });
 
 app.get("/api/agent/download/windows-installer", (_req, res) => {
-  sendAgentDownload(res, "install_windows.bat", "Synapse-Agent-Setup-Windows.bat");
+  sendAgentDownload(res, "synapse-setup.exe", `SynapseSetup-${AGENT_VERSION}.exe`);
+});
+
+app.get("/api/agent/download/windows-legacy-installer", (_req, res) => {
+  sendAgentDownload(res, "install_windows.bat", "Synapse-Agent-Setup-Legacy-Windows.bat");
 });
 
 app.get("/api/agent/download/windows-uninstaller", (_req, res) => {
@@ -945,7 +958,6 @@ app.post("/api/agent/pair", async (req, res) => {
       WHERE "empresaId"=${pairing.empresaId}
         AND (fingerprint=${fingerprint} OR hostname=${hostname})
         AND "deletedAt" IS NULL
-        AND COALESCE(ativo, true) = true
       ORDER BY id DESC
       LIMIT 1
     `.catch(() => []);
