@@ -1,0 +1,21 @@
+node_modules/
+**/node_modules/
+
+# Backend e artefatos de deploy ficam no Azure, não no pacote web da Vercel.
+packages/
+
+# App desktop/agente Windows não deve ser enviado para a Vercel.
+apps/
+
+# Artefatos locais grandes ou temporários.
+dist/
+mockups/
+*.zip
+*.exe
+*.msi
+*.blockmap
+*.log
+.turbo/
+.cache/
+.deploy_tmp/
+uploads/
