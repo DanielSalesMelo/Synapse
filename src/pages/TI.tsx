@@ -1180,7 +1180,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   }, [agentesQ.data]);
 
   const agentFilterOptions: { value: AgentFilter; label: string; count: number }[] = [
-    { value: "todos", label: "Todos", count: (agentesQ.data ?? []).length },
+    { value: "todos", label: "Ativos", count: (agentesQ.data ?? []).filter((a: any) => !agentIsInactive(a)).length },
     { value: "online", label: "Online", count: (agentesQ.data ?? []).filter((a: any) => agentStatus(a) === "online").length },
     { value: "offline", label: "Offline", count: (agentesQ.data ?? []).filter((a: any) => agentStatus(a) === "offline").length },
     { value: "arquivados", label: "Arquivados", count: (agentesQ.data ?? []).filter((a: any) => agentStatus(a) === "arquivado").length },
@@ -1199,7 +1199,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
       if (agentFilter === "removidos") return ["removido", "descartado"].includes(status);
       if (agentFilter === "duplicados") return agentDuplicateInfo.ids.has(String(agente.id));
       if (agentFilter === "sem_heartbeat") return agentDaysSinceHeartbeat(agente) >= agentStaleDays;
-      return true;
+      return !agentIsInactive(agente);
     });
   }, [agentesQ.data, agentDuplicateInfo.ids, agentFilter, agentStaleDays]);
 
