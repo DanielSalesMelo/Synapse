@@ -5,6 +5,7 @@
 - Backend: Azure App Service, Node + Express + tRPC
 - Banco de produção atual: Neon Postgres
 - Workspace local: `C:\Dev\Synapse`
+- Direção next-gen de produto: `docs/SYNAPSE_NEXT_GEN_BLUEPRINT.md`
 
 ## Fonte de verdade
 - Banco operacional publicado: Neon via `DATABASE_URL` do Azure
