@@ -145,7 +145,7 @@ export default function Login() {
               <Zap className="h-7 w-7 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-white tracking-tight group-hover:text-blue-300 transition-colors">Synapse</h1>
-            <p className="text-white/40 mt-1 text-sm group-hover:text-white/60 transition-colors">Gestão Inteligente de Logística</p>
+            <p className="text-white/40 mt-1 text-sm group-hover:text-white/60 transition-colors">Plataforma de operações inteligentes</p>
           </a>
         </div>
 
@@ -354,7 +354,7 @@ export default function Login() {
         </div>
 
         <p className="text-center text-xs text-white/20 mt-6">
-          Synapse — Plataforma segura de gestão de logística
+          Synapse — Plataforma segura de suporte, TI e operações inteligentes
         </p>
       </div>
     </div>
