@@ -98801,6 +98801,13 @@ app.post("/api/agent/pair", async (req, res) => {
     const token = `agent_${pairing.empresaId}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
     const pairedUserId = pairing.user_id || pairing.criadoPor || null;
     const pairedDepartmentId = pairing.department_id || null;
+    const pairedUsers = pairedUserId ? await client`
+          SELECT id, name, email, role, "empresaId"
+          FROM users
+          WHERE id = ${Number(pairedUserId)}
+          LIMIT 1
+        `.catch(() => []) : [];
+    const pairedUser = pairedUsers[0] ?? null;
     const fingerprint = req.body?.fingerprint || `${hostname3}:${req.body?.platform?.machine || ""}:${req.body?.platform?.processor || ""}`;
     const soValue = req.body?.platform?.os || req.body?.so || req.body?.platform || null;
     const anydeskValue = req.body?.anydeskId || req.body?.anydesk_id || null;
@@ -98861,7 +98868,25 @@ app.post("/api/agent/pair", async (req, res) => {
       SET "usado"=true, is_used=true, "agenteId"=${deviceId}, "usadoEm"=NOW(), "hostnameVinculado"=${hostname3}
       WHERE id=${pairing.id}
     `;
-    return res.json({ token, deviceId, empresaId: pairing.empresaId, hostname: hostname3 });
+    return res.json({
+      token,
+      deviceId,
+      empresaId: pairing.empresaId,
+      hostname: hostname3,
+      userId: pairedUser?.id ?? pairedUserId ?? null,
+      userName: pairedUser?.name ?? null,
+      userEmail: pairedUser?.email ?? null,
+      userRole: pairedUser?.role ?? null,
+      userIsTi: pairedUser ? canManageTiRole(pairedUser.role) : false,
+      user: pairedUser ? {
+        id: pairedUser.id,
+        name: pairedUser.name,
+        email: pairedUser.email,
+        role: pairedUser.role,
+        empresaId: pairedUser.empresaId,
+        isTiManager: canManageTiRole(pairedUser.role)
+      } : null
+    });
   } catch (error48) {
     console.error("[Agent Pair] Falha:", error48);
     return res.status(500).json({ error: "PAIR_FAILED" });

@@ -62,6 +62,32 @@ const TI_MANAGER_ROLES = new Set([
   "supervisor_ti",
 ]);
 
+const formatDateTimeBR = (value?: string | Date | null) => {
+  if (!value) return "-";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "-";
+  return new Intl.DateTimeFormat("pt-BR", {
+    timeZone: "America/Sao_Paulo",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+};
+
+const formatDateBR = (value?: string | Date | null) => {
+  if (!value) return "-";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "-";
+  return new Intl.DateTimeFormat("pt-BR", {
+    timeZone: "America/Sao_Paulo",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(date);
+};
+
 // ─── Componente de Lightbox ───────────────────────────────────────────────────
 function Lightbox({ src, onClose }: { src: string; onClose: () => void }) {
   useEffect(() => {
@@ -187,7 +213,7 @@ function TicketChat({ ticketId, empresaId }: { ticketId: number; empresaId: numb
                         <span className="text-xs font-medium">{isMine ? "Você" : authorName}</span>
                         {m.isInterno && <Badge variant="outline" className="text-xs py-0 h-4">Interno</Badge>}
                         <span className="text-xs text-muted-foreground">
-                          {new Date(m.createdAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+                          {formatDateTimeBR(m.createdAt)}
                         </span>
                       </div>
                       {m.tipo === "imagem" || (fileUrl && isImage(fileUrl)) ? (
@@ -459,7 +485,7 @@ function TicketDetail({ ticket, onClose, empresaId, isTiManager }: { ticket: any
                     {(h.fromStatus ?? "inicial").replaceAll("_", " ")} → {h.toStatus.replaceAll("_", " ")}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {h.autor_nome ?? "Sistema"} · {new Date(h.createdAt).toLocaleString("pt-BR")}
+                    {h.autor_nome ?? "Sistema"} · {formatDateTimeBR(h.createdAt)}
                   </p>
                   {h.motivo && <p className="text-xs text-muted-foreground mt-1">{h.motivo}</p>}
                 </div>
@@ -515,7 +541,7 @@ function TicketDetail({ ticket, onClose, empresaId, isTiManager }: { ticket: any
                     <div key={note.id} className="rounded-lg bg-muted/40 p-3">
                       <p className="text-sm">{note.conteudo}</p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {note.autor_nome ?? "Equipe TI"} · {new Date(note.createdAt).toLocaleString("pt-BR")}
+                        {note.autor_nome ?? "Equipe TI"} · {formatDateTimeBR(note.createdAt)}
                       </p>
                     </div>
                   ))
@@ -1123,7 +1149,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                       <div className={`h-2 w-2 rounded-full ${a.severidade === "critico" ? "bg-red-500 animate-pulse" : a.severidade === "atencao" ? "bg-yellow-500" : "bg-blue-500"}`} />
                       <span className="text-sm">{a.mensagem}</span>
                     </div>
-                    <span className="text-xs text-muted-foreground">{new Date(a.criadoEm).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</span>
+                    <span className="text-xs text-muted-foreground">{formatDateTimeBR(a.criadoEm)}</span>
                   </div>
                 ))}
                 {(alertasQ.data ?? []).length === 0 && <p className="text-sm text-muted-foreground text-center py-4">Nenhum alerta ativo</p>}
@@ -1232,7 +1258,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                         <TableCell><Badge variant="outline" className="text-xs">{t.categoria}</Badge></TableCell>
                         <TableCell><Badge className={`text-xs ${PRIORIDADE_COLORS[t.prioridade] ?? ""}`}>{PRIORIDADE_ICONS[t.prioridade]} {t.prioridade}</Badge></TableCell>
                         <TableCell><Badge className={`text-xs ${STATUS_COLORS[t.status] ?? ""}`}>{t.status.replace("_", " ")}</Badge></TableCell>
-                        <TableCell className="text-xs text-muted-foreground">{new Date(t.createdAt).toLocaleDateString("pt-BR")}</TableCell>
+                        <TableCell className="text-xs text-muted-foreground">{formatDateTimeBR(t.createdAt)}</TableCell>
                         <TableCell onClick={(e) => e.stopPropagation()}>
                           {isTiManager ? (
                             <Select value={t.status} onValueChange={(v) => updateStatus.mutate({ id: t.id, status: v as any })}>
@@ -1423,7 +1449,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                         <TableBody>
                           {(agenteMetricas.data?.metricas ?? []).slice(-20).reverse().map((m: any, index: number) => (
                             <TableRow key={m.id ?? metricTimestamp(m) ?? index}>
-                              <TableCell className="text-xs font-mono">{metricTimestamp(m) ? new Date(metricTimestamp(m)).toLocaleTimeString("pt-BR") : "—"}</TableCell>
+                              <TableCell className="text-xs font-mono">{formatDateTimeBR(metricTimestamp(m))}</TableCell>
                               <TableCell className={`text-xs ${(metricCpuUsage(m) ?? 0) > 80 ? "text-red-600 font-bold" : ""}`}>{metricCpuUsage(m) ?? "—"}%</TableCell>
                               <TableCell className={`text-xs ${(metricRamUsage(m) ?? 0) > 80 ? "text-red-600 font-bold" : ""}`}>{metricRamUsage(m) ?? "—"}%</TableCell>
                               <TableCell className="text-xs">{metricDiskUsage(m) ?? "—"}%</TableCell>
@@ -1475,7 +1501,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                         {agentAnyDesk(a) && <span className="ml-auto font-mono">{agentAnyDesk(a)}</span>}
                       </div>
                     )}
-                    <p className="text-xs text-muted-foreground">Última coleta: {agentLastCollected(a) ? new Date(agentLastCollected(a)).toLocaleTimeString("pt-BR") : "—"}</p>
+                    <p className="text-xs text-muted-foreground">Última coleta: {formatDateTimeBR(agentLastCollected(a))}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -1570,7 +1596,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                         )}
                       </TableCell>
                       <TableCell className="text-xs text-muted-foreground">
-                        {req.solicitadoEm ? new Date(req.solicitadoEm).toLocaleString("pt-BR") : "—"}
+                        {formatDateTimeBR(req.solicitadoEm)}
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
@@ -1667,7 +1693,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                     <TableCell className="font-mono text-sm">{a.anydesk || "—"}</TableCell>
                     <TableCell className="font-mono text-sm">{a.teamviewer || "—"}</TableCell>
                     <TableCell className="text-sm">{a.responsavel}</TableCell>
-                    <TableCell className="text-xs text-muted-foreground">{a.ultimaSessao ? new Date(a.ultimaSessao).toLocaleString("pt-BR") : "—"}</TableCell>
+                    <TableCell className="text-xs text-muted-foreground">{formatDateTimeBR(a.ultimaSessao)}</TableCell>
                     <TableCell>
                       {a.anydesk && (
                         <Button variant="ghost" size="sm" className="h-7 text-xs text-blue-600" asChild>
@@ -1740,7 +1766,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                     <TableRow key={c.id}>
                       <TableCell className="font-medium">{c.nome}</TableCell>
                       <TableCell><Badge variant="outline">{c.tipo}</Badge></TableCell>
-                      <TableCell className="text-sm">{new Date(c.vencimento).toLocaleDateString("pt-BR")}</TableCell>
+                      <TableCell className="text-sm">{formatDateBR(c.vencimento)}</TableCell>
                       <TableCell>
                         {status === "vencido" ? <Badge className="bg-red-500">Vencido</Badge> :
                          status === "expirando" ? <Badge className="bg-orange-500 animate-pulse">Vence em {diasParaVencer} dias</Badge> :
@@ -1819,7 +1845,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                       <CardTitle className="text-sm">{l.software}</CardTitle>
                       {expirandoEm30 && <Badge className="bg-orange-100 text-orange-700 text-xs">Expirando em breve</Badge>}
                     </div>
-                    <p className="text-xs text-muted-foreground">{l.tipo} · {l.fornecedor} · Expira: {l.expiracao ? new Date(l.expiracao).toLocaleDateString("pt-BR") : "—"}</p>
+                    <p className="text-xs text-muted-foreground">{l.tipo} · {l.fornecedor} · Expira: {formatDateBR(l.expiracao)}</p>
                   </CardHeader>
                   <CardContent className="space-y-2">
                     <div className="flex justify-between text-xs">
@@ -1987,7 +2013,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                       <p className="text-xs text-muted-foreground">Alçada {c.nivelAlcada ?? 1}</p>
                     </TableCell>
                     <TableCell><Badge variant="secondary" className="text-xs">{c.status}</Badge></TableCell>
-                    <TableCell className="text-xs text-muted-foreground">{new Date(c.createdAt).toLocaleDateString("pt-BR")}</TableCell>
+                    <TableCell className="text-xs text-muted-foreground">{formatDateTimeBR(c.createdAt)}</TableCell>
                     <TableCell className="text-right">
                       <Select value={c.status} onValueChange={(value) => updateCompra.mutate({ id: c.id, status: value as any })} disabled={updateCompra.isPending}>
                         <SelectTrigger className="w-[150px] ml-auto">
@@ -2082,7 +2108,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                     <TableCell className="text-sm">{m.tecnico}</TableCell>
                     <TableCell className="text-sm">{m.custo ? `R$ ${m.custo.toLocaleString("pt-BR")}` : "—"}</TableCell>
                     <TableCell><Badge variant="secondary" className="text-xs">{m.status}</Badge></TableCell>
-                    <TableCell className="text-xs text-muted-foreground">{m.dataAgendada ? new Date(m.dataAgendada).toLocaleDateString("pt-BR") : new Date(m.createdAt).toLocaleDateString("pt-BR")}</TableCell>
+                    <TableCell className="text-xs text-muted-foreground">{m.dataAgendada ? formatDateTimeBR(m.dataAgendada) : formatDateTimeBR(m.createdAt)}</TableCell>
                   </TableRow>
                 ))}
                 {(manutencoesQ.data ?? []).length === 0 && (
@@ -2220,7 +2246,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                         {!c.usado && new Date(c.expiresAt) < new Date() && <Badge variant="destructive" className="text-xs">Expirado</Badge>}
                         {!c.usado && new Date(c.expiresAt) > new Date() && <Badge className="bg-green-100 text-green-700 text-xs">Ativo</Badge>}
                       </div>
-                      <p className="text-xs text-muted-foreground">Expira: {new Date(c.expiresAt).toLocaleString("pt-BR")}</p>
+                      <p className="text-xs text-muted-foreground">Expira: {formatDateTimeBR(c.expiresAt)}</p>
                       {c.hostnameVinculado && <p className="text-xs text-muted-foreground">PC: {c.hostnameVinculado}</p>}
                     </div>
                     <div className="flex gap-1">
@@ -2305,7 +2331,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                         </div>
                       </TableCell>
                       <TableCell className="text-xs text-muted-foreground">
-                        {agentLastCollected(a) ? new Date(agentLastCollected(a)).toLocaleString("pt-BR") : "—"}
+                        {formatDateTimeBR(agentLastCollected(a))}
                       </TableCell>
                       <TableCell>
                         <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => { setSelectedAgente(a); setTab("monitoramento"); }}>
@@ -2368,7 +2394,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                       <div className="bg-muted p-4 rounded-lg text-center">
                         <p className="text-xs text-muted-foreground mb-2">Código de Pareamento</p>
                         <p className="text-2xl font-mono font-bold text-primary">{generatedCode.code}</p>
-                        <p className="text-xs text-muted-foreground mt-2">Expira em: {new Date(generatedCode.expiresAt).toLocaleString("pt-BR")}</p>
+                        <p className="text-xs text-muted-foreground mt-2">Expira em: {formatDateTimeBR(generatedCode.expiresAt)}</p>
                       </div>
                       <Button onClick={handleCopyCode} className="w-full" variant="outline"><Copy className="h-4 w-4 mr-2" />Copiar Código</Button>
                       <Button onClick={() => { setGeneratedCode(null); setShowGenerateCodeModal(false); }} className="w-full" variant="secondary">Fechar</Button>
@@ -2426,7 +2452,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                       </div>
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground">
-                      {agentLastCollected(a) ? new Date(agentLastCollected(a)).toLocaleString("pt-BR") : "—"}
+                      {formatDateTimeBR(agentLastCollected(a))}
                     </TableCell>
                     <TableCell>
                       <Dialog open={showAssociateModal && selectedAgenteForAssociate?.id === a.id} onOpenChange={(open) => { if (!open) setShowAssociateModal(false); }}>
@@ -2486,7 +2512,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                 }`} />
                 <div className="flex-1">
                   <p className="text-sm font-medium">{a.mensagem}</p>
-                  <p className="text-xs text-muted-foreground">{a.hostname && `PC: ${a.hostname} · `}{new Date(a.criadoEm).toLocaleString("pt-BR")}</p>
+                  <p className="text-xs text-muted-foreground">{a.hostname && `PC: ${a.hostname} · `}{formatDateTimeBR(a.criadoEm)}</p>
                 </div>
                 <Badge variant="outline" className={`text-xs flex-shrink-0 ${
                   a.severidade === "critico" ? "border-red-300 text-red-700" :

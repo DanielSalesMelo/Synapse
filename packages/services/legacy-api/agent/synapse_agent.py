@@ -637,11 +637,20 @@ def pair_agent(config: Dict, codigo: str) -> Optional[Dict[str, Any]]:
             result = data.get("result", {}).get("data", {}).get("json", data.get("result", {}).get("data", data))
             token = result.get("token") if isinstance(result, dict) else None
             if token:
+                user_info = result.get("user") if isinstance(result.get("user"), dict) else {}
+                user_role = result.get("userRole") or user_info.get("role")
+                user_is_ti = bool(result.get("userIsTi") or user_info.get("isTiManager") or str(user_role or "").strip().lower() in TI_MANAGER_ROLES)
                 log.info(f"[Pair] [OK] Pareamento realizado! Token: {token[:16]}...")
                 return {
                     "token": token,
                     "device_id": result.get("deviceId") or result.get("agenteId"),
                     "empresa_id": result.get("empresaId"),
+                    "user_id": result.get("userId") or user_info.get("id"),
+                    "user_name": result.get("userName") or user_info.get("name"),
+                    "user_email": result.get("userEmail") or user_info.get("email"),
+                    "user_role": user_role,
+                    "user_is_ti": user_is_ti,
+                    "agent_mode": "ti" if user_is_ti else "simple",
                 }
             else:
                 log.error(f"[Pair] Servidor não retornou token: {data}")
@@ -1653,6 +1662,18 @@ if __name__ == "__main__":
                     config["device_id"] = pair_result["device_id"]
                 if pair_result.get("empresa_id"):
                     config["empresa_id"] = pair_result["empresa_id"]
+                if pair_result.get("user_id"):
+                    config["user_id"] = pair_result["user_id"]
+                if pair_result.get("user_name"):
+                    config["user_name"] = pair_result["user_name"]
+                if pair_result.get("user_email"):
+                    config["user_email"] = pair_result["user_email"]
+                if pair_result.get("user_role"):
+                    config["user_role"] = pair_result["user_role"]
+                if "user_is_ti" in pair_result:
+                    config["user_is_ti"] = bool(pair_result.get("user_is_ti"))
+                if pair_result.get("agent_mode"):
+                    config["agent_mode"] = pair_result["agent_mode"]
                 save_config(config)
                 print(f"\n[OK] PC vinculado com sucesso!")
                 if "--pair-only" in sys.argv:
@@ -1709,8 +1730,10 @@ if __name__ == "__main__":
         elif cmd == "--mode" and len(sys.argv) > 2:
             config = load_config()
             mode = sys.argv[2].strip().lower()
+            if mode == "auto":
+                mode = "ti" if is_ti_user(config) else "simple"
             if mode not in ["simple", "ti"]:
-                print("Use: --mode simple  ou  --mode ti")
+                print("Use: --mode simple, --mode ti ou --mode auto")
                 sys.exit(1)
             config["agent_mode"] = mode
             save_config(config)

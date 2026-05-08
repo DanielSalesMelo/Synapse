@@ -14,6 +14,7 @@ set "DESKTOP_DIR="
 set "STARTUP_DIR="
 set "SHORTCUT_CREATED=0"
 set "AUTOSTART_TASK_CREATED=0"
+set "AUTOSTART_RUN_CREATED=0"
 set "UNINSTALL_BAT=%INSTALL_DIR%\desinstalar_agente.bat"
 set "LEGACY_DIR1=%AppData%\SynapseAgent"
 set "LEGACY_DIR2=%ProgramData%\SynapseAgent"
@@ -28,6 +29,7 @@ echo.
 echo Limpando instalacoes antigas...
 taskkill /F /IM synapse-agent.exe >nul 2>&1
 schtasks /delete /tn "SynapseAgent" /f >nul 2>&1
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "SynapseAgent" /f >nul 2>&1
 for /f "usebackq delims=" %%i in (`powershell -NoProfile -ExecutionPolicy Bypass -Command "[Environment]::GetFolderPath('Desktop')"`) do set "DESKTOP_DIR=%%i"
 for /f "usebackq delims=" %%i in (`powershell -NoProfile -ExecutionPolicy Bypass -Command "[Environment]::GetFolderPath('Startup')"`) do set "STARTUP_DIR=%%i"
 if "%DESKTOP_DIR%"=="" if exist "%USERPROFILE%\Desktop" set "DESKTOP_DIR=%USERPROFILE%\Desktop"
@@ -91,13 +93,13 @@ if errorlevel 1 (
   exit /b 1
 )
 
-echo Definindo modo padrao do agente (usuario comum)...
-"%AGENT_EXE%" --mode simple >nul 2>&1
+echo Definindo modo do agente conforme permissoes do usuario vinculado...
+"%AGENT_EXE%" --mode auto
 
 echo Registrando inicializacao automatica...
-schtasks /create /tn "SynapseAgent" /tr "\"%AGENT_EXE%\"" /sc onlogon /f >nul 2>&1
+schtasks /create /tn "SynapseAgent" /tr "\"%AGENT_EXE%\"" /sc onlogon /rl LIMITED /f >nul 2>&1
 if errorlevel 1 (
-  echo [AVISO] Nao foi possivel criar a tarefa automatica. Sera usado fallback pela pasta Inicializar.
+  echo [AVISO] Nao foi possivel criar a tarefa automatica. Sera usado fallback pelo Registro do usuario.
 ) else (
   set "AUTOSTART_TASK_CREATED=1"
   echo [OK] Tarefa automatica criada.
@@ -114,9 +116,14 @@ if not "%DESKTOP_DIR%"=="" (
   )
 )
 
-if "%AUTOSTART_TASK_CREATED%"=="0" if not "%STARTUP_DIR%"=="" (
-  powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-    "$WshShell = New-Object -ComObject WScript.Shell; $Shortcut = $WshShell.CreateShortcut('%STARTUP_DIR%\Synapse Agent.lnk'); $Shortcut.TargetPath = '%AGENT_EXE%'; $Shortcut.WorkingDirectory = '%INSTALL_DIR%'; $Shortcut.IconLocation = '%AGENT_EXE%,0'; $Shortcut.Save()"
+if "%AUTOSTART_TASK_CREATED%"=="0" (
+  reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "SynapseAgent" /t REG_SZ /d "\"%AGENT_EXE%\"" /f >nul 2>&1
+  if errorlevel 1 (
+    echo [AVISO] Nao foi possivel registrar a inicializacao automatica. Abra o Synapse Suporte pelo atalho.
+  ) else (
+    set "AUTOSTART_RUN_CREATED=1"
+    echo [OK] Inicializacao automatica registrada para o usuario atual.
+  )
 )
 
 (
@@ -124,6 +131,7 @@ echo @echo off
 echo setlocal
 echo taskkill /F /IM synapse-agent.exe ^>nul 2^>^&1
 echo schtasks /delete /tn "SynapseAgent" /f ^>nul 2^>^&1
+echo reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "SynapseAgent" /f ^>nul 2^>^&1
 echo del /f /q "%STARTUP_DIR%\Synapse Agent.lnk" ^>nul 2^>^&1
 echo del /f /q "%DESKTOP_DIR%\Synapse Suporte.lnk" ^>nul 2^>^&1
 echo del /f /q "%DESKTOP_ONEDRIVE%\Synapse Suporte.lnk" ^>nul 2^>^&1
@@ -134,11 +142,14 @@ echo pause
 ) > "%UNINSTALL_BAT%"
 
 start "" "%AGENT_EXE%"
+timeout /t 2 /nobreak >nul 2>&1
+start "" "%AGENT_EXE%" --support
 
 echo.
 echo =====================================================
 echo  Instalacao concluida
 echo  Pasta: %INSTALL_DIR%
+echo  Configuracao: %USERPROFILE%\.synapse-agent\config.json
 echo  Servidor: %SERVER_URL%
 echo  Desinstalador: %UNINSTALL_BAT%
 if "%SHORTCUT_CREATED%"=="1" (
