@@ -98678,6 +98678,9 @@ app.get("/api/agent/version", (_req, res) => {
   setNoCacheDownloadHeaders(res);
   res.json({ version: AGENT_VERSION });
 });
+app.get("/api/agent/download", (_req, res) => {
+  sendAgentDownload(res, "install_windows.bat", "Synapse-Agent-Setup-Windows.bat");
+});
 app.get("/api/agent/download/windows", (_req, res) => {
   sendAgentDownload(res, "synapse-agent.exe", "Synapse-Agent-Windows.exe");
 });
