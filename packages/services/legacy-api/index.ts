@@ -3,6 +3,9 @@ if (typeof globalThis.crypto === "undefined") {
   (globalThis as any).crypto = webcrypto;
 }
 
+const SYNAPSE_TIME_ZONE = "America/Sao_Paulo";
+process.env.TZ = process.env.TZ || SYNAPSE_TIME_ZONE;
+
 import express, { type NextFunction, type Request, type Response } from "express";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import cors from "cors";
@@ -406,11 +409,14 @@ const requireAgent = async (req: Request, res: Response, next: NextFunction) => 
     }
 
     const rows = await client`
-      SELECT id, "empresaId", hostname, token, user_id, department_id, status, online, "ultimoContato"
-      FROM monitor_agentes
-      WHERE token=${token}
-        AND "deletedAt" IS NULL
-        AND COALESCE(ativo, true) = true
+      SELECT a.id, a."empresaId", a.hostname, a.token, a.user_id, a.department_id,
+        a.status, a.online, a."ultimoContato",
+        u.name as user_name, u.email as user_email, u.role as user_role
+      FROM monitor_agentes a
+      LEFT JOIN users u ON u.id::text = a.user_id::text
+      WHERE a.token=${token}
+        AND a."deletedAt" IS NULL
+        AND COALESCE(a.ativo, true) = true
       LIMIT 1
     `.catch((error) => {
       console.warn("[Agent Auth] Falha ao validar token:", error?.message || error);
@@ -431,6 +437,7 @@ const requireAgent = async (req: Request, res: Response, next: NextFunction) => 
 const TI_MANAGER_ROLES = new Set([
   "master_admin",
   "admin",
+  "admin_empresa",
   "administrador",
   "ti",
   "ti_master",
@@ -439,6 +446,71 @@ const TI_MANAGER_ROLES = new Set([
 ]);
 
 const canManageTiRole = (role: unknown) => TI_MANAGER_ROLES.has(String(role || "").toLowerCase());
+
+const ensureAgentPolicyColumns = async (client: any) => {
+  await client`ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "isCritical24x7" boolean DEFAULT false`.catch(() => {});
+  await client`ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "notifyOnOffline" boolean DEFAULT false`.catch(() => {});
+  await client`ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "notifyOnNetworkLoss" boolean DEFAULT false`.catch(() => {});
+  await client`ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "offlineGraceMinutes" integer DEFAULT 10`.catch(() => {});
+  await client`ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "monitoringNotes" text`.catch(() => {});
+  await client`ALTER TABLE monitor_agentes ADD COLUMN IF NOT EXISTS "lastPolicyUpdateAt" timestamp`.catch(() => {});
+};
+
+const getRequestIp = (req: Request) =>
+  String(req.headers["x-forwarded-for"] || "")
+    .split(",")[0]
+    .trim() || req.socket?.remoteAddress || null;
+
+async function writeAuditTrail(
+  client: any,
+  req: Request,
+  params: {
+    empresaId?: number | null;
+    userId?: number | null;
+    userName?: string | null;
+    userRole?: string | null;
+    action: "CREATE" | "UPDATE" | "DELETE" | "RESTORE" | "LOGIN" | "LOGOUT";
+    eventType?: "login" | "logout" | "create" | "update" | "delete" | "restore" | "config_change" | "access_denied";
+    module: string;
+    tableName: string;
+    recordId?: number | null;
+    description: string;
+    before?: unknown;
+    after?: unknown;
+    risk?: "baixo" | "medio" | "alto" | "critico";
+  },
+) {
+  if (!client || !params.userId) return;
+  const auditContext = {
+    timezone: SYNAPSE_TIME_ZONE,
+    occurredAt: new Date().toISOString(),
+  };
+  const before = params.before ? JSON.stringify({ ...auditContext, data: params.before }) : null;
+  const after = params.after ? JSON.stringify({ ...auditContext, data: params.after }) : null;
+  const recordId = Number(params.recordId || 0);
+  const ip = getRequestIp(req);
+  const userAgent = req.headers["user-agent"] ? String(req.headers["user-agent"]) : null;
+  const userName = params.userName || "Synapse";
+  const userRole = params.userRole || null;
+
+  await client`
+    INSERT INTO audit_log ("empresaId","userId","userName",acao,tabela,"registroId","dadosAntes","dadosDepois",ip,"userAgent","createdAt")
+    VALUES (${params.empresaId ?? null},${Number(params.userId)},${userName},${params.action},${params.tableName},${recordId},${before},${after},${ip},${userAgent},NOW())
+  `.catch(() => {});
+
+  await client`
+    INSERT INTO auditoria_detalhada (
+      "empresaId","userId","userName","userRole","tipoEvento",modulo,tabela,"registroId",
+      descricao,"dadosAntes","dadosDepois",ip,"userAgent",risco,"createdAt"
+    )
+    VALUES (
+      ${params.empresaId ?? null},${Number(params.userId)},${userName},${userRole},
+      ${params.eventType || (params.action === "DELETE" ? "delete" : params.action === "CREATE" ? "create" : "update")},
+      ${params.module},${params.tableName},${recordId || null},
+      ${params.description},${before},${after},${ip},${userAgent},${params.risk || "baixo"},NOW()
+    )
+  `.catch(() => {});
+}
 
 const requireAgentTi = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -810,14 +882,26 @@ const sendAgentDownload = (res: Response, filename: string, downloadName: string
   res.download(filePath, downloadName);
 };
 
-app.get("/api/agent/version", (_req, res) => {
+app.get("/api/agent/version", (req, res) => {
   setNoCacheDownloadHeaders(res);
+  const proto = String(req.headers["x-forwarded-proto"] || req.protocol || "https").split(",")[0].trim();
+  const origin = `${proto}://${req.get("host")}`;
   res.json({
     version: AGENT_VERSION,
     productName: "Synapse para Windows",
     artifact: `SynapseSetup-${AGENT_VERSION}.exe`,
     runtime: "electron",
     worker: "python-legacy",
+    downloadUrl: `${origin}/api/agent/download`,
+    mandatory: false,
+    timezone: SYNAPSE_TIME_ZONE,
+    publishedAt: new Date().toISOString(),
+    releaseNotes: [
+      "Login obrigatório no agente para separar usuário comum, TI/Admin e master_admin.",
+      "Ações de agente com arquivamento/remoção operacional auditada.",
+      "Monitoramento 24x7 para servidores e máquinas críticas.",
+      "Correção visual do Electron e horários exibidos em America/Sao_Paulo.",
+    ],
   });
 });
 
@@ -1048,6 +1132,21 @@ app.post("/api/agent/pair", async (req, res) => {
       WHERE id=${pairing.id}
     `;
 
+    await writeAuditTrail(client, req, {
+      empresaId: pairing.empresaId,
+      userId: pairedUser?.id ?? pairedUserId,
+      userName: pairedUser?.name ?? pairedUser?.email ?? "Pareamento Synapse",
+      userRole: pairedUser?.role ?? null,
+      action: "UPDATE",
+      eventType: "config_change",
+      module: "ti",
+      tableName: "monitor_agentes",
+      recordId: Number(deviceId),
+      description: `Dispositivo pareado pelo Synapse Windows: ${hostname}`,
+      after: { deviceId, hostname, userId: pairedUser?.id ?? pairedUserId },
+      risk: "medio",
+    });
+
     return res.json({
       token,
       deviceId,
@@ -1126,9 +1225,38 @@ app.post("/api/agent/auth/login", async (req, res) => {
         RETURNING id
       `.catch(() => []);
       if (!updatedAgents[0]) {
+        await writeAuditTrail(client, req, {
+          empresaId: user.empresaId,
+          userId: user.id,
+          userName: user.name ?? user.email,
+          userRole: user.role,
+          action: "UPDATE",
+          eventType: "access_denied",
+          module: "ti",
+          tableName: "monitor_agentes",
+          recordId: deviceId,
+          description: "Tentativa de ativar modo TI/Admin em dispositivo não autorizado.",
+          after: { deviceId, email },
+          risk: "alto",
+        });
         return res.status(403).json({ error: "DEVICE_NOT_AUTHORIZED_FOR_USER" });
       }
     }
+
+    await writeAuditTrail(client, req, {
+      empresaId: user.empresaId,
+      userId: user.id,
+      userName: user.name ?? user.email,
+      userRole: user.role,
+      action: "LOGIN",
+      eventType: "login",
+      module: "ti",
+      tableName: "monitor_agentes",
+      recordId: deviceId || user.id,
+      description: `Login no Synapse Windows${canManageTiRole(user.role) ? " em modo TI/Admin" : ""}.`,
+      after: { deviceId: deviceId || null, isTiManager: canManageTiRole(user.role) },
+      risk: canManageTiRole(user.role) ? "medio" : "baixo",
+    });
 
     return res.json({
       success: true,
@@ -1279,6 +1407,8 @@ app.get("/api/agent/profile", requireAgent, async (req, res) => {
       a."pairingCode", a.fingerprint, a."ultimaVersao", a.setor,
       a.user_id, a.department_id, a."cpuModel", a."gpuModel",
       a."placaMaeModelo", a."socketCpu", a."serialNumber", a."assetTag",
+      a."isCritical24x7", a."notifyOnOffline", a."notifyOnNetworkLoss",
+      a."offlineGraceMinutes", a."monitoringNotes", a."lastPolicyUpdateAt",
       e.nome as empresa_nome,
       u.name as usuario_nome,
       u.email as usuario_email,
@@ -1321,6 +1451,8 @@ app.get("/api/agent/profile", requireAgent, async (req, res) => {
       a."pairingCode", a.fingerprint, a."ultimaVersao", a.setor,
       a.user_id, a.department_id, a."cpuModel", a."gpuModel",
       a."placaMaeModelo", a."socketCpu", a."serialNumber", a."assetTag",
+      false as "isCritical24x7", false as "notifyOnOffline", false as "notifyOnNetworkLoss",
+      10 as "offlineGraceMinutes", NULL as "monitoringNotes", NULL as "lastPolicyUpdateAt",
       e.nome as empresa_nome,
       u.name as usuario_nome,
       u.email as usuario_email,
@@ -1340,11 +1472,89 @@ app.get("/api/agent/profile", requireAgent, async (req, res) => {
   return sendProfile(fallbackProfileRows[0] ?? null);
 });
 
+app.get("/api/agent/device-policy", requireAgent, async (req, res) => {
+  const agent = (req as any).agent;
+  const client = await getRawClient();
+  if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+  await ensureAgentPolicyColumns(client);
+  const rows = await client`
+    SELECT "isCritical24x7", "notifyOnOffline", "notifyOnNetworkLoss",
+      "offlineGraceMinutes", "monitoringNotes", "lastPolicyUpdateAt"
+    FROM monitor_agentes
+    WHERE id=${agent.id}
+      AND "empresaId"=${agent.empresaId}
+      AND "deletedAt" IS NULL
+    LIMIT 1
+  `.catch(() => []);
+  const policy = rows[0] ?? {};
+  res.json({
+    isCritical24x7: Boolean(policy.isCritical24x7),
+    notifyOnOffline: Boolean(policy.notifyOnOffline),
+    notifyOnNetworkLoss: Boolean(policy.notifyOnNetworkLoss),
+    offlineGraceMinutes: Number(policy.offlineGraceMinutes || 10),
+    monitoringNotes: policy.monitoringNotes || "",
+    lastPolicyUpdateAt: policy.lastPolicyUpdateAt || null,
+  });
+});
+
+app.put("/api/agent/device-policy", requireAgent, async (req, res) => {
+  const agent = (req as any).agent;
+  const client = await getRawClient();
+  if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
+  const agentUserId = Number(agent.user_id || 0);
+  if (!Number.isFinite(agentUserId) || agentUserId <= 0) {
+    return res.status(403).json({ error: "LOGIN_REQUIRED_FOR_DEVICE_POLICY" });
+  }
+  await ensureAgentPolicyColumns(client);
+  const offlineGraceMinutes = Math.min(240, Math.max(3, Number(req.body?.offlineGraceMinutes || 10)));
+  const monitoringNotes = String(req.body?.monitoringNotes || "").trim().slice(0, 500);
+  const nextPolicy = {
+    isCritical24x7: Boolean(req.body?.isCritical24x7),
+    notifyOnOffline: Boolean(req.body?.notifyOnOffline || req.body?.isCritical24x7),
+    notifyOnNetworkLoss: Boolean(req.body?.notifyOnNetworkLoss),
+    offlineGraceMinutes,
+    monitoringNotes,
+  };
+  const rows = await client`
+    UPDATE monitor_agentes
+    SET "isCritical24x7"=${nextPolicy.isCritical24x7},
+        "notifyOnOffline"=${nextPolicy.notifyOnOffline},
+        "notifyOnNetworkLoss"=${nextPolicy.notifyOnNetworkLoss},
+        "offlineGraceMinutes"=${nextPolicy.offlineGraceMinutes},
+        "monitoringNotes"=${nextPolicy.monitoringNotes || null},
+        "lastPolicyUpdateAt"=NOW(),
+        "updatedAt"=NOW()
+    WHERE id=${agent.id}
+      AND "empresaId"=${agent.empresaId}
+      AND "deletedAt" IS NULL
+    RETURNING "isCritical24x7", "notifyOnOffline", "notifyOnNetworkLoss",
+      "offlineGraceMinutes", "monitoringNotes", "lastPolicyUpdateAt"
+  `.catch(() => []);
+
+  await writeAuditTrail(client, req, {
+    empresaId: agent.empresaId,
+    userId: agentUserId,
+    userName: agent.user_name ?? agent.user_email ?? null,
+    userRole: agent.user_role ?? null,
+    action: "UPDATE",
+    eventType: "config_change",
+    module: "ti",
+    tableName: "monitor_agentes",
+    recordId: agent.id,
+    description: "Política 24x7 do agente atualizada pelo Synapse Windows.",
+    after: { ...nextPolicy, agentId: agent.id, hostname: agent.hostname, timezone: SYNAPSE_TIME_ZONE },
+    risk: nextPolicy.isCritical24x7 ? "medio" : "baixo",
+  });
+
+  res.json(rows[0] ?? nextPolicy);
+});
+
 app.get("/api/agent/tickets", requireAgent, async (req, res) => {
   const agent = (req as any).agent;
   const client = await getRawClient();
   if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
-  if (!agent.user_id) {
+  const agentUserId = Number(agent.user_id || 0);
+  if (!Number.isFinite(agentUserId) || agentUserId <= 0) {
     return res.json([]);
   }
 
@@ -1352,7 +1562,7 @@ app.get("/api/agent/tickets", requireAgent, async (req, res) => {
     SELECT id, protocolo, titulo, descricao, categoria, prioridade, status, "createdAt", "updatedAt", "resolvidoEm"
     FROM tickets_ti
     WHERE "empresaId" = ${agent.empresaId}
-      AND "solicitanteId" = ${agent.user_id}
+      AND "solicitanteId" = ${agentUserId}
       AND "deletedAt" IS NULL
     ORDER BY "updatedAt" DESC, id DESC
     LIMIT 20
@@ -1365,7 +1575,8 @@ app.post("/api/agent/tickets/open", requireAgent, async (req, res) => {
   const agent = (req as any).agent;
   const client = await getRawClient();
   if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
-  if (!agent.user_id) {
+  const agentUserId = Number(agent.user_id || 0);
+  if (!Number.isFinite(agentUserId) || agentUserId <= 0) {
     return res.status(400).json({ error: "AGENT_NOT_ASSOCIATED_TO_USER" });
   }
 
@@ -1386,16 +1597,15 @@ app.post("/api/agent/tickets/open", requireAgent, async (req, res) => {
   }
 
   const protocolo = `TI-${Date.now().toString(36).toUpperCase()}`;
-  const enrichedDescription = `${descricao}\n\nDispositivo vinculado: ${agent.hostname}\nAgente: ${agent.id}`;
 
   const rows = await client`
     INSERT INTO tickets_ti (
       "empresaId", "solicitanteId", protocolo, titulo, descricao,
       categoria, prioridade, status, "createdAt", "updatedAt"
     ) VALUES (
-      ${agent.empresaId}, ${agent.user_id}, ${protocolo}, ${titulo}, ${enrichedDescription},
+      ${agent.empresaId}, ${agentUserId}, ${protocolo}, ${titulo}, ${descricao},
       ${categoria}, ${prioridade}, 'aberto', NOW(), NOW()
-    ) RETURNING id, protocolo, titulo, status, "createdAt"
+    ) RETURNING id, protocolo, titulo, descricao, categoria, prioridade, status, "createdAt", "updatedAt"
   `.catch(() => []);
 
   const ticket = rows[0];
@@ -1406,8 +1616,20 @@ app.post("/api/agent/tickets/open", requireAgent, async (req, res) => {
     VALUES (
       ${ticket.id},
       ${agent.empresaId},
-      ${agent.user_id},
-      ${`Chamado aberto pelo agente do dispositivo ${agent.hostname}.`},
+      ${agentUserId},
+      ${descricao},
+      'mensagem',
+      NOW()
+    )
+  `.catch(() => {});
+
+  await client`
+    INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
+    VALUES (
+      ${ticket.id},
+      ${agent.empresaId},
+      ${agentUserId},
+      ${"Chamado aberto pelo Synapse para Windows."},
       'sistema',
       NOW()
     )
@@ -1415,8 +1637,31 @@ app.post("/api/agent/tickets/open", requireAgent, async (req, res) => {
 
   await client`
     INSERT INTO ticket_status_history ("ticketId","empresaId","changedBy","fromStatus","toStatus",motivo,"createdAt")
-    VALUES (${ticket.id}, ${agent.empresaId}, ${agent.user_id}, ${null}, 'aberto', ${'Chamado aberto pelo agente'}, NOW())
+    VALUES (${ticket.id}, ${agent.empresaId}, ${agentUserId}, ${null}, 'aberto', ${'Chamado aberto pelo agente'}, NOW())
   `.catch(() => {});
+
+  await writeAuditTrail(client, req, {
+    empresaId: agent.empresaId,
+    userId: agentUserId,
+    userName: agent.user_name ?? agent.user_email ?? null,
+    userRole: agent.user_role ?? null,
+    action: "CREATE",
+    eventType: "create",
+    module: "ti",
+    tableName: "tickets_ti",
+    recordId: ticket.id,
+    description: "Chamado aberto pelo Synapse Windows.",
+    after: {
+      ticketId: ticket.id,
+      protocolo,
+      categoria,
+      prioridade,
+      origem: "synapse-desktop",
+      agentId: agent.id,
+      hostname: agent.hostname,
+    },
+    risk: prioridade === "critica" ? "alto" : "baixo",
+  });
 
   res.json(ticket);
 });
@@ -1425,7 +1670,8 @@ app.get("/api/agent/tickets/:id/messages", requireAgent, async (req, res) => {
   const agent = (req as any).agent;
   const client = await getRawClient();
   if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
-  if (!agent.user_id) {
+  const agentUserId = Number(agent.user_id || 0);
+  if (!Number.isFinite(agentUserId) || agentUserId <= 0) {
     return res.status(400).json({ error: "AGENT_NOT_ASSOCIATED_TO_USER" });
   }
 
@@ -1435,7 +1681,7 @@ app.get("/api/agent/tickets/:id/messages", requireAgent, async (req, res) => {
     FROM tickets_ti
     WHERE id = ${ticketId}
       AND "empresaId" = ${agent.empresaId}
-      AND "solicitanteId" = ${agent.user_id}
+      AND "solicitanteId" = ${agentUserId}
     LIMIT 1
   `.catch(() => []);
 
@@ -1459,7 +1705,8 @@ app.post("/api/agent/tickets/:id/messages", requireAgent, async (req, res) => {
   const agent = (req as any).agent;
   const client = await getRawClient();
   if (!client) return res.status(500).json({ error: "DATABASE_UNAVAILABLE" });
-  if (!agent.user_id) {
+  const agentUserId = Number(agent.user_id || 0);
+  if (!Number.isFinite(agentUserId) || agentUserId <= 0) {
     return res.status(400).json({ error: "AGENT_NOT_ASSOCIATED_TO_USER" });
   }
 
@@ -1475,7 +1722,7 @@ app.post("/api/agent/tickets/:id/messages", requireAgent, async (req, res) => {
     FROM tickets_ti
     WHERE id = ${ticketId}
       AND "empresaId" = ${agent.empresaId}
-      AND "solicitanteId" = ${agent.user_id}
+      AND "solicitanteId" = ${agentUserId}
     LIMIT 1
   `.catch(() => []);
 
@@ -1488,7 +1735,7 @@ app.post("/api/agent/tickets/:id/messages", requireAgent, async (req, res) => {
     VALUES (
       ${ticketId},
       ${agent.empresaId},
-      ${agent.user_id},
+      ${agentUserId},
       ${conteudo || ""},
       ${fileUrl ? "anexo" : "mensagem"},
       ${fileUrl || null},
@@ -1498,6 +1745,31 @@ app.post("/api/agent/tickets/:id/messages", requireAgent, async (req, res) => {
     )
     RETURNING *
   `.catch(() => []);
+
+  await client`
+    UPDATE tickets_ti
+    SET "updatedAt" = NOW(),
+        status = CASE
+          WHEN status IN ('aguardando_usuario','resolvido','encerrado') THEN 'aguardando_ti'
+          ELSE status
+        END
+    WHERE id = ${ticketId} AND "empresaId" = ${agent.empresaId}
+  `.catch(() => {});
+
+  await writeAuditTrail(client, req, {
+    empresaId: agent.empresaId,
+    userId: agentUserId,
+    userName: agent.user_name ?? agent.user_email ?? null,
+    userRole: agent.user_role ?? null,
+    action: "CREATE",
+    eventType: "create",
+    module: "ti",
+    tableName: "ticket_mensagens",
+    recordId: Number(rows[0]?.id || ticketId),
+    description: fileUrl ? "Anexo enviado pelo Synapse Windows." : "Mensagem enviada pelo Synapse Windows.",
+    after: { ticketId, hasAttachment: Boolean(fileUrl), fileName: fileName || null },
+    risk: fileUrl ? "medio" : "baixo",
+  });
 
   res.json(rows[0] ?? { success: false });
 });
@@ -1601,6 +1873,21 @@ app.post("/api/agent/ti/tickets/:id/messages", requireAgentTi, async (req, res) 
     WHERE id = ${ticketId} AND "empresaId" = ${agent.empresaId}
   `.catch(() => {});
 
+  await writeAuditTrail(client, req, {
+    empresaId: agent.empresaId,
+    userId: Number(agentUser.id),
+    userName: agentUser.name ?? agentUser.email ?? null,
+    userRole: agentUser.role ?? null,
+    action: "CREATE",
+    eventType: "create",
+    module: "ti",
+    tableName: "ticket_mensagens",
+    recordId: Number(rows[0]?.id || ticketId),
+    description: fileUrl ? "TI/Admin enviou anexo pelo Synapse Windows." : "TI/Admin respondeu chamado pelo Synapse Windows.",
+    after: { ticketId, hasAttachment: Boolean(fileUrl), fileName: fileName || null },
+    risk: fileUrl ? "medio" : "baixo",
+  });
+
   res.json(rows[0] ?? { success: false });
 });
 
@@ -1658,6 +1945,22 @@ app.patch("/api/agent/ti/tickets/:id/status", requireAgentTi, async (req, res) =
     INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
     VALUES (${ticketId}, ${agent.empresaId}, ${Number(agentUser.id)}, ${`Status alterado para: ${status}`}, 'sistema', NOW())
   `.catch(() => {});
+
+  await writeAuditTrail(client, req, {
+    empresaId: agent.empresaId,
+    userId: Number(agentUser.id),
+    userName: agentUser.name ?? agentUser.email ?? null,
+    userRole: agentUser.role ?? null,
+    action: "UPDATE",
+    eventType: "update",
+    module: "ti",
+    tableName: "tickets_ti",
+    recordId: ticketId,
+    description: "TI/Admin alterou status de chamado pelo Synapse Windows.",
+    before: { status: currentStatus ?? null },
+    after: { status },
+    risk: ["cancelado", "encerrado", "em_acesso_remoto", "acesso_remoto_solicitado"].includes(status) ? "medio" : "baixo",
+  });
 
   res.json({ success: true, status });
 });

@@ -7,6 +7,9 @@ export type AgentConfig = {
   user_email?: string;
   user_role?: string;
   user_is_ti?: boolean;
+  user_id?: number;
+  auth_session_active?: boolean;
+  last_login_at?: string;
   agent_mode?: "simple" | "ti";
   collect_interval?: number;
   send_interval?: number;
@@ -80,5 +83,23 @@ export type AgentProfile = {
   socketCpu?: string;
   serialNumber?: string;
   assetTag?: string;
+  isCritical24x7?: boolean;
+  notifyOnOffline?: boolean;
+  notifyOnNetworkLoss?: boolean;
+  offlineGraceMinutes?: number;
+  monitoringNotes?: string;
+  lastPolicyUpdateAt?: string;
   ultima_metrica?: Record<string, any> | null;
+};
+
+export type UpdateInfo = {
+  version: string;
+  productName?: string;
+  artifact?: string;
+  runtime?: string;
+  worker?: string;
+  downloadUrl?: string;
+  releaseNotes?: string[];
+  mandatory?: boolean;
+  publishedAt?: string;
 };

@@ -14,15 +14,37 @@ import {
 } from "recharts";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { formatDateTimeBR, SYNAPSE_TIME_ZONE } from "@/lib/timezone";
+import { useAuth } from "@/hooks/useAuth";
+
+const DEVICE_DETAIL_ROLES = new Set([
+  "master_admin",
+  "ti_master",
+  "admin",
+  "admin_empresa",
+  "administrador",
+  "ti",
+  "supervisor_geral",
+  "supervisor_ti",
+]);
 
 export default function DeviceDetails() {
+  const { user } = useAuth();
   const { agentId } = useParams() as any;
   const [, setLocation] = useLocation();
   const [period, setPeriod] = useState("24h");
-  const agentesQ = trpc.ti.listAgentes.useQuery(undefined, { refetchInterval: 20000 }) as any;
+  const canViewDeviceDetails = DEVICE_DETAIL_ROLES.has(String(user?.role || "").toLowerCase());
+
+  useEffect(() => {
+    if (user && !canViewDeviceDetails) {
+      setLocation("/ti/tickets");
+    }
+  }, [canViewDeviceDetails, setLocation, user]);
+
+  const agentesQ = trpc.ti.listAgentes.useQuery(undefined, { enabled: canViewDeviceDetails, refetchInterval: 20000 }) as any;
   const metricasQ = trpc.ti.getAgenteMetricas.useQuery(
     { agenteId: Number(agentId), periodo: period === "24h" ? "24h" : period === "7d" ? "7d" : "30d" },
-    { enabled: !!agentId, refetchInterval: 30000 }
+    { enabled: canViewDeviceDetails && !!agentId, refetchInterval: 30000 }
   ) as any;
 
   const agente = (agentesQ.data ?? []).find((a: any) => a.id === Number(agentId)) ?? null;
@@ -33,19 +55,6 @@ export default function DeviceDetails() {
   };
   const gpus = safeParse(agente?.gpus) as any[] | null;
   const memoriaSlots = safeParse(agente?.memoria_slots) as any[] | null;
-  const formatDateTimeBR = (value?: string | Date | null) => {
-    if (!value) return "Nunca";
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return "Nunca";
-    return new Intl.DateTimeFormat("pt-BR", {
-      timeZone: "America/Sao_Paulo",
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(date);
-  };
   const formatNetworkKb = (value: any) => {
     const numeric = Number(value ?? 0);
     if (!Number.isFinite(numeric) || numeric <= 0) return "—";
@@ -61,7 +70,7 @@ export default function DeviceDetails() {
     networkDownloadKb: Number(m.rede_recebido_kb ?? m.redeRecebidoKb ?? 0),
     networkUploadKb: Number(m.rede_enviado_kb ?? m.redeEnviadoKb ?? 0),
     time: new Date(m.hora).toLocaleTimeString("pt-BR", {
-      timeZone: "America/Sao_Paulo",
+      timeZone: SYNAPSE_TIME_ZONE,
       hour: "2-digit",
       minute: "2-digit",
       day: period !== "24h" ? "2-digit" : undefined,
@@ -79,6 +88,15 @@ export default function DeviceDetails() {
       toast.error("Erro ao carregar dados do dispositivo");
     }
   };
+
+  if (user && !canViewDeviceDetails) {
+    return (
+      <div className="p-8 text-center">
+        <h2 className="text-xl font-bold">Acesso restrito</h2>
+        <Button variant="link" onClick={() => setLocation("/ti/tickets")}>Voltar para meus chamados</Button>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -161,7 +179,7 @@ export default function DeviceDetails() {
               {agente.status?.toUpperCase() || "OFFLINE"}
             </Badge>
             <p className="text-xs text-muted-foreground mt-1">
-              Visto por último: {formatDateTimeBR(agente.ultima_coleta || agente.updatedAt)}
+              Visto por último: {formatDateTimeBR(agente.ultima_coleta || agente.updatedAt, "Nunca")}
             </p>
           </CardContent>
         </Card>

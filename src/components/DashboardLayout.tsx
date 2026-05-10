@@ -49,6 +49,7 @@ const TI_MANAGER_ROLES = new Set([
   "master_admin",
   "ti_master",
   "admin",
+  "admin_empresa",
   "administrador",
   "ti",
   "supervisor_geral",
@@ -349,14 +350,28 @@ function Sidebar({
     return isGroupActive(items);
   };
 
-  const menuGroups = getMenuGroups(t).map((g) => {
-    if (g.label !== "TI") return g;
-    if (isTiManagerRole) return g;
-    return {
-      ...g,
-      items: [{ icon: Headphones, label: "Meus Chamados TI", path: "/ti/tickets" }],
-    };
-  });
+  const roleCode = String(user?.role || "").toLowerCase();
+  const isCommonSelfServiceRole = ["user", "leitor"].includes(roleCode);
+  const menuGroups = isCommonSelfServiceRole
+    ? [
+        {
+          label: "Atendimento",
+          icon: Headphones,
+          items: [
+            { icon: Headphones, label: "Meus Chamados", path: "/ti/tickets" },
+            { icon: MessageSquare, label: "Chat", path: "/chat" },
+            { icon: HelpCircle, label: "Ajuda", path: "/ajuda" },
+          ],
+        },
+      ]
+    : getMenuGroups(t).map((g) => {
+        if (g.label !== "TI") return g;
+        if (isTiManagerRole) return g;
+        return {
+          ...g,
+          items: [{ icon: Headphones, label: "Meus Chamados TI", path: "/ti/tickets" }],
+        };
+      });
 
   const filteredGroups = search.trim()
     ? menuGroups.map((g) => ({
@@ -368,7 +383,7 @@ function Sidebar({
     : menuGroups;
 
   // Roles que têm acesso total (vêem tudo)
-  const FULL_ACCESS_ROLES = ["master_admin", "ti_master", "admin"];
+  const FULL_ACCESS_ROLES = ["master_admin", "ti_master", "admin", "admin_empresa"];
 
   // Mapa de acesso por grupo: quais roles podem ver cada grupo
   const GROUP_ACCESS: Record<string, string[]> = {
@@ -549,11 +564,15 @@ function Sidebar({
               {user?.email ?? user?.name}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate("/configuracoes")} className="text-xs">
-              <Settings className="h-4 w-4 mr-2" />
-              Configurações
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
+            {!isCommonSelfServiceRole && (
+              <>
+                <DropdownMenuItem onClick={() => navigate("/configuracoes")} className="text-xs">
+                  <Settings className="h-4 w-4 mr-2" />
+                  Configurações
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </>
+            )}
             <div className="px-2 py-1">
               <p className="text-[10px] text-muted-foreground mb-1">Tema</p>
               <div className="flex items-center gap-1">
@@ -594,8 +613,23 @@ function Sidebar({
 // ─────────────────────────────────────────────────────────────────────────────
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { loading, user, isAuthenticated } = useAuth();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const isEmergency = false;
+  const userRoleCode = String(user?.role || "").toLowerCase();
+  const isCommonSelfServiceRole = ["user", "leitor"].includes(userRoleCode);
+  const commonAllowedRoute =
+    location === "/ti" ||
+    location.startsWith("/ti/tickets") ||
+    location.startsWith("/ti/chamado") ||
+    location.startsWith("/ti/chamados") ||
+    location.startsWith("/chat") ||
+    location.startsWith("/ajuda");
+
+  useEffect(() => {
+    if (!loading && user && isCommonSelfServiceRole && !commonAllowedRoute) {
+      setLocation("/ti/tickets");
+    }
+  }, [commonAllowedRoute, isCommonSelfServiceRole, loading, setLocation, user]);
 
   if (loading && !isEmergency) return <DashboardLayoutSkeleton />;
 
@@ -667,6 +701,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     );
   }
 
+  if (user && isCommonSelfServiceRole && !commonAllowedRoute) {
+    return <DashboardLayoutSkeleton />;
+  }
+
   return <AppShell>{children}</AppShell>;
 }
 
@@ -698,16 +736,40 @@ function NotificationBell() {
   const conversationsQ = trpc.chat.listConversations.useQuery(undefined, { refetchInterval: 15000 });
   const ticketsQ = trpc.ti.listTickets.useQuery({ status: "aberto" }, { refetchInterval: 15000 });
   const isTiManagerRole = TI_MANAGER_ROLES.has(String(user?.role || "").toLowerCase());
+  const isCommonSelfServiceRole = ["user", "leitor"].includes(String(user?.role || "").toLowerCase());
   const alertasQ = trpc.ti.listAlertas.useQuery({ limit: 10 }, { refetchInterval: 15000, enabled: isTiManagerRole });
 
-  const persistedNotifs: Notification[] = ((notificationsQ.data ?? []) as any[]).map((n: any) => ({
-    id: Number(n.id),
-    tipo: n.tipo?.includes("financeiro") ? "sistema" : n.tipo?.includes("agenda") || n.tipo?.includes("lembrete") ? "sistema" : "sistema",
-    titulo: n.titulo,
-    descricao: n.mensagem,
-    lido: !!n.readAt,
-    createdAt: new Date(n.createdAt || Date.now()),
-  }));
+  const persistedNotifs: Notification[] = ((notificationsQ.data ?? []) as any[]).map((n: any) => {
+    const rawTipo = String(n.tipo || "").toLowerCase();
+    if (isCommonSelfServiceRole) {
+      const tipo: Notification["tipo"] = rawTipo.includes("chat") || rawTipo.includes("mensagem")
+        ? "mensagem"
+        : rawTipo.includes("chamado") || rawTipo.includes("ticket")
+          ? "chamado"
+          : "sistema";
+      return {
+        id: Number(n.id),
+        tipo,
+        titulo: tipo === "mensagem" ? "Nova mensagem" : tipo === "chamado" ? "Atualização de chamado" : "Notificação Synapse",
+        descricao: tipo === "mensagem"
+          ? "Há uma conversa aguardando você."
+          : tipo === "chamado"
+            ? "Seu atendimento recebeu uma atualização."
+            : "Há uma atualização disponível para você.",
+        lido: !!n.readAt,
+        createdAt: new Date(n.createdAt || Date.now()),
+      };
+    }
+
+    return {
+      id: Number(n.id),
+      tipo: rawTipo.includes("financeiro") ? "sistema" : rawTipo.includes("agenda") || rawTipo.includes("lembrete") ? "sistema" : "sistema",
+      titulo: n.titulo,
+      descricao: n.mensagem,
+      lido: !!n.readAt,
+      createdAt: new Date(n.createdAt || Date.now()),
+    };
+  });
 
   const fallbackNotifs: Notification[] = [
     ...(alertasQ.data ?? []).map((alerta: any) => ({
@@ -825,8 +887,9 @@ function NotificationBell() {
                     onClick={async () => {
                       await markRead(n.id);
                       if (n.tipo === "mensagem") navigate("/chat");
-                      if (n.tipo === "chamado" || n.tipo === "ti" || n.tipo === "alerta") navigate("/ti/dashboard");
-                      if (n.tipo === "sistema") navigate("/master/painel");
+                      if (n.tipo === "chamado") navigate("/ti/tickets");
+                      if (n.tipo === "ti" || n.tipo === "alerta") navigate(isCommonSelfServiceRole ? "/ti/tickets" : "/ti/dashboard");
+                      if (n.tipo === "sistema") navigate(isCommonSelfServiceRole ? "/ti/tickets" : "/master/painel");
                       setOpen(false);
                     }}
                     className={`flex items-start gap-3 px-4 py-3 border-b border-border/50 cursor-pointer transition-colors hover:bg-accent/50 ${

@@ -6,6 +6,7 @@ import { eq, and, desc, ilike, isNull, or, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { resolveAccessibleEmpresaId } from "../_core/access";
 import { invokeLLM } from "../_core/llm";
+import { createAuditLog } from "../_core/audit";
 
 function gerarOS(): string {
   const ano = new Date().getFullYear();
@@ -32,7 +33,7 @@ const TICKET_STATUS_VALUES = [
 
 function canManageTi(user: any): boolean {
   const role = String(user?.role || "").toLowerCase();
-  return ["master_admin", "admin", "administrador", "ti", "supervisor_geral", "supervisor_ti"].includes(role);
+  return ["master_admin", "ti_master", "admin", "admin_empresa", "administrador", "ti", "supervisor_geral", "supervisor_ti"].includes(role);
 }
 
 function requireTiManager(user: any): void {
@@ -215,10 +216,10 @@ export const tiRouter = router({
         VALUES (${ticket.id},${empresaId},${ctx.user.id},${null},'aberto',${'Chamado criado'},NOW())
       `.catch(() => {});
 
-      // Mensagem automática
+      // Primeira mensagem do solicitante: mantém o chamado conversacional.
       await client`
         INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
-        VALUES (${ticket.id},${empresaId},${ctx.user.id},${'Chamado aberto: ' + input.descricao},'sistema',NOW())
+        VALUES (${ticket.id},${empresaId},${ctx.user.id},${input.descricao},'mensagem',NOW())
       `.catch(() => {});
 
       // Anexos
@@ -230,6 +231,17 @@ export const tiRouter = router({
           `.catch(() => {});
         }
       }
+      await createAuditLog(ctx, {
+        acao: "CREATE",
+        tabela: "tickets_ti",
+        registroId: ticket.id,
+        dadosDepois: {
+          protocolo,
+          categoria: input.categoria || "outro",
+          prioridade: input.prioridade || "media",
+          timezone: "America/Sao_Paulo",
+        },
+      });
       return ticket;
     }),
 
@@ -394,6 +406,13 @@ export const tiRouter = router({
           VALUES (${id},${empresaId},${ctx.user.id},${currentStatus},${data.status},${data.resolucao ?? null},NOW())
         `.catch(() => {});
       }
+      await createAuditLog(ctx, {
+        acao: "UPDATE",
+        tabela: "tickets_ti",
+        registroId: id,
+        dadosAntes: { status: currentStatus },
+        dadosDepois: { ...data, timezone: "America/Sao_Paulo" },
+      });
       return { success: true };
     }),
 
@@ -420,6 +439,13 @@ export const tiRouter = router({
         INSERT INTO ticket_status_history ("ticketId","empresaId","changedBy","fromStatus","toStatus",motivo,"createdAt")
         VALUES (${input.id},${empresaId},${ctx.user.id},${currentStatus},${input.status},${input.resolucao ?? null},NOW())
       `.catch(() => {});
+      await createAuditLog(ctx, {
+        acao: "UPDATE",
+        tabela: "tickets_ti",
+        registroId: input.id,
+        dadosAntes: { status: currentStatus },
+        dadosDepois: { status: input.status, resolucao: input.resolucao ?? null, timezone: "America/Sao_Paulo" },
+      });
       return { success: true };
     }),
 
@@ -433,6 +459,12 @@ export const tiRouter = router({
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       const empresaId = await resolveTiEmpresaId(ctx);
       await db.update(ticketsTi).set({ deletedAt: new Date() }).where(and(eq(ticketsTi.id, input.id), eq(ticketsTi.empresaId, empresaId)));
+      await createAuditLog(ctx, {
+        acao: "DELETE",
+        tabela: "tickets_ti",
+        registroId: input.id,
+        dadosDepois: { softDelete: true, timezone: "America/Sao_Paulo" },
+      });
       return { success: true };
     }),
 
@@ -476,6 +508,19 @@ export const tiRouter = router({
       const client = await getRawClient();
       if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       const empresaId = await resolveTiEmpresaId(ctx);
+      const ticketRows = await client`
+        SELECT id, "solicitanteId", status
+        FROM tickets_ti
+        WHERE id = ${input.ticketId}
+          AND "empresaId" = ${empresaId}
+          AND "deletedAt" IS NULL
+        LIMIT 1
+      `;
+      const ticket = ticketRows[0];
+      if (!ticket) throw new TRPCError({ code: "NOT_FOUND", message: "Chamado não encontrado." });
+      if (!canManageTi(ctx.user) && Number(ticket.solicitanteId) !== Number(ctx.user.id)) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Você só pode responder seus próprios chamados." });
+      }
       const tipo = input.anexoUrl
         ? "anexo"
         : input.tipo === "texto"
@@ -483,12 +528,33 @@ export const tiRouter = router({
           : input.tipo === "imagem" || input.tipo === "file"
             ? "anexo"
             : input.tipo || "mensagem";
+      const safeTipo = !canManageTi(ctx.user) && ["nota_interna", "sistema"].includes(tipo) ? "mensagem" : tipo;
       const rows = await client`
         INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"fileUrl","fileName","fileType","createdAt")
-        VALUES (${input.ticketId},${empresaId},${ctx.user.id},${input.conteudo},${tipo},${input.anexoUrl||null},${input.anexoNome||null},${input.anexoTipo||null},NOW())
+        VALUES (${input.ticketId},${empresaId},${ctx.user.id},${input.conteudo},${safeTipo},${input.anexoUrl||null},${input.anexoNome||null},${input.anexoTipo||null},NOW())
         RETURNING *
       `;
-      await client`UPDATE tickets_ti SET "updatedAt"=NOW() WHERE id=${input.ticketId}`.catch(()=>{});
+      await client`
+        UPDATE tickets_ti
+        SET "updatedAt"=NOW(),
+            status = CASE
+              WHEN ${!canManageTi(ctx.user)} AND status IN ('aguardando_usuario','resolvido','encerrado') THEN 'aguardando_ti'
+              WHEN ${canManageTi(ctx.user)} AND status IN ('aberto','aguardando_ti','triagem_ia') THEN 'aguardando_usuario'
+              ELSE status
+            END
+        WHERE id=${input.ticketId} AND "empresaId"=${empresaId}
+      `.catch(()=>{});
+      await createAuditLog(ctx, {
+        acao: "CREATE",
+        tabela: "ticket_mensagens",
+        registroId: rows[0]?.id ?? input.ticketId,
+        dadosDepois: {
+          ticketId: input.ticketId,
+          tipo: safeTipo,
+          hasAttachment: Boolean(input.anexoUrl),
+          timezone: "America/Sao_Paulo",
+        },
+      });
       return rows[0];
     }),
 
@@ -498,6 +564,17 @@ export const tiRouter = router({
       const client = await getRawClient();
       if (!client) return [];
       const empresaId = await resolveTiEmpresaId(ctx);
+      if (!canManageTi(ctx.user)) {
+        const own = await client`
+          SELECT id FROM tickets_ti
+          WHERE id = ${input.ticketId}
+            AND "empresaId" = ${empresaId}
+            AND "solicitanteId" = ${ctx.user.id}
+            AND "deletedAt" IS NULL
+          LIMIT 1
+        `.catch(() => []);
+        if (!own?.[0]) throw new TRPCError({ code: "FORBIDDEN" });
+      }
       return client`
         SELECT h.*, u.name as autor_nome
         FROM ticket_status_history h
@@ -541,6 +618,12 @@ export const tiRouter = router({
         INSERT INTO ticket_mensagens ("ticketId","empresaId","autorId",conteudo,tipo,"createdAt")
         VALUES (${input.ticketId},${empresaId},${ctx.user.id},${'Nota interna registrada'},'sistema',NOW())
       `.catch(() => {});
+      await createAuditLog(ctx, {
+        acao: "CREATE",
+        tabela: "ticket_internal_notes",
+        registroId: rows[0]?.id ?? input.ticketId,
+        dadosDepois: { ticketId: input.ticketId, internal: true, timezone: "America/Sao_Paulo" },
+      });
       return rows[0];
     }),
 
@@ -562,6 +645,16 @@ export const tiRouter = router({
         INSERT INTO ticket_status_history ("ticketId","empresaId","changedBy","fromStatus","toStatus",motivo,"createdAt")
         VALUES (${input.ticketId},${empresaId},${ctx.user.id},${null},'acesso_remoto_solicitado',${input.observacoes ?? 'Acesso remoto solicitado'},NOW())
       `.catch(() => {});
+      await createAuditLog(ctx, {
+        acao: "CREATE",
+        tabela: "remote_access_requests",
+        registroId: input.ticketId,
+        dadosDepois: {
+          ticketId: input.ticketId,
+          anydeskProvided: Boolean(input.anydeskId),
+          timezone: "America/Sao_Paulo",
+        },
+      });
       return { success: true };
     }),
 
@@ -663,6 +756,17 @@ export const tiRouter = router({
           NOW()
         )
       `.catch(() => {});
+      await createAuditLog(ctx, {
+        acao: "UPDATE",
+        tabela: "remote_access_requests",
+        registroId: input.id,
+        dadosAntes: { status: request.status },
+        dadosDepois: {
+          status: input.status,
+          ticketId: request.ticketId,
+          timezone: "America/Sao_Paulo",
+        },
+      });
       return { success: true };
     }),
 
@@ -1194,6 +1298,25 @@ export const tiRouter = router({
       }
 
       const revokedToken = `revoked_${agente.id}_${Date.now().toString(36)}`;
+      const auditAgentAction = async (message: string, status: string) => {
+        await createAuditLog(ctx, {
+          acao: input.acao === "excluir_definitivo" ? "DELETE" : input.acao === "reativar" ? "RESTORE" : "UPDATE",
+          tabela: "monitor_agentes",
+          registroId: agente.id,
+          dadosAntes: {
+            status: agente.status,
+            ativo: agente.ativo,
+            hasToken: Boolean(agente.token),
+          },
+          dadosDepois: {
+            action: input.acao,
+            status,
+            message,
+            motivo: input.motivo ?? null,
+            timezone: "America/Sao_Paulo",
+          },
+        });
+      };
       if (input.acao === "remover_monitoramento") {
         await client`
           UPDATE monitor_agentes
@@ -1201,6 +1324,7 @@ export const tiRouter = router({
               "pairingCode"=NULL, "updatedAt"=NOW()
           WHERE id=${agente.id} AND "empresaId"=${empresaId}
         `;
+        await auditAgentAction("Monitoramento removido da operação ativa. Histórico preservado.", "removido");
         return { success: true, action: input.acao, message: "Monitoramento removido da operação ativa. Histórico técnico permanece preservado para auditoria." };
       }
 
@@ -1211,6 +1335,7 @@ export const tiRouter = router({
               "updatedAt"=NOW()
           WHERE id=${agente.id} AND "empresaId"=${empresaId}
         `;
+        await auditAgentAction("PC despareado para novo pareamento.", "despareado");
         return { success: true, action: input.acao, message: "PC despareado. O agente local precisará de novo código SYNC." };
       }
 
@@ -1221,6 +1346,7 @@ export const tiRouter = router({
               online=false, ativo=true, status='aguardando', "updatedAt"=NOW()
           WHERE id=${agente.id} AND "empresaId"=${empresaId}
         `;
+        await auditAgentAction("Vínculo antigo limpo sem excluir histórico.", "aguardando");
         return { success: true, action: input.acao, message: "Vínculo limpo. Este mesmo PC pode ser reinstalado sem criar duplicidade." };
       }
 
@@ -1231,6 +1357,7 @@ export const tiRouter = router({
               "updatedAt"=NOW()
           WHERE id=${agente.id} AND "empresaId"=${empresaId}
         `;
+        await auditAgentAction("Ativo arquivado com histórico preservado.", "arquivado");
         return { success: true, action: input.acao, message: "Ativo arquivado. Ele pode ser reativado depois." };
       }
 
@@ -1241,6 +1368,7 @@ export const tiRouter = router({
               "updatedAt"=NOW()
           WHERE id=${agente.id} AND "empresaId"=${empresaId}
         `;
+        await auditAgentAction("Equipamento marcado como descartado.", "descartado");
         return { success: true, action: input.acao, message: "Equipamento marcado como descartado. O histórico foi mantido e o token foi invalidado." };
       }
 
@@ -1268,6 +1396,7 @@ export const tiRouter = router({
               "deletedAt"=NOW(), "updatedAt"=NOW()
           WHERE id=${agente.id} AND "empresaId"=${empresaId}
         `;
+        await auditAgentAction("Registro excluído apenas após validação de segurança.", "excluido");
         return { success: true, action: input.acao, message: "Registro excluído da operação. Use esta ação somente para dados de teste ou registros sem histórico." };
       }
 
@@ -1277,6 +1406,7 @@ export const tiRouter = router({
           SET ativo=true, online=false, status='offline', "updatedAt"=NOW()
           WHERE id=${agente.id} AND "empresaId"=${empresaId}
         `;
+        await auditAgentAction("Ativo reativado.", "offline");
         return { success: true, action: input.acao, message: "Ativo reativado. Reinstale ou pareie novamente se necessário." };
       }
 
@@ -1515,7 +1645,19 @@ export const tiRouter = router({
         const client = await getRawClient();
         if (!client) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
         const empresaId = await resolveTiEmpresaId(ctx, input.empresaId);
-        await client`DELETE FROM agent_pairing_codes WHERE id=${input.id} AND "empresaId"=${empresaId}`;
+        await client`
+          UPDATE agent_pairing_codes
+          SET usado=true,
+              is_used=true,
+              "usadoEm"=COALESCE("usadoEm", NOW())
+          WHERE id=${input.id} AND "empresaId"=${empresaId}
+        `;
+        await createAuditLog(ctx, {
+          acao: "UPDATE",
+          tabela: "agent_pairing_codes",
+          registroId: input.id,
+          dadosDepois: { revoked: true, timezone: "America/Sao_Paulo" },
+        });
         return { success: true };
       }),
 

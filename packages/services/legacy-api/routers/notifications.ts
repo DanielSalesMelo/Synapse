@@ -4,8 +4,25 @@ import { getDb } from "../db";
 import { sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 
-function notificationAccessSql(userId: number, empresaId: number | null) {
-  if (!empresaId) {
+const COMPANY_WIDE_NOTIFICATION_ROLES = new Set([
+  "master_admin",
+  "ti_master",
+  "admin",
+  "admin_empresa",
+  "administrador",
+  "ti",
+  "supervisor_geral",
+  "supervisor_ti",
+  "financeiro",
+  "comercial",
+  "dispatcher",
+  "rh",
+  "wms_operator",
+  "monitor",
+]);
+
+function notificationAccessSql(userId: number, empresaId: number | null, role: string | null) {
+  if (!empresaId || !COMPANY_WIDE_NOTIFICATION_ROLES.has(String(role || "").toLowerCase())) {
     return sql`"userId" = ${userId}`;
   }
 
@@ -26,7 +43,7 @@ export const notificationsRouter = router({
 
       const empresaId = ctx.user.empresaId ?? null;
       const limit = input?.limit ?? 20;
-      const accessWhere = notificationAccessSql(ctx.user.id, empresaId);
+      const accessWhere = notificationAccessSql(ctx.user.id, empresaId, ctx.user.role ?? null);
 
       const rows = await db.execute(sql`
         SELECT
@@ -52,7 +69,7 @@ export const notificationsRouter = router({
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
 
     const empresaId = ctx.user.empresaId ?? null;
-    const accessWhere = notificationAccessSql(ctx.user.id, empresaId);
+    const accessWhere = notificationAccessSql(ctx.user.id, empresaId, ctx.user.role ?? null);
     const rows = await db.execute(sql`
       SELECT count(*)::int AS total
       FROM notifications
@@ -71,7 +88,7 @@ export const notificationsRouter = router({
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
 
       const empresaId = ctx.user.empresaId ?? null;
-      const accessWhere = notificationAccessSql(ctx.user.id, empresaId);
+      const accessWhere = notificationAccessSql(ctx.user.id, empresaId, ctx.user.role ?? null);
       await db.execute(sql`
         UPDATE notifications
         SET "readAt" = NOW()
@@ -88,7 +105,7 @@ export const notificationsRouter = router({
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banco indisponível" });
 
     const empresaId = ctx.user.empresaId ?? null;
-    const accessWhere = notificationAccessSql(ctx.user.id, empresaId);
+    const accessWhere = notificationAccessSql(ctx.user.id, empresaId, ctx.user.role ?? null);
     await db.execute(sql`
       UPDATE notifications
       SET "readAt" = NOW()

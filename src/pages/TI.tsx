@@ -14,6 +14,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -35,6 +36,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 import { getBackendBaseUrl } from "@/lib/backend";
 import { useViewAs } from "@/contexts/ViewAsContext";
+import { formatDateBR, formatDateTimeBR, saoPauloDateTimeLocalToIso, toSaoPauloDateTimeLocalInput } from "@/lib/timezone";
 
 // ─── Helpers de cor ──────────────────────────────────────────────────────────
 const STATUS_COLORS: Record<string, string> = {
@@ -64,6 +66,7 @@ const TI_MANAGER_ROLES = new Set([
   "master_admin",
   "ti_master",
   "admin",
+  "admin_empresa",
   "administrador",
   "ti",
   "supervisor_geral",
@@ -80,32 +83,6 @@ type AgentLifecycleAction =
   | "excluir_definitivo";
 
 type AgentFilter = "todos" | "online" | "offline" | "arquivados" | "removidos" | "duplicados" | "sem_heartbeat";
-
-const formatDateTimeBR = (value?: string | Date | null) => {
-  if (!value) return "-";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "-";
-  return new Intl.DateTimeFormat("pt-BR", {
-    timeZone: "America/Sao_Paulo",
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
-};
-
-const formatDateBR = (value?: string | Date | null) => {
-  if (!value) return "-";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "-";
-  return new Intl.DateTimeFormat("pt-BR", {
-    timeZone: "America/Sao_Paulo",
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(date);
-};
 
 // ─── Componente de Lightbox ───────────────────────────────────────────────────
 function Lightbox({ src, onClose }: { src: string; onClose: () => void }) {
@@ -426,67 +403,73 @@ function TicketDetail({ ticket, onClose, empresaId, isTiManager }: { ticket: any
 
       {/* Campos editáveis — somente equipe TI */}
       {isTiManager ? (
-      <>
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <Label className="text-xs">Prioridade (Equipe TI)</Label>
-          <Select
-            value={ticket.prioridade ?? "media"}
-            onValueChange={(v) => updateTicket.mutate({ id: ticket.id, prioridade: v as any })}
-          >
-            <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="baixa">🟢 Baixa</SelectItem>
-              <SelectItem value="media">🔵 Média</SelectItem>
-              <SelectItem value="alta">🟠 Alta</SelectItem>
-              <SelectItem value="critica">🔴 Crítica</SelectItem>
-            </SelectContent>
-          </Select>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <Label className="text-xs">Prioridade (Equipe TI)</Label>
+            <Select
+              value={ticket.prioridade ?? "media"}
+              onValueChange={(v) => updateTicket.mutate({ id: ticket.id, prioridade: v as any })}
+            >
+              <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="baixa">Baixa</SelectItem>
+                <SelectItem value="media">Média</SelectItem>
+                <SelectItem value="alta">Alta</SelectItem>
+                <SelectItem value="critica">Crítica</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label className="text-xs">Técnico Responsável</Label>
+            <Select
+              value={ticket.tecnicoId?.toString() ?? ""}
+              onValueChange={(v) => updateTicket.mutate({ id: ticket.id, tecnicoId: parseInt(v) })}
+            >
+              <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Atribuir técnico..." /></SelectTrigger>
+              <SelectContent>
+                {(tecnicos.data ?? []).map((t: any) => (
+                  <SelectItem key={t.id} value={t.id.toString()}>{t.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label className="text-xs">Prazo</Label>
+            <Input
+              type="datetime-local"
+              className="h-8 text-xs"
+              defaultValue={toSaoPauloDateTimeLocalInput(ticket.prazo)}
+              onBlur={(e) => {
+                const prazo = saoPauloDateTimeLocalToIso(e.target.value);
+                if (prazo) updateTicket.mutate({ id: ticket.id, prazo });
+              }}
+            />
+          </div>
+          <div>
+            <Label className="text-xs">SLA (horas)</Label>
+            <Input
+              type="number"
+              className="h-8 text-xs"
+              defaultValue={ticket.slaHoras ?? ""}
+              onBlur={(e) => e.target.value && updateTicket.mutate({ id: ticket.id, slaHoras: parseInt(e.target.value) })}
+            />
+          </div>
+          <div>
+            <Label className="text-xs">Custo Estimado (R$)</Label>
+            <Input
+              type="number"
+              className="h-8 text-xs"
+              defaultValue={ticket.custoEstimado ?? ""}
+              onBlur={(e) => e.target.value && updateTicket.mutate({ id: ticket.id, custoEstimado: parseFloat(e.target.value) })}
+            />
+          </div>
         </div>
-        <div>
-          <Label className="text-xs">Técnico Responsável</Label>
-          <Select
-            value={ticket.tecnicoId?.toString() ?? ""}
-            onValueChange={(v) => updateTicket.mutate({ id: ticket.id, tecnicoId: parseInt(v) })}
-          >
-            <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Atribuir técnico..." /></SelectTrigger>
-            <SelectContent>
-              {(tecnicos.data ?? []).map((t: any) => (
-                <SelectItem key={t.id} value={t.id.toString()}>{t.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      ) : (
+        <div className="rounded-md border bg-muted/40 p-3 text-xs text-muted-foreground">
+          Modo usuário: você acompanha seu chamado, conversa com a equipe, envia anexos e consulta o histórico deste atendimento.
         </div>
-        <div>
-          <Label className="text-xs">Prazo</Label>
-          <Input
-            type="datetime-local"
-            className="h-8 text-xs"
-            defaultValue={ticket.prazo ? new Date(ticket.prazo).toISOString().slice(0, 16) : ""}
-            onBlur={(e) => e.target.value && updateTicket.mutate({ id: ticket.id, prazo: new Date(e.target.value).toISOString() })}
-          />
-        </div>
-        <div>
-          <Label className="text-xs">SLA (horas)</Label>
-          <Input
-            type="number"
-            className="h-8 text-xs"
-            defaultValue={ticket.slaHoras ?? ""}
-            onBlur={(e) => e.target.value && updateTicket.mutate({ id: ticket.id, slaHoras: parseInt(e.target.value) })}
-          />
-        </div>
-        <div>
-          <Label className="text-xs">Custo Estimado (R$)</Label>
-          <Input
-            type="number"
-            className="h-8 text-xs"
-            defaultValue={ticket.custoEstimado ?? ""}
-            onBlur={(e) => e.target.value && updateTicket.mutate({ id: ticket.id, custoEstimado: parseFloat(e.target.value) })}
-          />
-        </div>
-      </div>
+      )}
 
-      {/* Chat */}
       <TicketChat ticketId={ticket.id} empresaId={empresaId} />
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
@@ -570,12 +553,6 @@ function TicketDetail({ ticket, onClose, empresaId, isTiManager }: { ticket: any
           </Card>
         )}
       </div>
-      </>
-      ) : (
-        <div className="rounded-md border bg-muted/40 p-3 text-xs text-muted-foreground">
-          Modo usuário: você consegue acompanhar o chamado e conversar com o TI. A classificação técnica é feita pela equipe de suporte.
-        </div>
-      )}
     </div>
   );
 }
@@ -607,6 +584,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
 
   const [location, setLocation] = useLocation() as any;
   const MANAGER_ONLY_TABS = new Set([
+    "dashboard",
     "inventario",
     "monitoramento",
     "acessos",
@@ -801,6 +779,22 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const agentDiskUsage = (a: any) => metricValue(a?.discoUsoPct, a?.disco_atual, a?.discoAtual);
   const agentCpuTemp = (a: any) => metricValue(a?.cpuTemp, a?.cpu_temp);
   const agentAnyDesk = (a: any) => a?.anydeskId || a?.anydesk_id_atual || a?.anydesk || a?.anydesk_id || "";
+  const agentIsCritical = (a: any) => Boolean(a?.isCritical24x7 || a?.notifyOnOffline);
+  const agentSubnet = (a: any) => {
+    const ip = String(a?.ip || a?.ipLocal || "").trim();
+    const match = ip.match(/^(\d{1,3}\.\d{1,3}\.\d{1,3})\.\d{1,3}$/);
+    return match?.[1] || "";
+  };
+  const agentNetworkDiagnostic = (a: any, rows: any[]) => {
+    if (agentStatus(a) === "online") return "Heartbeat normal";
+    const subnet = agentSubnet(a);
+    if (!subnet) return "Sem IP para comparar rede";
+    const peers = rows.filter((peer: any) => Number(peer.id) !== Number(a.id) && agentSubnet(peer) === subnet);
+    const onlinePeers = peers.filter((peer: any) => agentStatus(peer) === "online");
+    if (onlinePeers.length > 0) return "Mesma rede online: possível PC desligado/agente parado";
+    if (peers.length > 0) return "Todos da mesma rede offline: possível queda de rede/local";
+    return "Sem pares na mesma rede para comparar";
+  };
   const metricTimestamp = (m: any) => m?.coletadoEm || m?.hora || m?.timestamp || null;
   const metricCpuUsage = (m: any) => metricValue(m?.cpuUso, m?.cpu_medio, m?.cpuAtual);
   const metricRamUsage = (m: any) => metricValue(m?.ramUsoPct, m?.ram_medio, m?.ramAtual);
@@ -962,6 +956,11 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     gerenciarAgente.mutate({ agenteId: Number(agente.id), acao, ...optionalEmpresaPayload });
   };
 
+  const selecionarAcaoAgente = (agente: any, acao: AgentLifecycleAction) => (event: Event) => {
+    event.stopPropagation();
+    window.setTimeout(() => executarAcaoAgente(agente, acao), 0);
+  };
+
   const executarAcaoGrupoAgentes = async (
     group: { agentes: any[]; suggestedKeepId?: number },
     manterAgenteId: number,
@@ -993,10 +992,45 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const renderAgenteActions = (a: any, options: { showView?: boolean; showAssociate?: boolean } = {}) => {
     const inactive = agentIsInactive(a);
     return (
-      <div className="flex items-center gap-1" onClick={(event) => event.stopPropagation()}>
+      <div className="flex flex-wrap items-center justify-end gap-1" onClick={(event) => event.stopPropagation()}>
         {options.showView && (
           <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => { setSelectedAgente(a); setTab("monitoramento"); }}>
             <Eye className="h-3 w-3 mr-1" />Ver
+          </Button>
+        )}
+        {inactive ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-7 text-xs"
+            disabled={gerenciarAgente.isPending}
+            onClick={() => executarAcaoAgente(a, "reativar")}
+          >
+            <RefreshCw className="h-3 w-3 mr-1" />Reativar
+          </Button>
+        ) : (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-7 text-xs"
+            disabled={gerenciarAgente.isPending}
+            onClick={() => executarAcaoAgente(a, "arquivar")}
+          >
+            <Archive className="h-3 w-3 mr-1" />Arquivar
+          </Button>
+        )}
+        {!inactive && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="h-7 text-xs text-red-600 hover:text-red-700"
+            disabled={gerenciarAgente.isPending}
+            onClick={() => executarAcaoAgente(a, "remover_monitoramento")}
+          >
+            <Trash2 className="h-3 w-3 mr-1" />Remover
           </Button>
         )}
         {options.showAssociate && (
@@ -1031,37 +1065,51 @@ export default function TI({ params }: { params?: { tab?: string } }) {
         )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-7 w-7 p-0" disabled={gerenciarAgente.isPending} aria-label="Ações do dispositivo">
+            <Button type="button" variant="ghost" size="sm" className="h-7 w-7 p-0" disabled={gerenciarAgente.isPending} aria-label={`Mais ações para ${a.hostname || "dispositivo"}`}>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-64" onClick={(event) => event.stopPropagation()}>
-            <DropdownMenuItem onClick={() => executarAcaoAgente(a, "limpar_vinculo")}>
+          <DropdownMenuContent align="end" sideOffset={8} collisionPadding={16} className="z-[80] w-72" onClick={(event) => event.stopPropagation()}>
+            <DropdownMenuLabel className="text-xs">
+              <span className="block text-muted-foreground">Ações do agente</span>
+              <span className="block truncate font-mono text-[11px] font-normal">{a.hostname || `#${a.id}`}</span>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {options.showView && (
+              <DropdownMenuItem onSelect={(event) => { event.stopPropagation(); setSelectedAgente(a); setTab("monitoramento"); }}>
+                <Eye className="h-4 w-4 mr-2" />Abrir monitoramento
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuItem onSelect={selecionarAcaoAgente(a, "limpar_vinculo")}>
               <RotateCcw className="h-4 w-4 mr-2" />Limpar vínculo antigo
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => executarAcaoAgente(a, "desparear")}>
+            <DropdownMenuItem onSelect={selecionarAcaoAgente(a, "desparear")}>
               <Unlink className="h-4 w-4 mr-2" />Desparear este PC
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             {inactive ? (
-              <DropdownMenuItem onClick={() => executarAcaoAgente(a, "reativar")}>
+              <DropdownMenuItem onSelect={selecionarAcaoAgente(a, "reativar")}>
                 <RefreshCw className="h-4 w-4 mr-2" />Reativar ativo
               </DropdownMenuItem>
             ) : (
-              <DropdownMenuItem onClick={() => executarAcaoAgente(a, "arquivar")}>
+              <DropdownMenuItem onSelect={selecionarAcaoAgente(a, "arquivar")}>
                 <Archive className="h-4 w-4 mr-2" />Arquivar ativo
               </DropdownMenuItem>
             )}
-            <DropdownMenuItem onClick={() => executarAcaoAgente(a, "descartar")}>
+            <DropdownMenuItem onSelect={selecionarAcaoAgente(a, "descartar")}>
               <Package className="h-4 w-4 mr-2" />Marcar como equipamento descartado
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600 focus:text-red-600" onClick={() => executarAcaoAgente(a, "remover_monitoramento")}>
-              <Trash2 className="h-4 w-4 mr-2" />Remover monitoramento
+            <DropdownMenuItem className="text-red-600 focus:text-red-600" onSelect={selecionarAcaoAgente(a, "remover_monitoramento")}>
+              <Trash2 className="h-4 w-4 mr-2" />Remover da operação ativa
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-700 focus:text-red-700" onClick={() => executarAcaoAgente(a, "excluir_definitivo")}>
-              <AlertTriangle className="h-4 w-4 mr-2" />Excluir definitivamente
-            </DropdownMenuItem>
+            {isMasterAdmin && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="text-red-700 focus:text-red-700" onSelect={selecionarAcaoAgente(a, "excluir_definitivo")}>
+                  <AlertTriangle className="h-4 w-4 mr-2" />Excluir definitivamente
+                </DropdownMenuItem>
+              </>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -1325,6 +1373,32 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const kpiCertificados = dashboard.data?.certificados?.total ?? 0;
   const kpiCertificadosExpirando = dashboard.data?.certificados?.expirando ?? 0;
   const kpiCertificadosVencidos = dashboard.data?.certificados?.vencidos ?? 0;
+  const kpiCards = isTiManager
+    ? [
+        { label: "Chamados Abertos", value: kpiAbertos, color: "text-red-600" },
+        { label: "Em Andamento", value: kpiAndamento, color: "text-yellow-600" },
+        { label: "Resolvidos Hoje", value: kpiResolvidos, color: "text-green-600" },
+        { label: "Total Ativos", value: kpiAtivos, color: "" },
+        { label: "Online", value: kpiOnline, color: "text-green-600", border: "border-green-200" },
+        { label: "Atenção", value: kpiAtencao, color: "text-yellow-600", border: "border-yellow-200" },
+        { label: "Críticos", value: kpiCriticos, color: "text-red-600", border: "border-red-200" },
+        { label: "Certificados", value: kpiCertificados, color: "" },
+        { label: "Vencendo/Vencidos", value: `${kpiCertificadosExpirando}/${kpiCertificadosVencidos}`, color: (kpiCertificadosExpirando + kpiCertificadosVencidos) > 0 ? "text-orange-600" : "" },
+      ]
+    : [
+        { label: "Chamados Abertos", value: kpiAbertos, color: "text-red-600" },
+        { label: "Em Andamento", value: kpiAndamento, color: "text-yellow-600" },
+        { label: "Resolvidos Hoje", value: kpiResolvidos, color: "text-green-600" },
+      ];
+  const refreshTiData = () => {
+    dashboard.refetch();
+    ticketsQ.refetch();
+    if (isTiManager) {
+      ativosQ.refetch();
+      agentesQ.refetch();
+      alertasQ.refetch();
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -1335,17 +1409,21 @@ export default function TI({ params }: { params?: { tab?: string } }) {
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Monitor className="h-6 w-6 text-primary" />
-            TI & Infraestrutura
-            {kpiCriticos > 0 && (
+            {isTiManager ? "TI & Infraestrutura" : "Meus chamados"}
+            {isTiManager && kpiCriticos > 0 && (
               <span className="inline-flex items-center justify-center h-5 w-5 rounded-full bg-red-500 text-white text-xs animate-pulse">
                 {kpiCriticos}
               </span>
             )}
           </h1>
-          <p className="text-muted-foreground text-sm">ITSM · ITAM · Monitoramento · Acessos Remotos · Licenças</p>
+          <p className="text-muted-foreground text-sm">
+            {isTiManager
+              ? "ITSM · ITAM · Monitoramento · Acessos Remotos · Licenças"
+              : "Atendimento, conversa, anexos e histórico dos seus chamados"}
+          </p>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <Button variant="outline" size="sm" onClick={() => { dashboard.refetch(); ticketsQ.refetch(); ativosQ.refetch(); agentesQ.refetch(); alertasQ.refetch(); }}>
+          <Button variant="outline" size="sm" onClick={refreshTiData}>
             <RefreshCw className="h-4 w-4 mr-2" />Atualizar
           </Button>
           <Dialog open={showNew} onOpenChange={setShowNew}>
@@ -1373,7 +1451,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   <Select value={ticketForm.categoria} onValueChange={(v) => setTicketForm((p) => ({ ...p, categoria: v as any }))}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {["hardware","software","rede","acesso","email","impressora","servidor","outro"].map((c) => (
+                      {["hardware","software","rede","acesso","email","impressora","outro"].map((c) => (
                         <SelectItem key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</SelectItem>
                       ))}
                     </SelectContent>
@@ -1420,17 +1498,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
 
       {/* ── KPIs ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
-        {[
-          { label: "Chamados Abertos", value: kpiAbertos, color: "text-red-600" },
-          { label: "Em Andamento", value: kpiAndamento, color: "text-yellow-600" },
-          { label: "Resolvidos Hoje", value: kpiResolvidos, color: "text-green-600" },
-          { label: "Total Ativos", value: kpiAtivos, color: "" },
-          { label: "Online", value: kpiOnline, color: "text-green-600", border: "border-green-200" },
-          { label: "Atenção", value: kpiAtencao, color: "text-yellow-600", border: "border-yellow-200" },
-          { label: "Críticos", value: kpiCriticos, color: "text-red-600", border: "border-red-200" },
-          { label: "Certificados", value: kpiCertificados, color: "" },
-          { label: "Vencendo/Vencidos", value: `${kpiCertificadosExpirando}/${kpiCertificadosVencidos}`, color: (kpiCertificadosExpirando + kpiCertificadosVencidos) > 0 ? "text-orange-600" : "" },
-        ].map((k) => (
+        {kpiCards.map((k) => (
           <Card key={k.label} className={k.border ?? ""}>
             <CardHeader className="pb-1 pt-3 px-3">
               <CardTitle className="text-xs text-muted-foreground">{k.label}</CardTitle>
@@ -1445,7 +1513,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
       {/* ── Tabs ── */}
       <Tabs value={tab} onValueChange={handleTabChange}>
         <TabsList className="flex-wrap h-auto gap-1">
-          <TabsTrigger value="dashboard"><Activity className="h-4 w-4 mr-1" />Visão Geral</TabsTrigger>
+          {isTiManager && <TabsTrigger value="dashboard"><Activity className="h-4 w-4 mr-1" />Visão Geral</TabsTrigger>}
           <TabsTrigger value="tickets" className="relative">
             <Headphones className="h-4 w-4 mr-1" />Chamados
             {kpiAbertos > 0 && <span className="ml-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full bg-red-500 text-white text-[10px]">{kpiAbertos}</span>}
@@ -2625,6 +2693,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                     <TableHead>AnyDesk</TableHead>
                     <TableHead>Versão</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>24x7 / Rede</TableHead>
                     <TableHead>Última Coleta</TableHead>
                     <TableHead>Ações</TableHead>
                   </TableRow>
@@ -2672,6 +2741,16 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                           {agentStatusLabel(agentStatus(a))}
                         </div>
                       </TableCell>
+                      <TableCell className="text-xs max-w-[240px]">
+                        <div className="space-y-1">
+                          {agentIsCritical(a) ? (
+                            <Badge className="bg-amber-100 text-amber-700">Crítico 24x7</Badge>
+                          ) : (
+                            <Badge variant="outline">Padrão</Badge>
+                          )}
+                          <p className="text-muted-foreground">{agentNetworkDiagnostic(a, agentesQ.data ?? [])}</p>
+                        </div>
+                      </TableCell>
                       <TableCell className="text-xs text-muted-foreground">
                         {formatDateTimeBR(agentLastCollected(a))}
                       </TableCell>
@@ -2682,7 +2761,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   ))}
                   {filteredAgentes.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={9} className="text-center text-muted-foreground py-8 space-y-2">
+                      <TableCell colSpan={10} className="text-center text-muted-foreground py-8 space-y-2">
                         <p>Nenhum dispositivo encontrado neste filtro.</p>
                         <p className="text-xs">
                           Verifique se o código de pareamento foi usado e clique em <strong>Atualizar</strong>.

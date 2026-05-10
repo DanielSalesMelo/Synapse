@@ -12,10 +12,7 @@
 body {
   margin: 0;
   overflow: hidden;
-  background:
-    radial-gradient(circle at top left, rgba(56, 189, 248, 0.24), transparent 34rem),
-    radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.16), transparent 30rem),
-    #08111f;
+  background: #08111f;
 }
 
 button,
@@ -37,21 +34,23 @@ button {
 }
 
 .titlebar {
-  height: 68px;
+  height: 56px;
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 0 22px;
+  gap: 14px;
+  padding: 0 8px 0 14px;
   border-bottom: 1px solid rgba(148, 163, 184, 0.18);
   background: rgba(8, 15, 30, 0.84);
   backdrop-filter: blur(18px);
+  -webkit-app-region: drag;
 }
 
 .brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  min-width: 270px;
+  min-width: 244px;
+  -webkit-app-region: drag;
 }
 
 .brand strong,
@@ -68,9 +67,9 @@ button {
 }
 
 .brand-mark {
-  width: 38px;
-  height: 38px;
-  border-radius: 14px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   display: grid;
   place-items: center;
   background: linear-gradient(135deg, #38bdf8, #22c55e);
@@ -79,57 +78,64 @@ button {
   box-shadow: 0 16px 38px rgba(56, 189, 248, 0.24);
 }
 
-.top-menu {
+.title-actions {
   display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: flex-end;
+  gap: 6px;
   flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  white-space: nowrap;
+  -webkit-app-region: no-drag;
 }
 
-.menu-button {
-  position: relative;
+.title-actions::-webkit-scrollbar {
+  display: none;
 }
 
-.menu-button > button {
+.title-actions button,
+.window-controls button {
   border: 0;
-  background: transparent;
+  background: rgba(148, 163, 184, 0.1);
   color: #cbd5e1;
-  padding: 8px 11px;
-  border-radius: 10px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-.menu-button > button:hover,
-.menu-button > button:focus {
+.title-actions button:hover,
+.title-actions button:focus,
+.window-controls button:hover {
   background: rgba(148, 163, 184, 0.12);
   color: #fff;
 }
 
-.menu-popover {
-  position: absolute;
-  z-index: 50;
-  top: 36px;
-  min-width: 190px;
-  padding: 8px;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 14px;
-  background: rgba(15, 23, 42, 0.98);
-  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.36);
+.title-actions button.update-attention {
+  background: rgba(34, 197, 94, 0.18);
+  color: #bbf7d0;
+  box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.26);
 }
 
-.menu-popover button {
-  width: 100%;
-  border: 0;
-  background: transparent;
-  color: #dbeafe;
-  text-align: left;
-  padding: 9px 10px;
-  border-radius: 10px;
-  cursor: pointer;
+.window-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  -webkit-app-region: no-drag;
 }
 
-.menu-popover button:hover {
-  background: rgba(56, 189, 248, 0.12);
+.window-controls button {
+  width: 34px;
+  padding: 0;
+  border-radius: 7px;
+  font-size: 15px;
+}
+
+.window-controls button:last-child:hover {
+  background: rgba(239, 68, 68, 0.8);
+  color: #fff;
 }
 
 .connection {
@@ -139,8 +145,9 @@ button {
   color: #94a3b8;
   font-size: 13px;
   padding: 8px 12px;
-  border-radius: 999px;
+  border-radius: 10px;
   background: rgba(148, 163, 184, 0.1);
+  -webkit-app-region: no-drag;
 }
 
 .connection span {
@@ -166,8 +173,8 @@ button {
   width: min(760px, 96vw);
   padding: 36px;
   border: 1px solid rgba(148, 163, 184, 0.22);
-  border-radius: 30px;
-  background: linear-gradient(160deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.72));
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.92);
   box-shadow: 0 34px 90px rgba(0, 0, 0, 0.38);
 }
 
@@ -191,6 +198,32 @@ button {
   margin: 24px 0;
 }
 
+.login-card {
+  width: min(680px, 96vw);
+}
+
+.policy-box {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0 20px;
+  padding: 14px;
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  border-radius: 12px;
+  background: rgba(8, 13, 26, 0.66);
+}
+
+.policy-box > span {
+  color: #93c5fd;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.policy-box input[type="number"] {
+  width: 120px;
+}
+
 label {
   display: grid;
   gap: 8px;
@@ -202,7 +235,7 @@ input,
 select,
 textarea {
   border: 1px solid rgba(148, 163, 184, 0.22);
-  border-radius: 14px;
+  border-radius: 10px;
   background: rgba(2, 6, 23, 0.72);
   color: #f8fafc;
   outline: none;
@@ -234,7 +267,7 @@ textarea:focus {
   gap: 10px 18px;
   margin: 20px 0 28px;
   padding: 16px;
-  border-radius: 18px;
+  border-radius: 12px;
   background: rgba(8, 13, 26, 0.7);
 }
 
@@ -257,9 +290,9 @@ textarea:focus {
   min-height: 0;
   flex: 1;
   display: grid;
-  grid-template-columns: 292px minmax(430px, 1fr) 310px;
-  gap: 18px;
-  padding: 18px;
+  grid-template-columns: 276px minmax(400px, 1fr) 292px;
+  gap: 12px;
+  padding: 12px;
 }
 
 .sidebar,
@@ -274,7 +307,7 @@ textarea:focus {
   border: 1px solid rgba(148, 163, 184, 0.17);
   background: rgba(15, 23, 42, 0.7);
   backdrop-filter: blur(18px);
-  border-radius: 24px;
+  border-radius: 12px;
 }
 
 .sidebar {
@@ -288,7 +321,7 @@ textarea:focus {
   align-items: center;
   gap: 12px;
   padding: 12px;
-  border-radius: 18px;
+  border-radius: 10px;
   background: rgba(2, 6, 23, 0.5);
 }
 
@@ -297,7 +330,7 @@ textarea:focus {
   height: 42px;
   display: grid;
   place-items: center;
-  border-radius: 15px;
+  border-radius: 10px;
   background: rgba(56, 189, 248, 0.16);
   color: #7dd3fc;
   font-weight: 800;
@@ -309,7 +342,7 @@ textarea:focus {
 .simple-note button,
 .modal-actions button {
   border: 0;
-  border-radius: 14px;
+  border-radius: 10px;
   cursor: pointer;
 }
 
@@ -330,7 +363,7 @@ textarea:focus {
 
 .ticket-item {
   border: 1px solid transparent;
-  border-radius: 16px;
+  border-radius: 10px;
   background: rgba(2, 6, 23, 0.34);
   padding: 12px;
   text-align: left;
@@ -388,7 +421,7 @@ textarea:focus {
 
 .ticket-status {
   padding: 7px 10px;
-  border-radius: 999px;
+  border-radius: 10px;
   color: #fde68a;
   background: rgba(245, 158, 11, 0.14);
   font-size: 12px;
@@ -413,7 +446,7 @@ textarea:focus {
 .bubble {
   max-width: 760px;
   border: 1px solid rgba(148, 163, 184, 0.15);
-  border-radius: 22px;
+  border-radius: 12px;
   padding: 16px;
   background: rgba(2, 6, 23, 0.45);
 }
@@ -456,7 +489,7 @@ textarea:focus {
 .drafts img {
   max-width: 220px;
   max-height: 150px;
-  border-radius: 14px;
+  border-radius: 10px;
   object-fit: cover;
 }
 
@@ -484,7 +517,7 @@ textarea:focus {
   align-items: center;
   gap: 8px;
   border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 14px;
+  border-radius: 10px;
   background: rgba(15, 23, 42, 0.8);
   color: #dbeafe;
   padding: 7px;
@@ -501,7 +534,7 @@ textarea:focus {
   height: 38px;
   display: grid;
   place-items: center;
-  border-radius: 10px;
+  border-radius: 8px;
   background: rgba(125, 211, 252, 0.14);
   font-size: 10px;
 }
@@ -558,6 +591,8 @@ button:disabled {
 
 .card {
   padding: 18px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .card h3 {
@@ -587,6 +622,10 @@ dt,
 dd {
   margin: 0;
   text-align: right;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .mono {
@@ -594,10 +633,18 @@ dd {
   font-size: 12px;
 }
 
+.metric strong {
+  min-width: 0;
+  overflow: hidden;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .tech-note {
   margin-top: 14px;
   padding: 12px;
-  border-radius: 14px;
+  border-radius: 10px;
   color: #fde68a;
   background: rgba(245, 158, 11, 0.12);
   font-size: 12px;
@@ -626,7 +673,7 @@ dd {
   max-height: 86vh;
   overflow: auto;
   border: 1px solid rgba(148, 163, 184, 0.22);
-  border-radius: 24px;
+  border-radius: 12px;
   background: #0f172a;
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.46);
 }
@@ -645,7 +692,7 @@ dd {
 
 .modal header button {
   border: 0;
-  border-radius: 10px;
+  border-radius: 8px;
   background: rgba(148, 163, 184, 0.14);
   color: #cbd5e1;
   padding: 8px 10px;
@@ -656,6 +703,12 @@ dd {
   display: grid;
   gap: 14px;
   padding: 20px;
+}
+
+.modal-copy {
+  margin: 0;
+  color: #9fb0c8;
+  line-height: 1.55;
 }
 
 .modal-actions {
@@ -677,7 +730,7 @@ dd {
 
 .history-list button {
   border: 1px solid rgba(148, 163, 184, 0.14);
-  border-radius: 16px;
+  border-radius: 10px;
   background: rgba(2, 6, 23, 0.36);
   color: #e2e8f0;
   text-align: left;
@@ -692,6 +745,44 @@ dd {
   margin-top: 4px;
 }
 
+.update-panel {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(2, 6, 23, 0.42);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.update-panel h3,
+.update-panel p {
+  margin: 0;
+}
+
+.update-panel p,
+.update-panel li {
+  color: #9fb0c8;
+}
+
+.update-panel ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+
+.update-badge {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.14);
+  color: #cbd5e1;
+  font-size: 12px;
+}
+
+.update-badge.available {
+  background: rgba(34, 197, 94, 0.15);
+  color: #bbf7d0;
+}
+
 .toast {
   position: fixed;
   right: 20px;
@@ -699,7 +790,7 @@ dd {
   z-index: 120;
   padding: 13px 16px;
   border: 1px solid rgba(125, 211, 252, 0.24);
-  border-radius: 16px;
+  border-radius: 10px;
   background: rgba(8, 13, 26, 0.96);
   color: #e0f2fe;
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.34);
@@ -712,5 +803,37 @@ dd {
 
   .inspector {
     display: none;
+  }
+}
+
+@media (max-width: 940px) {
+  .titlebar {
+    gap: 10px;
+    padding: 0 8px 0 10px;
+  }
+
+  .brand {
+    min-width: auto;
+  }
+
+  .brand span {
+    display: none;
+  }
+
+  .title-actions button {
+    padding: 0 8px;
+    max-width: 92px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .workspace {
+    grid-template-columns: minmax(220px, 260px) minmax(0, 1fr);
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .composer-row {
+    grid-template-columns: 76px 1fr 104px;
   }
 }

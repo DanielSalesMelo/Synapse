@@ -12,7 +12,10 @@ contextBridge.exposeInMainWorld("synapse", {
   getAutoLaunch: () => ipcRenderer.invoke("synapse:get-auto-launch"),
   notify: (title, body) => ipcRenderer.invoke("synapse:notify", title, body),
   openExternal: (url) => ipcRenderer.invoke("synapse:open-external", url),
+  windowMinimize: () => ipcRenderer.invoke("synapse:window-minimize"),
+  windowToggleMaximize: () => ipcRenderer.invoke("synapse:window-toggle-maximize"),
   minimizeToTray: () => ipcRenderer.invoke("synapse:minimize-to-tray"),
+  downloadUpdate: (url, version) => ipcRenderer.invoke("synapse:download-update", url, version),
   quit: () => ipcRenderer.invoke("synapse:quit"),
   onMenuAction: (callback) => {
     const handler = (_event, action) => callback(action);

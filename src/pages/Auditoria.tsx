@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useState } from "react";
 import { Shield, AlertTriangle, Eye, Activity, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { trpc } from "@/lib/trpc";
+import { formatDateTimeBR } from "@/lib/timezone";
 
 const RISCO_COLORS: Record<string, string> = {
   baixo: "bg-green-100 text-green-700", medio: "bg-yellow-100 text-yellow-700",
@@ -62,13 +63,13 @@ export default function Auditoria() {
       <Card><Table><TableHeader><TableRow><TableHead>Data/Hora</TableHead><TableHead>Usuário</TableHead><TableHead>Módulo</TableHead><TableHead>Tipo</TableHead><TableHead>Descrição</TableHead><TableHead>Risco</TableHead><TableHead>IP</TableHead></TableRow></TableHeader>
         <TableBody>{logs.data?.items?.map((l: any) => (
           <TableRow key={l.id} className={l.risco === "critico" ? "bg-red-50" : l.risco === "alto" ? "bg-orange-50" : ""}>
-            <TableCell className="text-xs text-muted-foreground whitespace-nowrap">{new Date(l.createdAt).toLocaleString("pt-BR")}</TableCell>
+            <TableCell className="text-xs text-muted-foreground whitespace-nowrap">{formatDateTimeBR(l.createdAt)}</TableCell>
             <TableCell className="font-medium text-sm">{l.userName || "Sistema"}</TableCell>
             <TableCell><Badge variant="outline" className="text-xs">{l.modulo}</Badge></TableCell>
             <TableCell><Badge className={TIPO_COLORS[l.tipoEvento] || "bg-gray-100 text-gray-700"}>{l.tipoEvento}</Badge></TableCell>
             <TableCell className="text-sm max-w-[300px] truncate">{l.descricao}</TableCell>
             <TableCell>{l.risco && <Badge className={RISCO_COLORS[l.risco]}>{l.risco}</Badge>}</TableCell>
-            <TableCell className="text-xs text-muted-foreground font-mono">{l.ipAddress || "—"}</TableCell>
+            <TableCell className="text-xs text-muted-foreground font-mono">{l.ip || "—"}</TableCell>
           </TableRow>
         ))}</TableBody>
       </Table></Card>

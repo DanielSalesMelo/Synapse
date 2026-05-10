@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
-import type { AgentConfig, AgentProfile, AttachmentDraft, DeviceInfo, Message, Ticket } from "./types";
+import type { AgentConfig, AgentProfile, AttachmentDraft, DeviceInfo, Message, Ticket, UpdateInfo } from "./types";
+import { formatDateTimeBR } from "./timezone";
 
 const DEFAULT_SERVER = "https://synapse-backend-ds2026.azurewebsites.net";
 const CATEGORIES = ["hardware", "software", "rede", "acesso", "email", "impressora", "outro"];
@@ -19,20 +20,6 @@ const STATUS_LABELS: Record<string, string> = {
   reaberto: "Reaberto",
 };
 
-const formatDateTimeBR = (value?: string | null) => {
-  if (!value) return "-";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "-";
-  return new Intl.DateTimeFormat("pt-BR", {
-    timeZone: "America/Sao_Paulo",
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
-};
-
 const bytesLabel = (kb?: number | string | null) => {
   const value = Number(kb ?? 0);
   if (!Number.isFinite(value) || value <= 0) return "-";
@@ -45,6 +32,27 @@ const firstLineTitle = (text: string) => {
   const clean = text.replace(/\s+/g, " ").trim();
   if (!clean) return "Solicitação via Synapse";
   return clean.length > 64 ? `${clean.slice(0, 61)}...` : clean;
+};
+
+const parseVersion = (version: string) =>
+  String(version || "0").split(".").map((part) => Number(part.replace(/\D/g, "")) || 0);
+
+const compareVersions = (left: string, right: string) => {
+  const a = parseVersion(left);
+  const b = parseVersion(right);
+  for (let index = 0; index < Math.max(a.length, b.length); index += 1) {
+    const diff = (a[index] || 0) - (b[index] || 0);
+    if (diff !== 0) return diff;
+  }
+  return 0;
+};
+
+const defaultPolicy = {
+  isCritical24x7: false,
+  notifyOnOffline: false,
+  notifyOnNetworkLoss: false,
+  offlineGraceMinutes: 10,
+  monitoringNotes: "",
 };
 
 const safeJson = async (response: Response) => {
@@ -90,12 +98,19 @@ function App() {
   const [loginOpen, setLoginOpen] = useState(false);
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  const [updateOpen, setUpdateOpen] = useState(false);
+  const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
+  const [updateBusy, setUpdateBusy] = useState(false);
+  const [policyOpen, setPolicyOpen] = useState(false);
+  const [policy, setPolicy] = useState(defaultPolicy);
   const [autoLaunch, setAutoLaunch] = useState(false);
   const [workerRunning, setWorkerRunning] = useState(false);
   const lastMessageRef = useRef<number | null>(null);
 
   const isPaired = Boolean(config.token);
   const isTiMode = config.agent_mode === "ti" && Boolean(config.user_is_ti);
+  const isAuthenticated = Boolean(config.auth_session_active && config.user_email);
+  const hasUpdate = updateInfo?.version ? compareVersions(updateInfo.version, appVersion) > 0 : false;
   const selectedTicket = useMemo(
     () => selectedTicketId === null ? null : tickets.find((ticket) => ticket.id === selectedTicketId) ?? tickets[0] ?? null,
     [selectedTicketId, tickets],
@@ -120,6 +135,71 @@ function App() {
     }
     return payload;
   }, [config.server_url, config.token, isTiMode]);
+
+  const checkForUpdates = useCallback(async (silent = true) => {
+    setUpdateBusy(true);
+    try {
+      const base = (serverUrl || config.server_url || DEFAULT_SERVER).replace(/\/$/, "");
+      const response = await fetch(`${base}/api/agent/version`, { cache: "no-store" });
+      const payload = await safeJson(response) as UpdateInfo;
+      if (!response.ok) throw new Error((payload as any)?.error || "Falha ao consultar atualização.");
+      setUpdateInfo({
+        ...payload,
+        downloadUrl: payload.downloadUrl || `${base}/api/agent/download`,
+      });
+      if (!silent) {
+        const newer = payload?.version && compareVersions(payload.version, appVersion) > 0;
+        notify(newer ? `Atualização ${payload.version} disponível.` : "Synapse para Windows está atualizado.");
+      }
+    } catch (error) {
+      if (!silent) notify((error as Error).message || "Falha ao consultar atualização.");
+    } finally {
+      setUpdateBusy(false);
+    }
+  }, [appVersion, config.server_url, notify, serverUrl]);
+
+  const loadPolicy = useCallback(async () => {
+    if (!config.token || !isAuthenticated) return;
+    try {
+      const payload = await api("/api/agent/device-policy");
+      setPolicy({
+        isCritical24x7: Boolean(payload?.isCritical24x7),
+        notifyOnOffline: Boolean(payload?.notifyOnOffline),
+        notifyOnNetworkLoss: Boolean(payload?.notifyOnNetworkLoss),
+        offlineGraceMinutes: Number(payload?.offlineGraceMinutes || 10),
+        monitoringNotes: String(payload?.monitoringNotes || ""),
+      });
+    } catch {
+      setPolicy(defaultPolicy);
+    }
+  }, [api, config.token, isAuthenticated]);
+
+  const savePolicy = useCallback(async (nextPolicy = policy, close = true) => {
+    if (!config.token || !isAuthenticated) {
+      notify("Entre com usuário e senha antes de salvar o monitoramento deste PC.");
+      return;
+    }
+    setBusy(true);
+    try {
+      const payload = await api("/api/agent/device-policy", {
+        method: "PUT",
+        body: JSON.stringify(nextPolicy),
+      });
+      setPolicy({
+        isCritical24x7: Boolean(payload?.isCritical24x7),
+        notifyOnOffline: Boolean(payload?.notifyOnOffline),
+        notifyOnNetworkLoss: Boolean(payload?.notifyOnNetworkLoss),
+        offlineGraceMinutes: Number(payload?.offlineGraceMinutes || nextPolicy.offlineGraceMinutes || 10),
+        monitoringNotes: String(payload?.monitoringNotes || nextPolicy.monitoringNotes || ""),
+      });
+      if (close) setPolicyOpen(false);
+      notify("Monitoramento deste PC atualizado.");
+    } catch (error) {
+      notify((error as Error).message || "Falha ao salvar monitoramento.");
+    } finally {
+      setBusy(false);
+    }
+  }, [api, config.token, isAuthenticated, notify, policy]);
 
   const loadBase = useCallback(async () => {
     const [nextConfig, nextDevice, version, launch, worker] = await Promise.all([
@@ -157,25 +237,26 @@ function App() {
     }
   }, [api, config.token, isTiMode, notify, selectedTicketId]);
 
-  const refreshMessages = useCallback(async () => {
-    if (!config.token || !selectedTicket?.id) {
+  const refreshMessages = useCallback(async (ticketIdOverride?: number) => {
+    const ticketId = ticketIdOverride ?? selectedTicket?.id;
+    if (!config.token || !isAuthenticated || !ticketId) {
       setMessages([]);
       return;
     }
     try {
       const base = isTiMode ? "/api/agent/ti/tickets" : "/api/agent/tickets";
-      const nextMessages = await api(`${base}/${selectedTicket.id}/messages`);
+      const nextMessages = await api(`${base}/${ticketId}/messages`);
       const list = Array.isArray(nextMessages) ? nextMessages : [];
       const lastId = Number(list[list.length - 1]?.id || 0);
       if (lastId && lastMessageRef.current && lastId !== lastMessageRef.current) {
-        window.synapse.notify("Nova mensagem no Synapse", selectedTicket.titulo || "Chamado atualizado");
+        window.synapse.notify("Nova mensagem no Synapse", selectedTicket?.titulo || "Chamado atualizado");
       }
       if (lastId) lastMessageRef.current = lastId;
       setMessages(list);
     } catch (error) {
       notify((error as Error).message || "Falha ao carregar conversa.");
     }
-  }, [api, config.token, isTiMode, notify, selectedTicket]);
+  }, [api, config.token, isAuthenticated, isTiMode, notify, selectedTicket]);
 
   useEffect(() => {
     loadBase();
@@ -196,11 +277,19 @@ function App() {
   }, [appVersion, loadBase, notify, refreshData]);
 
   useEffect(() => {
-    if (!config.token) return;
+    checkForUpdates(true);
+  }, [checkForUpdates]);
+
+  useEffect(() => {
+    if (!config.token || !isAuthenticated) return;
     refreshData(true);
     const id = window.setInterval(() => refreshData(true), 12000);
     return () => window.clearInterval(id);
-  }, [config.token, refreshData]);
+  }, [config.token, isAuthenticated, refreshData]);
+
+  useEffect(() => {
+    loadPolicy();
+  }, [loadPolicy]);
 
   useEffect(() => {
     refreshMessages();
@@ -240,15 +329,18 @@ function App() {
         token: payload.token,
         device_id: payload.deviceId,
         empresa_id: payload.empresaId,
-        user_name: payload.userName || payload.user?.name || "",
-        user_email: payload.userEmail || payload.user?.email || "",
-        user_role: payload.userRole || payload.user?.role || "",
-        user_is_ti: Boolean(payload.userIsTi || payload.user?.isTiManager),
-        agent_mode: payload.userIsTi || payload.user?.isTiManager ? "ti" : "simple",
+        user_id: undefined,
+        user_name: "",
+        user_email: "",
+        user_role: "",
+        user_is_ti: false,
+        auth_session_active: false,
+        agent_mode: "simple",
       });
       setConfig(nextConfig);
       await window.synapse.startWorker();
-      notify("PC pareado com sucesso.");
+      setLoginOpen(true);
+      notify("PC pareado. Entre com usuário e senha para liberar a tela correta.");
       setPairCode("");
     } catch (error) {
       notify((error as Error).message || "Falha ao parear.");
@@ -261,6 +353,7 @@ function App() {
     const next = await window.synapse.saveConfig({ server_url: serverUrl, agent_mode: isTiMode ? "ti" : "simple" });
     setConfig(next);
     await window.synapse.setAutoLaunch(autoLaunch);
+    if (isAuthenticated) await savePolicy(policy, false);
     setSettingsOpen(false);
     notify("Configurações salvas.");
   };
@@ -274,10 +367,11 @@ function App() {
     setTickets([]);
     setMessages([]);
     setSelectedTicketId(null);
+    setPolicy(defaultPolicy);
     notify("Vínculo local limpo. Gere um novo código SYNC no painel web.");
   };
 
-  const loginTi = async () => {
+  const loginUser = async () => {
     if (!loginEmail || !loginPassword) {
       notify("Informe e-mail e senha.");
       return;
@@ -288,18 +382,27 @@ function App() {
         method: "POST",
         body: JSON.stringify({ email: loginEmail, password: loginPassword, deviceId: config.device_id, token: config.token }),
       });
-      if (!result?.user?.isTiManager) throw new Error("Este usuário não possui permissão TI/Admin.");
+      if (!result?.user?.email) throw new Error("Login inválido.");
       const next = await window.synapse.saveConfig({
+        user_id: Number(result.user.id || 0) || undefined,
         user_name: result.user.name,
         user_email: result.user.email,
         user_role: result.user.role,
-        user_is_ti: true,
-        agent_mode: "ti",
+        user_is_ti: Boolean(result.user.isTiManager),
+        auth_session_active: true,
+        last_login_at: new Date().toISOString(),
+        agent_mode: result.user.isTiManager ? "ti" : "simple",
       });
       setConfig(next);
       setLoginOpen(false);
       setLoginPassword("");
-      notify("Modo TI/Admin ativado.");
+      await fetch(`${(config.server_url || DEFAULT_SERVER).replace(/\/$/, "")}/api/agent/device-policy`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${config.token}` },
+        body: JSON.stringify(policy),
+      }).catch(() => undefined);
+      await refreshData(true);
+      notify(result.user.isTiManager ? "Modo TI/Admin ativado." : "Modo usuário comum ativado.");
     } catch (error) {
       notify((error as Error).message || "Falha ao autenticar.");
     } finally {
@@ -344,7 +447,6 @@ function App() {
           }),
         });
         setSelectedTicketId(ticket.id);
-        await refreshData(true);
       } else if (composer.trim()) {
         const base = isTiMode ? "/api/agent/ti/tickets" : "/api/agent/tickets";
         await api(`${base}/${ticket.id}/messages`, {
@@ -368,7 +470,7 @@ function App() {
       }
       setComposer("");
       setAttachments([]);
-      await Promise.all([refreshData(true), refreshMessages()]);
+      await Promise.all([refreshData(true), refreshMessages(ticket?.id)]);
       notify("Mensagem enviada.");
     } catch (error) {
       notify((error as Error).message || "Falha ao enviar.");
@@ -400,7 +502,9 @@ function App() {
     notify("Diagnóstico copiado.");
   };
 
-  const statusText = profile?.online ? "Conectado" : isPaired ? "Aguardando heartbeat" : "Não pareado";
+  const statusText = isPaired && !isAuthenticated ? "Login necessário" : isTiMode
+    ? profile?.online ? "Conectado" : isPaired ? "Aguardando heartbeat" : "Não pareado"
+    : profile?.online ? "Conectado" : isPaired ? "Sincronizando" : "Não conectado";
 
   return (
     <div className="app-shell" onPaste={handlePaste} onDragOver={(event) => event.preventDefault()} onDrop={handleDrop}>
@@ -409,36 +513,28 @@ function App() {
           <div className="brand-mark">S</div>
           <div>
             <strong>Synapse para Windows</strong>
-            <span>Suporte, chamados e monitoramento sincronizados</span>
+            <span>Suporte, chamados, atualização e monitoramento</span>
           </div>
         </div>
-        <nav className="top-menu">
-          <MenuButton label="Arquivo" items={["Atualizar", "Minimizar", "Sair"]} onPick={(item) => {
-            if (item === "Atualizar") refreshData(false);
-            if (item === "Minimizar") window.synapse.minimizeToTray();
-            if (item === "Sair") window.synapse.quit();
-          }} />
-          <MenuButton label="Atendimento" items={["Novo chamado", "Histórico"]} onPick={(item) => {
-            if (item === "Novo chamado") setSelectedTicketId(null);
-            if (item === "Histórico") setHistoryOpen(true);
-          }} />
-          <MenuButton label="Ferramentas" items={isTiMode ? ["Copiar diagnóstico", "Painel web", "Área técnica"] : ["Copiar diagnóstico", "Painel web"]} onPick={(item) => {
-            if (item === "Copiar diagnóstico") copyDiagnostics();
-            if (item === "Painel web") window.synapse.openExternal("https://synapse-seven-nu.vercel.app");
-            if (item === "Área técnica") notify("Área técnica disponível apenas com políticas remotas aprovadas.");
-          }} />
-          <MenuButton label="Configurações" items={["Pareamento", "Limpar vínculo antigo"]} onPick={(item) => {
-            if (item === "Pareamento") setSettingsOpen(true);
-            if (item === "Limpar vínculo antigo") clearLink();
-          }} />
-          <MenuButton label="Ajuda" items={["Abrir ajuda", `Sobre ${appVersion}`]} onPick={(item) => {
-            if (item === "Abrir ajuda") window.synapse.openExternal("https://synapse-seven-nu.vercel.app/ajuda");
-            else notify(`Synapse para Windows ${appVersion}`);
-          }} />
+        <nav className="title-actions">
+          <button onClick={() => refreshData(false)} disabled={!isAuthenticated}>Atualizar</button>
+          <button onClick={() => { setSelectedTicketId(null); setComposer(""); }} disabled={!isAuthenticated}>Chamado</button>
+          <button onClick={() => setHistoryOpen(true)} disabled={!isAuthenticated}>Histórico</button>
+          <button className={hasUpdate ? "update-attention" : ""} onClick={() => { setUpdateOpen(true); checkForUpdates(false); }}>
+            {hasUpdate ? `Atualização ${updateInfo?.version}` : "Atualizações"}
+          </button>
+          <button onClick={() => setPolicyOpen(true)} disabled={!isAuthenticated}>24x7</button>
+          <button onClick={() => window.synapse.openExternal("https://synapse-seven-nu.vercel.app")}>Web</button>
+          <button onClick={() => setSettingsOpen(true)}>Config</button>
         </nav>
         <div className={`connection ${profile?.online ? "online" : ""}`}>
           <span />
           {statusText}
+        </div>
+        <div className="window-controls">
+          <button aria-label="Minimizar" onClick={() => window.synapse.windowMinimize()}>-</button>
+          <button aria-label="Maximizar" onClick={() => window.synapse.windowToggleMaximize()}>□</button>
+          <button aria-label="Fechar" onClick={() => window.synapse.minimizeToTray()}>×</button>
         </div>
       </header>
 
@@ -447,7 +543,7 @@ function App() {
           <div className="setup-card">
             <div className="eyebrow">Primeira execução</div>
             <h1>Conectar este computador ao Synapse</h1>
-            <p>Informe o código SYNC gerado no painel web. O app vai parear este PC, iniciar o monitoramento em segundo plano e abrir a central de suporte.</p>
+            <p>Informe o código SYNC gerado no painel web. O app vai conectar este computador à central de suporte e manter a sincronização em segundo plano.</p>
             <div className="setup-grid">
               <label>
                 Código de pareamento
@@ -458,14 +554,52 @@ function App() {
                 <input value={serverUrl} onChange={(event) => setServerUrl(event.target.value)} />
               </label>
             </div>
+            <div className="policy-box">
+              <span>Importância deste computador</span>
+              <label className="check"><input type="checkbox" checked={policy.isCritical24x7} onChange={(event) => setPolicy((current) => ({ ...current, isCritical24x7: event.target.checked, notifyOnOffline: event.target.checked || current.notifyOnOffline }))} /> Servidor ou máquina que deve ficar ligada 24 horas</label>
+              <label className="check"><input type="checkbox" checked={policy.notifyOnOffline} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnOffline: event.target.checked }))} /> Avisar TI se parar de enviar heartbeat</label>
+              <label className="check"><input type="checkbox" checked={policy.notifyOnNetworkLoss} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnNetworkLoss: event.target.checked }))} /> Comparar com outros PCs da mesma rede para diferenciar queda local/rede</label>
+              <label>
+                Tolerância sem heartbeat
+                <input type="number" min={3} max={240} value={policy.offlineGraceMinutes} onChange={(event) => setPolicy((current) => ({ ...current, offlineGraceMinutes: Number(event.target.value) || 10 }))} />
+              </label>
+            </div>
             <div className="component-list">
               <span>Componentes incluídos</span>
               <label><input type="checkbox" checked readOnly /> Suporte e chat</label>
-              <label><input type="checkbox" checked readOnly /> Monitoramento e heartbeat</label>
+              <label><input type="checkbox" checked readOnly /> Sincronização segura</label>
               <label><input type="checkbox" checked readOnly /> Inicialização com o Windows</label>
               <label><input type="checkbox" checked readOnly /> Modo TI/Admin quando permitido</label>
             </div>
             <button className="primary large" disabled={busy} onClick={pairDevice}>{busy ? "Conectando..." : "Conectar Synapse"}</button>
+          </div>
+        </section>
+      ) : !isAuthenticated ? (
+        <section className="setup-view">
+          <div className="setup-card login-card">
+            <div className="eyebrow">Login obrigatório</div>
+            <h1>Entrar para definir a tela e os dados</h1>
+            <p>O computador já está pareado. Agora entre com usuário e senha para o Synapse liberar automaticamente a experiência correta: usuário comum, TI/Admin ou master_admin.</p>
+            <div className="setup-grid">
+              <label>
+                E-mail
+                <input value={loginEmail} onChange={(event) => setLoginEmail(event.target.value)} placeholder="usuario@empresa.com" />
+              </label>
+              <label>
+                Senha
+                <input type="password" value={loginPassword} onChange={(event) => setLoginPassword(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") loginUser(); }} />
+              </label>
+            </div>
+            <div className="policy-box">
+              <span>Monitoramento 24x7 deste PC</span>
+              <label className="check"><input type="checkbox" checked={policy.isCritical24x7} onChange={(event) => setPolicy((current) => ({ ...current, isCritical24x7: event.target.checked, notifyOnOffline: event.target.checked || current.notifyOnOffline }))} /> Este PC é servidor/máquina crítica e deve ficar ligado</label>
+              <label className="check"><input type="checkbox" checked={policy.notifyOnOffline} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnOffline: event.target.checked }))} /> Notificar se desligar ou parar heartbeat</label>
+              <label className="check"><input type="checkbox" checked={policy.notifyOnNetworkLoss} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnNetworkLoss: event.target.checked }))} /> Avaliar se outros dispositivos da mesma rede continuam online</label>
+            </div>
+            <div className="modal-actions">
+              <button onClick={clearLink}>Trocar pareamento</button>
+              <button className="primary" disabled={busy} onClick={loginUser}>{busy ? "Entrando..." : "Entrar no Synapse"}</button>
+            </div>
           </div>
         </section>
       ) : (
@@ -584,15 +718,23 @@ function App() {
 
           <aside className="inspector">
             <div className="card">
-              <span className="eyebrow">Este computador</span>
-              <h3>{profile?.hostname || device?.hostname}</h3>
-              <p>{profile?.so || device?.os}</p>
-              <dl>
-                <div><dt>IP</dt><dd>{profile?.ip || device?.ip || "-"}</dd></div>
-                <div><dt>Usuário</dt><dd>{profile?.usuario_nome || config.user_name || device?.username || "-"}</dd></div>
-                <div><dt>Última coleta</dt><dd>{formatDateTimeBR(profile?.ultimoContato)}</dd></div>
-                <div><dt>Worker</dt><dd>{workerRunning ? "Ativo" : "Aguardando"}</dd></div>
-              </dl>
+              <span className="eyebrow">{isTiMode ? "Este computador" : "Atendimento"}</span>
+              <h3>{isTiMode ? (profile?.hostname || device?.hostname) : "Central de suporte"}</h3>
+              <p>{isTiMode ? (profile?.so || device?.os) : "Seu chat, chamados, anexos e histórico ficam aqui."}</p>
+              {isTiMode ? (
+                <dl>
+                  <div><dt>IP</dt><dd>{profile?.ip || device?.ip || "-"}</dd></div>
+                  <div><dt>Usuário</dt><dd>{profile?.usuario_nome || config.user_name || device?.username || "-"}</dd></div>
+                  <div><dt>Última coleta</dt><dd>{formatDateTimeBR(profile?.ultimoContato)}</dd></div>
+                  <div><dt>Worker</dt><dd>{workerRunning ? "Ativo" : "Aguardando"}</dd></div>
+                </dl>
+              ) : (
+                <dl>
+                  <div><dt>Usuário</dt><dd>{config.user_name || profile?.usuario_nome || "Synapse"}</dd></div>
+                  <div><dt>Última sincronização</dt><dd>{formatDateTimeBR(profile?.ultimoContato)}</dd></div>
+                  <div><dt>Status</dt><dd>{statusText}</dd></div>
+                </dl>
+              )}
             </div>
             {isTiMode ? (
               <div className="card technical">
@@ -614,8 +756,8 @@ function App() {
               <div className="card simple-note">
                 <span className="eyebrow">Privacidade</span>
                 <h3>Modo usuário comum</h3>
-                <p>Você vê apenas chamados, chat, anexos e status. Dados técnicos, AnyDesk e comandos ficam ocultos.</p>
-                <button onClick={() => setLoginOpen(true)}>Entrar como TI/Admin</button>
+                <p>Você vê apenas chamados, chat, anexos, histórico e status. Recursos internos ficam disponíveis somente para a equipe autorizada.</p>
+                <button onClick={() => setLoginOpen(true)}>Trocar usuário / entrar como TI</button>
               </div>
             )}
           </aside>
@@ -626,6 +768,9 @@ function App() {
         <Modal title="Configurações do Synapse" onClose={() => setSettingsOpen(false)}>
           <label>Servidor Synapse<input value={serverUrl} onChange={(event) => setServerUrl(event.target.value)} /></label>
           <label className="check"><input type="checkbox" checked={autoLaunch} onChange={(event) => setAutoLaunch(event.target.checked)} /> Iniciar com o Windows</label>
+          <label className="check"><input type="checkbox" checked={policy.isCritical24x7} onChange={(event) => setPolicy((current) => ({ ...current, isCritical24x7: event.target.checked, notifyOnOffline: event.target.checked || current.notifyOnOffline }))} /> PC crítico 24x7</label>
+          <label className="check"><input type="checkbox" checked={policy.notifyOnOffline} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnOffline: event.target.checked }))} /> Alertar se ficar offline</label>
+          <label className="check"><input type="checkbox" checked={policy.notifyOnNetworkLoss} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnNetworkLoss: event.target.checked }))} /> Comparar perda de rede com outros dispositivos</label>
           <div className="modal-actions">
             <button onClick={clearLink}>Limpar vínculo antigo</button>
             <button className="primary" onClick={saveSettings}>Salvar</button>
@@ -647,12 +792,64 @@ function App() {
       )}
 
       {loginOpen && (
-        <Modal title="Entrar como TI/Admin" onClose={() => setLoginOpen(false)}>
+        <Modal title="Entrar no Synapse" onClose={() => setLoginOpen(false)}>
           <label>E-mail<input value={loginEmail} onChange={(event) => setLoginEmail(event.target.value)} /></label>
           <label>Senha<input type="password" value={loginPassword} onChange={(event) => setLoginPassword(event.target.value)} /></label>
           <div className="modal-actions">
             <button onClick={() => setLoginOpen(false)}>Cancelar</button>
-            <button className="primary" disabled={busy} onClick={loginTi}>Entrar</button>
+            <button className="primary" disabled={busy} onClick={loginUser}>Entrar</button>
+          </div>
+        </Modal>
+      )}
+
+      {policyOpen && (
+        <Modal title="Monitoramento 24x7 deste PC" onClose={() => setPolicyOpen(false)}>
+          <p className="modal-copy">Use isso para servidores e máquinas que precisam ficar ligadas. A TI verá se só este PC caiu ou se a rede inteira aparenta estar indisponível.</p>
+          <label className="check"><input type="checkbox" checked={policy.isCritical24x7} onChange={(event) => setPolicy((current) => ({ ...current, isCritical24x7: event.target.checked, notifyOnOffline: event.target.checked || current.notifyOnOffline }))} /> Este PC deve ficar ligado 24 horas</label>
+          <label className="check"><input type="checkbox" checked={policy.notifyOnOffline} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnOffline: event.target.checked }))} /> Avisar se desligar ou parar de enviar heartbeat</label>
+          <label className="check"><input type="checkbox" checked={policy.notifyOnNetworkLoss} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnNetworkLoss: event.target.checked }))} /> Comparar com outros dispositivos da mesma rede</label>
+          <label>Tolerância sem heartbeat em minutos<input type="number" min={3} max={240} value={policy.offlineGraceMinutes} onChange={(event) => setPolicy((current) => ({ ...current, offlineGraceMinutes: Number(event.target.value) || 10 }))} /></label>
+          <label>Observação para TI<textarea value={policy.monitoringNotes} onChange={(event) => setPolicy((current) => ({ ...current, monitoringNotes: event.target.value }))} placeholder="Ex: servidor fiscal, computador do financeiro, notebook de diretoria..." /></label>
+          <div className="modal-actions">
+            <button onClick={() => setPolicyOpen(false)}>Cancelar</button>
+            <button className="primary" disabled={busy} onClick={() => savePolicy()}>Salvar monitoramento</button>
+          </div>
+        </Modal>
+      )}
+
+      {updateOpen && (
+        <Modal title="Atualizações do Synapse" onClose={() => setUpdateOpen(false)}>
+          <div className="update-panel">
+            <span className={hasUpdate ? "update-badge available" : "update-badge"}>{hasUpdate ? "Atualização disponível" : "Atualizado"}</span>
+            <h3>Instalado: {appVersion}</h3>
+            <p>Disponível: {updateInfo?.version || "consultando..."}</p>
+            {updateInfo?.publishedAt && <p>Publicado em: {formatDateTimeBR(updateInfo.publishedAt)}</p>}
+            {updateInfo?.releaseNotes?.length ? (
+              <ul>{updateInfo.releaseNotes.map((note) => <li key={note}>{note}</li>)}</ul>
+            ) : (
+              <p>O aplicativo consulta o backend oficial e pode baixar o instalador automaticamente quando houver nova versão.</p>
+            )}
+          </div>
+          <div className="modal-actions">
+            <button disabled={updateBusy} onClick={() => checkForUpdates(false)}>{updateBusy ? "Consultando..." : "Verificar agora"}</button>
+            <button
+              className="primary"
+              disabled={!updateInfo?.downloadUrl || updateBusy}
+              onClick={async () => {
+                if (!updateInfo?.downloadUrl) return;
+                setUpdateBusy(true);
+                try {
+                  await window.synapse.downloadUpdate(updateInfo.downloadUrl, updateInfo.version || appVersion);
+                  notify("Instalador de atualização iniciado.");
+                } catch (error) {
+                  notify((error as Error).message || "Falha ao iniciar atualização.");
+                } finally {
+                  setUpdateBusy(false);
+                }
+              }}
+            >
+              Baixar e instalar
+            </button>
           </div>
         </Modal>
       )}

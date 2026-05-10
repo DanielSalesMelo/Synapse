@@ -2,18 +2,51 @@ const { app, BrowserWindow, Menu, Tray, nativeImage, ipcMain, shell, Notificatio
 const path = require("node:path");
 const fs = require("node:fs");
 const os = require("node:os");
+const https = require("node:https");
+const http = require("node:http");
 const { spawn, execFile } = require("node:child_process");
 
 const APP_VERSION = "2.4.0";
+const SYNAPSE_TIME_ZONE = "America/Sao_Paulo";
 const DEFAULT_SERVER = "https://synapse-backend-ds2026.azurewebsites.net";
 const AGENT_DIR = process.env.SYNAPSE_AGENT_DIR || path.join(os.homedir(), ".synapse-agent");
 const CONFIG_FILE = path.join(AGENT_DIR, "config.json");
 const DESKTOP_CONFIG_FILE = path.join(AGENT_DIR, "desktop-config.json");
+const INSTALL_RESET_FILE = path.join(AGENT_DIR, "install-reset-2.4.0.json");
+process.env.TZ = process.env.TZ || SYNAPSE_TIME_ZONE;
 
 let mainWindow = null;
 let tray = null;
 
 const ensureAgentDir = () => fs.mkdirSync(AGENT_DIR, { recursive: true });
+
+const archiveLegacyLocalState = () => {
+  if (process.env.SYNAPSE_PRESERVE_AGENT_STATE === "1" || process.env.SYNAPSE_AGENT_DIR) return;
+  if (fs.existsSync(INSTALL_RESET_FILE)) return;
+
+  try {
+    const hasLegacyState = fs.existsSync(CONFIG_FILE) || fs.existsSync(DESKTOP_CONFIG_FILE);
+    if (hasLegacyState) {
+      const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+      const archiveRoot = path.join(os.homedir(), "AppData", "Local", "Synapse", "archive", `runtime-2.4.0-${stamp}`);
+      fs.mkdirSync(archiveRoot, { recursive: true });
+      fs.renameSync(AGENT_DIR, path.join(archiveRoot, ".synapse-agent"));
+    }
+  } catch (error) {
+    console.warn("[synapse] Falha ao arquivar estado legado; seguindo com inicialização segura.", error);
+  }
+
+  ensureAgentDir();
+  try {
+    fs.writeFileSync(INSTALL_RESET_FILE, JSON.stringify({
+      desktopVersion: APP_VERSION,
+      timezone: SYNAPSE_TIME_ZONE,
+      resetAt: new Date().toISOString(),
+    }, null, 2), "utf-8");
+  } catch (error) {
+    console.warn("[synapse] Falha ao gravar marcador de reset local.", error);
+  }
+};
 
 const readJson = (filePath, fallback = {}) => {
   try {
@@ -119,46 +152,7 @@ const sendMenuAction = (action) => {
 };
 
 const createMenu = () => {
-  const template = [
-    {
-      label: "Arquivo",
-      submenu: [
-        { label: "Atualizar", accelerator: "F5", click: () => sendMenuAction("refresh") },
-        { label: "Minimizar para bandeja", click: () => mainWindow?.hide() },
-        { type: "separator" },
-        { label: "Sair", click: () => app.quit() },
-      ],
-    },
-    {
-      label: "Atendimento",
-      submenu: [
-        { label: "Novo chamado", click: () => sendMenuAction("new-ticket") },
-        { label: "Histórico de chamados", click: () => sendMenuAction("history") },
-      ],
-    },
-    {
-      label: "Ferramentas",
-      submenu: [
-        { label: "Copiar diagnóstico", click: () => sendMenuAction("copy-diagnostics") },
-        { label: "Abrir painel web", click: () => shell.openExternal("https://synapse-seven-nu.vercel.app") },
-      ],
-    },
-    {
-      label: "Configurações",
-      submenu: [
-        { label: "Pareamento e servidor", click: () => sendMenuAction("settings") },
-        { label: "Limpar vínculo antigo", click: () => sendMenuAction("clear-link") },
-      ],
-    },
-    {
-      label: "Ajuda",
-      submenu: [
-        { label: "Central Synapse", click: () => shell.openExternal("https://synapse-seven-nu.vercel.app/ajuda") },
-        { label: `Sobre o Synapse ${APP_VERSION}`, click: () => sendMenuAction("about") },
-      ],
-    },
-  ];
-  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+  Menu.setApplicationMenu(null);
 };
 
 const createTray = () => {
@@ -181,12 +175,14 @@ const createTray = () => {
 
 const createWindow = async () => {
   mainWindow = new BrowserWindow({
-    width: 1240,
-    height: 820,
-    minWidth: 1040,
-    minHeight: 680,
+    width: 1180,
+    height: 760,
+    minWidth: 900,
+    minHeight: 620,
     title: "Synapse para Windows",
     backgroundColor: "#0b1120",
+    autoHideMenuBar: true,
+    frame: false,
     show: false,
     webPreferences: {
       preload: path.join(__dirname, "preload.cjs"),
@@ -195,6 +191,12 @@ const createWindow = async () => {
       sandbox: false,
     },
   });
+  mainWindow.setAutoHideMenuBar(true);
+  mainWindow.setMenuBarVisibility(false);
+  mainWindow.setMenu(null);
+  if (typeof mainWindow.removeMenu === "function") {
+    mainWindow.removeMenu();
+  }
   mainWindow.once("ready-to-show", () => mainWindow.show());
   mainWindow.on("close", (event) => {
     if (!app.isQuitting) {
@@ -215,10 +217,13 @@ ipcMain.handle("synapse:clear-link", async () => {
     token: "",
     device_id: undefined,
     empresa_id: undefined,
+    user_id: undefined,
     user_name: "",
     user_email: "",
     user_role: "",
     user_is_ti: false,
+    auth_session_active: false,
+    last_login_at: undefined,
     agent_mode: "simple",
     allow_local_shell: false,
   });
@@ -243,6 +248,16 @@ ipcMain.handle("synapse:notify", (_event, title, body) => {
   return false;
 });
 ipcMain.handle("synapse:open-external", (_event, url) => shell.openExternal(String(url)));
+ipcMain.handle("synapse:window-minimize", () => {
+  mainWindow?.minimize();
+  return true;
+});
+ipcMain.handle("synapse:window-toggle-maximize", () => {
+  if (!mainWindow) return false;
+  if (mainWindow.isMaximized()) mainWindow.unmaximize();
+  else mainWindow.maximize();
+  return mainWindow.isMaximized();
+});
 ipcMain.handle("synapse:minimize-to-tray", () => {
   mainWindow?.hide();
   return true;
@@ -251,6 +266,51 @@ ipcMain.handle("synapse:quit", () => {
   app.isQuitting = true;
   app.quit();
   return true;
+});
+
+const downloadFile = (url, targetPath, redirects = 0) => new Promise((resolve, reject) => {
+  let parsed;
+  try {
+    parsed = new URL(String(url));
+  } catch {
+    reject(new Error("URL de atualização inválida."));
+    return;
+  }
+  if (!["http:", "https:"].includes(parsed.protocol)) {
+    reject(new Error("URL de atualização deve usar HTTP ou HTTPS."));
+    return;
+  }
+  const client = parsed.protocol === "https:" ? https : http;
+  const request = client.get(parsed, { headers: { "Cache-Control": "no-cache" } }, (response) => {
+    const status = Number(response.statusCode || 0);
+    const location = response.headers.location;
+    if ([301, 302, 303, 307, 308].includes(status) && location && redirects < 5) {
+      response.resume();
+      const nextUrl = new URL(location, parsed).toString();
+      downloadFile(nextUrl, targetPath, redirects + 1).then(resolve).catch(reject);
+      return;
+    }
+    if (status < 200 || status >= 300) {
+      response.resume();
+      reject(new Error(`Falha ao baixar atualização: HTTP ${status}`));
+      return;
+    }
+    fs.mkdirSync(path.dirname(targetPath), { recursive: true });
+    const file = fs.createWriteStream(targetPath);
+    response.pipe(file);
+    file.on("finish", () => file.close(() => resolve(targetPath)));
+    file.on("error", reject);
+  });
+  request.on("error", reject);
+});
+
+ipcMain.handle("synapse:download-update", async (_event, url, version) => {
+  const safeVersion = String(version || APP_VERSION).replace(/[^0-9A-Za-z._-]/g, "");
+  const targetPath = path.join(app.getPath("temp"), `SynapseSetup-${safeVersion || APP_VERSION}.exe`);
+  await downloadFile(url, targetPath);
+  const openError = await shell.openPath(targetPath);
+  if (openError) throw new Error(openError);
+  return { path: targetPath };
 });
 
 const singleInstance = app.requestSingleInstanceLock();
@@ -264,7 +324,17 @@ if (!singleInstance) {
     }
   });
 
+  app.on("browser-window-created", (_event, window) => {
+    window.setAutoHideMenuBar(true);
+    window.setMenuBarVisibility(false);
+    window.setMenu(null);
+    if (typeof window.removeMenu === "function") {
+      window.removeMenu();
+    }
+  });
+
   app.whenReady().then(async () => {
+    archiveLegacyLocalState();
     ensureAgentDir();
     createMenu();
     createTray();
