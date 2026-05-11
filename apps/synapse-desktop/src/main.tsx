@@ -859,20 +859,6 @@ function App() {
   );
 }
 
-function MenuButton({ label, items, onPick }: { label: string; items: string[]; onPick: (item: string) => void }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="menu-button" onMouseLeave={() => setOpen(false)}>
-      <button onClick={() => setOpen((value) => !value)}>{label}</button>
-      {open && (
-        <div className="menu-popover">
-          {items.map((item) => <button key={item} onClick={() => { setOpen(false); onPick(item); }}>{item}</button>)}
-        </div>
-      )}
-    </div>
-  );
-}
-
 function Modal({ title, children, onClose }: { title: string; children: React.ReactNode; onClose: () => void }) {
   return (
     <div className="modal-backdrop">

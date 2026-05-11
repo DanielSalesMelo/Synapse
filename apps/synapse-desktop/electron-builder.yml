@@ -9,6 +9,8 @@ files:
   - dist/**/*
   - electron/**/*
 extraResources:
+  - from: installer-clean.ps1
+    to: installer/clean-install.ps1
   - from: ../../packages/services/legacy-api/agent/synapse-agent.exe
     to: worker/synapse-agent.exe
   - from: ../../packages/services/legacy-api/agent/synapse_agent.py

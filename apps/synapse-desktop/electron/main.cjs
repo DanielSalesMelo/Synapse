@@ -9,10 +9,13 @@ const { spawn, execFile } = require("node:child_process");
 const APP_VERSION = "2.4.0";
 const SYNAPSE_TIME_ZONE = "America/Sao_Paulo";
 const DEFAULT_SERVER = "https://synapse-backend-ds2026.azurewebsites.net";
+const LOCAL_APP_DATA = process.env.LOCALAPPDATA || path.join(os.homedir(), "AppData", "Local");
+const ROAMING_APP_DATA = process.env.APPDATA || path.join(os.homedir(), "AppData", "Roaming");
 const AGENT_DIR = process.env.SYNAPSE_AGENT_DIR || path.join(os.homedir(), ".synapse-agent");
 const CONFIG_FILE = path.join(AGENT_DIR, "config.json");
 const DESKTOP_CONFIG_FILE = path.join(AGENT_DIR, "desktop-config.json");
-const INSTALL_RESET_FILE = path.join(AGENT_DIR, "install-reset-2.4.0.json");
+const CLEAN_INSTALL_FLAG = path.join(LOCAL_APP_DATA, "Synapse", "clean-install-2.4.0.flag");
+const CLEAN_INSTALL_MARKER = path.join(AGENT_DIR, "clean-install-2.4.0.json");
 process.env.TZ = process.env.TZ || SYNAPSE_TIME_ZONE;
 
 let mainWindow = null;
@@ -20,31 +23,74 @@ let tray = null;
 
 const ensureAgentDir = () => fs.mkdirSync(AGENT_DIR, { recursive: true });
 
-const archiveLegacyLocalState = () => {
-  if (process.env.SYNAPSE_PRESERVE_AGENT_STATE === "1" || process.env.SYNAPSE_AGENT_DIR) return;
-  if (fs.existsSync(INSTALL_RESET_FILE)) return;
+const isCleanInstallRequested = () => {
+  if (process.env.SYNAPSE_CLEAN_INSTALL === "1") return true;
+  if (process.argv.some((arg) => ["--synapse-clean-install", "--clean-install"].includes(String(arg).toLowerCase()))) return true;
+  return fs.existsSync(CLEAN_INSTALL_FLAG);
+};
 
-  try {
-    const hasLegacyState = fs.existsSync(CONFIG_FILE) || fs.existsSync(DESKTOP_CONFIG_FILE);
-    if (hasLegacyState) {
-      const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-      const archiveRoot = path.join(os.homedir(), "AppData", "Local", "Synapse", "archive", `runtime-2.4.0-${stamp}`);
-      fs.mkdirSync(archiveRoot, { recursive: true });
-      fs.renameSync(AGENT_DIR, path.join(archiveRoot, ".synapse-agent"));
+const movePathToArchive = (sourcePath, archiveRoot) => {
+  if (!sourcePath || !fs.existsSync(sourcePath)) return;
+  const resolvedSource = path.resolve(sourcePath);
+  const resolvedArchive = path.resolve(archiveRoot);
+  if (resolvedSource === resolvedArchive || resolvedSource.startsWith(`${resolvedArchive}${path.sep}`)) return;
+
+  const baseName = path.basename(resolvedSource);
+  let target = path.join(archiveRoot, baseName);
+  let suffix = 1;
+  while (fs.existsSync(target)) {
+    target = path.join(archiveRoot, `${baseName}-${suffix}`);
+    suffix += 1;
+  }
+  fs.renameSync(resolvedSource, target);
+};
+
+const cleanInstallLocalState = () => {
+  if (process.env.SYNAPSE_PRESERVE_AGENT_STATE === "1" || !isCleanInstallRequested()) return;
+
+  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const archiveRoot = path.join(LOCAL_APP_DATA, "Synapse", "archive", `runtime-clean-2.4.0-${stamp}`);
+  fs.mkdirSync(archiveRoot, { recursive: true });
+
+  const localStatePaths = [
+    AGENT_DIR,
+    path.join(ROAMING_APP_DATA, "Synapse para Windows"),
+    path.join(ROAMING_APP_DATA, "Synapse Agent"),
+    path.join(ROAMING_APP_DATA, "synapse-agent"),
+    path.join(ROAMING_APP_DATA, "synapse-desktop"),
+    path.join(LOCAL_APP_DATA, "Synapse para Windows"),
+    path.join(LOCAL_APP_DATA, "Synapse Agent"),
+    path.join(LOCAL_APP_DATA, "SynapseAgent"),
+    path.join(LOCAL_APP_DATA, "synapse-agent"),
+    path.join(LOCAL_APP_DATA, "synapse-desktop"),
+    path.join(LOCAL_APP_DATA, "com.synapse.agent"),
+    path.join(LOCAL_APP_DATA, "br.com.synapse.windows"),
+  ];
+
+  for (const statePath of localStatePaths) {
+    try {
+      movePathToArchive(statePath, archiveRoot);
+    } catch (error) {
+      console.warn("[synapse] Falha ao arquivar estado local de instalação limpa:", statePath, error);
     }
-  } catch (error) {
-    console.warn("[synapse] Falha ao arquivar estado legado; seguindo com inicialização segura.", error);
   }
 
   ensureAgentDir();
   try {
-    fs.writeFileSync(INSTALL_RESET_FILE, JSON.stringify({
+    fs.writeFileSync(CLEAN_INSTALL_MARKER, JSON.stringify({
       desktopVersion: APP_VERSION,
       timezone: SYNAPSE_TIME_ZONE,
-      resetAt: new Date().toISOString(),
+      cleanInstallAt: new Date().toISOString(),
+      archiveRoot,
     }, null, 2), "utf-8");
   } catch (error) {
-    console.warn("[synapse] Falha ao gravar marcador de reset local.", error);
+    console.warn("[synapse] Falha ao gravar marcador de instalação limpa.", error);
+  }
+
+  try {
+    if (fs.existsSync(CLEAN_INSTALL_FLAG)) fs.unlinkSync(CLEAN_INSTALL_FLAG);
+  } catch {
+    // Marker cleanup is best-effort.
   }
 };
 
@@ -182,6 +228,7 @@ const createWindow = async () => {
     title: "Synapse para Windows",
     backgroundColor: "#0b1120",
     autoHideMenuBar: true,
+    menuBarVisible: false,
     frame: false,
     show: false,
     webPreferences: {
@@ -334,7 +381,8 @@ if (!singleInstance) {
   });
 
   app.whenReady().then(async () => {
-    archiveLegacyLocalState();
+    Menu.setApplicationMenu(null);
+    cleanInstallLocalState();
     ensureAgentDir();
     createMenu();
     createTray();

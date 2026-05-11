@@ -27,7 +27,7 @@ import {
   RefreshCw, TrendingUp, Eye, Edit, Trash2, Send, Paperclip,
   Download, Link2, QrCode, Copy, Check, X, ChevronRight,
   BarChart2, Database, Settings, Zap, Bell, BellRing,
-  Image as ImageIcon, MessageSquare, Calendar, Tag, MoreHorizontal,
+  Image as ImageIcon, MessageSquare, Calendar, Tag,
   Archive, Unlink, RotateCcw,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -1065,8 +1065,8 @@ export default function TI({ params }: { params?: { tab?: string } }) {
         )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button type="button" variant="ghost" size="sm" className="h-7 w-7 p-0" disabled={gerenciarAgente.isPending} aria-label={`Mais ações para ${a.hostname || "dispositivo"}`}>
-              <MoreHorizontal className="h-4 w-4" />
+            <Button type="button" variant="outline" size="sm" className="h-7 text-xs" disabled={gerenciarAgente.isPending} aria-label={`Mais ações para ${a.hostname || "dispositivo"}`}>
+              <Wrench className="h-3 w-3 mr-1" />Mais ações
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" sideOffset={8} collisionPadding={16} className="z-[80] w-72" onClick={(event) => event.stopPropagation()}>
