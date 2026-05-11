@@ -27,6 +27,28 @@ const DEVICE_DETAIL_ROLES = new Set([
   "supervisor_geral",
   "supervisor_ti",
 ]);
+const NOT_COLLECTED = "Não coletado";
+const LATEST_AGENT_VERSION = "2.4.0";
+
+const numericMetric = (...values: any[]) => {
+  for (const value of values) {
+    if (value === null || value === undefined || value === "") continue;
+    const numeric = Number(value);
+    if (Number.isFinite(numeric)) return numeric;
+  }
+  return null;
+};
+
+const compareSemver = (left: string, right: string) => {
+  const parse = (value: string) => String(value || "0").split(".").map((part) => Number(part.replace(/\D/g, "")) || 0);
+  const a = parse(left);
+  const b = parse(right);
+  for (let index = 0; index < Math.max(a.length, b.length); index += 1) {
+    const diff = (a[index] || 0) - (b[index] || 0);
+    if (diff !== 0) return diff;
+  }
+  return 0;
+};
 
 export default function DeviceDetails() {
   const { user } = useAuth();
@@ -48,6 +70,55 @@ export default function DeviceDetails() {
   ) as any;
 
   const agente = (agentesQ.data ?? []).find((a: any) => a.id === Number(agentId)) ?? null;
+  const agentHealth = (a: any) => {
+    let score = 100;
+    const reasons: string[] = [];
+    const status = String(a?.status_resolvido || a?.status || "offline").toLowerCase();
+    const lastCollected = a?.ultima_coleta || a?.ultimaColeta || a?.ultimoContato || a?.updatedAt || null;
+    const lastTs = lastCollected ? new Date(lastCollected).getTime() : 0;
+    const staleHours = lastTs ? Math.floor((Date.now() - lastTs) / 3600000) : Number.POSITIVE_INFINITY;
+    const cpu = numericMetric(a?.cpuUso, a?.cpu_atual, a?.cpuAtual);
+    const ram = numericMetric(a?.ramUsoPct, a?.ram_atual, a?.ramAtual);
+    const disk = numericMetric(a?.discoUsoPct, a?.disco_atual, a?.discoAtual);
+    const version = String(a?.versaoAgente || a?.agentVersion || a?.versao_agente || "").trim();
+
+    if (status !== "online") {
+      score -= 32;
+      reasons.push(status === "offline" ? "offline" : status);
+    }
+    if (!Number.isFinite(staleHours)) {
+      score -= 18;
+      reasons.push("sem heartbeat");
+    } else if (staleHours >= 24) {
+      score -= 16;
+      reasons.push(`${Math.floor(staleHours / 24)} dia(s) sem heartbeat`);
+    }
+    if (cpu != null && cpu >= 90) {
+      score -= 15;
+      reasons.push("CPU crítica");
+    }
+    if (ram != null && ram >= 90) {
+      score -= 15;
+      reasons.push("RAM crítica");
+    }
+    if (disk != null && disk >= 90) {
+      score -= 22;
+      reasons.push("disco crítico");
+    }
+    if (version && compareSemver(version, LATEST_AGENT_VERSION) < 0) {
+      score -= 10;
+      reasons.push("agente desatualizado");
+    }
+
+    const normalized = Math.max(0, Math.min(100, Math.round(score)));
+    const level = normalized < 55 ? "critico" : normalized < 80 ? "atencao" : "saudavel";
+    return {
+      score: normalized,
+      level,
+      label: level === "critico" ? "Crítico" : level === "atencao" ? "Atenção" : "Saudável",
+      reason: reasons.length ? reasons.join(" · ") : "Sem alertas preventivos",
+    };
+  };
   const safeParse = (value: any) => {
     if (!value) return null;
     if (Array.isArray(value) || typeof value === "object") return value;
@@ -57,7 +128,7 @@ export default function DeviceDetails() {
   const memoriaSlots = safeParse(agente?.memoria_slots) as any[] | null;
   const formatNetworkKb = (value: any) => {
     const numeric = Number(value ?? 0);
-    if (!Number.isFinite(numeric) || numeric <= 0) return "—";
+    if (!Number.isFinite(numeric) || numeric <= 0) return NOT_COLLECTED;
     if (numeric >= 1024 * 1024) return `${(numeric / 1024 / 1024).toFixed(1)} GB`;
     if (numeric >= 1024) return `${(numeric / 1024).toFixed(1)} MB`;
     return `${numeric.toFixed(0)} KB`;
@@ -118,6 +189,13 @@ export default function DeviceDetails() {
     );
   }
 
+  const health = agentHealth(agente);
+  const healthClass = health.level === "critico"
+    ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
+    : health.level === "atencao"
+      ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
+      : "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
+
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
       {/* Header */}
@@ -158,6 +236,20 @@ export default function DeviceDetails() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <Activity className="h-4 w-4 text-muted-foreground" /> Score de saúde
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-2xl font-bold">{health.score}</span>
+              <Badge className={healthClass}>{health.label}</Badge>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">{health.reason}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
               <User className="h-4 w-4 text-muted-foreground" /> Usuário
             </CardTitle>
           </CardHeader>
@@ -165,7 +257,7 @@ export default function DeviceDetails() {
             <div className="text-lg font-bold">
               {agente.userName ? `${agente.userName} ${agente.userLastName}` : "Não vinculado"}
             </div>
-            <p className="text-xs text-muted-foreground">{agente.department_id || "Sem departamento"}</p>
+            <p className="text-xs text-muted-foreground">{agente.department_id || NOT_COLLECTED}</p>
           </CardContent>
         </Card>
         <Card>
@@ -179,7 +271,7 @@ export default function DeviceDetails() {
               {agente.status?.toUpperCase() || "OFFLINE"}
             </Badge>
             <p className="text-xs text-muted-foreground mt-1">
-              Visto por último: {formatDateTimeBR(agente.ultima_coleta || agente.updatedAt, "Nunca")}
+              Visto por último: {formatDateTimeBR(agente.ultima_coleta || agente.updatedAt, NOT_COLLECTED)}
             </p>
           </CardContent>
         </Card>
@@ -190,8 +282,8 @@ export default function DeviceDetails() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-sm font-medium truncate" title={agente.cpu_model}>{agente.cpu_model || agente.processador || "N/A"}</div>
-            <p className="text-xs text-muted-foreground">{agente.so || "Sistema desconhecido"}</p>
+            <div className="text-sm font-medium truncate" title={agente.cpu_model || agente.processador || NOT_COLLECTED}>{agente.cpu_model || agente.processador || NOT_COLLECTED}</div>
+            <p className="text-xs text-muted-foreground">{agente.so || NOT_COLLECTED}</p>
           </CardContent>
         </Card>
         <Card>
@@ -202,7 +294,7 @@ export default function DeviceDetails() {
           </CardHeader>
           <CardContent>
             <div className="text-lg font-bold">
-              {agente.ram_total_mb ? `${(Number(agente.ram_total_mb) / 1024).toFixed(1)} GB` : "N/A"}
+              {agente.ram_total_mb ? `${(Number(agente.ram_total_mb) / 1024).toFixed(1)} GB` : NOT_COLLECTED}
             </div>
             <p className="text-xs text-muted-foreground">Capacidade total instalada</p>
           </CardContent>
@@ -215,11 +307,11 @@ export default function DeviceDetails() {
             <CardTitle className="text-sm">Inventário de Hardware</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
-            <div className="flex justify-between gap-3"><span className="text-muted-foreground">Placa-mãe</span><span className="font-medium text-right">{agente.placa_mae_modelo || agente.placaMaeModelo || "Não informado"}</span></div>
-            <div className="flex justify-between gap-3"><span className="text-muted-foreground">Fabricante</span><span className="font-medium text-right">{agente.placa_mae_fabricante || "Não informado"}</span></div>
-            <div className="flex justify-between gap-3"><span className="text-muted-foreground">Socket CPU</span><span className="font-medium text-right">{agente.socket_cpu || agente.socketCpu || "Não informado"}</span></div>
-            <div className="flex justify-between gap-3"><span className="text-muted-foreground">BIOS</span><span className="font-medium text-right">{agente.bios_versao || "Não informado"}</span></div>
-            <div className="flex justify-between gap-3"><span className="text-muted-foreground">GPU principal</span><span className="font-medium text-right">{agente.gpuModel || gpus?.[0]?.name || gpus?.[0]?.model || "Não informado"}</span></div>
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">Placa-mãe</span><span className="font-medium text-right">{agente.placa_mae_modelo || agente.placaMaeModelo || NOT_COLLECTED}</span></div>
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">Fabricante</span><span className="font-medium text-right">{agente.placa_mae_fabricante || NOT_COLLECTED}</span></div>
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">Socket CPU</span><span className="font-medium text-right">{agente.socket_cpu || agente.socketCpu || NOT_COLLECTED}</span></div>
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">BIOS</span><span className="font-medium text-right">{agente.bios_versao || NOT_COLLECTED}</span></div>
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">GPU principal</span><span className="font-medium text-right">{agente.gpuModel || gpus?.[0]?.name || gpus?.[0]?.model || NOT_COLLECTED}</span></div>
           </CardContent>
         </Card>
         <Card>
@@ -227,7 +319,7 @@ export default function DeviceDetails() {
             <CardTitle className="text-sm">Memória e Slots</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
-            <div className="flex justify-between gap-3"><span className="text-muted-foreground">RAM instalada</span><span className="font-medium text-right">{agente.ram_total_mb ? `${(Number(agente.ram_total_mb) / 1024).toFixed(1)} GB` : "Não informado"}</span></div>
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">RAM instalada</span><span className="font-medium text-right">{agente.ram_total_mb ? `${(Number(agente.ram_total_mb) / 1024).toFixed(1)} GB` : NOT_COLLECTED}</span></div>
             <div className="flex justify-between gap-3"><span className="text-muted-foreground">Slots detectados</span><span className="font-medium text-right">{memoriaSlots?.length ?? 0}</span></div>
             {(memoriaSlots ?? []).slice(0, 4).map((slot: any, idx: number) => (
               <div key={idx} className="rounded border p-2 text-xs">

@@ -19,13 +19,17 @@ function gerarProtocolo(): string {
 
 const TICKET_STATUS_VALUES = [
   "aberto",
+  "novo",
   "triagem_ia",
   "aguardando_usuario",
   "aguardando_ti",
   "em_andamento",
+  "em_atendimento",
+  "aguardando_fornecedor",
   "acesso_remoto_solicitado",
   "em_acesso_remoto",
   "resolvido",
+  "fechado",
   "encerrado",
   "cancelado",
   "reaberto",
@@ -70,10 +74,10 @@ export const tiRouter = router({
     const [ticketStats] = await db
       .select({
         total: sql<number>`count(*)`,
-        abertos: sql<number>`count(*) filter (where status = 'aberto')`,
-        emAndamento: sql<number>`count(*) filter (where status = 'em_andamento')`,
-        resolvidosHoje: sql<number>`count(*) filter (where status = 'resolvido' AND "resolvidoEm" >= current_date)`,
-        ativos: sql<number>`count(*) filter (where status IN ('aberto','triagem_ia','aguardando_usuario','aguardando_ti','em_andamento','acesso_remoto_solicitado','em_acesso_remoto','reaberto'))`,
+        abertos: sql<number>`count(*) filter (where status IN ('aberto','novo','reaberto'))`,
+        emAndamento: sql<number>`count(*) filter (where status IN ('em_andamento','em_atendimento','aguardando_usuario','aguardando_ti','aguardando_fornecedor','acesso_remoto_solicitado','em_acesso_remoto'))`,
+        resolvidosHoje: sql<number>`count(*) filter (where status IN ('resolvido','fechado','encerrado') AND "resolvidoEm" >= current_date)`,
+        ativos: sql<number>`count(*) filter (where status IN ('aberto','novo','triagem_ia','aguardando_usuario','aguardando_ti','em_andamento','em_atendimento','aguardando_fornecedor','acesso_remoto_solicitado','em_acesso_remoto','reaberto'))`,
       })
       .from(ticketsTi)
       .where(ticketWhere);
@@ -112,7 +116,7 @@ export const tiRouter = router({
           isNull(ticketsTi.deletedAt)
         );
     const [r] = await db.select({
-      tickets: sql<number>`count(*) filter (where status = 'aberto')`,
+      tickets: sql<number>`count(*) filter (where status IN ('aberto','novo','reaberto','aguardando_ti','aguardando_usuario','em_andamento','em_atendimento','aguardando_fornecedor'))`,
     }).from(ticketsTi).where(whereExpr);
     return { tickets: Number(r?.tickets || 0), alertas: 0 };
   }),
@@ -389,7 +393,7 @@ export const tiRouter = router({
       if (data.tecnicoId) { sets.push(`"tecnicoId"=$${i++}`); vals.push(data.tecnicoId); }
       if (data.resolucao) { sets.push(`resolucao=$${i++}`); vals.push(data.resolucao); }
       if (data.slaHoras) { sets.push(`"slaHoras"=$${i++}`); vals.push(data.slaHoras); }
-      if (data.status === 'resolvido' || data.status === 'encerrado') sets.push('"resolvidoEm"=NOW()');
+      if (data.status === 'resolvido' || data.status === 'encerrado' || data.status === 'fechado') sets.push('"resolvidoEm"=NOW()');
       vals.push(id); vals.push(empresaId);
       await client.unsafe(
         `UPDATE tickets_ti SET ${sets.join(',')} WHERE id=$${i++} AND "empresaId"=$${i}`,
@@ -426,7 +430,7 @@ export const tiRouter = router({
       const rows = await client`SELECT status FROM tickets_ti WHERE id=${input.id} AND "empresaId"=${empresaId} LIMIT 1`;
       const currentStatus = rows?.[0]?.status ?? null;
       const resolvedAt =
-        input.status === "resolvido" || input.status === "encerrado" ? new Date() : null;
+        input.status === "resolvido" || input.status === "encerrado" || input.status === "fechado" ? new Date() : null;
       await client`
         UPDATE tickets_ti
         SET status=${input.status},
@@ -538,8 +542,8 @@ export const tiRouter = router({
         UPDATE tickets_ti
         SET "updatedAt"=NOW(),
             status = CASE
-              WHEN ${!canManageTi(ctx.user)} AND status IN ('aguardando_usuario','resolvido','encerrado') THEN 'aguardando_ti'
-              WHEN ${canManageTi(ctx.user)} AND status IN ('aberto','aguardando_ti','triagem_ia') THEN 'aguardando_usuario'
+              WHEN ${!canManageTi(ctx.user)} AND status IN ('aguardando_usuario','resolvido','encerrado','fechado') THEN 'aguardando_ti'
+              WHEN ${canManageTi(ctx.user)} AND status IN ('novo','aberto','aguardando_ti','triagem_ia','em_atendimento','reaberto') THEN 'aguardando_usuario'
               ELSE status
             END
         WHERE id=${input.ticketId} AND "empresaId"=${empresaId}

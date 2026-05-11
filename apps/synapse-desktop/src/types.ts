@@ -94,11 +94,17 @@ export type AgentProfile = {
 
 export type UpdateInfo = {
   version: string;
+  latestVersion?: string;
+  minimumVersion?: string;
   productName?: string;
   artifact?: string;
   runtime?: string;
   worker?: string;
   downloadUrl?: string;
+  sha256?: string | null;
+  sizeBytes?: number | null;
+  releaseDate?: string;
+  changelog?: string[];
   releaseNotes?: string[];
   mandatory?: boolean;
   publishedAt?: string;

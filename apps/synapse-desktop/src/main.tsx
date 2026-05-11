@@ -8,13 +8,17 @@ const DEFAULT_SERVER = "https://synapse-backend-ds2026.azurewebsites.net";
 const CATEGORIES = ["hardware", "software", "rede", "acesso", "email", "impressora", "outro"];
 const STATUS_LABELS: Record<string, string> = {
   aberto: "Aberto",
+  novo: "Novo",
   triagem_ia: "Triagem IA",
   aguardando_usuario: "Aguardando usuário",
   aguardando_ti: "Aguardando TI",
   em_andamento: "Em andamento",
+  em_atendimento: "Em atendimento",
+  aguardando_fornecedor: "Aguardando fornecedor",
   acesso_remoto_solicitado: "Acesso remoto solicitado",
   em_acesso_remoto: "Em acesso remoto",
   resolvido: "Resolvido",
+  fechado: "Fechado",
   encerrado: "Encerrado",
   cancelado: "Cancelado",
   reaberto: "Reaberto",
@@ -26,6 +30,14 @@ const bytesLabel = (kb?: number | string | null) => {
   if (value >= 1024 * 1024) return `${(value / 1024 / 1024).toFixed(1)} GB`;
   if (value >= 1024) return `${(value / 1024).toFixed(1)} MB`;
   return `${value.toFixed(0)} KB`;
+};
+
+const fileSizeLabel = (bytes?: number | null) => {
+  const value = Number(bytes ?? 0);
+  if (!Number.isFinite(value) || value <= 0) return "";
+  if (value >= 1024 * 1024) return `${(value / 1024 / 1024).toFixed(1)} MB`;
+  if (value >= 1024) return `${(value / 1024).toFixed(1)} KB`;
+  return `${value.toFixed(0)} B`;
 };
 
 const firstLineTitle = (text: string) => {
@@ -110,12 +122,58 @@ function App() {
   const isPaired = Boolean(config.token);
   const isTiMode = config.agent_mode === "ti" && Boolean(config.user_is_ti);
   const isAuthenticated = Boolean(config.auth_session_active && config.user_email);
-  const hasUpdate = updateInfo?.version ? compareVersions(updateInfo.version, appVersion) > 0 : false;
+  const availableVersion = updateInfo?.latestVersion || updateInfo?.version || "";
+  const releaseNotes = updateInfo?.changelog?.length ? updateInfo.changelog : updateInfo?.releaseNotes || [];
+  const hasUpdate = availableVersion ? compareVersions(availableVersion, appVersion) > 0 : false;
   const selectedTicket = useMemo(
     () => selectedTicketId === null ? null : tickets.find((ticket) => ticket.id === selectedTicketId) ?? tickets[0] ?? null,
     [selectedTicketId, tickets],
   );
   const metric = profile?.ultima_metrica ?? null;
+  const deviceHealth = useMemo(() => {
+    let score = 100;
+    const reasons: string[] = [];
+    const cpu = Number(metric?.cpuUso);
+    const ram = Number(metric?.ramUsoPct);
+    const disk = Number(metric?.discoUsoPct);
+    const lastSeen = profile?.ultimoContato ? new Date(profile.ultimoContato).getTime() : 0;
+    const staleMinutes = lastSeen ? Math.floor((Date.now() - lastSeen) / 60000) : Number.POSITIVE_INFINITY;
+
+    if (!profile?.online) {
+      score -= 35;
+      reasons.push("heartbeat offline");
+    }
+    if (Number.isFinite(staleMinutes) && staleMinutes > (policy.offlineGraceMinutes || 10)) {
+      score -= 20;
+      reasons.push("coleta atrasada");
+    }
+    if (Number.isFinite(cpu) && cpu >= 90) {
+      score -= 18;
+      reasons.push("CPU crítica");
+    }
+    if (Number.isFinite(ram) && ram >= 90) {
+      score -= 18;
+      reasons.push("RAM crítica");
+    }
+    if (Number.isFinite(disk) && disk >= 90) {
+      score -= 22;
+      reasons.push("disco crítico");
+    }
+    if (policy.isCritical24x7 && !profile?.online) {
+      score -= 12;
+      reasons.push("ativo 24x7 sem heartbeat");
+    }
+
+    const normalized = Math.max(0, Math.min(100, Math.round(score)));
+    const level = normalized < 55 ? "critical" : normalized < 80 ? "attention" : "healthy";
+    const label = level === "critical" ? "Crítico" : level === "attention" ? "Atenção" : "Saudável";
+    return {
+      score: normalized,
+      level,
+      label,
+      summary: reasons.length ? reasons.join(", ") : "telemetria dentro do esperado",
+    };
+  }, [metric?.cpuUso, metric?.discoUsoPct, metric?.ramUsoPct, policy.isCritical24x7, policy.offlineGraceMinutes, profile?.online, profile?.ultimoContato]);
 
   const notify = useCallback((message: string) => {
     setToast(message);
@@ -143,13 +201,19 @@ function App() {
       const response = await fetch(`${base}/api/agent/version`, { cache: "no-store" });
       const payload = await safeJson(response) as UpdateInfo;
       if (!response.ok) throw new Error((payload as any)?.error || "Falha ao consultar atualização.");
+      const nextVersion = payload.latestVersion || payload.version || appVersion;
+      const notes = payload.changelog?.length ? payload.changelog : payload.releaseNotes || [];
       setUpdateInfo({
         ...payload,
+        version: nextVersion,
+        latestVersion: nextVersion,
+        releaseNotes: notes,
+        changelog: notes,
         downloadUrl: payload.downloadUrl || `${base}/api/agent/download`,
       });
       if (!silent) {
-        const newer = payload?.version && compareVersions(payload.version, appVersion) > 0;
-        notify(newer ? `Atualização ${payload.version} disponível.` : "Synapse para Windows está atualizado.");
+        const newer = compareVersions(nextVersion, appVersion) > 0;
+        notify(newer ? `Atualização ${nextVersion} disponível.` : "Você já está na versão mais recente.");
       }
     } catch (error) {
       if (!silent) notify((error as Error).message || "Falha ao consultar atualização.");
@@ -504,7 +568,7 @@ function App() {
 
   const statusText = isPaired && !isAuthenticated ? "Login necessário" : isTiMode
     ? profile?.online ? "Conectado" : isPaired ? "Aguardando heartbeat" : "Não pareado"
-    : profile?.online ? "Conectado" : isPaired ? "Sincronizando" : "Não conectado";
+    : profile?.online ? "Conectado ao suporte" : isPaired ? "Sincronizando suporte" : "Não conectado";
 
   return (
     <div className="app-shell" onPaste={handlePaste} onDragOver={(event) => event.preventDefault()} onDrop={handleDrop}>
@@ -521,7 +585,7 @@ function App() {
           <button onClick={() => { setSelectedTicketId(null); setComposer(""); }} disabled={!isAuthenticated}>Chamado</button>
           <button onClick={() => setHistoryOpen(true)} disabled={!isAuthenticated}>Histórico</button>
           <button className={hasUpdate ? "update-attention" : ""} onClick={() => { setUpdateOpen(true); checkForUpdates(false); }}>
-            {hasUpdate ? `Atualização ${updateInfo?.version}` : "Atualizações"}
+            {hasUpdate ? `Atualização ${availableVersion}` : "Atualizações"}
           </button>
           <button onClick={() => setPolicyOpen(true)} disabled={!isAuthenticated}>24x7</button>
           <button onClick={() => window.synapse.openExternal("https://synapse-seven-nu.vercel.app")}>Web</button>
@@ -740,6 +804,11 @@ function App() {
               <div className="card technical">
                 <span className="eyebrow">Área TI/Admin</span>
                 <h3>Dados técnicos</h3>
+                <div className={`health-score ${deviceHealth.level}`}>
+                  <span>Score de saúde</span>
+                  <strong>{deviceHealth.score}</strong>
+                  <em>{deviceHealth.label} · {deviceHealth.summary}</em>
+                </div>
                 <Metric label="CPU" value={metric?.cpuUso != null ? `${metric.cpuUso}%` : "-"} />
                 <Metric label="RAM" value={metric?.ramUsoPct != null ? `${metric.ramUsoPct}%` : "-"} />
                 <Metric label="Disco" value={metric?.discoUsoPct != null ? `${metric.discoUsoPct}%` : "-"} />
@@ -822,10 +891,14 @@ function App() {
           <div className="update-panel">
             <span className={hasUpdate ? "update-badge available" : "update-badge"}>{hasUpdate ? "Atualização disponível" : "Atualizado"}</span>
             <h3>Instalado: {appVersion}</h3>
-            <p>Disponível: {updateInfo?.version || "consultando..."}</p>
-            {updateInfo?.publishedAt && <p>Publicado em: {formatDateTimeBR(updateInfo.publishedAt)}</p>}
-            {updateInfo?.releaseNotes?.length ? (
-              <ul>{updateInfo.releaseNotes.map((note) => <li key={note}>{note}</li>)}</ul>
+            <p>Disponível: {availableVersion || "consultando..."}</p>
+            {updateInfo?.minimumVersion && <p>Versão mínima: {updateInfo.minimumVersion}</p>}
+            {(updateInfo?.releaseDate || updateInfo?.publishedAt) && <p>Publicado em: {formatDateTimeBR(updateInfo.releaseDate || updateInfo.publishedAt)}</p>}
+            {updateInfo?.sha256 && <p className="mono">SHA256: {updateInfo.sha256}</p>}
+            {updateInfo?.sizeBytes ? <p>Tamanho: {fileSizeLabel(updateInfo.sizeBytes)}</p> : null}
+            {!hasUpdate && availableVersion && <p className="update-ok">Você já está na versão mais recente.</p>}
+            {releaseNotes.length ? (
+              <ul>{releaseNotes.map((note) => <li key={note}>{note}</li>)}</ul>
             ) : (
               <p>O aplicativo consulta o backend oficial e pode baixar o instalador automaticamente quando houver nova versão.</p>
             )}
@@ -834,12 +907,15 @@ function App() {
             <button disabled={updateBusy} onClick={() => checkForUpdates(false)}>{updateBusy ? "Consultando..." : "Verificar agora"}</button>
             <button
               className="primary"
-              disabled={!updateInfo?.downloadUrl || updateBusy}
+              disabled={!hasUpdate || !updateInfo?.downloadUrl || updateBusy}
               onClick={async () => {
-                if (!updateInfo?.downloadUrl) return;
+                if (!hasUpdate || !updateInfo?.downloadUrl) {
+                  notify("Você já está na versão mais recente.");
+                  return;
+                }
                 setUpdateBusy(true);
                 try {
-                  await window.synapse.downloadUpdate(updateInfo.downloadUrl, updateInfo.version || appVersion);
+                  await window.synapse.downloadUpdate(updateInfo.downloadUrl, availableVersion || appVersion);
                   notify("Instalador de atualização iniciado.");
                 } catch (error) {
                   notify((error as Error).message || "Falha ao iniciar atualização.");
@@ -848,7 +924,7 @@ function App() {
                 }
               }}
             >
-              Baixar e instalar
+              {hasUpdate ? "Baixar e instalar" : "Já atualizado"}
             </button>
           </div>
         </Modal>

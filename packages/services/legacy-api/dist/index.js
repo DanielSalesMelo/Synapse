@@ -90481,13 +90481,17 @@ function gerarProtocolo() {
 }
 var TICKET_STATUS_VALUES = [
   "aberto",
+  "novo",
   "triagem_ia",
   "aguardando_usuario",
   "aguardando_ti",
   "em_andamento",
+  "em_atendimento",
+  "aguardando_fornecedor",
   "acesso_remoto_solicitado",
   "em_acesso_remoto",
   "resolvido",
+  "fechado",
   "encerrado",
   "cancelado",
   "reaberto"
@@ -90523,10 +90527,10 @@ var tiRouter = router({
     );
     const [ticketStats] = await db.select({
       total: sql`count(*)`,
-      abertos: sql`count(*) filter (where status = 'aberto')`,
-      emAndamento: sql`count(*) filter (where status = 'em_andamento')`,
-      resolvidosHoje: sql`count(*) filter (where status = 'resolvido' AND "resolvidoEm" >= current_date)`,
-      ativos: sql`count(*) filter (where status IN ('aberto','triagem_ia','aguardando_usuario','aguardando_ti','em_andamento','acesso_remoto_solicitado','em_acesso_remoto','reaberto'))`
+      abertos: sql`count(*) filter (where status IN ('aberto','novo','reaberto'))`,
+      emAndamento: sql`count(*) filter (where status IN ('em_andamento','em_atendimento','aguardando_usuario','aguardando_ti','aguardando_fornecedor','acesso_remoto_solicitado','em_acesso_remoto'))`,
+      resolvidosHoje: sql`count(*) filter (where status IN ('resolvido','fechado','encerrado') AND "resolvidoEm" >= current_date)`,
+      ativos: sql`count(*) filter (where status IN ('aberto','novo','triagem_ia','aguardando_usuario','aguardando_ti','em_andamento','em_atendimento','aguardando_fornecedor','acesso_remoto_solicitado','em_acesso_remoto','reaberto'))`
     }).from(ticketsTi).where(ticketWhere);
     const [ativoStats] = await db.select({
       total: sql`count(*)`,
@@ -90560,7 +90564,7 @@ var tiRouter = router({
       isNull2(ticketsTi.deletedAt)
     );
     const [r] = await db.select({
-      tickets: sql`count(*) filter (where status = 'aberto')`
+      tickets: sql`count(*) filter (where status IN ('aberto','novo','reaberto','aguardando_ti','aguardando_usuario','em_andamento','em_atendimento','aguardando_fornecedor'))`
     }).from(ticketsTi).where(whereExpr);
     return { tickets: Number(r?.tickets || 0), alertas: 0 };
   }),
@@ -90826,7 +90830,7 @@ var tiRouter = router({
       sets.push(`"slaHoras"=$${i++}`);
       vals.push(data.slaHoras);
     }
-    if (data.status === "resolvido" || data.status === "encerrado") sets.push('"resolvidoEm"=NOW()');
+    if (data.status === "resolvido" || data.status === "encerrado" || data.status === "fechado") sets.push('"resolvidoEm"=NOW()');
     vals.push(id);
     vals.push(empresaId);
     await client.unsafe(
@@ -90862,7 +90866,7 @@ var tiRouter = router({
     const empresaId = await resolveTiEmpresaId(ctx);
     const rows = await client`SELECT status FROM tickets_ti WHERE id=${input.id} AND "empresaId"=${empresaId} LIMIT 1`;
     const currentStatus = rows?.[0]?.status ?? null;
-    const resolvedAt = input.status === "resolvido" || input.status === "encerrado" ? /* @__PURE__ */ new Date() : null;
+    const resolvedAt = input.status === "resolvido" || input.status === "encerrado" || input.status === "fechado" ? /* @__PURE__ */ new Date() : null;
     await client`
         UPDATE tickets_ti
         SET status=${input.status},
@@ -90961,8 +90965,8 @@ var tiRouter = router({
         UPDATE tickets_ti
         SET "updatedAt"=NOW(),
             status = CASE
-              WHEN ${!canManageTi(ctx.user)} AND status IN ('aguardando_usuario','resolvido','encerrado') THEN 'aguardando_ti'
-              WHEN ${canManageTi(ctx.user)} AND status IN ('aberto','aguardando_ti','triagem_ia') THEN 'aguardando_usuario'
+              WHEN ${!canManageTi(ctx.user)} AND status IN ('aguardando_usuario','resolvido','encerrado','fechado') THEN 'aguardando_ti'
+              WHEN ${canManageTi(ctx.user)} AND status IN ('novo','aberto','aguardando_ti','triagem_ia','em_atendimento','reaberto') THEN 'aguardando_usuario'
               ELSE status
             END
         WHERE id=${input.ticketId} AND "empresaId"=${empresaId}
@@ -98939,6 +98943,39 @@ var readAgentVersion = () => {
 var AGENT_VERSION = readAgentVersion();
 var DESKTOP_INSTALLER_FILENAME = `SynapseSetup-${AGENT_VERSION}.exe`;
 var DESKTOP_INSTALLER_PATH = import_path39.default.join(AGENT_DIR, "electron-dist", DESKTOP_INSTALLER_FILENAME);
+var AGENT_MINIMUM_VERSION = "2.4.0";
+var DESKTOP_RELEASE_NOTES = [
+  "Login obrigat\xF3rio no agente para separar usu\xE1rio comum, TI/Admin e master_admin.",
+  "Instala\xE7\xE3o limpa com /CLEAN=1 para testes sem reaproveitar sess\xE3o, token ou pareamento antigo.",
+  "Menu nativo do Electron removido e navega\xE7\xE3o oficial concentrada na UI React.",
+  "A\xE7\xF5es de agente com arquivamento, remo\xE7\xE3o operacional e trilha de auditoria.",
+  "Monitoramento 24x7 para servidores e m\xE1quinas cr\xEDticas, com compara\xE7\xE3o de rede local.",
+  "UX compacta, responsiva e hor\xE1rios exibidos em America/Sao_Paulo."
+];
+var getFileSha256 = (filePath) => {
+  try {
+    if (!import_fs2.default.existsSync(filePath)) return null;
+    return import_crypto5.default.createHash("sha256").update(import_fs2.default.readFileSync(filePath)).digest("hex").toUpperCase();
+  } catch {
+    return null;
+  }
+};
+var getDesktopInstallerMetadata = () => {
+  try {
+    const stat = import_fs2.default.existsSync(DESKTOP_INSTALLER_PATH) ? import_fs2.default.statSync(DESKTOP_INSTALLER_PATH) : null;
+    return {
+      sha256: getFileSha256(DESKTOP_INSTALLER_PATH),
+      sizeBytes: stat?.size ?? null,
+      releaseDate: (stat?.mtime ?? /* @__PURE__ */ new Date()).toISOString()
+    };
+  } catch {
+    return {
+      sha256: null,
+      sizeBytes: null,
+      releaseDate: (/* @__PURE__ */ new Date()).toISOString()
+    };
+  }
+};
 console.log(`[BOOT] AGENT_DIR=${AGENT_DIR}`);
 console.log(`[BOOT] UPLOADS_DIR=${UPLOADS_DIR}`);
 console.log(`[BOOT] AGENT_VERSION=${AGENT_VERSION}`);
@@ -99582,33 +99619,32 @@ var sendAgentDownload = (res, filePathOrName, downloadName, artifactName) => {
   res.setHeader("Content-Disposition", `attachment; filename="${downloadName}"`);
   res.setHeader("X-Synapse-Agent-Version", AGENT_VERSION);
   res.setHeader("X-Synapse-Artifact", artifact);
-  try {
-    const hash2 = import_crypto5.default.createHash("sha256").update(import_fs2.default.readFileSync(filePath)).digest("hex").toUpperCase();
-    res.setHeader("X-Synapse-Artifact-SHA256", hash2);
-  } catch {
-  }
+  const hash2 = getFileSha256(filePath);
+  if (hash2) res.setHeader("X-Synapse-Artifact-SHA256", hash2);
   res.download(filePath, downloadName);
 };
 app.get("/api/agent/version", (req, res) => {
   setNoCacheDownloadHeaders(res);
   const proto = String(req.headers["x-forwarded-proto"] || req.protocol || "https").split(",")[0].trim();
   const origin2 = `${proto}://${req.get("host")}`;
+  const metadata = getDesktopInstallerMetadata();
   res.json({
     version: AGENT_VERSION,
+    latestVersion: AGENT_VERSION,
+    minimumVersion: AGENT_MINIMUM_VERSION,
     productName: "Synapse para Windows",
     artifact: DESKTOP_INSTALLER_FILENAME,
     runtime: "electron",
     worker: "python-legacy",
     downloadUrl: `${origin2}/api/agent/download`,
+    sha256: metadata.sha256,
+    sizeBytes: metadata.sizeBytes,
     mandatory: false,
     timezone: SYNAPSE_TIME_ZONE,
-    publishedAt: (/* @__PURE__ */ new Date()).toISOString(),
-    releaseNotes: [
-      "Login obrigat\xF3rio no agente para separar usu\xE1rio comum, TI/Admin e master_admin.",
-      "A\xE7\xF5es de agente com arquivamento/remo\xE7\xE3o operacional auditada.",
-      "Monitoramento 24x7 para servidores e m\xE1quinas cr\xEDticas.",
-      "Corre\xE7\xE3o visual do Electron e hor\xE1rios exibidos em America/Sao_Paulo."
-    ]
+    releaseDate: metadata.releaseDate,
+    publishedAt: metadata.releaseDate,
+    changelog: DESKTOP_RELEASE_NOTES,
+    releaseNotes: DESKTOP_RELEASE_NOTES
   });
 });
 app.get("/api/agent/download", (_req, res) => {
@@ -100381,7 +100417,7 @@ app.post("/api/agent/tickets/:id/messages", requireAgent, async (req, res) => {
     UPDATE tickets_ti
     SET "updatedAt" = NOW(),
         status = CASE
-          WHEN status IN ('aguardando_usuario','resolvido','encerrado') THEN 'aguardando_ti'
+          WHEN status IN ('aguardando_usuario','resolvido','encerrado','fechado') THEN 'aguardando_ti'
           ELSE status
         END
     WHERE id = ${ticketId} AND "empresaId" = ${agent.empresaId}
@@ -100485,7 +100521,7 @@ app.post("/api/agent/ti/tickets/:id/messages", requireAgentTi, async (req, res) 
     UPDATE tickets_ti
     SET "updatedAt" = NOW(),
         status = CASE
-          WHEN status IN ('aberto','aguardando_ti','triagem_ia') THEN 'aguardando_usuario'
+          WHEN status IN ('novo','aberto','aguardando_ti','triagem_ia','em_atendimento','reaberto') THEN 'aguardando_usuario'
           ELSE status
         END
     WHERE id = ${ticketId} AND "empresaId" = ${agent.empresaId}
@@ -100516,13 +100552,17 @@ app.patch("/api/agent/ti/tickets/:id/status", requireAgentTi, async (req, res) =
   const status = String(req.body?.status || "").trim().toLowerCase();
   const allowed = /* @__PURE__ */ new Set([
     "aberto",
+    "novo",
     "triagem_ia",
     "aguardando_usuario",
     "aguardando_ti",
     "em_andamento",
+    "em_atendimento",
+    "aguardando_fornecedor",
     "acesso_remoto_solicitado",
     "em_acesso_remoto",
     "resolvido",
+    "fechado",
     "encerrado",
     "cancelado",
     "reaberto"
@@ -100543,7 +100583,7 @@ app.patch("/api/agent/ti/tickets/:id/status", requireAgentTi, async (req, res) =
     SET status = ${status},
         "updatedAt" = NOW(),
         "resolvidoEm" = CASE
-          WHEN ${status} IN ('resolvido','encerrado') THEN NOW()
+          WHEN ${status} IN ('resolvido','encerrado','fechado') THEN NOW()
           ELSE "resolvidoEm"
         END
     WHERE id = ${ticketId} AND "empresaId" = ${agent.empresaId}
@@ -100571,7 +100611,7 @@ app.patch("/api/agent/ti/tickets/:id/status", requireAgentTi, async (req, res) =
     description: "TI/Admin alterou status de chamado pelo Synapse Windows.",
     before: { status: currentStatus ?? null },
     after: { status },
-    risk: ["cancelado", "encerrado", "em_acesso_remoto", "acesso_remoto_solicitado"].includes(status) ? "medio" : "baixo"
+    risk: ["cancelado", "encerrado", "fechado", "em_acesso_remoto", "acesso_remoto_solicitado"].includes(status) ? "medio" : "baixo"
   });
   res.json({ success: true, status });
 });

@@ -19,7 +19,7 @@ from pathlib import Path
 from tkinter import BooleanVar, StringVar, Text, Tk, ttk, messagebox
 
 
-VERSION = "2.3.0"
+VERSION = "2.4.0"
 DEFAULT_SERVER = "https://synapse-backend-ds2026.azurewebsites.net"
 APP_NAME = "Synapse"
 INSTALL_DIR = Path(os.environ.get("LOCALAPPDATA", str(Path.home()))) / "SynapseAgent"

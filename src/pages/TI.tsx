@@ -41,17 +41,40 @@ import { formatDateBR, formatDateTimeBR, saoPauloDateTimeLocalToIso, toSaoPauloD
 // ─── Helpers de cor ──────────────────────────────────────────────────────────
 const STATUS_COLORS: Record<string, string> = {
   aberto: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  novo: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
   triagem_ia: "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300",
   aguardando_usuario: "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300",
   aguardando_ti: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
   em_andamento: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
+  em_atendimento: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
+  aguardando_fornecedor: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
   acesso_remoto_solicitado: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
   em_acesso_remoto: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
   resolvido: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  fechado: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400",
   encerrado: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400",
   cancelado: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
   reaberto: "bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300",
 };
+const STATUS_LABELS: Record<string, string> = {
+  aberto: "Aberto",
+  novo: "Novo",
+  triagem_ia: "Triagem IA",
+  aguardando_usuario: "Aguardando usuário",
+  aguardando_ti: "Aguardando TI",
+  em_andamento: "Em andamento",
+  em_atendimento: "Em atendimento",
+  aguardando_fornecedor: "Aguardando fornecedor",
+  acesso_remoto_solicitado: "Acesso remoto solicitado",
+  em_acesso_remoto: "Em acesso remoto",
+  resolvido: "Resolvido",
+  fechado: "Fechado",
+  encerrado: "Encerrado",
+  cancelado: "Cancelado",
+  reaberto: "Reaberto",
+};
+const NOT_COLLECTED = "Não coletado";
+const LATEST_AGENT_VERSION = "2.4.0";
 const PRIORIDADE_COLORS: Record<string, string> = {
   baixa: "bg-gray-100 text-gray-700",
   media: "bg-blue-100 text-blue-700",
@@ -319,7 +342,7 @@ function TicketDetail({ ticket, onClose, empresaId, isTiManager }: { ticket: any
     ? Math.min(100, Math.round(((Date.now() - new Date(ticket.createdAt).getTime()) / (1000 * 60 * 60 * ticket.slaHoras)) * 100))
     : null;
 
-  const STATUS_FLOW = ["aberto", "triagem_ia", "aguardando_usuario", "aguardando_ti", "em_andamento", "acesso_remoto_solicitado", "em_acesso_remoto", "resolvido", "encerrado"];
+  const STATUS_FLOW = ["novo", "aberto", "triagem_ia", "em_atendimento", "aguardando_usuario", "aguardando_ti", "aguardando_fornecedor", "acesso_remoto_solicitado", "em_acesso_remoto", "resolvido", "fechado", "encerrado", "cancelado"];
   const currentIdx = STATUS_FLOW.indexOf(ticket.status);
 
   return (
@@ -331,7 +354,7 @@ function TicketDetail({ ticket, onClose, empresaId, isTiManager }: { ticket: any
             <Badge variant="outline" className="font-mono text-xs bg-primary/10 text-primary border-primary/30">#{ticket.id}</Badge>
             <Badge variant="outline" className="font-mono text-xs">{ticket.protocolo}</Badge>
             {ticket.numeroOs && <Badge variant="secondary" className="font-mono text-xs">OS #{ticket.numeroOs}</Badge>}
-            <Badge className={`text-xs ${STATUS_COLORS[ticket.status]}`}>{ticket.status.replace("_", " ")}</Badge>
+            <Badge className={`text-xs ${STATUS_COLORS[ticket.status]}`}>{STATUS_LABELS[ticket.status] || ticket.status.replace("_", " ")}</Badge>
           </div>
           <h3 className="font-semibold mt-1">{ticket.titulo}</h3>
           <p className="text-sm text-muted-foreground mt-1">{ticket.descricao}</p>
@@ -381,7 +404,7 @@ function TicketDetail({ ticket, onClose, empresaId, isTiManager }: { ticket: any
               } ${!isTiManager ? "opacity-70 cursor-not-allowed" : ""}`}
             >
               {i < currentIdx ? <Check className="h-3 w-3 inline mr-1" /> : null}
-              {s.replace("_", " ")}
+              {STATUS_LABELS[s] || s.replace("_", " ")}
             </button>
             {i < STATUS_FLOW.length - 1 && <ChevronRight className="h-3 w-3 text-muted-foreground" />}
           </div>
@@ -623,7 +646,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
         const response = await fetch(`${backendBaseUrl}/api/agent/version`, { cache: "no-store" });
         const payload = await response.json();
         if (!active) return;
-        const version = String(payload?.version || "").trim();
+        const version = String(payload?.latestVersion || payload?.version || "").trim();
         if (version) setAgentVersion(version);
       } catch {
         if (active) setAgentVersion("latest");
@@ -797,6 +820,74 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     if (peers.length > 0) return "Todos da mesma rede offline: possível queda de rede/local";
     return "Sem pares na mesma rede para comparar";
   };
+  const compareSemver = (left: string, right: string) => {
+    const parse = (value: string) => String(value || "0").split(".").map((part) => Number(part.replace(/\D/g, "")) || 0);
+    const a = parse(left);
+    const b = parse(right);
+    for (let index = 0; index < Math.max(a.length, b.length); index += 1) {
+      const diff = (a[index] || 0) - (b[index] || 0);
+      if (diff !== 0) return diff;
+    }
+    return 0;
+  };
+  const agentVersionValue = (a: any) => String(a?.versaoAgente || a?.agentVersion || a?.versao_agente || "").trim();
+  const agentHealth = (a: any) => {
+    let score = 100;
+    const reasons: string[] = [];
+    const status = agentStatus(a);
+    const heartbeatDays = agentDaysSinceHeartbeat(a);
+    const cpu = agentCpuUsage(a);
+    const ram = agentRamUsage(a);
+    const disk = agentDiskUsage(a);
+    const version = agentVersionValue(a);
+
+    if (status !== "online") {
+      score -= agentIsCritical(a) ? 42 : 28;
+      reasons.push(status === "offline" ? "offline" : agentStatusLabel(status));
+    }
+    if (!Number.isFinite(heartbeatDays)) {
+      score -= 18;
+      reasons.push("sem heartbeat");
+    } else if (heartbeatDays >= agentStaleDays) {
+      score -= 18;
+      reasons.push(`${heartbeatDays} dia(s) sem heartbeat`);
+    }
+    if (cpu != null && cpu >= 90) {
+      score -= 15;
+      reasons.push("CPU crítica");
+    }
+    if (ram != null && ram >= 90) {
+      score -= 15;
+      reasons.push("RAM crítica");
+    }
+    if (disk != null && disk >= 90) {
+      score -= 22;
+      reasons.push("disco crítico");
+    }
+    if (version && compareSemver(version, LATEST_AGENT_VERSION) < 0) {
+      score -= 10;
+      reasons.push("agente desatualizado");
+    }
+    if (agentIsCritical(a) && status !== "online") {
+      score -= 12;
+      reasons.push("24x7 crítico");
+    }
+
+    const normalized = Math.max(0, Math.min(100, Math.round(score)));
+    const level = normalized < 55 ? "critico" : normalized < 80 ? "atencao" : "saudavel";
+    const label = level === "critico" ? "Crítico" : level === "atencao" ? "Atenção" : "Saudável";
+    return {
+      score: normalized,
+      level,
+      label,
+      reason: reasons.length ? reasons.join(" · ") : "Sem alertas preventivos",
+    };
+  };
+  const healthBadgeClass = (level: string) => level === "critico"
+    ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
+    : level === "atencao"
+      ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
+      : "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
   const metricTimestamp = (m: any) => m?.coletadoEm || m?.hora || m?.timestamp || null;
   const metricCpuUsage = (m: any) => metricValue(m?.cpuUso, m?.cpu_medio, m?.cpuAtual);
   const metricRamUsage = (m: any) => metricValue(m?.ramUsoPct, m?.ram_medio, m?.ramAtual);
@@ -1078,6 +1169,12 @@ export default function TI({ params }: { params?: { tab?: string } }) {
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={(event) => { event.stopPropagation(); refreshAgentCollection(a); }}>
               <RefreshCw className="h-4 w-4 mr-2" />Atualizar coleta
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={(event) => { event.stopPropagation(); setSelectedAgente(a); setTab("monitoramento"); toast.info("Histórico 24h carregado no painel de monitoramento."); }}>
+              <Clock className="h-4 w-4 mr-2" />Ver histórico
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={(event) => { event.stopPropagation(); setLocation("/auditoria"); }}>
+              <Shield className="h-4 w-4 mr-2" />Ver auditoria
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onSelect={selecionarAcaoAgente(a, "desparear")}>
@@ -1361,6 +1458,12 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const kpiOnline = (agentesQ.data ?? []).filter((a: any) => agentStatus(a) === "online").length;
   const kpiAtencao = (alertasQ.data ?? []).filter((a: any) => a.severidade === "atencao").length;
   const kpiCriticos = (alertasQ.data ?? []).filter((a: any) => a.severidade === "critico").length;
+  const agentHealthRows = (agentesQ.data ?? []).map((a: any) => ({ agente: a, health: agentHealth(a) }));
+  const kpiHealthCritical = agentHealthRows.filter((row: any) => row.health.level === "critico").length;
+  const kpiHealthAttention = agentHealthRows.filter((row: any) => row.health.level === "atencao").length;
+  const kpiHealthAverage = agentHealthRows.length
+    ? Math.round(agentHealthRows.reduce((sum: number, row: any) => sum + row.health.score, 0) / agentHealthRows.length)
+    : 100;
   const kpiLicencas = licencasQ.data?.length ?? 0;
   const kpiCertificados = dashboard.data?.certificados?.total ?? 0;
   const kpiCertificadosExpirando = dashboard.data?.certificados?.expirando ?? 0;
@@ -1372,8 +1475,9 @@ export default function TI({ params }: { params?: { tab?: string } }) {
         { label: "Resolvidos Hoje", value: kpiResolvidos, color: "text-green-600" },
         { label: "Total Ativos", value: kpiAtivos, color: "" },
         { label: "Online", value: kpiOnline, color: "text-green-600", border: "border-green-200" },
-        { label: "Atenção", value: kpiAtencao, color: "text-yellow-600", border: "border-yellow-200" },
-        { label: "Críticos", value: kpiCriticos, color: "text-red-600", border: "border-red-200" },
+        { label: "Score Saúde", value: `${kpiHealthAverage}%`, color: kpiHealthAverage < 55 ? "text-red-600" : kpiHealthAverage < 80 ? "text-yellow-600" : "text-green-600", border: kpiHealthAverage < 55 ? "border-red-200" : kpiHealthAverage < 80 ? "border-yellow-200" : "border-green-200" },
+        { label: "Atenção", value: kpiHealthAttention + kpiAtencao, color: "text-yellow-600", border: "border-yellow-200" },
+        { label: "Críticos", value: kpiHealthCritical + kpiCriticos, color: "text-red-600", border: "border-red-200" },
         { label: "Certificados", value: kpiCertificados, color: "" },
         { label: "Vencendo/Vencidos", value: `${kpiCertificadosExpirando}/${kpiCertificadosVencidos}`, color: (kpiCertificadosExpirando + kpiCertificadosVencidos) > 0 ? "text-orange-600" : "" },
       ]
@@ -1580,6 +1684,9 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                         CPU: {agentCpuUsage(a)}% · RAM: {agentRamUsage(a) ?? "—"}%
                       </div>
                     )}
+                    <Badge className={`mt-2 text-[10px] ${healthBadgeClass(agentHealth(a).level)}`}>
+                      {agentHealth(a).label} · {agentHealth(a).score}
+                    </Badge>
                   </div>
                 ))}
                 {(agentesQ.data ?? []).length === 0 && (
@@ -1619,9 +1726,13 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="todos">Todos</SelectItem>
+                    <SelectItem value="novo">Novo</SelectItem>
                     <SelectItem value="aberto">Aberto</SelectItem>
-                    <SelectItem value="em_andamento">Em Andamento</SelectItem>
-                    <SelectItem value="aguardando">Aguardando</SelectItem>
+                    <SelectItem value="em_atendimento">Em atendimento</SelectItem>
+                    <SelectItem value="em_andamento">Em andamento</SelectItem>
+                    <SelectItem value="aguardando_usuario">Aguardando usuário</SelectItem>
+                    <SelectItem value="aguardando_ti">Aguardando TI</SelectItem>
+                    <SelectItem value="aguardando_fornecedor">Aguardando fornecedor</SelectItem>
                     <SelectItem value="resolvido">Resolvido</SelectItem>
                     <SelectItem value="fechado">Fechado</SelectItem>
                   </SelectContent>
@@ -1650,22 +1761,27 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                         <TableCell className="font-medium max-w-[200px] truncate">{t.titulo}</TableCell>
                         <TableCell><Badge variant="outline" className="text-xs">{t.categoria}</Badge></TableCell>
                         <TableCell><Badge className={`text-xs ${PRIORIDADE_COLORS[t.prioridade] ?? ""}`}>{PRIORIDADE_ICONS[t.prioridade]} {t.prioridade}</Badge></TableCell>
-                        <TableCell><Badge className={`text-xs ${STATUS_COLORS[t.status] ?? ""}`}>{t.status.replace("_", " ")}</Badge></TableCell>
+                        <TableCell><Badge className={`text-xs ${STATUS_COLORS[t.status] ?? ""}`}>{STATUS_LABELS[t.status] || String(t.status || "").replaceAll("_", " ")}</Badge></TableCell>
                         <TableCell className="text-xs text-muted-foreground">{formatDateTimeBR(t.createdAt)}</TableCell>
                         <TableCell onClick={(e) => e.stopPropagation()}>
                           {isTiManager ? (
                             <Select value={t.status} onValueChange={(v) => updateStatus.mutate({ id: t.id, status: v as any })}>
                               <SelectTrigger className="h-7 w-36 text-xs"><SelectValue /></SelectTrigger>
                               <SelectContent>
+                                <SelectItem value="novo">Novo</SelectItem>
                                 <SelectItem value="aberto">Aberto</SelectItem>
-                                <SelectItem value="em_andamento">Em Andamento</SelectItem>
-                                <SelectItem value="aguardando">Aguardando</SelectItem>
+                                <SelectItem value="em_atendimento">Em atendimento</SelectItem>
+                                <SelectItem value="em_andamento">Em andamento</SelectItem>
+                                <SelectItem value="aguardando_usuario">Aguardando usuário</SelectItem>
+                                <SelectItem value="aguardando_ti">Aguardando TI</SelectItem>
+                                <SelectItem value="aguardando_fornecedor">Aguardando fornecedor</SelectItem>
                                 <SelectItem value="resolvido">Resolvido</SelectItem>
                                 <SelectItem value="fechado">Fechado</SelectItem>
+                                <SelectItem value="cancelado">Cancelado</SelectItem>
                               </SelectContent>
                             </Select>
                           ) : (
-                            <Badge className={`text-xs ${STATUS_COLORS[t.status] ?? ""}`}>{String(t.status || "").replace("_", " ")}</Badge>
+                            <Badge className={`text-xs ${STATUS_COLORS[t.status] ?? ""}`}>{STATUS_LABELS[t.status] || String(t.status || "").replaceAll("_", " ")}</Badge>
                           )}
                         </TableCell>
                       </TableRow>
@@ -1802,13 +1918,22 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
+                <div className="rounded-xl border bg-muted/30 p-3 flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide">Score de saúde</p>
+                    <p className="text-sm font-medium">{agentHealth(selectedAgente).reason}</p>
+                  </div>
+                  <Badge className={`text-sm ${healthBadgeClass(agentHealth(selectedAgente).level)}`}>
+                    {agentHealth(selectedAgente).label} · {agentHealth(selectedAgente).score}
+                  </Badge>
+                </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-                  <div><span className="text-muted-foreground">IP:</span> <span className="font-mono">{selectedAgente.ip}</span></div>
-                  <div><span className="text-muted-foreground">SO:</span> <span>{selectedAgente.so}</span></div>
+                  <div><span className="text-muted-foreground">IP:</span> <span className="font-mono">{selectedAgente.ip || NOT_COLLECTED}</span></div>
+                  <div><span className="text-muted-foreground">SO:</span> <span>{selectedAgente.so || NOT_COLLECTED}</span></div>
                   <div><span className="text-muted-foreground">AnyDesk:</span> {agentAnyDesk(selectedAgente) ? (
                     <a href={`anydesk://${agentAnyDesk(selectedAgente)}`} className="text-blue-600 hover:underline font-mono">{agentAnyDesk(selectedAgente)}</a>
-                  ) : "—"}</div>
-                  <div><span className="text-muted-foreground">Versão:</span> <span>{selectedAgente.versaoAgente}</span></div>
+                  ) : NOT_COLLECTED}</div>
+                  <div><span className="text-muted-foreground">Versão:</span> <span>{agentVersionValue(selectedAgente) || NOT_COLLECTED}</span></div>
                 </div>
                 {/* Métricas em tempo real */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -1867,8 +1992,10 @@ export default function TI({ params }: { params?: { tab?: string } }) {
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-              {filteredAgentes.map((a: any) => (
-                <Card key={a.id} className={`border-l-4 cursor-pointer hover:shadow-md transition-shadow ${agentStatus(a) === "online" ? "border-l-green-500" : agentStatus(a) === "atencao" ? "border-l-yellow-500" : "border-l-gray-400"}`} onClick={() => setSelectedAgente(a)}>
+              {filteredAgentes.map((a: any) => {
+                const health = agentHealth(a);
+                return (
+                <Card key={a.id} className={`border-l-4 cursor-pointer hover:shadow-md transition-shadow ${health.level === "critico" ? "border-l-red-500" : health.level === "atencao" ? "border-l-yellow-500" : "border-l-green-500"}`} onClick={() => setSelectedAgente(a)}>
                   <CardHeader className="pb-2">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-sm font-mono">{a.hostname}</CardTitle>
@@ -1882,9 +2009,13 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                         {renderAgenteActions(a)}
                       </div>
                     </div>
-                    <p className="text-xs text-muted-foreground">{a.so} · {a.ip}</p>
+                    <p className="text-xs text-muted-foreground">{a.so || NOT_COLLECTED} · {a.ip || NOT_COLLECTED}</p>
                   </CardHeader>
                   <CardContent className="space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <Badge className={`text-xs ${healthBadgeClass(health.level)}`}>{health.label} · {health.score}</Badge>
+                      <span className="text-[11px] text-muted-foreground truncate">{health.reason}</span>
+                    </div>
                     {[
                       { label: "CPU", value: agentCpuUsage(a), icon: <Cpu className="h-3 w-3" /> },
                       { label: "RAM", value: agentRamUsage(a), icon: <Server className="h-3 w-3" /> },
@@ -1910,7 +2041,8 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                     <p className="text-xs text-muted-foreground">Última coleta: {formatDateTimeBR(agentLastCollected(a))}</p>
                   </CardContent>
                 </Card>
-              ))}
+                );
+              })}
               {filteredAgentes.length === 0 && (
                 <div className="col-span-3 text-center py-12 text-muted-foreground">
                   <Network className="h-12 w-12 mx-auto mb-3 opacity-30" />
@@ -2684,6 +2816,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                     <TableHead>Hardware</TableHead>
                     <TableHead>AnyDesk</TableHead>
                     <TableHead>Versão</TableHead>
+                    <TableHead>Saúde</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>24x7 / Rede</TableHead>
                     <TableHead>Última Coleta</TableHead>
@@ -2691,31 +2824,33 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredAgentes.map((a: any) => (
+                  {filteredAgentes.map((a: any) => {
+                    const health = agentHealth(a);
+                    return (
                     <TableRow key={a.id}>
                       <TableCell className="font-mono text-sm font-medium">
                       <button 
                         onClick={() => setLocation(`/ti/dispositivos/${a.id}`)}
                         className="text-primary hover:underline text-left"
                       >
-                        {a.hostname}
+                        {a.hostname || NOT_COLLECTED}
                       </button>
                     </TableCell>
-                      <TableCell className="font-mono text-xs">{a.ip}</TableCell>
-                      <TableCell className="text-xs">{a.so}</TableCell>
+                      <TableCell className="font-mono text-xs">{a.ip || NOT_COLLECTED}</TableCell>
+                      <TableCell className="text-xs">{a.so || NOT_COLLECTED}</TableCell>
                       <TableCell className="text-xs max-w-[260px]">
                         <div className="space-y-0.5">
-                          <p className="truncate" title={a.cpu_model || a.cpuModel || "CPU não identificada"}>
-                            CPU: {a.cpu_model || a.cpuModel || "—"}
+                          <p className="truncate" title={a.cpu_model || a.cpuModel || NOT_COLLECTED}>
+                            CPU: {a.cpu_model || a.cpuModel || NOT_COLLECTED}
                           </p>
-                          <p className="truncate" title={a.placa_mae_modelo || a.placaMaeModelo || "Placa-mãe não identificada"}>
-                            MB: {a.placa_mae_modelo || a.placaMaeModelo || "—"}
+                          <p className="truncate" title={a.placa_mae_modelo || a.placaMaeModelo || NOT_COLLECTED}>
+                            MB: {a.placa_mae_modelo || a.placaMaeModelo || NOT_COLLECTED}
                           </p>
-                          <p className="truncate" title={a.socket_cpu || a.socketCpu || "Socket não identificado"}>
-                            Socket: {a.socket_cpu || a.socketCpu || "—"}
+                          <p className="truncate" title={a.socket_cpu || a.socketCpu || NOT_COLLECTED}>
+                            Socket: {a.socket_cpu || a.socketCpu || NOT_COLLECTED}
                           </p>
-                          <p className="truncate" title={a.gpu_model || a.gpuModel || "GPU não identificada"}>
-                            GPU: {a.gpu_model || a.gpuModel || "—"}
+                          <p className="truncate" title={a.gpu_model || a.gpuModel || NOT_COLLECTED}>
+                            GPU: {a.gpu_model || a.gpuModel || NOT_COLLECTED}
                           </p>
                         </div>
                       </TableCell>
@@ -2726,7 +2861,11 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                           </a>
                         ) : <span className="text-muted-foreground text-xs">—</span>}
                       </TableCell>
-                      <TableCell className="text-xs">{a.versaoAgente}</TableCell>
+                      <TableCell className="text-xs">{agentVersionValue(a) || NOT_COLLECTED}</TableCell>
+                      <TableCell className="text-xs">
+                        <Badge className={`text-xs ${healthBadgeClass(health.level)}`}>{health.label} · {health.score}</Badge>
+                        <p className="text-muted-foreground mt-1 max-w-[180px]">{health.reason}</p>
+                      </TableCell>
                       <TableCell>
                         <div className={`flex items-center gap-1.5 text-xs ${agentStatus(a) === "online" ? "text-green-600" : "text-gray-500"}`}>
                           <div className={`h-2 w-2 rounded-full ${agentStatus(a) === "online" ? "bg-green-500 animate-pulse" : "bg-gray-400"}`} />
@@ -2750,10 +2889,11 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                         {renderAgenteActions(a, { showView: true })}
                       </TableCell>
                     </TableRow>
-                  ))}
+                    );
+                  })}
                   {filteredAgentes.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={10} className="text-center text-muted-foreground py-8 space-y-2">
+                      <TableCell colSpan={11} className="text-center text-muted-foreground py-8 space-y-2">
                         <p>Nenhum dispositivo encontrado neste filtro.</p>
                         <p className="text-xs">
                           Verifique se o código de pareamento foi usado e clique em <strong>Atualizar</strong>.

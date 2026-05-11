@@ -647,6 +647,59 @@ dd {
   white-space: nowrap;
 }
 
+.health-score {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 12px;
+  align-items: center;
+  margin: 10px 0 12px;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.24);
+}
+
+.health-score span {
+  color: #bbf7d0;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.health-score strong {
+  color: #dcfce7;
+  font-size: 22px;
+}
+
+.health-score em {
+  grid-column: 1 / -1;
+  color: #94a3b8;
+  font-size: 12px;
+  font-style: normal;
+  line-height: 1.35;
+}
+
+.health-score.attention {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.26);
+}
+
+.health-score.attention span,
+.health-score.attention strong {
+  color: #fde68a;
+}
+
+.health-score.critical {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.28);
+}
+
+.health-score.critical span,
+.health-score.critical strong {
+  color: #fecaca;
+}
+
 .tech-note {
   margin-top: 14px;
   padding: 12px;
@@ -770,6 +823,11 @@ dd {
   color: #9fb0c8;
 }
 
+.update-panel .update-ok {
+  color: #bbf7d0;
+  font-weight: 700;
+}
+
 .update-panel ul {
   margin: 4px 0 0;
   padding-left: 18px;
@@ -813,8 +871,12 @@ dd {
 }
 
 @media (max-width: 1250px) {
+  .titlebar {
+    gap: 8px;
+  }
+
   .brand {
-    min-width: 184px;
+    min-width: 152px;
   }
 
   .brand span {
@@ -823,7 +885,7 @@ dd {
 
   .title-actions button {
     padding: 0 8px;
-    max-width: 104px;
+    max-width: 96px;
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -849,9 +911,16 @@ dd {
 
   .title-actions button {
     padding: 0 8px;
-    max-width: 92px;
+    max-width: 88px;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .connection {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .workspace {

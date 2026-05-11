@@ -48,7 +48,7 @@ except ImportError:
     print("[WARN] requests não instalado. Execute: pip install psutil requests")
 
 # --- Configuração -------------------------------------------------------------
-VERSION = "2.3.0"
+VERSION = "2.4.0"
 AGENT_DIR = Path(os.environ.get("SYNAPSE_AGENT_DIR", Path.home() / ".synapse-agent"))
 CONFIG_FILE = AGENT_DIR / "config.json"
 DB_FILE = AGENT_DIR / "buffer.db"
