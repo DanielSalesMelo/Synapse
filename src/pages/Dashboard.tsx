@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useViewAs } from "@/contexts/ViewAsContext";
+import { formatDateTimeBR } from "@/lib/timezone";
 
 
 function formatCurrency(value: number) {
@@ -89,7 +90,7 @@ export default function Dashboard() {
       <div>
         <h1 className="text-2xl font-bold text-foreground">Painel</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Visão geral da operação — {new Date().toLocaleDateString("pt-BR", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+          Visão geral da operação — {formatDateTimeBR(new Date())}
         </p>
       </div>
 

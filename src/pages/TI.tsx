@@ -85,6 +85,12 @@ const PRIORIDADE_ICONS: Record<string, string> = {
   baixa: "🟢", media: "🔵", alta: "🟠", critica: "🔴",
 };
 
+const ticketTitleFromText = (text: string) => {
+  const clean = text.replace(/\s+/g, " ").trim();
+  if (!clean) return "Solicitação via Synapse";
+  return clean.length > 64 ? `${clean.slice(0, 61)}...` : clean;
+};
+
 const TI_MANAGER_ROLES = new Set([
   "master_admin",
   "ti_master",
@@ -1486,6 +1492,28 @@ export default function TI({ params }: { params?: { tab?: string } }) {
         { label: "Em Andamento", value: kpiAndamento, color: "text-yellow-600" },
         { label: "Resolvidos Hoje", value: kpiResolvidos, color: "text-green-600" },
       ];
+  const operationalSignals = isTiManager
+    ? [
+        { label: "Fila", value: `${kpiAbertos} aberto(s)`, detail: `${kpiAndamento} em atendimento`, tone: "border-sky-400/20 bg-sky-400/10 text-sky-100" },
+        { label: "Saúde", value: `${kpiHealthAverage}%`, detail: `${kpiHealthCritical} crítico(s), ${kpiHealthAttention} atenção`, tone: kpiHealthAverage < 55 ? "border-red-400/25 bg-red-400/10 text-red-100" : kpiHealthAverage < 80 ? "border-amber-400/25 bg-amber-400/10 text-amber-100" : "border-emerald-400/25 bg-emerald-400/10 text-emerald-100" },
+        { label: "Agentes", value: `${kpiOnline}/${agentesQ.data?.length ?? 0} online`, detail: `${agentFilterOptions.find((f) => f.value === "sem_heartbeat")?.count ?? 0} sem heartbeat`, tone: "border-emerald-400/20 bg-emerald-400/10 text-emerald-100" },
+        { label: "Risco", value: `${kpiCriticos + kpiHealthCritical} crítico(s)`, detail: `${kpiAtencao + kpiHealthAttention} em atenção`, tone: (kpiCriticos + kpiHealthCritical) > 0 ? "border-red-400/25 bg-red-400/10 text-red-100" : "border-white/10 bg-white/[0.04] text-slate-100" },
+      ]
+    : [
+        { label: "Chamados", value: `${kpiAbertos} aberto(s)`, detail: `${kpiAndamento} em andamento`, tone: "border-sky-400/20 bg-sky-400/10 text-sky-100" },
+        { label: "Privacidade", value: "Modo usuário", detail: "sem dados técnicos", tone: "border-emerald-400/20 bg-emerald-400/10 text-emerald-100" },
+      ];
+  const commandTimeline = isTiManager
+    ? [
+        { label: "Alertas", value: kpiCriticos > 0 ? `${kpiCriticos} crítico(s)` : "sem críticos" },
+        { label: "SLA", value: kpiAbertos > 0 ? "fila em acompanhamento" : "fila limpa" },
+        { label: "Última leitura", value: formatDateTimeBR(new Date()) },
+      ]
+    : [
+        { label: "Canal", value: "chat e histórico" },
+        { label: "Status", value: kpiAbertos > 0 ? "em atendimento" : "pronto para abrir" },
+        { label: "Horário", value: formatDateTimeBR(new Date()) },
+      ];
   const refreshTiData = () => {
     dashboard.refetch();
     ticketsQ.refetch();
@@ -1497,51 +1525,84 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {lightbox && <Lightbox src={lightbox} onClose={() => setLightbox(null)} />}
 
-      {/* ── Cabeçalho ── */}
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Monitor className="h-6 w-6 text-primary" />
-            {isTiManager ? "TI & Infraestrutura" : "Meus chamados"}
-            {isTiManager && kpiCriticos > 0 && (
-              <span className="inline-flex items-center justify-center h-5 w-5 rounded-full bg-red-500 text-white text-xs animate-pulse">
-                {kpiCriticos}
-              </span>
-            )}
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            {isTiManager
-              ? "ITSM · ITAM · Monitoramento · Acessos Remotos · Licenças"
-              : "Atendimento, conversa, anexos e histórico dos seus chamados"}
-          </p>
-        </div>
-        <div className="flex gap-2 flex-wrap">
-          <Button variant="outline" size="sm" onClick={refreshTiData}>
-            <RefreshCw className="h-4 w-4 mr-2" />Atualizar
-          </Button>
-          <Dialog open={showNew} onOpenChange={setShowNew}>
-            <DialogTrigger asChild>
-              <Button size="sm"><Plus className="h-4 w-4 mr-2" />Novo Chamado</Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-lg">
-              <DialogHeader><DialogTitle>Abrir Novo Chamado</DialogTitle></DialogHeader>
+      <section className="overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(135deg,rgba(15,23,42,0.98),rgba(3,7,18,0.98))] p-4 text-slate-50 shadow-xl shadow-slate-950/20">
+        <div className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr] xl:items-stretch">
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge className="border-cyan-400/30 bg-cyan-400/10 text-cyan-100">
+                {isTiManager ? "Central operacional" : "Atendimento premium"}
+              </Badge>
+              <Badge variant="outline" className="border-white/15 text-slate-200">
+                America/Sao_Paulo · BRT
+              </Badge>
+              {isTiManager && kpiCriticos > 0 && (
+                <Badge className="bg-red-500/15 text-red-100 border border-red-400/25 animate-pulse">
+                  {kpiCriticos} alerta(s) crítico(s)
+                </Badge>
+              )}
+            </div>
+            <div>
+              <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
+                {isTiManager ? "Cockpit Synapse de TI" : "Sua central de suporte Synapse"}
+              </h1>
+              <p className="mt-2 max-w-3xl text-sm text-slate-300">
+                {isTiManager
+                  ? "Chamados, ativos, heartbeat, inventário, riscos e ações ficam no mesmo contexto para a equipe decidir rápido."
+                  : "Abra chamados conversando, acompanhe histórico e envie anexos sem ver inventário, IP, hostname ou diagnóstico técnico."}
+              </p>
+            </div>
+            <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+              {operationalSignals.map((item) => (
+                <div key={item.label} className={`rounded-xl border p-3 ${item.tone}`}>
+                  <p className="text-[11px] uppercase tracking-[0.18em] opacity-70">{item.label}</p>
+                  <p className="mt-1 text-lg font-semibold">{item.value}</p>
+                  <p className="mt-1 text-xs opacity-70">{item.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3">
+            <div className="flex items-center justify-between gap-2">
+              <div>
+                <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Contexto vivo</p>
+                <p className="text-sm font-medium text-slate-100">Operação consolidada</p>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" className="border-white/10 bg-white/[0.04] text-slate-100 hover:bg-white/10" onClick={refreshTiData}>
+                  <RefreshCw className="h-4 w-4 mr-2" />Atualizar
+                </Button>
+                <Dialog open={showNew} onOpenChange={setShowNew}>
+                  <DialogTrigger asChild>
+                    <Button size="sm" className="bg-cyan-300 text-slate-950 hover:bg-cyan-200"><Plus className="h-4 w-4 mr-2" />Novo Chamado</Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-lg">
+                    <DialogHeader><DialogTitle>{isTiManager ? "Abrir Novo Chamado" : "Abrir chamado por conversa"}</DialogTitle></DialogHeader>
               <form onSubmit={(e) => {
                 e.preventDefault();
-                createTicket.mutate({ ...ticketForm, anexos: ticketAnexos.length ? ticketAnexos : undefined });
+                const descricao = ticketForm.descricao.trim();
+                createTicket.mutate({
+                  ...ticketForm,
+                  titulo: ticketForm.titulo.trim() || ticketTitleFromText(descricao),
+                  descricao,
+                  categoria: isTiManager ? ticketForm.categoria : "outro",
+                  prioridade: isTiManager ? ticketForm.prioridade : "media",
+                  anexos: ticketAnexos.length ? ticketAnexos : undefined,
+                });
                 setTicketAnexos([]);
                 setTicketAnexoPreviews([]);
               }} className="space-y-4">
                 <div>
-                  <Label>Título *</Label>
-                  <Input value={ticketForm.titulo} onChange={(e) => setTicketForm((p) => ({ ...p, titulo: e.target.value }))} placeholder="Descreva o problema brevemente" required />
+                  <Label>Resumo {isTiManager ? "" : "(opcional)"}</Label>
+                  <Input value={ticketForm.titulo} onChange={(e) => setTicketForm((p) => ({ ...p, titulo: e.target.value }))} placeholder="Se ficar vazio, o Synapse usa a primeira frase" />
                 </div>
                 <div>
-                  <Label>Descrição detalhada *</Label>
-                  <Textarea value={ticketForm.descricao} onChange={(e) => setTicketForm((p) => ({ ...p, descricao: e.target.value }))} placeholder="Descreva com o máximo de detalhes..." rows={4} required />
+                  <Label>Mensagem *</Label>
+                  <Textarea value={ticketForm.descricao} onChange={(e) => setTicketForm((p) => ({ ...p, descricao: e.target.value }))} placeholder="Escreva como em uma conversa: meu sistema não abre, minha VPN caiu, preciso de ajuda..." rows={4} required />
                 </div>
+                {isTiManager && (
                 <div>
                   <Label>Categoria</Label>
                   <Select value={ticketForm.categoria} onValueChange={(v) => setTicketForm((p) => ({ ...p, categoria: v as any }))}>
@@ -1553,7 +1614,8 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                     </SelectContent>
                   </Select>
                 </div>
-                <p className="text-xs text-muted-foreground">A prioridade será definida pela equipe de TI após análise do chamado.</p>
+                )}
+                <p className="text-xs text-muted-foreground">{isTiManager ? "A prioridade será definida pela equipe de TI após análise do chamado." : "Descreva como em uma conversa. A equipe recebe o contexto sem expor dados técnicos do seu computador."}</p>
                 {/* Anexos */}
                 <div>
                   <Label>Anexos (imagens, prints, documentos)</Label>
@@ -1584,23 +1646,37 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                   )}
                 </div>
                 <Button type="submit" className="w-full" disabled={createTicket.isPending}>
-                  {createTicket.isPending ? "Abrindo..." : "Abrir Chamado"}
+                  {createTicket.isPending ? "Abrindo..." : isTiManager ? "Abrir Chamado" : "Enviar chamado"}
                 </Button>
               </form>
-            </DialogContent>
-          </Dialog>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </div>
+            <div className="mt-4 grid gap-2">
+              {commandTimeline.map((item) => (
+                <div key={item.label} className="flex items-center justify-between rounded-xl border border-white/10 bg-slate-950/45 px-3 py-2">
+                  <span className="text-xs text-slate-400">{item.label}</span>
+                  <span className="text-xs font-medium text-slate-100">{item.value}</span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 rounded-xl border border-emerald-400/15 bg-emerald-400/10 px-3 py-2 text-xs text-emerald-100">
+              Nada destrutivo é executado direto: arquivar, remover monitoramento e limpar vínculo passam por trilha de auditoria.
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* ── KPIs ── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+      <div className="grid grid-cols-2 gap-2 md:grid-cols-4 xl:grid-cols-8">
         {kpiCards.map((k) => (
-          <Card key={k.label} className={k.border ?? ""}>
-            <CardHeader className="pb-1 pt-3 px-3">
-              <CardTitle className="text-xs text-muted-foreground">{k.label}</CardTitle>
+          <Card key={k.label} className={`border-white/10 bg-card/80 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/30 ${k.border ?? ""}`}>
+            <CardHeader className="pb-1 pt-2 px-3">
+              <CardTitle className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{k.label}</CardTitle>
             </CardHeader>
-            <CardContent className="px-3 pb-3">
-              <div className={`text-2xl font-bold ${k.color}`}>{k.value}</div>
+            <CardContent className="px-3 pb-2">
+              <div className={`text-xl font-semibold ${k.color}`}>{k.value}</div>
             </CardContent>
           </Card>
         ))}
@@ -2099,8 +2175,8 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                 </SelectContent>
               </Select>
             </CardHeader>
-            <CardContent>
-              <Table>
+            <CardContent className="overflow-x-auto">
+              <Table className="min-w-[1180px]">
                 <TableHeader>
                   <TableRow>
                     <TableHead>Chamado</TableHead>
@@ -2210,8 +2286,9 @@ export default function TI({ params }: { params?: { tab?: string } }) {
             </CardContent>
           </Card>
 
-          <Card>
-            <Table>
+          <Card className="overflow-hidden">
+            <div className="overflow-x-auto">
+            <Table className="min-w-[980px]">
               <TableHeader>
                 <TableRow>
                   <TableHead>Máquina</TableHead>
@@ -2248,6 +2325,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
                 )}
               </TableBody>
             </Table>
+            </div>
           </Card>
         </TabsContent>
 

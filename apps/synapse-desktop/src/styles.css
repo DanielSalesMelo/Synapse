@@ -12,7 +12,9 @@
 body {
   margin: 0;
   overflow: hidden;
-  background: #08111f;
+  background:
+    linear-gradient(135deg, rgba(8, 13, 26, 0.98), rgba(3, 7, 18, 0.98)),
+    #08111f;
 }
 
 button,
@@ -30,17 +32,19 @@ button {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: rgba(4, 10, 22, 0.48);
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.84), rgba(2, 6, 23, 0.96)),
+    rgba(4, 10, 22, 0.48);
 }
 
 .titlebar {
-  height: 52px;
+  height: 50px;
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 0 8px 0 14px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
-  background: rgba(8, 15, 30, 0.84);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  background: rgba(5, 10, 22, 0.9);
   backdrop-filter: blur(18px);
   -webkit-app-region: drag;
   user-select: none;
@@ -113,6 +117,7 @@ button {
   padding: 0 9px;
   border-radius: 8px;
   cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
 }
 
 .title-actions button:hover,
@@ -120,6 +125,7 @@ button {
 .window-controls button:hover {
   background: rgba(148, 163, 184, 0.12);
   color: #fff;
+  transform: translateY(-1px);
 }
 
 .title-actions button.update-attention {
@@ -177,14 +183,14 @@ button {
   place-items: center;
   min-height: 0;
   overflow: auto;
-  padding: 16px;
+  padding: 8px;
 }
 
 .setup-card {
-  width: min(760px, 96vw);
-  max-height: calc(100vh - 72px);
+  width: min(820px, 96vw);
+  max-height: calc(100vh - 58px);
   overflow: auto;
-  padding: 20px;
+  padding: 16px 20px;
   border: 1px solid rgba(148, 163, 184, 0.22);
   border-radius: 14px;
   background: rgba(15, 23, 42, 0.92);
@@ -192,7 +198,7 @@ button {
 }
 
 .setup-card h1 {
-  font-size: clamp(24px, 3vw, 30px);
+  font-size: clamp(22px, 2.6vw, 28px);
   line-height: 1.1;
 }
 
@@ -212,8 +218,8 @@ button {
 .setup-grid {
   display: grid;
   grid-template-columns: 1fr 1.4fr;
-  gap: 14px;
-  margin: 16px 0;
+  gap: 12px;
+  margin: 12px 0;
 }
 
 .login-card {
@@ -222,9 +228,9 @@ button {
 
 .policy-box {
   display: grid;
-  gap: 8px;
-  margin: 12px 0 14px;
-  padding: 12px;
+  gap: 6px;
+  margin: 10px 0;
+  padding: 10px 12px;
   border: 1px solid rgba(125, 211, 252, 0.18);
   border-radius: 12px;
   background: rgba(8, 13, 26, 0.66);
@@ -261,7 +267,7 @@ textarea {
 
 input,
 select {
-  height: 42px;
+  height: 40px;
   padding: 0 13px;
 }
 
@@ -281,10 +287,10 @@ textarea:focus {
 
 .component-list {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px 14px;
-  margin: 12px 0 14px;
-  padding: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px 10px;
+  margin: 8px 0 10px;
+  padding: 10px;
   border-radius: 12px;
   background: rgba(8, 13, 26, 0.7);
 }
@@ -304,14 +310,19 @@ textarea:focus {
   gap: 10px;
 }
 
+.component-list label {
+  font-size: 12px;
+  line-height: 1.25;
+}
+
 .workspace {
   min-height: 0;
   flex: 1;
   display: grid;
-  grid-template-columns: clamp(224px, 19vw, 276px) minmax(360px, 1fr) clamp(238px, 20vw, 292px);
-  gap: 10px;
+  grid-template-columns: clamp(214px, 18vw, 264px) minmax(360px, 1fr) clamp(244px, 20vw, 304px);
+  gap: 8px;
   overflow: hidden;
-  padding: 10px;
+  padding: 8px;
 }
 
 .sidebar,
@@ -323,25 +334,53 @@ textarea:focus {
 .sidebar,
 .chat-panel,
 .card {
-  border: 1px solid rgba(148, 163, 184, 0.17);
-  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  background: rgba(9, 16, 31, 0.78);
   backdrop-filter: blur(18px);
   border-radius: 12px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035), 0 18px 54px rgba(0, 0, 0, 0.16);
 }
 
 .sidebar {
   display: flex;
   flex-direction: column;
-  padding: 14px;
+  padding: 12px;
 }
 
 .profile-card {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px;
+  padding: 10px;
   border-radius: 10px;
   background: rgba(2, 6, 23, 0.5);
+}
+
+.side-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin: 10px 0 0;
+}
+
+.side-metrics div {
+  padding: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 10px;
+  background: rgba(2, 6, 23, 0.34);
+}
+
+.side-metrics span {
+  display: block;
+  color: #7f8fa6;
+  font-size: 10px;
+}
+
+.side-metrics strong {
+  display: block;
+  margin-top: 2px;
+  color: #e0f2fe;
+  font-size: 16px;
 }
 
 .avatar {
@@ -366,25 +405,35 @@ textarea:focus {
 }
 
 .new-ticket {
-  margin: 14px 0;
-  padding: 12px;
-  background: #dbeafe;
-  color: #082f49;
+  margin: 10px 0;
+  padding: 11px;
+  background: linear-gradient(135deg, #67e8f9, #34d399);
+  color: #04111f;
   font-weight: 700;
+  box-shadow: 0 16px 32px rgba(20, 184, 166, 0.18);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.new-ticket:hover,
+.primary:hover,
+.simple-note button:hover,
+.action-grid button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 36px rgba(34, 197, 94, 0.18);
 }
 
 .ticket-list {
   overflow: auto;
   display: grid;
-  gap: 8px;
+  gap: 7px;
   padding-right: 2px;
 }
 
 .ticket-item {
   border: 1px solid transparent;
-  border-radius: 10px;
-  background: rgba(2, 6, 23, 0.34);
-  padding: 12px;
+  border-radius: 9px;
+  background: rgba(2, 6, 23, 0.3);
+  padding: 10px;
   text-align: left;
   cursor: pointer;
 }
@@ -423,13 +472,57 @@ textarea:focus {
 }
 
 .chat-header {
-  min-height: 76px;
+  min-height: 68px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 14px 18px;
+  padding: 12px 16px;
   border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.chat-header p {
+  margin: 2px 0 0;
+  color: #8da2bd;
+  font-size: 12px;
+}
+
+.context-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.11);
+  background: rgba(2, 6, 23, 0.22);
+}
+
+.context-strip div {
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.42);
+}
+
+.context-strip span,
+.context-strip em {
+  display: block;
+  overflow: hidden;
+  color: #8293ab;
+  font-size: 11px;
+  font-style: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.context-strip strong {
+  display: block;
+  overflow: hidden;
+  margin: 2px 0;
+  color: #f8fafc;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .status-actions {
@@ -455,7 +548,7 @@ textarea:focus {
 .messages {
   flex: 1;
   overflow: auto;
-  padding: 18px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -466,8 +559,49 @@ textarea:focus {
   max-width: min(760px, 100%);
   border: 1px solid rgba(148, 163, 184, 0.15);
   border-radius: 12px;
-  padding: 16px;
+  padding: 14px;
   background: rgba(2, 6, 23, 0.45);
+}
+
+.assistant-card {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(125, 211, 252, 0.18);
+  background: linear-gradient(135deg, rgba(8, 13, 26, 0.92), rgba(15, 23, 42, 0.74));
+  animation: panelIn 220ms ease-out;
+}
+
+.assistant-pulse {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.12);
+}
+
+.quick-starters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.quick-starters button {
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  border-radius: 999px;
+  background: rgba(14, 165, 233, 0.1);
+  color: #bae6fd;
+  padding: 7px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.quick-starters button:hover {
+  background: rgba(14, 165, 233, 0.16);
+  transform: translateY(-1px);
 }
 
 .message {
@@ -513,15 +647,15 @@ textarea:focus {
 }
 
 .composer {
-  padding: 12px;
+  padding: 10px;
   border-top: 1px solid rgba(148, 163, 184, 0.14);
   background: rgba(2, 6, 23, 0.3);
 }
 
 .composer-options {
   display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .drafts {
@@ -560,13 +694,13 @@ textarea:focus {
 
 .composer-row {
   display: grid;
-  grid-template-columns: 78px minmax(0, 1fr) 116px;
-  gap: 10px;
+  grid-template-columns: 74px minmax(0, 1fr) 112px;
+  gap: 8px;
   align-items: end;
 }
 
 .attach-button {
-  height: 54px;
+  height: 48px;
   display: grid;
   place-items: center;
   background: rgba(148, 163, 184, 0.12);
@@ -579,7 +713,7 @@ textarea:focus {
 }
 
 .primary {
-  height: 54px;
+  height: 48px;
   padding: 0 18px;
   background: linear-gradient(135deg, #38bdf8, #22c55e);
   color: #04111f;
@@ -602,19 +736,19 @@ button:disabled {
 
 .composer small {
   display: block;
-  margin-top: 8px;
+  margin-top: 6px;
   color: #7f8fa6;
 }
 
 .inspector {
   display: grid;
-  gap: 14px;
+  gap: 8px;
   overflow: auto;
   min-width: 0;
 }
 
 .card {
-  padding: 18px;
+  padding: 14px;
   min-width: 0;
   overflow: hidden;
 }
@@ -625,8 +759,8 @@ button:disabled {
 
 dl {
   display: grid;
-  gap: 10px;
-  margin: 16px 0 0;
+  gap: 6px;
+  margin: 12px 0 0;
 }
 
 dl div,
@@ -634,7 +768,7 @@ dl div,
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  padding: 9px 0;
+  padding: 7px 0;
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
 }
 
@@ -670,8 +804,8 @@ dd {
   grid-template-columns: 1fr auto;
   gap: 4px 12px;
   align-items: center;
-  margin: 10px 0 12px;
-  padding: 12px;
+  margin: 8px 0 10px;
+  padding: 10px;
   border-radius: 10px;
   background: rgba(34, 197, 94, 0.1);
   border: 1px solid rgba(34, 197, 94, 0.24);
@@ -719,13 +853,51 @@ dd {
 }
 
 .tech-note {
-  margin-top: 14px;
-  padding: 12px;
+  margin-top: 10px;
+  padding: 10px;
   border-radius: 10px;
   color: #fde68a;
   background: rgba(245, 158, 11, 0.12);
   font-size: 12px;
   line-height: 1.45;
+}
+
+.action-center {
+  padding: 12px;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.action-grid button {
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 10px;
+  background: rgba(2, 6, 23, 0.38);
+  color: #cde7ff;
+  padding: 9px 8px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.action-grid button:hover {
+  border-color: rgba(125, 211, 252, 0.24);
+  background: rgba(14, 165, 233, 0.1);
+}
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .simple-note button {
@@ -950,6 +1122,14 @@ dd {
   .composer-row {
     grid-template-columns: 76px 1fr 104px;
   }
+
+  .context-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .context-strip em {
+    display: none;
+  }
 }
 
 @media (max-width: 760px) {
@@ -992,6 +1172,11 @@ dd {
 
   .composer-row {
     grid-template-columns: 1fr;
+  }
+
+  .side-metrics,
+  .action-grid {
+    grid-template-columns: 1fr 1fr;
   }
 
   .attach-button,

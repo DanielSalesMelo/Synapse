@@ -21,6 +21,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { getBackendBaseUrl } from "@/lib/backend";
+import { formatDateTimeBR } from "@/lib/timezone";
 
 // ─── Tipos ──────────────────────────────────────────────────────────────────
 type AttachmentPreview = {
@@ -165,7 +166,7 @@ function MessageBubble({ msg, isOwn, onImageClick }: { msg: any; isOwn: boolean;
 
       <div className="flex items-center gap-1 mt-1 px-1">
         <span className="text-[10px] text-muted-foreground">
-          {new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+          {formatDateTimeBR(msg.createdAt)}
         </span>
         {isOwn && (
           msg.readAt
@@ -556,7 +557,7 @@ export default function Chat() {
                           </Badge>
                         </div>
                         <span className="text-[10px] text-muted-foreground shrink-0 ml-1">
-                          {new Date(conv.lastMessageAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                          {formatDateTimeBR(conv.lastMessageAt)}
                         </span>
                       </div>
                       <div className="mt-1 flex items-center justify-between gap-2">

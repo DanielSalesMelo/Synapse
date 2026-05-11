@@ -46,6 +46,15 @@ const firstLineTitle = (text: string) => {
   return clean.length > 64 ? `${clean.slice(0, 61)}...` : clean;
 };
 
+const cleanTicketText = (text: string) =>
+  text
+    .replace(/\r/g, "")
+    .split("\n")
+    .map((line) => line.replace(/\s+/g, " ").trim())
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+
 const parseVersion = (version: string) =>
   String(version || "0").split(".").map((part) => Number(part.replace(/\D/g, "")) || 0);
 
@@ -174,6 +183,30 @@ function App() {
       summary: reasons.length ? reasons.join(", ") : "telemetria dentro do esperado",
     };
   }, [metric?.cpuUso, metric?.discoUsoPct, metric?.ramUsoPct, policy.isCritical24x7, policy.offlineGraceMinutes, profile?.online, profile?.ultimoContato]);
+  const ticketInsights = useMemo(() => {
+    const active = tickets.filter((ticket) => !["resolvido", "fechado", "encerrado", "cancelado"].includes(ticket.status || "")).length;
+    const waiting = tickets.filter((ticket) => ["aguardando_usuario", "aguardando_ti", "aguardando_fornecedor"].includes(ticket.status || "")).length;
+    return {
+      active,
+      waiting,
+      total: tickets.length,
+      latest: tickets[0]?.updatedAt || tickets[0]?.createdAt || profile?.ultimoContato,
+    };
+  }, [profile?.ultimoContato, tickets]);
+  const quickStarters = isTiMode
+    ? ["Abrir chamado vinculado a este PC", "Registrar incidente preventivo", "Solicitar acesso remoto"]
+    : ["Meu sistema não abre", "Minha internet caiu", "Meu notebook está lento"];
+  const contextCards = isTiMode
+    ? [
+        { label: "Saúde", value: `${deviceHealth.label} · ${deviceHealth.score}`, detail: deviceHealth.summary },
+        { label: "Heartbeat", value: profile?.online ? "Online" : "Aguardando", detail: formatDateTimeBR(profile?.ultimoContato) },
+        { label: "Operação", value: policy.isCritical24x7 ? "Crítico 24x7" : "Padrão", detail: workerRunning ? "worker ativo" : "worker aguardando" },
+      ]
+    : [
+        { label: "Canal", value: "Suporte conectado", detail: "chat, anexos e histórico próprio" },
+        { label: "SLA", value: ticketInsights.active ? "Em acompanhamento" : "Pronto para abrir", detail: `${ticketInsights.active} chamado(s) ativo(s)` },
+        { label: "Privacidade", value: "Dados técnicos ocultos", detail: "somente TI autorizada visualiza inventário" },
+      ];
 
   const notify = useCallback((message: string) => {
     setToast(message);
@@ -499,23 +532,23 @@ function App() {
     setBusy(true);
     try {
       let ticket = selectedTicket;
+      const cleanMessage = cleanTicketText(composer);
       if (!ticket) {
-        if (isTiMode) throw new Error("Selecione uma demanda para responder no modo TI/Admin.");
         ticket = await api("/api/agent/tickets/open", {
           method: "POST",
           body: JSON.stringify({
-            titulo: firstLineTitle(composer),
-            descricao: composer.trim() || "Anexo enviado pelo agente Synapse.",
-            categoria: category,
-            prioridade: priority,
+            titulo: firstLineTitle(cleanMessage),
+            descricao: cleanMessage || "Anexo enviado pelo agente Synapse.",
+            categoria: isTiMode ? category : "outro",
+            prioridade: isTiMode ? priority : "media",
           }),
         });
         setSelectedTicketId(ticket.id);
-      } else if (composer.trim()) {
+      } else if (cleanMessage) {
         const base = isTiMode ? "/api/agent/ti/tickets" : "/api/agent/tickets";
         await api(`${base}/${ticket.id}/messages`, {
           method: "POST",
-          body: JSON.stringify({ conteudo: composer.trim() }),
+          body: JSON.stringify({ conteudo: cleanMessage }),
         });
       }
       if (ticket?.id) {
@@ -676,8 +709,22 @@ function App() {
                 <span>{isTiMode ? "Modo TI/Admin" : "Modo usuário comum"}</span>
               </div>
             </div>
+            <div className="side-metrics">
+              <div>
+                <span>Ativos</span>
+                <strong>{ticketInsights.active}</strong>
+              </div>
+              <div>
+                <span>Aguardando</span>
+                <strong>{ticketInsights.waiting}</strong>
+              </div>
+              <div>
+                <span>Histórico</span>
+                <strong>{ticketInsights.total}</strong>
+              </div>
+            </div>
             <button className="new-ticket" onClick={() => { setSelectedTicketId(null); setComposer(""); }}>
-              Novo chamado por conversa
+              Abrir chamado
             </button>
             <div className="ticket-list">
               {tickets.map((ticket) => (
@@ -686,7 +733,7 @@ function App() {
                   className={`ticket-item ${selectedTicket?.id === ticket.id ? "active" : ""}`}
                   onClick={() => setSelectedTicketId(ticket.id)}
                 >
-                  <span>{ticket.protocolo || `#${ticket.id}`}</span>
+                  <span>{ticket.protocolo || `#${ticket.id}`} · {formatDateTimeBR(ticket.updatedAt || ticket.createdAt)}</span>
                   <strong>{ticket.titulo}</strong>
                   <em>{STATUS_LABELS[ticket.status || ""] || ticket.status || "Aberto"}</em>
                 </button>
@@ -700,6 +747,7 @@ function App() {
               <div>
                 <span className="eyebrow">{selectedTicket?.protocolo || "Novo atendimento"}</span>
                 <h2>{selectedTicket?.titulo || "Como podemos ajudar?"}</h2>
+                <p>{selectedTicket ? `Atualizado em ${formatDateTimeBR(selectedTicket.updatedAt || selectedTicket.createdAt)}` : "Digite como conversa. O Synapse transforma em chamado com contexto."}</p>
               </div>
               <div className="status-actions">
                 {selectedTicket?.status && <span className={`ticket-status ${selectedTicket.status}`}>{STATUS_LABELS[selectedTicket.status] || selectedTicket.status}</span>}
@@ -710,12 +758,27 @@ function App() {
                 )}
               </div>
             </div>
+            <div className="context-strip">
+              {contextCards.map((item) => (
+                <div key={item.label}>
+                  <span>{item.label}</span>
+                  <strong>{item.value}</strong>
+                  <em>{item.detail}</em>
+                </div>
+              ))}
+            </div>
 
             <div className="messages">
               {!selectedTicket && (
                 <div className="assistant-card">
+                  <span className="assistant-pulse" />
                   <strong>Abra chamado conversando.</strong>
-                  <p>Descreva o problema como em um chat: “Minha VPN caiu”, “Meu sistema não abre”, “Meu notebook está lento”. Prints e arquivos podem ser colados ou arrastados aqui.</p>
+                  <p>Escreva em linguagem natural. O primeiro envio abre o chamado, grava a mensagem inicial no histórico e mantém anexos, SLA e acompanhamento no mesmo contexto.</p>
+                  <div className="quick-starters">
+                    {quickStarters.map((item) => (
+                      <button key={item} onClick={() => setComposer(item)}>{item}</button>
+                    ))}
+                  </div>
                 </div>
               )}
               {messages.map((message, index) => (
@@ -738,7 +801,7 @@ function App() {
             </div>
 
             <footer className="composer">
-              {!selectedTicket && (
+              {!selectedTicket && isTiMode && (
                 <div className="composer-options">
                   <select value={category} onChange={(event) => setCategory(event.target.value)}>
                     {CATEGORIES.map((item) => <option key={item} value={item}>{item}</option>)}
@@ -799,6 +862,15 @@ function App() {
                   <div><dt>Status</dt><dd>{statusText}</dd></div>
                 </dl>
               )}
+            </div>
+            <div className="card action-center">
+              <span className="eyebrow">Ações rápidas</span>
+              <div className="action-grid">
+                <button onClick={() => { setSelectedTicketId(null); setComposer(""); }}>Chamado</button>
+                <button onClick={() => setHistoryOpen(true)}>Histórico</button>
+                <button onClick={() => { setUpdateOpen(true); checkForUpdates(false); }}>Update</button>
+                <button onClick={() => setPolicyOpen(true)}>24x7</button>
+              </div>
             </div>
             {isTiMode ? (
               <div className="card technical">

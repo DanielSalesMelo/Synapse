@@ -140,13 +140,9 @@ export default function DeviceDetails() {
     ramUsedGb: Number(m.ram_medio ?? 0),
     networkDownloadKb: Number(m.rede_recebido_kb ?? m.redeRecebidoKb ?? 0),
     networkUploadKb: Number(m.rede_enviado_kb ?? m.redeEnviadoKb ?? 0),
-    time: new Date(m.hora).toLocaleTimeString("pt-BR", {
-      timeZone: SYNAPSE_TIME_ZONE,
-      hour: "2-digit",
-      minute: "2-digit",
-      day: period !== "24h" ? "2-digit" : undefined,
-      month: period !== "24h" ? "2-digit" : undefined,
-    }),
+    time: period === "24h"
+      ? `${new Intl.DateTimeFormat("pt-BR", { timeZone: SYNAPSE_TIME_ZONE, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(new Date(m.hora))} BRT`
+      : formatDateTimeBR(m.hora),
   }));
   const loading = agentesQ.isLoading || metricasQ.isLoading;
   const refreshing = agentesQ.isRefetching || metricasQ.isRefetching;
@@ -195,26 +191,46 @@ export default function DeviceDetails() {
     : health.level === "atencao"
       ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
       : "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
+  const lastHeartbeat = agente?.ultima_coleta || agente?.ultimaColeta || agente?.ultimoContato || agente?.updatedAt || null;
+  const statusLabel = String(agente?.status_resolvido || agente?.status || "offline").toLowerCase();
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div className="flex items-center gap-4">
-          <Button variant="outline" size="icon" onClick={() => setLocation("/ti")}>
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold flex items-center gap-2">
-              <Monitor className="h-6 w-6 text-primary" />
-              {agente.hostname}
-            </h1>
-            <p className="text-muted-foreground text-sm">Detalhes e monitoramento de desempenho</p>
+    <div className="p-4 space-y-4 max-w-7xl mx-auto">
+      <section className="rounded-2xl border border-white/10 bg-[linear-gradient(135deg,rgba(15,23,42,0.98),rgba(2,6,23,0.98))] p-4 text-slate-50 shadow-xl shadow-slate-950/20">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div className="flex items-start gap-3">
+            <Button variant="outline" size="icon" className="border-white/10 bg-white/[0.04] text-slate-100 hover:bg-white/10" onClick={() => setLocation("/ti")}>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <Badge className="mb-2 border-cyan-400/30 bg-cyan-400/10 text-cyan-100">Contexto de ativo</Badge>
+              <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
+                <Monitor className="h-6 w-6 text-cyan-300" />
+                {agente.hostname || NOT_COLLECTED}
+              </h1>
+              <p className="mt-1 text-sm text-slate-300">
+                Dispositivo, usuário, saúde, heartbeat, inventário e histórico no mesmo contexto operacional.
+              </p>
+            </div>
+          </div>
+          <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3 lg:w-auto lg:min-w-[360px]">
+            <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3">
+              <p className="text-[11px] uppercase tracking-[0.16em] text-slate-500">Status</p>
+              <p className="mt-1 text-sm font-semibold capitalize">{statusLabel}</p>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3">
+              <p className="text-[11px] uppercase tracking-[0.16em] text-slate-500">Saúde</p>
+              <p className="mt-1 text-sm font-semibold">{health.label} · {health.score}</p>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3">
+              <p className="text-[11px] uppercase tracking-[0.16em] text-slate-500">Heartbeat</p>
+              <p className="mt-1 text-xs font-medium">{formatDateTimeBR(lastHeartbeat)}</p>
+            </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="mt-4 flex flex-wrap items-center gap-2">
           <Select value={period} onValueChange={setPeriod}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[180px] border-white/10 bg-white/[0.04] text-slate-100">
               <Calendar className="h-4 w-4 mr-2" />
               <SelectValue placeholder="Período" />
             </SelectTrigger>
@@ -224,12 +240,12 @@ export default function DeviceDetails() {
               <SelectItem value="30d">Último mês</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" size="sm" onClick={() => fetchData()} disabled={refreshing}>
+          <Button variant="outline" size="sm" className="border-white/10 bg-white/[0.04] text-slate-100 hover:bg-white/10" onClick={() => fetchData()} disabled={refreshing}>
             <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
             Atualizar
           </Button>
         </div>
-      </div>
+      </section>
 
       {/* Info Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
