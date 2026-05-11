@@ -49,6 +49,8 @@ __pycache__/
 *.zip
 packages/services/legacy-api/.deploy_tmp/
 packages/services/legacy-api/deploy_backend.zip
-packages/services/legacy-api/agent/electron-dist/
+packages/services/legacy-api/agent/electron-dist/*
+!packages/services/legacy-api/agent/electron-dist/
+!packages/services/legacy-api/agent/electron-dist/SynapseSetup-2.4.0.exe
 tmp_index_live.js
 agent/synapse-agent.exe

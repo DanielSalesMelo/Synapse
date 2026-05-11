@@ -223,8 +223,8 @@ const createWindow = async () => {
   mainWindow = new BrowserWindow({
     width: 1180,
     height: 760,
-    minWidth: 900,
-    minHeight: 620,
+    minWidth: 760,
+    minHeight: 560,
     title: "Synapse para Windows",
     backgroundColor: "#0b1120",
     autoHideMenuBar: true,
@@ -244,7 +244,20 @@ const createWindow = async () => {
   if (typeof mainWindow.removeMenu === "function") {
     mainWindow.removeMenu();
   }
-  mainWindow.once("ready-to-show", () => mainWindow.show());
+  mainWindow.once("ready-to-show", () => {
+    mainWindow.setAutoHideMenuBar(true);
+    mainWindow.setMenuBarVisibility(false);
+    mainWindow.setMenu(null);
+    if (typeof mainWindow.removeMenu === "function") {
+      mainWindow.removeMenu();
+    }
+    mainWindow.show();
+  });
+  mainWindow.on("focus", () => {
+    mainWindow.setAutoHideMenuBar(true);
+    mainWindow.setMenuBarVisibility(false);
+    mainWindow.setMenu(null);
+  });
   mainWindow.on("close", (event) => {
     if (!app.isQuitting) {
       event.preventDefault();

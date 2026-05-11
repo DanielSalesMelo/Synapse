@@ -34,10 +34,10 @@ button {
 }
 
 .titlebar {
-  height: 56px;
+  height: 52px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   padding: 0 8px 0 14px;
   border-bottom: 1px solid rgba(148, 163, 184, 0.18);
   background: rgba(8, 15, 30, 0.84);
@@ -49,7 +49,7 @@ button {
   display: flex;
   align-items: center;
   gap: 12px;
-  min-width: 244px;
+  min-width: 220px;
   -webkit-app-region: drag;
 }
 
@@ -67,9 +67,9 @@ button {
 }
 
 .brand-mark {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
   display: grid;
   place-items: center;
   background: linear-gradient(135deg, #38bdf8, #22c55e);
@@ -100,8 +100,8 @@ button {
   border: 0;
   background: rgba(148, 163, 184, 0.1);
   color: #cbd5e1;
-  height: 32px;
-  padding: 0 10px;
+  height: 30px;
+  padding: 0 9px;
   border-radius: 8px;
   cursor: pointer;
 }
@@ -143,8 +143,8 @@ button {
   align-items: center;
   gap: 8px;
   color: #94a3b8;
-  font-size: 13px;
-  padding: 8px 12px;
+  font-size: 12px;
+  padding: 7px 10px;
   border-radius: 10px;
   background: rgba(148, 163, 184, 0.1);
   -webkit-app-region: no-drag;
@@ -166,12 +166,16 @@ button {
   flex: 1;
   display: grid;
   place-items: center;
-  padding: 42px;
+  min-height: 0;
+  overflow: auto;
+  padding: 24px;
 }
 
 .setup-card {
   width: min(760px, 96vw);
-  padding: 36px;
+  max-height: calc(100vh - 84px);
+  overflow: auto;
+  padding: 28px;
   border: 1px solid rgba(148, 163, 184, 0.22);
   border-radius: 14px;
   background: rgba(15, 23, 42, 0.92);
@@ -290,9 +294,10 @@ textarea:focus {
   min-height: 0;
   flex: 1;
   display: grid;
-  grid-template-columns: 276px minmax(400px, 1fr) 292px;
-  gap: 12px;
-  padding: 12px;
+  grid-template-columns: clamp(224px, 19vw, 276px) minmax(360px, 1fr) clamp(238px, 20vw, 292px);
+  gap: 10px;
+  overflow: hidden;
+  padding: 10px;
 }
 
 .sidebar,
@@ -313,7 +318,7 @@ textarea:focus {
 .sidebar {
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 14px;
 }
 
 .profile-card {
@@ -404,12 +409,12 @@ textarea:focus {
 }
 
 .chat-header {
-  min-height: 86px;
+  min-height: 76px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 18px 22px;
+  padding: 14px 18px;
   border-bottom: 1px solid rgba(148, 163, 184, 0.14);
 }
 
@@ -436,7 +441,7 @@ textarea:focus {
 .messages {
   flex: 1;
   overflow: auto;
-  padding: 22px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -444,7 +449,7 @@ textarea:focus {
 
 .assistant-card,
 .bubble {
-  max-width: 760px;
+  max-width: min(760px, 100%);
   border: 1px solid rgba(148, 163, 184, 0.15);
   border-radius: 12px;
   padding: 16px;
@@ -494,7 +499,7 @@ textarea:focus {
 }
 
 .composer {
-  padding: 14px;
+  padding: 12px;
   border-top: 1px solid rgba(148, 163, 184, 0.14);
   background: rgba(2, 6, 23, 0.3);
 }
@@ -541,7 +546,7 @@ textarea:focus {
 
 .composer-row {
   display: grid;
-  grid-template-columns: 82px 1fr 128px;
+  grid-template-columns: 78px minmax(0, 1fr) 116px;
   gap: 10px;
   align-items: end;
 }
@@ -587,6 +592,7 @@ button:disabled {
   display: grid;
   gap: 14px;
   overflow: auto;
+  min-width: 0;
 }
 
 .card {
@@ -806,6 +812,27 @@ dd {
   }
 }
 
+@media (max-width: 1250px) {
+  .brand {
+    min-width: 184px;
+  }
+
+  .brand span {
+    display: none;
+  }
+
+  .title-actions button {
+    padding: 0 8px;
+    max-width: 104px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .workspace {
+    grid-template-columns: clamp(210px, 22vw, 252px) minmax(0, 1fr) clamp(220px, 22vw, 260px);
+  }
+}
+
 @media (max-width: 940px) {
   .titlebar {
     gap: 10px;
@@ -835,5 +862,63 @@ dd {
 
   .composer-row {
     grid-template-columns: 76px 1fr 104px;
+  }
+}
+
+@media (max-width: 760px) {
+  .titlebar {
+    height: auto;
+    min-height: 52px;
+    flex-wrap: wrap;
+    padding: 8px;
+  }
+
+  .brand {
+    flex: 1 1 180px;
+  }
+
+  .title-actions {
+    order: 3;
+    flex-basis: 100%;
+    justify-content: flex-start;
+  }
+
+  .connection {
+    max-width: 148px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .workspace {
+    grid-template-columns: 1fr;
+    overflow: auto;
+  }
+
+  .sidebar {
+    max-height: 220px;
+  }
+
+  .chat-panel {
+    min-height: 560px;
+  }
+
+  .composer-row {
+    grid-template-columns: 1fr;
+  }
+
+  .attach-button,
+  .primary {
+    height: 44px;
+  }
+
+  .setup-card {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .setup-grid,
+  .component-list {
+    grid-template-columns: 1fr;
   }
 }

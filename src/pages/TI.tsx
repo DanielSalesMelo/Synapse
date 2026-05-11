@@ -27,7 +27,7 @@ import {
   RefreshCw, TrendingUp, Eye, Edit, Trash2, Send, Paperclip,
   Download, Link2, QrCode, Copy, Check, X, ChevronRight,
   BarChart2, Database, Settings, Zap, Bell, BellRing,
-  Image as ImageIcon, MessageSquare, Calendar, Tag,
+  Image as ImageIcon, MessageSquare, Calendar, Tag, MoreHorizontal,
   Archive, Unlink, RotateCcw,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -779,6 +779,8 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const agentDiskUsage = (a: any) => metricValue(a?.discoUsoPct, a?.disco_atual, a?.discoAtual);
   const agentCpuTemp = (a: any) => metricValue(a?.cpuTemp, a?.cpu_temp);
   const agentAnyDesk = (a: any) => a?.anydeskId || a?.anydesk_id_atual || a?.anydesk || a?.anydesk_id || "";
+  const agentIp = (a: any) => String(a?.ip || a?.ipLocal || a?.ip_address || "").trim();
+  const agentDisplayHostname = (a: any) => String(a?.hostname || a?.displayName || "").trim();
   const agentIsCritical = (a: any) => Boolean(a?.isCritical24x7 || a?.notifyOnOffline);
   const agentSubnet = (a: any) => {
     const ip = String(a?.ip || a?.ipLocal || "").trim();
@@ -901,6 +903,27 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     onError: (err) => toast.error("Erro ao gerenciar ativo: " + (err.message || "tente novamente")),
   });
 
+  const copyToClipboard = (text: string, label = "Conteúdo") => {
+    const clean = String(text || "").trim();
+    if (!clean) {
+      toast.info(`${label} indisponível para este ativo.`);
+      return;
+    }
+    navigator.clipboard.writeText(clean);
+    setCopiedCode(clean);
+    setTimeout(() => setCopiedCode(null), 2000);
+    toast.success(`${label} copiado!`);
+  };
+
+  const refreshAgentCollection = (agente: any) => {
+    agentesQ.refetch();
+    dashboard.refetch();
+    if (selectedAgente?.id && Number(selectedAgente.id) === Number(agente?.id)) {
+      agenteMetricas.refetch();
+    }
+    toast.success("Coleta atualizada no painel.");
+  };
+
   const executarAcaoAgente = (
     agente: any,
     acao: AgentLifecycleAction,
@@ -991,46 +1014,12 @@ export default function TI({ params }: { params?: { tab?: string } }) {
 
   const renderAgenteActions = (a: any, options: { showView?: boolean; showAssociate?: boolean } = {}) => {
     const inactive = agentIsInactive(a);
+    if (!isTiManager) return null;
     return (
       <div className="flex flex-wrap items-center justify-end gap-1" onClick={(event) => event.stopPropagation()}>
         {options.showView && (
           <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => { setSelectedAgente(a); setTab("monitoramento"); }}>
             <Eye className="h-3 w-3 mr-1" />Ver
-          </Button>
-        )}
-        {inactive ? (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-7 text-xs"
-            disabled={gerenciarAgente.isPending}
-            onClick={() => executarAcaoAgente(a, "reativar")}
-          >
-            <RefreshCw className="h-3 w-3 mr-1" />Reativar
-          </Button>
-        ) : (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-7 text-xs"
-            disabled={gerenciarAgente.isPending}
-            onClick={() => executarAcaoAgente(a, "arquivar")}
-          >
-            <Archive className="h-3 w-3 mr-1" />Arquivar
-          </Button>
-        )}
-        {!inactive && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="h-7 text-xs text-red-600 hover:text-red-700"
-            disabled={gerenciarAgente.isPending}
-            onClick={() => executarAcaoAgente(a, "remover_monitoramento")}
-          >
-            <Trash2 className="h-3 w-3 mr-1" />Remover
           </Button>
         )}
         {options.showAssociate && (
@@ -1065,28 +1054,38 @@ export default function TI({ params }: { params?: { tab?: string } }) {
         )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button type="button" variant="outline" size="sm" className="h-7 text-xs" disabled={gerenciarAgente.isPending} aria-label={`Mais ações para ${a.hostname || "dispositivo"}`}>
-              <Wrench className="h-3 w-3 mr-1" />Mais ações
+            <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" disabled={gerenciarAgente.isPending} aria-label={`Ações do agente ${agentDisplayHostname(a) || "dispositivo"}`}>
+              <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" sideOffset={8} collisionPadding={16} className="z-[80] w-72" onClick={(event) => event.stopPropagation()}>
             <DropdownMenuLabel className="text-xs">
               <span className="block text-muted-foreground">Ações do agente</span>
-              <span className="block truncate font-mono text-[11px] font-normal">{a.hostname || `#${a.id}`}</span>
+              <span className="block truncate font-mono text-[11px] font-normal">{agentDisplayHostname(a) || `#${a.id}`}</span>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {options.showView && (
-              <DropdownMenuItem onSelect={(event) => { event.stopPropagation(); setSelectedAgente(a); setTab("monitoramento"); }}>
-                <Eye className="h-4 w-4 mr-2" />Abrir monitoramento
-              </DropdownMenuItem>
-            )}
-            <DropdownMenuItem onSelect={selecionarAcaoAgente(a, "limpar_vinculo")}>
-              <RotateCcw className="h-4 w-4 mr-2" />Limpar vínculo antigo
+            <DropdownMenuItem onSelect={(event) => { event.stopPropagation(); setSelectedAgente(a); setTab("monitoramento"); }}>
+              <Eye className="h-4 w-4 mr-2" />Ver detalhes
             </DropdownMenuItem>
+            <DropdownMenuItem disabled={!agentIp(a)} onSelect={(event) => { event.stopPropagation(); copyToClipboard(agentIp(a), "IP"); }}>
+              <Copy className="h-4 w-4 mr-2" />Copiar IP
+            </DropdownMenuItem>
+            <DropdownMenuItem disabled={!agentDisplayHostname(a)} onSelect={(event) => { event.stopPropagation(); copyToClipboard(agentDisplayHostname(a), "Hostname"); }}>
+              <Copy className="h-4 w-4 mr-2" />Copiar hostname
+            </DropdownMenuItem>
+            <DropdownMenuItem disabled={!agentAnyDesk(a)} onSelect={(event) => { event.stopPropagation(); copyToClipboard(agentAnyDesk(a), "AnyDesk"); }}>
+              <Copy className="h-4 w-4 mr-2" />Copiar AnyDesk
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={(event) => { event.stopPropagation(); refreshAgentCollection(a); }}>
+              <RefreshCw className="h-4 w-4 mr-2" />Atualizar coleta
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem onSelect={selecionarAcaoAgente(a, "desparear")}>
               <Unlink className="h-4 w-4 mr-2" />Desparear este PC
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={selecionarAcaoAgente(a, "limpar_vinculo")}>
+              <RotateCcw className="h-4 w-4 mr-2" />Limpar vínculo antigo
+            </DropdownMenuItem>
             {inactive ? (
               <DropdownMenuItem onSelect={selecionarAcaoAgente(a, "reativar")}>
                 <RefreshCw className="h-4 w-4 mr-2" />Reativar ativo
@@ -1100,7 +1099,7 @@ export default function TI({ params }: { params?: { tab?: string } }) {
               <Package className="h-4 w-4 mr-2" />Marcar como equipamento descartado
             </DropdownMenuItem>
             <DropdownMenuItem className="text-red-600 focus:text-red-600" onSelect={selecionarAcaoAgente(a, "remover_monitoramento")}>
-              <Trash2 className="h-4 w-4 mr-2" />Remover da operação ativa
+              <Trash2 className="h-4 w-4 mr-2" />Remover monitoramento
             </DropdownMenuItem>
             {isMasterAdmin && (
               <>
@@ -1353,13 +1352,6 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     nome: "", tipo: "A1", vencimento: "", senha: "", observacoes: "",
   });
   const agentDownloadSuffix = `?v=${encodeURIComponent(agentVersion)}&ts=${Date.now()}`;
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedCode(text);
-    setTimeout(() => setCopiedCode(null), 2000);
-    toast.success("Copiado!");
-  };
 
   // ── KPIs ──
   const kpiAbertos = dashboard.data?.tickets?.abertos ?? 0;

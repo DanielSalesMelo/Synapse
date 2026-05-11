@@ -82,6 +82,8 @@ const readAgentVersion = () => {
 };
 
 const AGENT_VERSION = readAgentVersion();
+const DESKTOP_INSTALLER_FILENAME = `SynapseSetup-${AGENT_VERSION}.exe`;
+const DESKTOP_INSTALLER_PATH = path.join(AGENT_DIR, "electron-dist", DESKTOP_INSTALLER_FILENAME);
 
 console.log(`[BOOT] AGENT_DIR=${AGENT_DIR}`);
 console.log(`[BOOT] UPLOADS_DIR=${UPLOADS_DIR}`);
@@ -861,18 +863,21 @@ const setNoCacheDownloadHeaders = (res: Response) => {
   res.setHeader("CDN-Cache-Control", "no-store");
 };
 
-const sendAgentDownload = (res: Response, filename: string, downloadName: string) => {
-  const filePath = path.join(AGENT_DIR, filename);
+const sendAgentDownload = (res: Response, filePathOrName: string, downloadName: string, artifactName?: string) => {
+  const filePath = path.isAbsolute(filePathOrName) ? filePathOrName : path.join(AGENT_DIR, filePathOrName);
+  const artifact = artifactName || path.relative(AGENT_DIR, filePath) || path.basename(filePath);
   if (!fs.existsSync(filePath)) {
     return res.status(404).json({
       error: "AGENT_FILE_NOT_FOUND",
-      filename,
+      filename: artifact,
       agentDir: AGENT_DIR,
+      filePath,
     });
   }
   setNoCacheDownloadHeaders(res);
+  res.setHeader("Content-Disposition", `attachment; filename="${downloadName}"`);
   res.setHeader("X-Synapse-Agent-Version", AGENT_VERSION);
-  res.setHeader("X-Synapse-Artifact", filename);
+  res.setHeader("X-Synapse-Artifact", artifact);
   try {
     const hash = crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex").toUpperCase();
     res.setHeader("X-Synapse-Artifact-SHA256", hash);
@@ -889,7 +894,7 @@ app.get("/api/agent/version", (req, res) => {
   res.json({
     version: AGENT_VERSION,
     productName: "Synapse para Windows",
-    artifact: `SynapseSetup-${AGENT_VERSION}.exe`,
+    artifact: DESKTOP_INSTALLER_FILENAME,
     runtime: "electron",
     worker: "python-legacy",
     downloadUrl: `${origin}/api/agent/download`,
@@ -906,7 +911,7 @@ app.get("/api/agent/version", (req, res) => {
 });
 
 app.get("/api/agent/download", (_req, res) => {
-  sendAgentDownload(res, "synapse-setup.exe", `SynapseSetup-${AGENT_VERSION}.exe`);
+  sendAgentDownload(res, DESKTOP_INSTALLER_PATH, DESKTOP_INSTALLER_FILENAME, `electron-dist/${DESKTOP_INSTALLER_FILENAME}`);
 });
 
 app.get("/api/agent/download/windows", (_req, res) => {
@@ -914,7 +919,7 @@ app.get("/api/agent/download/windows", (_req, res) => {
 });
 
 app.get("/api/agent/download/windows-installer", (_req, res) => {
-  sendAgentDownload(res, "synapse-setup.exe", `SynapseSetup-${AGENT_VERSION}.exe`);
+  sendAgentDownload(res, DESKTOP_INSTALLER_PATH, DESKTOP_INSTALLER_FILENAME, `electron-dist/${DESKTOP_INSTALLER_FILENAME}`);
 });
 
 app.get("/api/agent/download/windows-legacy-installer", (_req, res) => {
