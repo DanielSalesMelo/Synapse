@@ -1,0 +1,40 @@
+{
+  "version": "2026-05-12",
+  "timezone": "America/Sao_Paulo",
+  "sources": [
+    {
+      "id": "totvs-winthor",
+      "nome": "TOTVS / Winthor",
+      "tipo": "totvs",
+      "status": "pendente_ingestao",
+      "escopo": "Procedimentos homologados de ERP, fiscal e operacao.",
+      "caminho": "knowledge/docs/totvs",
+      "observacao": "Responder apenas com documentos internos homologados."
+    },
+    {
+      "id": "sefaz",
+      "nome": "SEFAZ",
+      "tipo": "sefaz",
+      "status": "pendente_ingestao",
+      "escopo": "Notas fiscais, XML, eventos fiscais e contingencia.",
+      "caminho": "knowledge/docs/sefaz",
+      "observacao": "Escalar quando houver risco fiscal ou ausencia de fonte."
+    },
+    {
+      "id": "microsoft-windows",
+      "nome": "Microsoft Windows",
+      "tipo": "microsoft",
+      "status": "pendente_ingestao",
+      "escopo": "Windows, Defender, atualizacoes, rede, firewall e politicas corporativas.",
+      "caminho": "knowledge/docs/microsoft"
+    },
+    {
+      "id": "procedimentos-internos",
+      "nome": "Procedimentos internos",
+      "tipo": "interno",
+      "status": "pendente_ingestao",
+      "escopo": "Runbooks, FAQ, artigos aprovados pela TI e respostas padrao.",
+      "caminho": "knowledge/docs/internal"
+    }
+  ]
+}

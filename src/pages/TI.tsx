@@ -28,7 +28,7 @@ import {
   Download, Link2, QrCode, Copy, Check, X, ChevronRight,
   BarChart2, Database, Settings, Zap, Bell, BellRing,
   Image as ImageIcon, MessageSquare, Calendar, Tag, MoreHorizontal,
-  Archive, Unlink, RotateCcw,
+  Archive, Unlink, RotateCcw, Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
@@ -314,6 +314,7 @@ function TicketChat({ ticketId, empresaId }: { ticketId: number; empresaId: numb
 // ─── Componente de Detalhe do Chamado ─────────────────────────────────────────
 function TicketDetail({ ticket, onClose, empresaId, isTiManager }: { ticket: any; onClose: () => void; empresaId: number; isTiManager: boolean }) {
   const [, navigate] = useLocation() as any;
+  const [aiPanel, setAiPanel] = useState<any>(null);
   const updateTicket = trpc.ti.updateTicket.useMutation({
     onSuccess: () => toast.success("Chamado atualizado!"),
   });
@@ -325,6 +326,7 @@ function TicketDetail({ ticket, onClose, empresaId, isTiManager }: { ticket: any
   });
   const runAiTriage = trpc.ti.aiTriage.useMutation({
     onSuccess: (r: any) => {
+      setAiPanel(r);
       toast.success(
         r?.precisaEscalar
           ? "IA triou e escalou para TI."
@@ -350,6 +352,7 @@ function TicketDetail({ ticket, onClose, empresaId, isTiManager }: { ticket: any
 
   const STATUS_FLOW = ["novo", "aberto", "triagem_ia", "em_atendimento", "aguardando_usuario", "aguardando_ti", "aguardando_fornecedor", "acesso_remoto_solicitado", "em_acesso_remoto", "resolvido", "fechado", "encerrado", "cancelado"];
   const currentIdx = STATUS_FLOW.indexOf(ticket.status);
+  const triagem = aiPanel?.triagem;
 
   return (
     <div className="space-y-4">
@@ -499,7 +502,94 @@ function TicketDetail({ ticket, onClose, empresaId, isTiManager }: { ticket: any
         </div>
       )}
 
-      <TicketChat ticketId={ticket.id} empresaId={empresaId} />
+      <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_340px] gap-4">
+        <TicketChat ticketId={ticket.id} empresaId={empresaId} />
+        {isTiManager && (
+          <Card className="border-violet-200/50 bg-violet-50/50 dark:border-violet-500/20 dark:bg-violet-950/20">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-violet-500" />Triagem IA contextual
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              {!triagem ? (
+                <>
+                  <p className="text-muted-foreground">
+                    A conversa continua visível. A IA gera resumo, prioridade, categoria, passos e fontes sem substituir a equipe.
+                  </p>
+                  <Button
+                    size="sm"
+                    className="w-full"
+                    disabled={runAiTriage.isPending}
+                    onClick={() => runAiTriage.mutate({
+                      ticketId: ticket.id,
+                      descricao: ticket.descricao || ticket.titulo,
+                      contextoTecnico: [
+                        ticket.solicitante_departamento ? `Setor: ${ticket.solicitante_departamento}` : "",
+                        ticket.agente_hostname ? `Dispositivo: ${ticket.agente_hostname}` : "",
+                        ticket.anydeskId ? `AnyDesk: ${ticket.anydeskId}` : "",
+                      ].filter(Boolean).join("\n"),
+                    })}
+                  >
+                    {runAiTriage.isPending ? "Triando..." : "Executar triagem IA"}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <div className="rounded-lg border bg-background/70 p-3">
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Resumo</p>
+                    <p className="mt-1 font-medium">{triagem.resumo}</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="rounded-lg border bg-background/70 p-2">
+                      <p className="text-[11px] text-muted-foreground">Prioridade</p>
+                      <p className="font-medium capitalize">{triagem.prioridadeSugerida || "media"}</p>
+                    </div>
+                    <div className="rounded-lg border bg-background/70 p-2">
+                      <p className="text-[11px] text-muted-foreground">Confiança</p>
+                      <p className="font-medium">{Number(triagem.nivelConfianca || 0)}%</p>
+                    </div>
+                    <div className="rounded-lg border bg-background/70 p-2">
+                      <p className="text-[11px] text-muted-foreground">Categoria</p>
+                      <p className="font-medium capitalize">{triagem.categoriaSugerida || "outro"}</p>
+                    </div>
+                    <div className="rounded-lg border bg-background/70 p-2">
+                      <p className="text-[11px] text-muted-foreground">Provider</p>
+                      <p className="font-medium">{triagem.providerUsado || aiPanel?.providerUsado || "fallback_humano"}</p>
+                    </div>
+                  </div>
+                  <div className="rounded-lg border bg-background/70 p-3">
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Ação imediata</p>
+                    <p className="mt-1">{triagem.acaoImediata || "Acompanhar atendimento humano."}</p>
+                  </div>
+                  {Array.isArray(triagem.passosUsuario) && triagem.passosUsuario.length > 0 && (
+                    <div>
+                      <p className="text-xs font-medium text-muted-foreground mb-1">Passos para usuário</p>
+                      <ul className="space-y-1 text-xs text-muted-foreground">
+                        {triagem.passosUsuario.slice(0, 4).map((item: string) => <li key={item}>- {item}</li>)}
+                      </ul>
+                    </div>
+                  )}
+                  {Array.isArray(triagem.passosTI) && triagem.passosTI.length > 0 && (
+                    <div>
+                      <p className="text-xs font-medium text-muted-foreground mb-1">Passos TI</p>
+                      <ul className="space-y-1 text-xs text-muted-foreground">
+                        {triagem.passosTI.slice(0, 4).map((item: string) => <li key={item}>- {item}</li>)}
+                      </ul>
+                    </div>
+                  )}
+                  <div className="rounded-lg border bg-background/70 p-3">
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Fontes</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {(triagem.fontes || []).length ? triagem.fontes.join(" · ") : "Base homologada não integrada. Atendimento humano recomendado."}
+                    </p>
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        )}
+      </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
         <Card>
@@ -1164,15 +1254,26 @@ export default function TI({ params }: { params?: { tab?: string } }) {
             <DropdownMenuItem onSelect={(event) => { event.stopPropagation(); setSelectedAgente(a); setTab("monitoramento"); }}>
               <Eye className="h-4 w-4 mr-2" />Ver detalhes
             </DropdownMenuItem>
-            <DropdownMenuItem disabled={!agentIp(a)} onSelect={(event) => { event.stopPropagation(); copyToClipboard(agentIp(a), "IP"); }}>
-              <Copy className="h-4 w-4 mr-2" />Copiar IP
-            </DropdownMenuItem>
-            <DropdownMenuItem disabled={!agentDisplayHostname(a)} onSelect={(event) => { event.stopPropagation(); copyToClipboard(agentDisplayHostname(a), "Hostname"); }}>
-              <Copy className="h-4 w-4 mr-2" />Copiar hostname
-            </DropdownMenuItem>
-            <DropdownMenuItem disabled={!agentAnyDesk(a)} onSelect={(event) => { event.stopPropagation(); copyToClipboard(agentAnyDesk(a), "AnyDesk"); }}>
-              <Copy className="h-4 w-4 mr-2" />Copiar AnyDesk
-            </DropdownMenuItem>
+            {agentIp(a) && (
+              <DropdownMenuItem onSelect={(event) => { event.stopPropagation(); copyToClipboard(agentIp(a), "IP"); }}>
+                <Copy className="h-4 w-4 mr-2" />Copiar IP
+              </DropdownMenuItem>
+            )}
+            {agentDisplayHostname(a) && (
+              <DropdownMenuItem onSelect={(event) => { event.stopPropagation(); copyToClipboard(agentDisplayHostname(a), "Hostname"); }}>
+                <Copy className="h-4 w-4 mr-2" />Copiar hostname
+              </DropdownMenuItem>
+            )}
+            {agentAnyDesk(a) && (
+              <>
+                <DropdownMenuItem onSelect={(event) => { event.stopPropagation(); copyToClipboard(agentAnyDesk(a), "AnyDesk"); }}>
+                  <Copy className="h-4 w-4 mr-2" />Copiar AnyDesk
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={(event) => { event.stopPropagation(); window.open(`anydesk://${String(agentAnyDesk(a)).replace(/\s/g, "")}`, "_blank"); }}>
+                  <ExternalLink className="h-4 w-4 mr-2" />Abrir acesso remoto
+                </DropdownMenuItem>
+              </>
+            )}
             <DropdownMenuItem onSelect={(event) => { event.stopPropagation(); refreshAgentCollection(a); }}>
               <RefreshCw className="h-4 w-4 mr-2" />Atualizar coleta
             </DropdownMenuItem>
@@ -1514,6 +1615,61 @@ export default function TI({ params }: { params?: { tab?: string } }) {
         { label: "Status", value: kpiAbertos > 0 ? "em atendimento" : "pronto para abrir" },
         { label: "Horário", value: formatDateTimeBR(new Date()) },
       ];
+  const staleAgents = agentFilterOptions.find((f) => f.value === "sem_heartbeat")?.count ?? 0;
+  const ticketsWithoutOwner = (ticketsQ.data ?? []).filter((ticket: any) => !ticket.tecnicoId && !["resolvido", "fechado", "encerrado", "cancelado"].includes(ticket.status)).length;
+  const enterpriseDashboards = isTiManager
+    ? [
+        {
+          title: "Operacional",
+          icon: <Activity className="h-4 w-4" />,
+          primary: `${kpiAbertos} abertos`,
+          secondary: `${ticketsWithoutOwner} sem responsável · ${kpiAndamento} em atendimento`,
+          signal: kpiCriticos > 0 ? "Atenção imediata" : "Operação estável",
+        },
+        {
+          title: "Executivo",
+          icon: <BarChart2 className="h-4 w-4" />,
+          primary: `${kpiHealthAverage}% saúde geral`,
+          secondary: `${kpiHealthCritical} críticos · ${kpiHealthAttention} em atenção`,
+          signal: kpiHealthAverage < 80 ? "Risco operacional" : "Tendência saudável",
+        },
+        {
+          title: "Monitoramento",
+          icon: <Network className="h-4 w-4" />,
+          primary: `${kpiOnline}/${agentesQ.data?.length ?? 0} online`,
+          secondary: `${staleAgents} sem heartbeat ${agentStaleDays}+ dias`,
+          signal: staleAgents > 0 ? "Revisar agentes offline" : "Heartbeat normal",
+        },
+        {
+          title: "Segurança",
+          icon: <Shield className="h-4 w-4" />,
+          primary: "Não coletado",
+          secondary: "Defender, firewall, updates e risco aguardam coleta homologada",
+          signal: "Sem dado fake",
+        },
+        {
+          title: "Inventário",
+          icon: <Database className="h-4 w-4" />,
+          primary: `${kpiAtivos} ativos`,
+          secondary: `${kpiLicencas} licenças · ${kpiCertificados} certificados`,
+          signal: `${kpiCertificadosExpirando + kpiCertificadosVencidos} certificado(s) em atenção`,
+        },
+        {
+          title: "Impressão",
+          icon: <Package className="h-4 w-4" />,
+          primary: "Não coletado",
+          secondary: "Páginas, toner, filas e falhas ficam ocultos até integração real",
+          signal: "Preparado para ingestão",
+        },
+        {
+          title: "IA",
+          icon: <Sparkles className="h-4 w-4" />,
+          primary: "Cloud híbrida",
+          secondary: "OpenAI, Gemini, Azure, local opcional e fallback humano",
+          signal: "Triagem sem quebrar chat",
+        },
+      ]
+    : [];
   const refreshTiData = () => {
     dashboard.refetch();
     ticketsQ.refetch();
@@ -1681,6 +1837,26 @@ export default function TI({ params }: { params?: { tab?: string } }) {
           </Card>
         ))}
       </div>
+
+      {isTiManager && (
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-7">
+          {enterpriseDashboards.map((dash) => (
+            <Card key={dash.title} className="overflow-hidden border-white/10 bg-card/90 transition hover:-translate-y-0.5 hover:border-primary/30">
+              <CardHeader className="px-3 py-3">
+                <CardTitle className="flex items-center gap-2 text-sm">
+                  <span className="grid h-7 w-7 place-items-center rounded-lg bg-primary/10 text-primary">{dash.icon}</span>
+                  {dash.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="px-3 pb-3 pt-0">
+                <p className="text-lg font-semibold">{dash.primary}</p>
+                <p className="mt-1 min-h-[32px] text-xs text-muted-foreground">{dash.secondary}</p>
+                <Badge variant="outline" className="mt-2 text-[10px]">{dash.signal}</Badge>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
 
       {/* ── Tabs ── */}
       <Tabs value={tab} onValueChange={handleTabChange}>

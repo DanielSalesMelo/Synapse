@@ -5,7 +5,8 @@ import { ticketsTi, ativosTi, certificadosTi } from "../drizzle/schema";
 import { eq, and, desc, ilike, isNull, or, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { resolveAccessibleEmpresaId } from "../_core/access";
-import { invokeLLM } from "../_core/llm";
+import { getAiRuntimeSummary, invokeLLM } from "../_core/llm";
+import { buildKnowledgePrompt, getKnowledgeSources } from "../_core/knowledge";
 import { createAuditLog } from "../_core/audit";
 
 function gerarOS(): string {
@@ -283,14 +284,20 @@ export const tiRouter = router({
       const descricao = (ticket?.descricao || input.descricao || "").trim();
       const titulo = (ticket?.titulo || input.titulo || "Chamado de TI").trim();
       const contexto = (input.contextoTecnico || "").trim();
+      const runtimeSummary = getAiRuntimeSummary();
+      const knowledgeSources = getKnowledgeSources();
+      const fonteLabels = knowledgeSources.map((source) => `${source.nome} (${source.status})`);
 
       const prompt = [
         "Você é um analista de suporte N1/N2 de TI para empresa brasileira.",
         "Objetivo: reduzir chamados repetitivos com orientação segura e prática.",
         "Regra: se não souber com confiança, marque precisa_escalar=true e não invente.",
+        "Regra de fontes: use apenas fontes homologadas/integradas. Se a fonte estiver pendente, indique validação humana.",
         "Retorne JSON com campos:",
         "resumo, causaProvavel, nivelConfianca(0-100), precisaEscalar(boolean), categoriaSugerida, prioridadeSugerida,",
-        "passosUsuario(array de strings), passosTI(array de strings), acaoImediata.",
+        "passosUsuario(array de strings), passosTI(array de strings), acaoImediata, fontes(array de strings).",
+        "",
+        buildKnowledgePrompt(),
         "",
         `Título: ${titulo}`,
         `Descrição: ${descricao}`,
@@ -298,6 +305,7 @@ export const tiRouter = router({
       ].filter(Boolean).join("\n");
 
       let ai: any = null;
+      let providerUsado = runtimeSummary.activeProviderLabel;
       try {
         const llm = await invokeLLM({
           messages: [
@@ -308,8 +316,11 @@ export const tiRouter = router({
         });
         const raw = llm.choices?.[0]?.message?.content;
         const text = typeof raw === "string" ? raw : Array.isArray(raw) ? raw.map((p: any) => p?.type === "text" ? p.text : "").join("\n") : "{}";
-        ai = JSON.parse(text || "{}");
+        const jsonText = text.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```$/i, "").trim();
+        ai = JSON.parse(jsonText || "{}");
+        providerUsado = llm.providerLabel || llm.provider || providerUsado;
       } catch (error: any) {
+        providerUsado = "fallback_humano";
         ai = {
           resumo: "Não foi possível gerar triagem automática neste momento.",
           causaProvavel: "Indeterminada",
@@ -320,10 +331,34 @@ export const tiRouter = router({
           passosUsuario: ["Encaminhar para equipe de TI para análise manual."],
           passosTI: ["Validar logs, print e contexto técnico do usuário."],
           acaoImediata: "Escalonar para atendimento humano.",
+          fontes: fonteLabels,
           erro: String(error?.message || "AI_TRIAGE_FAILED"),
         };
       }
 
+      const allowedCategorias = new Set(["hardware", "software", "rede", "acesso", "email", "impressora", "outro"]);
+      const allowedPrioridades = new Set(["baixa", "media", "alta", "critica"]);
+      const categoriaSugerida = allowedCategorias.has(String(ai?.categoriaSugerida || "").toLowerCase())
+        ? String(ai.categoriaSugerida).toLowerCase()
+        : "outro";
+      const prioridadeSugerida = allowedPrioridades.has(String(ai?.prioridadeSugerida || "").toLowerCase())
+        ? String(ai.prioridadeSugerida).toLowerCase()
+        : "media";
+      ai = {
+        resumo: String(ai?.resumo || "Triagem sem resumo."),
+        causaProvavel: String(ai?.causaProvavel || "Indeterminada"),
+        nivelConfianca: Number(ai?.nivelConfianca ?? 0),
+        precisaEscalar: Boolean(ai?.precisaEscalar ?? true),
+        categoriaSugerida,
+        prioridadeSugerida,
+        passosUsuario: Array.isArray(ai?.passosUsuario) ? ai.passosUsuario.map(String).slice(0, 8) : [],
+        passosTI: Array.isArray(ai?.passosTI) ? ai.passosTI.map(String).slice(0, 8) : [],
+        acaoImediata: String(ai?.acaoImediata || "Acompanhar atendimento humano."),
+        fontes: Array.isArray(ai?.fontes) && ai.fontes.length ? ai.fontes.map(String).slice(0, 8) : fonteLabels,
+        providerUsado,
+        modoIa: providerUsado === "fallback_humano" ? "fallback_humano" : runtimeSummary.activeProvider,
+        erro: ai?.erro ? String(ai.erro) : undefined,
+      };
       const precisaEscalar = Boolean(ai?.precisaEscalar ?? true);
       const nivelConfianca = Number(ai?.nivelConfianca ?? 0);
 
@@ -332,8 +367,8 @@ export const tiRouter = router({
         await client`
           UPDATE tickets_ti
           SET status = ${statusTarget},
-              categoria = COALESCE(${String(ai?.categoriaSugerida || "") || null}, categoria),
-              prioridade = COALESCE(${String(ai?.prioridadeSugerida || "") || null}, prioridade),
+              categoria = ${categoriaSugerida},
+              prioridade = ${prioridadeSugerida},
               "updatedAt" = NOW()
           WHERE id = ${ticket.id} AND "empresaId" = ${empresaId}
         `.catch(() => {});
@@ -345,6 +380,7 @@ export const tiRouter = router({
             ? `Passos sugeridos para o usuário:\n- ${ai.passosUsuario.join("\n- ")}`
             : "",
           `Confiança: ${nivelConfianca}%`,
+          `Provider: ${providerUsado}`,
         ].filter(Boolean).join("\n\n");
 
         await client`
@@ -356,6 +392,27 @@ export const tiRouter = router({
           INSERT INTO ticket_internal_notes ("ticketId","empresaId","autorId",conteudo,"createdAt")
           VALUES (${ticket.id},${empresaId},${ctx.user.id},${`Triagem IA (interno): ${JSON.stringify(ai)}`},NOW())
         `.catch(() => {});
+
+        await createAuditLog(ctx, {
+          acao: "UPDATE",
+          tabela: "tickets_ti",
+          registroId: ticket.id,
+          dadosAntes: {
+            status: ticket.status,
+            categoria: ticket.categoria,
+            prioridade: ticket.prioridade,
+          },
+          dadosDepois: {
+            action: "ai_triage",
+            status: statusTarget,
+            categoria: categoriaSugerida,
+            prioridade: prioridadeSugerida,
+            providerUsado,
+            nivelConfianca,
+            precisaEscalar,
+            timezone: "America/Sao_Paulo",
+          },
+        }).catch(() => {});
       }
 
       return {
@@ -363,6 +420,8 @@ export const tiRouter = router({
         triagem: ai,
         precisaEscalar,
         nivelConfianca,
+        providerUsado,
+        runtime: runtimeSummary,
       };
     }),
 

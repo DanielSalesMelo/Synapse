@@ -1,4 +1,4 @@
-import type { AgentConfig, DeviceInfo } from "./types";
+import type { AgentConfig, AiCapability, DeviceInfo } from "./types";
 
 declare global {
   interface Window {
@@ -8,6 +8,7 @@ declare global {
       saveConfig: (config: Partial<AgentConfig>) => Promise<AgentConfig>;
       clearLink: () => Promise<AgentConfig>;
       getDeviceInfo: () => Promise<DeviceInfo>;
+      getAiCapability: () => Promise<AiCapability>;
       startWorker: () => Promise<{ started: boolean; path?: string; reason?: string }>;
       getWorkerStatus: () => Promise<{ running: boolean }>;
       setAutoLaunch: (enabled: boolean) => Promise<boolean>;

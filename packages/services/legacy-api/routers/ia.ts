@@ -5,6 +5,7 @@ import { iaAgentes, iaSessoes, iaMensagens, iaConhecimento } from "../drizzle/sc
 import { eq, and, desc, isNull, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { getAccessibleCompanySummary, resolveAccessibleEmpresaId } from "../_core/access";
+import { getAiRuntimeSummary, invokeLLM } from "../_core/llm";
 
 const BASE_PROMPT_AUTOATENDIMENTO = `
 Regra principal do Synapse: reduzir chamados repetitivos com autoatendimento seguro.
@@ -371,31 +372,34 @@ export const iaRouter = router({
       let resposta: string;
       let tokens = 0;
       let modoLocal = true;
+      let providerUsado = "fallback_humano";
 
-      if (agenteConfig.usarIaExterna && process.env.OPENAI_API_KEY && !process.env.OPENAI_API_KEY.includes("...")) {
+      if (agenteConfig.usarIaExterna) {
         try {
-          const { default: OpenAI } = await import("openai");
-          const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
           const messages: any[] = [
             { role: "system", content: agenteConfig.systemPrompt + (agenteConfig.instrucoes ? `\n\nInstruções:\n${agenteConfig.instrucoes}` : "") },
             ...historico.reverse().map(h => ({ role: h.role, content: h.conteudo })),
             { role: "user", content: input.mensagem },
           ];
-          const completion = await openai.chat.completions.create({ model: "gpt-4o-mini", messages, max_tokens: 500, temperature: 0.7 });
-          resposta = completion.choices[0]?.message?.content ?? "Não foi possível gerar uma resposta.";
+          const completion = await invokeLLM({ messages, max_tokens: 900 });
+          const raw = completion.choices[0]?.message?.content;
+          resposta = typeof raw === "string" ? raw : Array.isArray(raw) ? raw.map((part: any) => part?.type === "text" ? part.text : "").join("\n") : "Não foi possível gerar uma resposta.";
           tokens = completion.usage?.total_tokens ?? 0;
-          modoLocal = false;
+          providerUsado = completion.providerLabel || completion.provider || getAiRuntimeSummary().activeProviderLabel;
+          modoLocal = completion.provider === "local";
         } catch {
           resposta = processarMensagemLocal(input.mensagem, agenteConfig.setor, agenteConfig.instrucoes);
+          providerUsado = "fallback_humano";
         }
       } else {
         resposta = processarMensagemLocal(input.mensagem, agenteConfig.setor, agenteConfig.instrucoes);
+        providerUsado = "fallback_humano";
       }
 
       await db.insert(iaMensagens).values({ sessaoId: input.sessaoId, empresaId, role: "assistant", conteudo: resposta, tokens });
       await db.update(iaSessoes).set({ updatedAt: new Date() }).where(eq(iaSessoes.id, input.sessaoId));
 
-      return { resposta, tokens, modoLocal };
+      return { resposta, tokens, modoLocal, providerUsado };
     }),
 
   // Manter compatibilidade com o chat antigo (OpenAI direto)
@@ -413,21 +417,21 @@ export const iaRouter = router({
       const setor = agentMap[input.agent] ?? "master";
       const padrao = PROMPTS_PADRAO[setor]!;
 
-      const apiKey = process.env.OPENAI_API_KEY;
-      if (apiKey && !apiKey.includes("...")) {
+      const runtime = getAiRuntimeSummary();
+      if (runtime.activeProvider !== "human_fallback") {
         try {
-          const { default: OpenAI } = await import("openai");
-          const openai = new OpenAI({ apiKey });
           const messages: any[] = [
             { role: "system", content: padrao.systemPrompt },
             ...input.history.map(h => ({ role: h.role, content: h.content })),
             { role: "user", content: input.message },
           ];
-          const completion = await openai.chat.completions.create({ model: "gpt-4o-mini", messages, max_tokens: 1000, temperature: 0.7 });
-          return { reply: completion.choices[0]?.message?.content ?? "Sem resposta.", agent: input.agent, tokensUsed: completion.usage?.total_tokens ?? 0 };
+          const completion = await invokeLLM({ messages, max_tokens: 1200 });
+          const raw = completion.choices[0]?.message?.content;
+          const reply = typeof raw === "string" ? raw : Array.isArray(raw) ? raw.map((part: any) => part?.type === "text" ? part.text : "").join("\n") : "Sem resposta.";
+          return { reply, agent: input.agent, tokensUsed: completion.usage?.total_tokens ?? 0, providerUsado: completion.providerLabel || completion.provider };
         } catch { /* fallback */ }
       }
-      return { reply: processarMensagemLocal(input.message, setor, null), agent: input.agent, tokensUsed: 0 };
+      return { reply: processarMensagemLocal(input.message, setor, null), agent: input.agent, tokensUsed: 0, providerUsado: "fallback_humano" };
     }),
 
   listarAgentes: protectedProcedure.query(() => {

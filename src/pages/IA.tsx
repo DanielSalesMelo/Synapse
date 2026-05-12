@@ -418,7 +418,7 @@ export default function IA() {
                   <h3 className="font-semibold text-foreground text-sm">{ag.nome}</h3>
                   <p className="text-xs text-muted-foreground mt-1 leading-relaxed line-clamp-2">{ag.descricao}</p>
                   <div className="flex items-center gap-1 mt-2">
-                    <Badge variant="secondary" className="text-[10px]">{ag.usarIaExterna ? "OpenAI" : "Local"}</Badge>
+                    <Badge variant="secondary" className="text-[10px]">{ag.usarIaExterna ? "Cloud híbrida" : "Fallback humano"}</Badge>
                     <Badge variant="secondary" className="text-[10px] capitalize">{ag.setor}</Badge>
                   </div>
                   <Button size="sm" variant="outline" className="w-full mt-4 gap-2 text-xs"
@@ -516,8 +516,8 @@ export default function IA() {
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   Os agentes usam a base de conhecimento para responder perguntas específicas da sua empresa.
                   Use o formato <code className="bg-muted px-1 rounded">palavra-chave: resposta</code> para criar respostas automáticas.
-                  Para ativar respostas com IA real (OpenAI), configure a chave <code className="bg-muted px-1 rounded">OPENAI_API_KEY</code> no Railway
-                  e ative "Usar IA Externa" nas configurações do agente.
+                  Para IA real, configure <code className="bg-muted px-1 rounded">AI_PROVIDER</code> com OpenAI, Gemini ou Azure OpenAI.
+                  Se nenhum provider estiver disponível, o Synapse preserva o chat com fallback humano e não inventa resposta.
                 </p>
               </div>
             </TabsContent>

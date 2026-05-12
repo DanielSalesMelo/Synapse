@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
-import type { AgentConfig, AgentProfile, AttachmentDraft, DeviceInfo, Message, Ticket, UpdateInfo } from "./types";
+import type { AgentConfig, AgentProfile, AiCapability, AttachmentDraft, DeviceInfo, Message, Ticket, UpdateInfo } from "./types";
 import { formatDateTimeBR } from "./timezone";
 
 const DEFAULT_SERVER = "https://synapse-backend-ds2026.azurewebsites.net";
@@ -102,6 +102,7 @@ function App() {
   const [appVersion, setAppVersion] = useState("2.4.0");
   const [config, setConfig] = useState<AgentConfig>({ server_url: DEFAULT_SERVER, agent_mode: "simple" });
   const [device, setDevice] = useState<DeviceInfo | null>(null);
+  const [aiCapability, setAiCapability] = useState<AiCapability | null>(null);
   const [profile, setProfile] = useState<AgentProfile | null>(null);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [selectedTicketId, setSelectedTicketId] = useState<number | null | undefined>(undefined);
@@ -126,6 +127,7 @@ function App() {
   const [policy, setPolicy] = useState(defaultPolicy);
   const [autoLaunch, setAutoLaunch] = useState(false);
   const [workerRunning, setWorkerRunning] = useState(false);
+  const [allowLocalAi, setAllowLocalAi] = useState(false);
   const lastMessageRef = useRef<number | null>(null);
 
   const isPaired = Boolean(config.token);
@@ -207,6 +209,12 @@ function App() {
         { label: "SLA", value: ticketInsights.active ? "Em acompanhamento" : "Pronto para abrir", detail: `${ticketInsights.active} chamado(s) ativo(s)` },
         { label: "Privacidade", value: "Dados técnicos ocultos", detail: "somente TI autorizada visualiza inventário" },
       ];
+  const aiModeLabel = aiCapability?.supported
+    ? (allowLocalAi ? "IA local opcional permitida" : "IA cloud com local opcional")
+    : "IA cloud";
+  const aiCapabilitySummary = aiCapability
+    ? `${aiCapability.score}/100 · ${aiCapability.recommendation}`
+    : "Verificando capacidade de IA...";
 
   const notify = useCallback((message: string) => {
     setToast(message);
@@ -299,16 +307,19 @@ function App() {
   }, [api, config.token, isAuthenticated, notify, policy]);
 
   const loadBase = useCallback(async () => {
-    const [nextConfig, nextDevice, version, launch, worker] = await Promise.all([
+    const [nextConfig, nextDevice, version, launch, worker, capability] = await Promise.all([
       window.synapse.getConfig(),
       window.synapse.getDeviceInfo(),
       window.synapse.getAppVersion(),
       window.synapse.getAutoLaunch(),
       window.synapse.getWorkerStatus(),
+      window.synapse.getAiCapability(),
     ]);
     setConfig(nextConfig);
     setServerUrl(nextConfig.server_url || DEFAULT_SERVER);
     setDevice(nextDevice);
+    setAiCapability(capability);
+    setAllowLocalAi(Boolean(nextConfig.allow_local_ai && capability.supported));
     setAppVersion(version);
     setAutoLaunch(launch);
     setWorkerRunning(worker.running);
@@ -433,6 +444,7 @@ function App() {
         user_is_ti: false,
         auth_session_active: false,
         agent_mode: "simple",
+        allow_local_ai: Boolean(aiCapability?.supported && allowLocalAi),
       });
       setConfig(nextConfig);
       await window.synapse.startWorker();
@@ -447,7 +459,11 @@ function App() {
   };
 
   const saveSettings = async () => {
-    const next = await window.synapse.saveConfig({ server_url: serverUrl, agent_mode: isTiMode ? "ti" : "simple" });
+    const next = await window.synapse.saveConfig({
+      server_url: serverUrl,
+      agent_mode: isTiMode ? "ti" : "simple",
+      allow_local_ai: Boolean(aiCapability?.supported && allowLocalAi),
+    });
     setConfig(next);
     await window.synapse.setAutoLaunch(autoLaunch);
     if (isAuthenticated) await savePolicy(policy, false);
@@ -651,6 +667,7 @@ function App() {
                 <input value={serverUrl} onChange={(event) => setServerUrl(event.target.value)} />
               </label>
             </div>
+            <button className="primary large" disabled={busy} onClick={pairDevice}>{busy ? "Conectando..." : "Conectar Synapse"}</button>
             <div className="policy-box">
               <span>Importância deste computador</span>
               <label className="check"><input type="checkbox" checked={policy.isCritical24x7} onChange={(event) => setPolicy((current) => ({ ...current, isCritical24x7: event.target.checked, notifyOnOffline: event.target.checked || current.notifyOnOffline }))} /> Servidor ou máquina que deve ficar ligada 24 horas</label>
@@ -661,6 +678,19 @@ function App() {
                 <input type="number" min={3} max={240} value={policy.offlineGraceMinutes} onChange={(event) => setPolicy((current) => ({ ...current, offlineGraceMinutes: Number(event.target.value) || 10 }))} />
               </label>
             </div>
+            <div className="ai-capability-card">
+              <div>
+                <span>IA híbrida</span>
+                <strong>{aiModeLabel}</strong>
+                <p>{aiCapabilitySummary}</p>
+                {aiCapability?.blockers?.length ? <em>Bloqueios locais: {aiCapability.blockers.join(", ")}</em> : null}
+              </div>
+              {aiCapability?.supported ? (
+                <label className="check"><input type="checkbox" checked={allowLocalAi} onChange={(event) => setAllowLocalAi(event.target.checked)} /> Permitir componentes de IA local opcionais neste PC</label>
+              ) : (
+                <small>Este equipamento utilizará IA cloud. O chat continua funcionando com fallback humano se a cloud estiver indisponível.</small>
+              )}
+            </div>
             <div className="component-list">
               <span>Componentes incluídos</span>
               <label><input type="checkbox" checked readOnly /> Suporte e chat</label>
@@ -668,7 +698,6 @@ function App() {
               <label><input type="checkbox" checked readOnly /> Inicialização com o Windows</label>
               <label><input type="checkbox" checked readOnly /> Modo TI/Admin quando permitido</label>
             </div>
-            <button className="primary large" disabled={busy} onClick={pairDevice}>{busy ? "Conectando..." : "Conectar Synapse"}</button>
           </div>
         </section>
       ) : !isAuthenticated ? (
@@ -692,6 +721,16 @@ function App() {
               <label className="check"><input type="checkbox" checked={policy.isCritical24x7} onChange={(event) => setPolicy((current) => ({ ...current, isCritical24x7: event.target.checked, notifyOnOffline: event.target.checked || current.notifyOnOffline }))} /> Este PC é servidor/máquina crítica e deve ficar ligado</label>
               <label className="check"><input type="checkbox" checked={policy.notifyOnOffline} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnOffline: event.target.checked }))} /> Notificar se desligar ou parar heartbeat</label>
               <label className="check"><input type="checkbox" checked={policy.notifyOnNetworkLoss} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnNetworkLoss: event.target.checked }))} /> Avaliar se outros dispositivos da mesma rede continuam online</label>
+            </div>
+            <div className="ai-capability-card compact">
+              <div>
+                <span>IA deste computador</span>
+                <strong>{aiModeLabel}</strong>
+                <p>{aiCapabilitySummary}</p>
+              </div>
+              {aiCapability?.supported && (
+                <label className="check"><input type="checkbox" checked={allowLocalAi} onChange={(event) => setAllowLocalAi(event.target.checked)} /> Permitir IA local opcional</label>
+              )}
             </div>
             <div className="modal-actions">
               <button onClick={clearLink}>Trocar pareamento</button>
@@ -912,6 +951,18 @@ function App() {
           <label className="check"><input type="checkbox" checked={policy.isCritical24x7} onChange={(event) => setPolicy((current) => ({ ...current, isCritical24x7: event.target.checked, notifyOnOffline: event.target.checked || current.notifyOnOffline }))} /> PC crítico 24x7</label>
           <label className="check"><input type="checkbox" checked={policy.notifyOnOffline} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnOffline: event.target.checked }))} /> Alertar se ficar offline</label>
           <label className="check"><input type="checkbox" checked={policy.notifyOnNetworkLoss} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnNetworkLoss: event.target.checked }))} /> Comparar perda de rede com outros dispositivos</label>
+          <div className="ai-capability-card compact">
+            <div>
+              <span>IA híbrida</span>
+              <strong>{aiModeLabel}</strong>
+              <p>{aiCapabilitySummary}</p>
+            </div>
+            {aiCapability?.supported ? (
+              <label className="check"><input type="checkbox" checked={allowLocalAi} onChange={(event) => setAllowLocalAi(event.target.checked)} /> Permitir IA local opcional</label>
+            ) : (
+              <small>Cloud primeiro, fallback humano se provider estiver indisponível.</small>
+            )}
+          </div>
           <div className="modal-actions">
             <button onClick={clearLink}>Limpar vínculo antigo</button>
             <button className="primary" onClick={saveSettings}>Salvar</button>

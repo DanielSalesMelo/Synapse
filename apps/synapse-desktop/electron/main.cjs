@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, Tray, nativeImage, ipcMain, shell, Notification } = require("electron");
+const { app, BrowserWindow, Menu, Tray, nativeImage, ipcMain, shell, Notification, screen } = require("electron");
 const path = require("node:path");
 const fs = require("node:fs");
 const os = require("node:os");
@@ -191,6 +191,86 @@ const getDeviceInfo = () => {
   };
 };
 
+const getSystemDriveFreeGb = () => new Promise((resolve) => {
+  if (process.platform !== "win32") return resolve(null);
+  const drive = String(process.env.SystemDrive || "C:").replace(/[^A-Z:]/gi, "") || "C:";
+  const command = `$d='${drive}'; $v=Get-CimInstance Win32_LogicalDisk -Filter "DeviceID='$d'"; if ($v) { [math]::Round($v.FreeSpace / 1GB, 1) }`;
+  execFile("powershell", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", command], hiddenExecOptions, (_error, stdout) => {
+    const value = Number(String(stdout || "").trim().replace(",", "."));
+    resolve(Number.isFinite(value) ? value : null);
+  });
+});
+
+const getAiCapability = async () => {
+  const cpus = os.cpus();
+  const totalRamGb = Math.round((os.totalmem() / 1024 / 1024 / 1024) * 10) / 10;
+  const freeDiskGb = await getSystemDriveFreeGb();
+  const threads = cpus.length;
+  const arch = os.arch();
+  const windowsRelease = os.release();
+  const majorWindows = Number(String(windowsRelease).split(".")[0] || 0);
+  let score = 0;
+  const blockers = [];
+  const strengths = [];
+
+  if (totalRamGb >= 16) {
+    score += 35;
+    strengths.push("RAM suficiente");
+  } else {
+    blockers.push("menos de 16GB RAM");
+  }
+  if (arch === "x64") {
+    score += 15;
+    strengths.push("arquitetura x64");
+  } else {
+    blockers.push("arquitetura não x64");
+  }
+  if (threads >= 8) {
+    score += 20;
+    strengths.push("CPU com boa paralelização");
+  } else if (threads >= 4) {
+    score += 10;
+    strengths.push("CPU compatível");
+  } else {
+    blockers.push("CPU com poucos threads");
+  }
+  if (freeDiskGb == null) {
+    score += 5;
+  } else if (freeDiskGb >= 30) {
+    score += 20;
+    strengths.push("espaço livre suficiente");
+  } else {
+    blockers.push("menos de 30GB livres");
+  }
+  if (majorWindows >= 10) {
+    score += 10;
+    strengths.push("Windows compatível");
+  } else {
+    blockers.push("Windows antigo");
+  }
+
+  const normalizedScore = Math.max(0, Math.min(100, score));
+  const supported = normalizedScore >= 75 && totalRamGb >= 16 && arch === "x64" && threads >= 4 && (freeDiskGb == null || freeDiskGb >= 30);
+  return {
+    supported,
+    score: normalizedScore,
+    mode: supported ? "local_optional" : "cloud",
+    recommendation: supported
+      ? "Este equipamento pode usar IA cloud e permitir componentes locais opcionais."
+      : "Este equipamento utilizará IA cloud.",
+    ramGb: totalRamGb,
+    cpuModel: cpus[0]?.model || "Não coletado",
+    threads,
+    freeDiskGb,
+    windowsRelease,
+    arch,
+    gpu: "Não coletado",
+    blockers,
+    strengths,
+    checkedAt: new Date().toISOString(),
+  };
+};
+
 const sendMenuAction = (action) => {
   if (mainWindow && !mainWindow.isDestroyed()) {
     mainWindow.webContents.send("synapse:menu-action", action);
@@ -220,11 +300,15 @@ const createTray = () => {
 };
 
 const createWindow = async () => {
+  const workArea = screen.getPrimaryDisplay().workAreaSize;
+  const initialWidth = Math.min(1180, Math.max(900, workArea.width - 64));
+  const initialHeight = Math.min(740, Math.max(600, workArea.height - 48));
   mainWindow = new BrowserWindow({
-    width: 1180,
-    height: 760,
+    width: initialWidth,
+    height: initialHeight,
     minWidth: 760,
     minHeight: 560,
+    center: true,
     title: "Synapse para Windows",
     backgroundColor: "#0b1120",
     autoHideMenuBar: true,
@@ -293,6 +377,7 @@ ipcMain.handle("synapse:clear-link", async () => {
   return cleared;
 });
 ipcMain.handle("synapse:get-device-info", () => getDeviceInfo());
+ipcMain.handle("synapse:get-ai-capability", () => getAiCapability());
 ipcMain.handle("synapse:start-worker", () => startWorker());
 ipcMain.handle("synapse:get-worker-status", async () => ({ running: await isWorkerRunning() }));
 ipcMain.handle("synapse:set-auto-launch", (_event, enabled) => {

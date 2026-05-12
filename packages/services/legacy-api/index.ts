@@ -92,6 +92,8 @@ const DESKTOP_RELEASE_NOTES = [
   "Ações de agente com arquivamento, remoção operacional e trilha de auditoria.",
   "Monitoramento 24x7 para servidores e máquinas críticas, com comparação de rede local.",
   "UX compacta, responsiva e horários exibidos em America/Sao_Paulo.",
+  "Arquitetura IA híbrida: cloud primeiro, IA local opcional e fallback humano sem quebrar o chat.",
+  "Cockpit TI com dashboards operacionais, executivos, monitoramento, inventário, segurança, impressão e IA.",
 ];
 
 const getFileSha256 = (filePath: string): string | null => {

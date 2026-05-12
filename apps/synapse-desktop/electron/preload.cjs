@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld("synapse", {
   saveConfig: (config) => ipcRenderer.invoke("synapse:save-config", config),
   clearLink: () => ipcRenderer.invoke("synapse:clear-link"),
   getDeviceInfo: () => ipcRenderer.invoke("synapse:get-device-info"),
+  getAiCapability: () => ipcRenderer.invoke("synapse:get-ai-capability"),
   startWorker: () => ipcRenderer.invoke("synapse:start-worker"),
   getWorkerStatus: () => ipcRenderer.invoke("synapse:get-worker-status"),
   setAutoLaunch: (enabled) => ipcRenderer.invoke("synapse:set-auto-launch", enabled),

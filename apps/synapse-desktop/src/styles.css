@@ -248,6 +248,55 @@ button {
   width: 120px;
 }
 
+.ai-capability-card {
+  display: grid;
+  grid-template-columns: 1fr minmax(220px, 0.55fr);
+  gap: 12px;
+  align-items: center;
+  margin: 10px 0;
+  padding: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg, rgba(14, 165, 233, 0.12), rgba(34, 197, 94, 0.08)),
+    rgba(8, 13, 26, 0.74);
+}
+
+.ai-capability-card.compact {
+  grid-template-columns: 1fr;
+}
+
+.ai-capability-card span {
+  display: block;
+  color: #7dd3fc;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.ai-capability-card strong {
+  display: block;
+  margin-top: 3px;
+  color: #eff6ff;
+  font-size: 14px;
+}
+
+.ai-capability-card p,
+.ai-capability-card em,
+.ai-capability-card small {
+  display: block;
+  margin: 4px 0 0;
+  color: #9fb0c8;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ai-capability-card em {
+  color: #fbbf24;
+  font-style: normal;
+}
+
 label {
   display: grid;
   gap: 8px;
@@ -728,10 +777,8 @@ button:disabled {
 
 .large {
   width: 100%;
-  position: sticky;
-  bottom: 0;
-  z-index: 2;
-  box-shadow: 0 -12px 24px rgba(15, 23, 42, 0.72);
+  margin: 4px 0 8px;
+  box-shadow: 0 16px 32px rgba(20, 184, 166, 0.16);
 }
 
 .composer small {
@@ -1190,6 +1237,7 @@ dd {
   }
 
   .setup-grid,
+  .ai-capability-card,
   .component-list {
     grid-template-columns: 1fr;
   }

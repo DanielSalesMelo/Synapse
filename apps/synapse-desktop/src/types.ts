@@ -13,6 +13,7 @@ export type AgentConfig = {
   agent_mode?: "simple" | "ti";
   collect_interval?: number;
   send_interval?: number;
+  allow_local_ai?: boolean;
 };
 
 export type DeviceInfo = {
@@ -26,6 +27,23 @@ export type DeviceInfo = {
   cpu: string;
   memoryGb: number;
   uptimeSeconds: number;
+};
+
+export type AiCapability = {
+  supported: boolean;
+  score: number;
+  mode: "cloud" | "local_optional";
+  recommendation: string;
+  ramGb: number;
+  cpuModel: string;
+  threads: number;
+  freeDiskGb: number | null;
+  windowsRelease: string;
+  arch: string;
+  gpu: string;
+  blockers: string[];
+  strengths: string[];
+  checkedAt: string;
 };
 
 export type Ticket = {
