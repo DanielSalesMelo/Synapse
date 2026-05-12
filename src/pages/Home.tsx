@@ -7,8 +7,10 @@ import {
   Zap, Globe, Star, TrendingUp, Clock, Brain, PackageCheck, Warehouse,
   Target, ShoppingCart, UserCheck, Headphones, ClipboardCheck, Monitor, Activity,
   Megaphone, Building2, Layers, Lock, Sparkles,
+  Download,
 } from "lucide-react";
 import { useLocation } from "wouter";
+import { getBackendBaseUrl } from "@/lib/backend";
 
 const MODULES = [
   { icon: Truck,       label: "Frota & Operações",   color: "text-blue-400",   bg: "bg-blue-500/10",   border: "border-blue-500/30",   desc: "Veículos, viagens, manutenções, abastecimentos e despachante integrados." },
@@ -61,6 +63,7 @@ export default function Home() {
   const { user, loading } = useAuth();
   const [, navigate] = useLocation();
   const [hoveredModule, setHoveredModule] = useState<number | null>(null);
+  const agentDownloadUrl = `${getBackendBaseUrl()}/api/agent/download`;
 
   // Se já está autenticado, redireciona direto para o dashboard
   useEffect(() => {
@@ -84,7 +87,7 @@ export default function Home() {
             <Sparkles className="h-5 w-5 text-white" />
           </div>
           <span className="text-xl font-bold tracking-tight">Synapse</span>
-          <span className="text-xs text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-full font-medium">v7.0</span>
+          <span className="text-xs text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-full font-medium">Agente 2.4.0</span>
         </div>
         <div className="flex items-center gap-3">
           {user ? (
@@ -111,18 +114,23 @@ export default function Home() {
         <div className="relative max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 text-sm text-white/60 mb-6">
             <Sparkles className="h-3.5 w-3.5 text-blue-400" />
-            Plataforma Inteligente de Gestão Empresarial
+            Helpdesk + RMM + Inventário + IA em uma operação única
           </div>
           <h1 className="text-5xl md:text-6xl font-black tracking-tight mb-6 leading-tight">
-            Gerencie sua empresa<br />
-            <span className="bg-gradient-to-r from-blue-400 via-violet-400 to-pink-400 bg-clip-text text-transparent">do jeito certo</span>
+            Central operacional<br />
+            <span className="bg-gradient-to-r from-blue-400 via-violet-400 to-pink-400 bg-clip-text text-transparent">enterprise de TI</span>
           </h1>
           <p className="text-lg text-white/50 max-w-2xl mx-auto mb-10 leading-relaxed">
-            O Synapse é a plataforma completa que unifica Frota, CRM, Estoque, Financeiro, RH, TI, Marketing e muito mais — com IA integrada em cada módulo e bancos de dados isolados por empresa.
+            O Synapse unifica atendimento, chamados, monitoramento, inventário, auditoria, preventivo, dashboards e IA híbrida em uma plataforma multiempresa com agente Electron oficial para Windows.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button onClick={handleAccess} size="lg" className="bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 border-0 shadow-xl shadow-blue-500/30 text-base px-8 h-12">
               {user ? "Acessar o Sistema" : "Entrar no Sistema"} <ArrowRight className="h-5 w-5 ml-2" />
+            </Button>
+            <Button asChild variant="outline" size="lg" className="border-cyan-400/30 bg-cyan-400/10 text-cyan-100 hover:bg-cyan-400/15 h-12 px-8">
+              <a href={agentDownloadUrl} download="SynapseSetup-2.4.0.exe">
+                <Download className="h-5 w-5" /> Baixar Synapse para Windows
+              </a>
             </Button>
             {!user && (
               <Button onClick={() => navigate("/login")} variant="outline" size="lg" className="border-white/20 text-white hover:bg-white/10 h-12 px-8">
@@ -293,7 +301,7 @@ export default function Home() {
           </div>
           <span className="font-bold text-white">Synapse</span>
         </div>
-        <p className="text-xs text-white/20">Plataforma Inteligente de Gestão Empresarial · v7.0</p>
+        <p className="text-xs text-white/20">Plataforma enterprise multiempresa · Agente Windows 2.4.0</p>
       </footer>
     </div>
   );
