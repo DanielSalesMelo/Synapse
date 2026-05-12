@@ -1872,6 +1872,7 @@ textarea {
 }
 
 .title-actions button,
+.topbar-utilities button,
 .theme-switch button,
 .window-controls button,
 .ghost-action {
@@ -1883,6 +1884,7 @@ textarea {
 }
 
 .title-actions button:hover,
+.topbar-utilities button:hover,
 .theme-switch button:hover,
 .window-controls button:hover,
 .ghost-action:hover {
@@ -2473,5 +2475,602 @@ dt {
 
   .nav-rail {
     display: none;
+  }
+}
+
+/* Synapse Desktop visual target refinement v5 */
+.app-shell,
+.app-shell button,
+.app-shell input,
+.app-shell select,
+.app-shell textarea {
+  font-size: 12px;
+}
+
+.titlebar {
+  height: 46px;
+  gap: 8px;
+  padding: 0 8px 0 12px;
+}
+
+.brand {
+  min-width: 196px;
+  gap: 10px;
+}
+
+.brand-mark {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+}
+
+.brand strong {
+  font-size: 12px;
+}
+
+.brand span {
+  font-size: 11px;
+}
+
+.title-actions {
+  justify-content: flex-start;
+  flex: 1 1 auto;
+  gap: 5px;
+}
+
+.title-actions button,
+.topbar-utilities button,
+.window-controls button {
+  height: 28px;
+  padding: 0 9px;
+  border-radius: 7px;
+  font-size: 12px;
+}
+
+.topbar-utilities {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  -webkit-app-region: no-drag;
+}
+
+.titlebar button:focus-visible,
+.rail-section button:focus-visible,
+.action-grid button:focus-visible,
+.command-grid button:focus-visible,
+.composer textarea:focus-visible,
+.app-shell input:focus-visible,
+.app-shell select:focus-visible {
+  outline: 1px solid color-mix(in srgb, var(--accent) 68%, white);
+  outline-offset: 1px;
+}
+
+.button-count {
+  min-width: 17px;
+  height: 17px;
+  padding: 0 5px;
+  border-radius: 999px;
+  font-size: 10px;
+}
+
+.theme-switch {
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.theme-switch button {
+  height: 23px;
+  padding: 0 7px;
+  font-size: 10px;
+}
+
+.connection {
+  height: 28px;
+  padding: 0 9px;
+  border-radius: 8px;
+  font-size: 11px;
+}
+
+.window-controls {
+  gap: 4px;
+}
+
+.window-controls button {
+  width: 32px;
+  padding: 0;
+}
+
+.premium-onboarding,
+.login-stage {
+  padding: 10px 12px;
+}
+
+.onboarding-shell,
+.login-shell {
+  max-width: 1240px;
+  height: calc(100vh - 66px);
+  border-radius: 14px;
+  grid-template-columns: 300px minmax(0, 1fr);
+}
+
+.onboarding-rail,
+.login-story {
+  gap: 12px;
+  padding: 20px;
+}
+
+.brand-mark.xl {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  font-size: 22px;
+}
+
+.product-lockup {
+  gap: 12px;
+}
+
+.product-lockup strong {
+  font-size: 13px;
+}
+
+.product-lockup span,
+.onboarding-steps em,
+.environment-card p,
+.setup-panel p,
+.setup-panel em,
+.setup-panel small,
+.login-story p {
+  font-size: 12px;
+  line-height: 1.42;
+}
+
+.onboarding-steps {
+  gap: 7px;
+}
+
+.onboarding-steps div {
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 1px 8px;
+  padding: 9px;
+  border-radius: 9px;
+}
+
+.onboarding-steps b {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  font-size: 11px;
+}
+
+.onboarding-content {
+  gap: 13px;
+  padding: 24px 28px;
+}
+
+.onboarding-hero h1,
+.login-story h1 {
+  font-size: 27px;
+  line-height: 1.08;
+  max-width: 670px;
+}
+
+.onboarding-hero p {
+  max-width: 710px;
+  font-size: 13px;
+}
+
+.setup-matrix {
+  grid-template-columns: minmax(0, 1.35fr) minmax(250px, 0.65fr);
+  gap: 10px;
+}
+
+.setup-panel {
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 10px;
+}
+
+.setup-panel input,
+.premium-login-card input,
+.composer textarea,
+.composer select,
+input,
+select,
+textarea {
+  min-height: 34px;
+  border-radius: 8px;
+}
+
+.setup-panel label,
+.premium-login-card label {
+  gap: 6px;
+  font-size: 12px;
+}
+
+.feature-pills {
+  gap: 6px;
+}
+
+.feature-pills span,
+.login-meta span {
+  padding: 5px 8px;
+  font-size: 11px;
+}
+
+.login-shell {
+  max-width: 1060px;
+  grid-template-columns: minmax(0, 1fr) 390px;
+  min-height: min(560px, calc(100vh - 66px));
+}
+
+.premium-login-card {
+  align-self: center;
+  margin: 22px;
+  padding: 18px;
+  gap: 12px;
+  width: auto;
+  min-width: 0;
+}
+
+.permission-lanes {
+  gap: 8px;
+}
+
+.permission-lanes div {
+  padding: 12px;
+  border-radius: 9px;
+  display: grid;
+  gap: 3px;
+}
+
+.permission-lanes strong,
+.permission-lanes span,
+.rail-footer strong,
+.rail-footer span {
+  display: block;
+}
+
+.rail-footer div:not(.avatar) {
+  min-width: 0;
+}
+
+.rail-footer strong,
+.rail-footer span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.premium-login-card .modal-actions {
+  margin-top: 4px;
+}
+
+.premium-login-card .modal-actions button {
+  height: 36px;
+}
+
+.workspace {
+  grid-template-columns: 166px minmax(0, 1fr);
+  gap: 8px;
+  padding: 8px;
+}
+
+.nav-rail {
+  padding: 8px;
+  border-radius: 10px;
+}
+
+.rail-section {
+  gap: 3px;
+}
+
+.rail-section button {
+  height: 31px;
+  gap: 8px;
+  border-radius: 7px;
+  padding: 0 8px;
+  font-size: 12px;
+}
+
+.rail-section button span {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  font-size: 10px;
+}
+
+.rail-section button.active {
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.rail-footer {
+  padding: 8px;
+  gap: 8px;
+  border-radius: 9px;
+}
+
+.rail-footer strong {
+  font-size: 12px;
+}
+
+.rail-footer span {
+  font-size: 10px;
+}
+
+.desktop-main {
+  gap: 8px;
+  grid-template-rows: auto auto minmax(0, 1fr);
+}
+
+.overview-bar {
+  min-height: 52px;
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+
+.overview-bar h2 {
+  font-size: 16px;
+}
+
+.primary.compact {
+  height: 32px;
+  border-radius: 8px;
+}
+
+.cockpit-stats {
+  gap: 8px;
+}
+
+.cockpit-stats div {
+  min-height: 62px;
+  padding: 9px 11px;
+  border-radius: 9px;
+}
+
+.cockpit-stats strong {
+  margin: 3px 0 0;
+  font-size: 18px;
+}
+
+.cockpit-stats em {
+  font-size: 11px;
+}
+
+.workspace-grid {
+  grid-template-columns: 222px minmax(560px, 1fr) 288px;
+  gap: 8px;
+}
+
+.support-workspace .workspace-grid {
+  grid-template-columns: 214px minmax(620px, 1fr) 272px;
+}
+
+.workspace-grid > .sidebar,
+.workspace-grid > .chat-panel,
+.workspace-grid > .inspector {
+  border-radius: 10px;
+}
+
+.sidebar,
+.inspector {
+  padding: 10px;
+}
+
+.profile-card {
+  padding: 10px;
+  border-radius: 9px;
+}
+
+.profile-card strong {
+  font-size: 12px;
+}
+
+.profile-card span {
+  font-size: 11px;
+}
+
+.side-metrics,
+.ops-strip {
+  gap: 5px;
+}
+
+.side-metrics div,
+.ops-strip div {
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.side-metrics strong,
+.ops-strip strong {
+  font-size: 14px;
+}
+
+.new-ticket {
+  min-height: 32px;
+  border-radius: 8px;
+}
+
+.ticket-list {
+  gap: 6px;
+}
+
+.ticket-item {
+  padding: 9px;
+  border-radius: 8px;
+}
+
+.ticket-item strong {
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.ticket-item span,
+.ticket-item em {
+  font-size: 10.5px;
+}
+
+.chat-panel {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+}
+
+.chat-header {
+  min-height: 76px;
+  padding: 12px 14px;
+}
+
+.chat-header h2 {
+  font-size: 19px;
+  line-height: 1.12;
+}
+
+.chat-header p {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.status-actions {
+  gap: 6px;
+}
+
+.status-actions button,
+.status-actions select {
+  height: 30px;
+}
+
+.context-strip {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  padding: 8px;
+}
+
+.context-strip div {
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.context-strip strong {
+  font-size: 12px;
+}
+
+.messages {
+  padding: 12px;
+  gap: 8px;
+  min-height: 0;
+}
+
+.assistant-card {
+  padding: 14px;
+  border-radius: 10px;
+  max-width: 740px;
+}
+
+.assistant-card strong {
+  font-size: 14px;
+}
+
+.quick-starters {
+  gap: 6px;
+}
+
+.quick-starters button {
+  min-height: 28px;
+  border-radius: 7px;
+}
+
+.bubble {
+  max-width: 76%;
+  padding: 9px 11px;
+  border-radius: 10px;
+}
+
+.message-meta {
+  gap: 8px;
+}
+
+.message-meta strong,
+.message-meta span {
+  font-size: 11px;
+}
+
+.bubble p {
+  font-size: 12.5px;
+  line-height: 1.42;
+}
+
+.composer {
+  padding: 9px;
+}
+
+.composer-options {
+  gap: 7px;
+}
+
+.composer-row {
+  gap: 8px;
+}
+
+.attach-button,
+.composer-row .primary {
+  min-width: 82px;
+  min-height: 44px;
+  border-radius: 9px;
+}
+
+.composer textarea {
+  min-height: 48px;
+  max-height: 116px;
+  padding: 11px 12px;
+  font-size: 12.5px;
+}
+
+.composer small {
+  font-size: 10.5px;
+}
+
+.inspector .card {
+  padding: 11px;
+  border-radius: 9px;
+}
+
+.inspector .card h3 {
+  font-size: 15px;
+}
+
+.action-grid {
+  gap: 6px;
+}
+
+.action-grid button {
+  min-height: 31px;
+  border-radius: 8px;
+}
+
+.health-score {
+  padding: 10px;
+  border-radius: 9px;
+}
+
+.health-score strong {
+  font-size: 24px;
+}
+
+@media (max-width: 1320px) {
+  .workspace {
+    grid-template-columns: 150px minmax(0, 1fr);
+  }
+
+  .workspace-grid,
+  .support-workspace .workspace-grid {
+    grid-template-columns: 200px minmax(500px, 1fr) 250px;
+  }
+
+  .title-actions button:nth-of-type(n+4) {
+    display: none;
+  }
+
+  .brand {
+    min-width: 178px;
   }
 }

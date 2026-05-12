@@ -40,6 +40,24 @@ const fileSizeLabel = (bytes?: number | null) => {
   return `${value.toFixed(0)} B`;
 };
 
+const friendlyOsLabel = (value?: string | null) => {
+  const raw = String(value || "").trim();
+  if (!raw) return "Windows corporativo";
+  const build = Number(raw.match(/10\.0\.(\d+)/)?.[1] || 0);
+  if (/windows_nt/i.test(raw) && build >= 22000) return "Windows 11 Pro";
+  if (/windows_nt/i.test(raw)) return "Windows 10 Pro";
+  return raw.replace(/windows_nt/i, "Windows").replace(/\s+/g, " ");
+};
+
+const hardwareSummaryLabel = (capability?: AiCapability | null) => {
+  const parts = [
+    capability?.ramGb ? `${capability.ramGb} GB RAM` : "RAM em verificação",
+    capability?.threads ? `${capability.threads} threads` : "CPU compatível",
+    capability?.arch === "x64" ? "x64" : capability?.arch,
+  ].filter(Boolean);
+  return parts.join(" · ");
+};
+
 const firstLineTitle = (text: string) => {
   const clean = text.replace(/\s+/g, " ").trim();
   if (!clean) return "Solicitação via Synapse";
@@ -147,7 +165,6 @@ function App() {
   const [toast, setToast] = useState("");
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
-  const [loginOpen, setLoginOpen] = useState(false);
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [updateOpen, setUpdateOpen] = useState(false);
@@ -254,8 +271,10 @@ function App() {
     ? (allowLocalAi ? "IA local opcional permitida" : "IA cloud com local opcional")
     : "IA cloud";
   const aiCapabilitySummary = aiCapability
-    ? `${aiCapability.score}/100 · ${aiCapability.recommendation}`
-    : "Verificando capacidade de IA...";
+    ? `${aiCapability.score}/100 · ${aiCapability.supported ? "IA local opcional disponível; cloud continua prioritária." : "Este equipamento utilizará IA cloud otimizada."}`
+    : "Analisando hardware para escolher a melhor IA.";
+  const friendlyOs = friendlyOsLabel(device?.os || profile?.so);
+  const hardwareSummary = hardwareSummaryLabel(aiCapability);
   const statusText = isPaired && !isAuthenticated ? "Login necessário" : canSeeTechnical
     ? profile?.online ? "Conectado" : isPaired ? "Aguardando heartbeat" : "Não pareado"
     : profile?.online ? "Conectado ao suporte" : isPaired ? "Sincronizando suporte" : "Não conectado";
@@ -359,12 +378,12 @@ function App() {
         { label: "Privacidade", value: "Protegida", detail: "sem dados técnicos" },
       ];
   const onboardingSteps = [
-    { step: "01", title: "Boas-vindas", detail: "Desktop Synapse pronto para conectar." },
-    { step: "02", title: "Ambiente", detail: `${device?.os || "Windows"} · ${aiCapability?.ramGb || 0}GB RAM · ${aiCapability?.threads || 0} threads` },
+    { step: "01", title: "Boas-vindas", detail: "Experiência desktop corporativa." },
+    { step: "02", title: "Ambiente", detail: `${friendlyOs} · ${hardwareSummary}` },
     { step: "03", title: "Tipo de uso", detail: policy.isCritical24x7 ? "Máquina crítica 24x7" : "Uso corporativo padrão" },
     { step: "04", title: "Pareamento", detail: pairCode ? "Código informado" : "Aguardando código SYNC" },
     { step: "05", title: "IA", detail: aiCapability?.supported ? "Cloud + local opcional" : "IA cloud otimizada" },
-    { step: "06", title: "Finalização", detail: "Login libera a tela por perfil." },
+    { step: "06", title: "Finalização", detail: "Login integrado por perfil." },
   ];
 
   useEffect(() => {
@@ -555,7 +574,7 @@ function App() {
         setHistoryOpen(false);
         setPolicyOpen(false);
         setSettingsOpen(false);
-        setLoginOpen(false);
+        setFaqOpen(false);
         return;
       }
       if (!(event.ctrlKey || event.metaKey)) return;
@@ -643,8 +662,7 @@ function App() {
       });
       setConfig(nextConfig);
       await window.synapse.startWorker();
-      setLoginOpen(true);
-      notify("PC pareado. Entre com usuário e senha para liberar a tela correta.");
+      notify("PC pareado. Entre na próxima tela para carregar seu perfil.");
       setPairCode("");
     } catch (error) {
       notify((error as Error).message || "Falha ao parear.");
@@ -679,6 +697,25 @@ function App() {
     notify("Vínculo local limpo. Gere um novo código SYNC no painel web.");
   };
 
+  const logoutUser = async () => {
+    const next = await window.synapse.saveConfig({
+      user_id: undefined,
+      user_name: "",
+      user_email: "",
+      user_role: "",
+      user_is_ti: false,
+      auth_session_active: false,
+      agent_mode: "simple",
+    });
+    setConfig(next);
+    setProfile(null);
+    setTickets([]);
+    setMessages([]);
+    setSelectedTicketId(undefined);
+    setLoginPassword("");
+    notify("Sessão encerrada. Entre novamente para carregar outro perfil.");
+  };
+
   const loginUser = async () => {
     if (!loginEmail || !loginPassword) {
       notify("Informe e-mail e senha.");
@@ -704,7 +741,6 @@ function App() {
         agent_mode: technicalRole ? "ti" : "simple",
       });
       setConfig(next);
-      setLoginOpen(false);
       setLoginPassword("");
       await fetch(`${(config.server_url || DEFAULT_SERVER).replace(/\/$/, "")}/api/agent/device-policy`, {
         method: "PUT",
@@ -831,23 +867,24 @@ function App() {
           <button className="command-button" onClick={() => setCommandOpen(true)}>Comando <kbd>Ctrl K</kbd></button>
           {isAuthenticated && (
             <>
-              <button onClick={() => refreshData(false)}>Atualizar</button>
-              <button onClick={() => { setSelectedTicketId(null); setComposer(""); }}>Chamado</button>
-              <button onClick={() => setHistoryOpen(true)}>Histórico</button>
-              <button onClick={() => setAiOpen(true)}>Triagem IA</button>
-              {canSeeTechnical && <button onClick={() => setDiagnosticsOpen(true)}>Diagnóstico</button>}
-              <button onClick={() => setNotificationsOpen(true)}>
-                Notificações <span className="button-count">{notificationItems.length}</span>
-              </button>
+              <button onClick={() => { setSelectedTicketId(null); setComposer(""); }}>Novo chamado</button>
+              <button onClick={() => refreshData(false)}>Sincronizar</button>
+              <button onClick={() => setAiOpen(true)}>IA</button>
+              {canSeeTechnical && <button onClick={() => setDiagnosticsOpen(true)}>Cockpit</button>}
             </>
           )}
-          <button className={hasUpdate ? "update-attention" : ""} onClick={() => { setUpdateOpen(true); checkForUpdates(false); }}>
-            {hasUpdate ? `Atualização ${availableVersion}` : "Atualizações"}
-          </button>
-          {isAuthenticated && <button onClick={() => setPolicyOpen(true)}>24x7</button>}
-          <button onClick={() => window.synapse.openExternal("https://synapse-seven-nu.vercel.app")}>Web</button>
-          <button onClick={() => setSettingsOpen(true)}>Config</button>
         </nav>
+        <div className="topbar-utilities">
+          <button className={hasUpdate ? "update-attention" : ""} onClick={() => { setUpdateOpen(true); checkForUpdates(false); }}>
+            {hasUpdate ? availableVersion : "Update"}
+          </button>
+          {isAuthenticated && (
+            <button onClick={() => setNotificationsOpen(true)}>
+              Avisos <span className="button-count">{notificationItems.length}</span>
+            </button>
+          )}
+          <button onClick={() => setSettingsOpen(true)}>Config</button>
+        </div>
         <div className="theme-switch" aria-label="Modo visual">
           <button className={themeMode === "light" ? "active" : ""} onClick={() => setThemeMode("light")}>Claro</button>
           <button className={themeMode === "studio" ? "active" : ""} onClick={() => setThemeMode("studio")}>Studio</button>
@@ -893,8 +930,8 @@ function App() {
             <div className="onboarding-content">
               <div className="onboarding-hero">
                 <span className="eyebrow">Primeira execução</span>
-                <h1>Configure o Synapse como um aplicativo corporativo real.</h1>
-                <p>Conecte este computador, defina criticidade, habilite IA quando o hardware permitir e deixe o suporte pronto para chat, anexos, heartbeat e update.</p>
+                <h1>Conecte este computador à operação Synapse.</h1>
+                <p>O agente prepara suporte conversacional, atualização, monitoramento e IA híbrida sem expor dados técnicos ao usuário final.</p>
               </div>
               <div className="setup-matrix">
                 <section className="setup-panel primary-panel">
@@ -955,12 +992,12 @@ function App() {
           <div className="login-shell">
             <div className="login-story">
               <span className="eyebrow">Perfil e permissões</span>
-              <h1>Entre para carregar a experiência correta.</h1>
-              <p>Usuário comum vê suporte conversacional. TI/Admin ganha cockpit técnico. master_admin recebe controles avançados.</p>
+              <h1>Seu perfil define a experiência.</h1>
+              <p>O login não é uma etapa solta: ele carrega permissões, navegação, privacidade e cockpit em uma única sessão desktop.</p>
               <div className="permission-lanes">
-                <div><strong>Usuário</strong><span>Chat, chamados, anexos, histórico.</span></div>
-                <div><strong>TI/Admin</strong><span>Diagnóstico, heartbeat, update, IA e ações.</span></div>
-                <div><strong>master_admin</strong><span>Operação avançada e tenant awareness.</span></div>
+                <div><strong>Usuário</strong><span>Chat, chamados, anexos, histórico e notificações.</span></div>
+                <div><strong>TI/Admin</strong><span>Cockpit, diagnóstico, update, IA e operação local.</span></div>
+                <div><strong>master_admin</strong><span>Visão completa, políticas e controles avançados.</span></div>
               </div>
             </div>
             <div className="login-card premium-login-card">
@@ -1196,7 +1233,7 @@ function App() {
             <div className="card">
               <span className="eyebrow">{canSeeTechnical ? "Este computador" : "Atendimento"}</span>
               <h3>{canSeeTechnical ? (profile?.hostname || device?.hostname) : "Central de suporte"}</h3>
-              <p>{canSeeTechnical ? (profile?.so || device?.os) : "Seu chat, chamados, anexos e histórico ficam aqui."}</p>
+              <p>{canSeeTechnical ? friendlyOsLabel(profile?.so || device?.os) : "Seu chat, chamados, anexos e histórico ficam aqui."}</p>
               {canSeeTechnical ? (
                 <dl>
                   <div><dt>IP</dt><dd>{profile?.ip || device?.ip || "-"}</dd></div>
@@ -1251,7 +1288,7 @@ function App() {
                 <span className="eyebrow">Privacidade</span>
                 <h3>Modo usuário comum</h3>
                 <p>Você vê apenas chamados, chat, anexos, histórico e status. Recursos internos ficam disponíveis somente para a equipe autorizada.</p>
-                <button onClick={() => setLoginOpen(true)}>Trocar usuário / entrar como TI</button>
+                <button onClick={logoutUser}>Trocar perfil</button>
               </div>
             )}
           </aside>
@@ -1269,6 +1306,7 @@ function App() {
             <button onClick={() => { setNotificationsOpen(true); setCommandOpen(false); }}>Central de notificações<span>Status</span></button>
             <button onClick={() => { setUpdateOpen(true); checkForUpdates(false); setCommandOpen(false); }}>Atualizações<span>Versão {appVersion}</span></button>
             <button onClick={() => { setSettingsOpen(true); setCommandOpen(false); }}>Configurações<span>Ctrl+,</span></button>
+            <button onClick={() => { window.synapse.openExternal("https://synapse-seven-nu.vercel.app"); setCommandOpen(false); }}>Abrir portal web<span>Painel Synapse</span></button>
             {canSeeTechnical && <button onClick={() => { setDiagnosticsOpen(true); setCommandOpen(false); }}>Cockpit técnico<span>Diagnóstico</span></button>}
             {canSeeTechnical && <button onClick={() => { copyDiagnostics(); setCommandOpen(false); }}>Copiar diagnóstico<span>JSON seguro</span></button>}
           </div>
@@ -1398,17 +1436,6 @@ function App() {
             <button onClick={() => { setNotificationsOpen(true); setFaqOpen(false); }}>Ver notificações<span>Status e avisos</span></button>
           </div>
           <p className="modal-copy">Escolha um atalho ou apenas digite no chat. Enter envia, Shift+Enter quebra linha, Ctrl+V cola prints e arquivos podem ser arrastados para anexar.</p>
-        </Modal>
-      )}
-
-      {loginOpen && (
-        <Modal title="Entrar no Synapse" onClose={() => setLoginOpen(false)}>
-          <label>E-mail<input value={loginEmail} onChange={(event) => setLoginEmail(event.target.value)} /></label>
-          <label>Senha<input type="password" value={loginPassword} onChange={(event) => setLoginPassword(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") loginUser(); }} /></label>
-          <div className="modal-actions">
-            <button onClick={() => setLoginOpen(false)}>Cancelar</button>
-            <button className="primary" disabled={busy} onClick={loginUser}>Entrar</button>
-          </div>
         </Modal>
       )}
 
