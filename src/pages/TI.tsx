@@ -28,7 +28,7 @@ import {
   Download, Link2, QrCode, Copy, Check, X, ChevronRight,
   BarChart2, Database, Settings, Zap, Bell, BellRing,
   Image as ImageIcon, MessageSquare, Calendar, Tag, MoreHorizontal,
-  Archive, Unlink, RotateCcw, Sparkles,
+  Archive, Unlink, RotateCcw, Sparkles, BookOpen,
 } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
@@ -101,6 +101,99 @@ const TI_MANAGER_ROLES = new Set([
   "supervisor_geral",
   "supervisor_ti",
 ]);
+
+const SERVICE_CATALOG_ITEMS = [
+  {
+    title: "Acesso VPN",
+    description: "Solicitar liberação, revisão ou correção de VPN corporativa.",
+    category: "acesso",
+    priority: "media",
+    sla: "4h úteis",
+    icon: Key,
+    context: ["Usuário", "Setor", "Sistema necessário", "Urgência operacional"],
+  },
+  {
+    title: "Reset de senha",
+    description: "Recuperação de acesso para e-mail, Windows, ERP, sistemas internos ou portais.",
+    category: "acesso",
+    priority: "alta",
+    sla: "2h úteis",
+    icon: Shield,
+    context: ["Sistema afetado", "Usuário impactado", "Bloqueio total ou parcial"],
+  },
+  {
+    title: "Instalação de software",
+    description: "Solicitar instalação, atualização ou regularização de software homologado.",
+    category: "software",
+    priority: "media",
+    sla: "8h úteis",
+    icon: Package,
+    context: ["Nome do software", "Licença", "Equipamento", "Justificativa"],
+  },
+  {
+    title: "Problema com impressora",
+    description: "Falha de impressão, fila travada, toner, compartilhamento ou configuração.",
+    category: "impressora",
+    priority: "media",
+    sla: "6h úteis",
+    icon: FileText,
+    context: ["Impressora", "Setor", "Erro exibido", "Impacto"],
+  },
+  {
+    title: "TOTVS / ERP",
+    description: "Erro operacional, travamento, permissão, relatório ou integração do ERP.",
+    category: "software",
+    priority: "alta",
+    sla: "4h úteis",
+    icon: Database,
+    context: ["Rotina", "Empresa/unidade", "Mensagem de erro", "Usuários afetados"],
+  },
+  {
+    title: "SEFAZ / Fiscal",
+    description: "Problema com emissão, certificado, autorização, rejeição ou comunicação fiscal.",
+    category: "software",
+    priority: "alta",
+    sla: "4h úteis",
+    icon: FileText,
+    context: ["Documento fiscal", "Rejeição", "Certificado", "Prazo"],
+  },
+  {
+    title: "Internet ou rede",
+    description: "Oscilação, lentidão, queda local, Wi-Fi, cabo, switch ou acesso a sistemas.",
+    category: "rede",
+    priority: "alta",
+    sla: "2h úteis",
+    icon: Wifi,
+    context: ["Local", "Quantidade de pessoas afetadas", "Horário de início"],
+  },
+  {
+    title: "Equipamento lento ou travando",
+    description: "Computador com lentidão, travamentos, falta de espaço, tela azul ou falha recorrente.",
+    category: "hardware",
+    priority: "media",
+    sla: "8h úteis",
+    icon: Monitor,
+    context: ["Quando começou", "Sistema usado", "Frequência", "Impacto no trabalho"],
+  },
+  {
+    title: "Onboarding / Offboarding",
+    description: "Preparação de usuário, permissões, equipamentos, e-mail, acessos ou desligamento.",
+    category: "acesso",
+    priority: "media",
+    sla: "1 dia útil",
+    icon: User,
+    context: ["Nome", "Setor", "Data", "Acessos necessários"],
+  },
+  {
+    title: "Compra ou troca de equipamento",
+    description: "Solicitar notebook, desktop, periférico, SSD, memória, peça ou substituição.",
+    category: "hardware",
+    priority: "media",
+    sla: "2 dias úteis",
+    icon: ShoppingCart,
+    context: ["Item", "Motivo", "Usuário/setor", "Prazo esperado"],
+  },
+] as const;
 
 type AgentLifecycleAction =
   | "remover_monitoramento"
@@ -699,6 +792,10 @@ export default function TI({ params }: { params?: { tab?: string } }) {
     "limpeza-agentes": "limpeza-agentes",
     chamado: "tickets",
     chamados: "tickets",
+    catalogo: "catalogo",
+    servicos: "catalogo",
+    "portal-servicos": "catalogo",
+    portal: "catalogo",
   };
 
   const [location, setLocation] = useLocation() as any;
@@ -1024,7 +1121,15 @@ export default function TI({ params }: { params?: { tab?: string } }) {
 
   // ── Mutations ──
   const createTicket = trpc.ti.createTicket.useMutation({
-    onSuccess: () => { ticketsQ.refetch(); dashboard.refetch(); setShowNew(false); toast.success("Chamado aberto!"); },
+    onSuccess: () => {
+      ticketsQ.refetch();
+      dashboard.refetch();
+      setShowNew(false);
+      setTicketForm({ titulo: "", descricao: "", categoria: "outro", prioridade: "media" });
+      setTicketAnexos([]);
+      setTicketAnexoPreviews([]);
+      toast.success("Chamado aberto!");
+    },
     onError: (err) => toast.error("Erro ao abrir chamado: " + (err.message || "tente novamente")),
   });
   const updateStatus = trpc.ti.updateTicketStatus.useMutation({
@@ -1509,6 +1614,27 @@ export default function TI({ params }: { params?: { tab?: string } }) {
   const [ticketAnexoPreviews, setTicketAnexoPreviews] = useState<{ nome: string; url: string; isImage: boolean }[]>([]);
   const ticketFileRef = useRef<HTMLInputElement>(null);
 
+  const openServiceRequest = (item: (typeof SERVICE_CATALOG_ITEMS)[number]) => {
+    const contextLines = item.context.map((field) => `- ${field}: `).join("\n");
+    setTicketForm({
+      titulo: item.title,
+      categoria: item.category as any,
+      prioridade: item.priority as any,
+      descricao: [
+        `Solicitação pelo catálogo: ${item.title}`,
+        `Meta de atendimento informativa: ${item.sla}`,
+        "",
+        "Conte o que precisa ou o que aconteceu:",
+        "",
+        "Contexto útil para acelerar o atendimento:",
+        contextLines,
+      ].join("\n"),
+    });
+    setTicketAnexos([]);
+    setTicketAnexoPreviews([]);
+    setShowNew(true);
+  };
+
   const handleTicketFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
     if (!files.length) return;
@@ -1866,6 +1992,9 @@ export default function TI({ params }: { params?: { tab?: string } }) {
             <Headphones className="h-4 w-4 mr-1" />Chamados
             {kpiAbertos > 0 && <span className="ml-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full bg-red-500 text-white text-[10px]">{kpiAbertos}</span>}
           </TabsTrigger>
+          <TabsTrigger value="catalogo">
+            <BookOpen className="h-4 w-4 mr-1" />Catálogo
+          </TabsTrigger>
           {isTiManager && (
             <>
               <TabsTrigger value="inventario"><HardDrive className="h-4 w-4 mr-1" />Inventário</TabsTrigger>
@@ -1949,6 +2078,121 @@ export default function TI({ params }: { params?: { tab?: string } }) {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* ══ PORTAL DE SERVIÇOS ══ */}
+        <TabsContent value="catalogo" className="space-y-4 mt-4">
+          <div className="grid gap-4 xl:grid-cols-[1fr_320px]">
+            <div className="space-y-4">
+              <Card className="overflow-hidden border-primary/15 bg-card/95">
+                <CardHeader className="border-b bg-muted/30">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <CardTitle className="flex items-center gap-2 text-base">
+                        <BookOpen className="h-5 w-5 text-primary" />
+                        Portal de Serviços
+                      </CardTitle>
+                      <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+                        Solicitações padronizadas que viram chamados reais, com histórico, anexos, notificações e auditoria. Sem expor dados técnicos para usuário comum.
+                      </p>
+                    </div>
+                    <Badge variant="outline" className="text-[11px]">Catálogo operacional</Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-3 md:p-4">
+                  <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-3">
+                    {SERVICE_CATALOG_ITEMS.map((item) => {
+                      const ItemIcon = item.icon;
+                      return (
+                        <button
+                          key={item.title}
+                          type="button"
+                          onClick={() => openServiceRequest(item)}
+                          className="group rounded-xl border border-border/80 bg-background/70 p-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                        >
+                          <div className="flex items-start gap-3">
+                            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary transition group-hover:bg-primary group-hover:text-primary-foreground">
+                              <ItemIcon className="h-4 w-4" />
+                            </span>
+                            <span className="min-w-0 flex-1">
+                              <span className="block text-sm font-semibold leading-tight">{item.title}</span>
+                              <span className="mt-1 block text-xs leading-5 text-muted-foreground">{item.description}</span>
+                            </span>
+                          </div>
+                          <div className="mt-3 flex flex-wrap gap-1.5">
+                            <Badge variant="secondary" className="text-[10px]">Meta {item.sla}</Badge>
+                            <Badge variant="outline" className="text-[10px]">{item.category}</Badge>
+                            <Badge className={`text-[10px] ${PRIORIDADE_COLORS[item.priority] ?? ""}`}>
+                              {PRIORIDADE_ICONS[item.priority]} {item.priority}
+                            </Badge>
+                          </div>
+                          <div className="mt-3 border-t pt-2">
+                            <p className="text-[11px] font-medium text-muted-foreground">Contexto solicitado</p>
+                            <p className="mt-1 text-xs text-muted-foreground">{item.context.join(" · ")}</p>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="space-y-3">
+              <Card className="border-white/10 bg-card/90">
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center gap-2 text-sm">
+                    <Sparkles className="h-4 w-4 text-primary" />
+                    Fluxo integrado
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm">
+                  {[
+                    "O catálogo preenche categoria, prioridade inicial e contexto.",
+                    "O ticket nasce no mesmo helpdesk, com chat, anexos e histórico.",
+                    "A equipe de TI mantém a visão operacional sem vazar dados técnicos ao usuário comum.",
+                  ].map((text, index) => (
+                    <div key={text} className="flex gap-2 rounded-lg border bg-muted/30 p-2">
+                      <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">{index + 1}</span>
+                      <p className="text-xs leading-5 text-muted-foreground">{text}</p>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center gap-2 text-sm">
+                    <Clock className="h-4 w-4 text-blue-500" />
+                    Seus chamados recentes
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {(ticketsQ.data ?? []).slice(0, 4).map((ticket: any) => (
+                    <button
+                      key={ticket.id}
+                      type="button"
+                      onClick={() => { setSelectedTicket(ticket); handleTabChange("tickets"); }}
+                      className="w-full rounded-lg border bg-background/70 p-2 text-left transition hover:border-primary/40 hover:bg-primary/5"
+                    >
+                      <p className="truncate text-xs font-semibold">{ticket.titulo}</p>
+                      <div className="mt-1 flex items-center justify-between gap-2">
+                        <span className="font-mono text-[10px] text-muted-foreground">{ticket.protocolo}</span>
+                        <Badge className={`text-[10px] ${STATUS_COLORS[ticket.status] ?? ""}`}>
+                          {STATUS_LABELS[ticket.status] || String(ticket.status || "").replaceAll("_", " ")}
+                        </Badge>
+                      </div>
+                    </button>
+                  ))}
+                  {(ticketsQ.data ?? []).length === 0 && (
+                    <p className="rounded-lg border border-dashed p-3 text-center text-xs text-muted-foreground">
+                      Nenhum chamado ainda. Escolha um serviço ou abra uma conversa.
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </TabsContent>
 
         {/* ══ CHAMADOS ══ */}

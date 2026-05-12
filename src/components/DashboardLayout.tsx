@@ -67,6 +67,7 @@ const getMenuGroups = (t: any): MenuGroup[] => [
     items: [
       { icon: LayoutDashboard, label: "Painel", path: "/dashboard" },
       { icon: Sparkles, label: "Centro Operacional", path: "/executivo" },
+      { icon: Ticket, label: "Portal de Serviços", path: "/ti/catalogo" },
       { icon: Brain, label: "IA Synapse", path: "/ia" },
       { icon: MessageSquare, label: "Chat", path: "/chat" },
       { icon: Globe, label: "Omnichannel", path: "/omnichannel" },
@@ -194,6 +195,8 @@ const getMenuGroups = (t: any): MenuGroup[] => [
     label: "TI",
     icon: Monitor,
     items: [
+      { icon: Activity, label: "Cockpit TI", path: "/ti/dashboard" },
+      { icon: Ticket, label: "Portal de Serviços", path: "/ti/catalogo" },
       { icon: Bug, label: "Chamados", path: "/ti/tickets" },
       { icon: HardDrive, label: "Inventário de Ativos", path: "/ti/inventario" },
       { icon: Cpu, label: "Monitoramento", path: "/ti/monitoramento" },
@@ -204,6 +207,7 @@ const getMenuGroups = (t: any): MenuGroup[] => [
       { icon: Network, label: "Agentes", path: "/ti/agentes" },
       { icon: Shield, label: "Certificados Digitais", path: "/ti/certificados" },
       { icon: Bell, label: "Alertas de TI", path: "/ti/alertas" },
+      { icon: BookOpen, label: "Base de Conhecimento", path: "/ia" },
     ],
   },
 
@@ -358,8 +362,10 @@ function Sidebar({
           label: "Atendimento",
           icon: Headphones,
           items: [
+            { icon: Ticket, label: "Portal de Serviços", path: "/ti/catalogo" },
             { icon: Headphones, label: "Meus Chamados", path: "/ti/tickets" },
             { icon: MessageSquare, label: "Chat", path: "/chat" },
+            { icon: BookOpen, label: "Base de Conhecimento", path: "/ia" },
             { icon: HelpCircle, label: "Ajuda", path: "/ajuda" },
           ],
         },
@@ -369,7 +375,11 @@ function Sidebar({
         if (isTiManagerRole) return g;
         return {
           ...g,
-          items: [{ icon: Headphones, label: "Meus Chamados TI", path: "/ti/tickets" }],
+          items: [
+            { icon: Ticket, label: "Portal de Serviços", path: "/ti/catalogo" },
+            { icon: Headphones, label: "Meus Chamados TI", path: "/ti/tickets" },
+            { icon: BookOpen, label: "Base de Conhecimento", path: "/ia" },
+          ],
         };
       });
 
@@ -619,9 +629,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const isCommonSelfServiceRole = ["user", "leitor"].includes(userRoleCode);
   const commonAllowedRoute =
     location === "/ti" ||
+    location.startsWith("/ti/catalogo") ||
     location.startsWith("/ti/tickets") ||
     location.startsWith("/ti/chamado") ||
     location.startsWith("/ti/chamados") ||
+    location.startsWith("/ia") ||
     location.startsWith("/chat") ||
     location.startsWith("/ajuda");
 
@@ -919,7 +931,14 @@ function NotificationBell() {
 
             {/* Footer */}
             <div className="px-4 py-2 border-t border-border bg-muted/20">
-              <button className="text-xs text-primary hover:underline w-full text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  navigate(isCommonSelfServiceRole ? "/ti/tickets" : "/ti/dashboard");
+                  setOpen(false);
+                }}
+                className="text-xs text-primary hover:underline w-full text-center"
+              >
                 Ver todas as notificações
               </button>
             </div>
