@@ -20,6 +20,7 @@ extraMetadata:
   version: 2.4.0
   main: electron/main.cjs
 win:
+  icon: build/icon.ico
   signAndEditExecutable: false
   target:
     - target: nsis
@@ -28,6 +29,10 @@ win:
   artifactName: SynapseSetup-2.4.0.${ext}
 nsis:
   include: installer.nsh
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+  installerHeader: build/installer-header.bmp
+  installerSidebar: build/installer-sidebar.bmp
   oneClick: false
   perMachine: false
   allowElevation: true

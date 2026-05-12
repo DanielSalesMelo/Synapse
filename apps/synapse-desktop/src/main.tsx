@@ -126,6 +126,10 @@ const readFileAsDataUrl = (file: File) =>
 
 function App() {
   const [appVersion, setAppVersion] = useState("2.4.0");
+  const [themeMode, setThemeMode] = useState<"light" | "studio" | "neutral">(() => {
+    const saved = window.localStorage.getItem("synapse.desktop.theme");
+    return saved === "light" || saved === "neutral" || saved === "studio" ? saved : "studio";
+  });
   const [config, setConfig] = useState<AgentConfig>({ server_url: DEFAULT_SERVER, agent_mode: "simple" });
   const [device, setDevice] = useState<DeviceInfo | null>(null);
   const [aiCapability, setAiCapability] = useState<AiCapability | null>(null);
@@ -153,6 +157,7 @@ function App() {
   const [policyOpen, setPolicyOpen] = useState(false);
   const [diagnosticsOpen, setDiagnosticsOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [faqOpen, setFaqOpen] = useState(false);
   const [aiOpen, setAiOpen] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
   const [policy, setPolicy] = useState(defaultPolicy);
@@ -337,6 +342,34 @@ function App() {
     ticketInsights.active,
     ticketInsights.latest,
   ]);
+  const navItems = canSeeTechnical
+    ? ["Início", "Chamados", "Cockpit", "Diagnóstico", "Atualizações", "IA", "Configurações"]
+    : ["Início", "Abrir chamado", "Chat", "Histórico", "FAQ", "Notificações"];
+  const cockpitStats = canSeeTechnical
+    ? [
+        { label: "Health", value: `${deviceHealth.score}%`, detail: deviceHealth.label },
+        { label: "Heartbeat", value: profile?.online ? "Online" : "Offline", detail: formatDateTimeBR(profile?.ultimoContato) },
+        { label: "Worker", value: workerRunning ? "Ativo" : "Standby", detail: "coleta local" },
+        { label: "IA", value: aiCapability?.supported && allowLocalAi ? "Local opc." : "Cloud", detail: `${aiCapability?.score ?? 0}/100` },
+      ]
+    : [
+        { label: "Chamados", value: String(ticketInsights.active), detail: "em acompanhamento" },
+        { label: "Histórico", value: String(ticketInsights.total), detail: "solicitações" },
+        { label: "Suporte", value: profile?.online ? "Online" : "Pronto", detail: "chat e anexos" },
+        { label: "Privacidade", value: "Protegida", detail: "sem dados técnicos" },
+      ];
+  const onboardingSteps = [
+    { step: "01", title: "Boas-vindas", detail: "Desktop Synapse pronto para conectar." },
+    { step: "02", title: "Ambiente", detail: `${device?.os || "Windows"} · ${aiCapability?.ramGb || 0}GB RAM · ${aiCapability?.threads || 0} threads` },
+    { step: "03", title: "Tipo de uso", detail: policy.isCritical24x7 ? "Máquina crítica 24x7" : "Uso corporativo padrão" },
+    { step: "04", title: "Pareamento", detail: pairCode ? "Código informado" : "Aguardando código SYNC" },
+    { step: "05", title: "IA", detail: aiCapability?.supported ? "Cloud + local opcional" : "IA cloud otimizada" },
+    { step: "06", title: "Finalização", detail: "Login libera a tela por perfil." },
+  ];
+
+  useEffect(() => {
+    window.localStorage.setItem("synapse.desktop.theme", themeMode);
+  }, [themeMode]);
 
   const notify = useCallback((message: string) => {
     setToast(message);
@@ -785,7 +818,7 @@ function App() {
   };
 
   return (
-    <div className="app-shell" onPaste={handlePaste} onDragOver={(event) => event.preventDefault()} onDrop={handleDrop}>
+    <div className={`app-shell mode-${themeMode}`} onPaste={handlePaste} onDragOver={(event) => event.preventDefault()} onDrop={handleDrop}>
       <header className="titlebar">
         <div className="brand">
           <div className="brand-mark">S</div>
@@ -815,6 +848,11 @@ function App() {
           <button onClick={() => window.synapse.openExternal("https://synapse-seven-nu.vercel.app")}>Web</button>
           <button onClick={() => setSettingsOpen(true)}>Config</button>
         </nav>
+        <div className="theme-switch" aria-label="Modo visual">
+          <button className={themeMode === "light" ? "active" : ""} onClick={() => setThemeMode("light")}>Claro</button>
+          <button className={themeMode === "studio" ? "active" : ""} onClick={() => setThemeMode("studio")}>Studio</button>
+          <button className={themeMode === "neutral" ? "active" : ""} onClick={() => setThemeMode("neutral")}>Neutro</button>
+        </div>
         <div className={`connection ${profile?.online ? "online" : ""}`}>
           <span />
           {statusText}
@@ -827,94 +865,172 @@ function App() {
       </header>
 
       {!isPaired ? (
-        <section className="setup-view">
-          <div className="setup-card">
-            <div className="eyebrow">Primeira execução</div>
-            <h1>Conectar este computador ao Synapse</h1>
-            <p>Informe o código SYNC gerado no painel web. O app vai conectar este computador à central de suporte e manter a sincronização em segundo plano.</p>
-            <div className="setup-grid">
-              <label>
-                Código de pareamento
-                <input value={pairCode} onChange={(event) => setPairCode(event.target.value.toUpperCase())} onKeyDown={(event) => { if (event.key === "Enter") pairDevice(); }} placeholder="SYNC-XXXX-XXXX" />
-              </label>
-              <label>
-                Servidor Synapse
-                <input value={serverUrl} onChange={(event) => setServerUrl(event.target.value)} />
-              </label>
-            </div>
-            <button className="primary large" disabled={busy} onClick={pairDevice}>{busy ? "Conectando..." : "Conectar Synapse"}</button>
-            <div className="policy-box">
-              <span>Importância deste computador</span>
-              <label className="check"><input type="checkbox" checked={policy.isCritical24x7} onChange={(event) => setPolicy((current) => ({ ...current, isCritical24x7: event.target.checked, notifyOnOffline: event.target.checked || current.notifyOnOffline }))} /> Servidor ou máquina que deve ficar ligada 24 horas</label>
-              <label className="check"><input type="checkbox" checked={policy.notifyOnOffline} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnOffline: event.target.checked }))} /> Avisar TI se parar de enviar heartbeat</label>
-              <label className="check"><input type="checkbox" checked={policy.notifyOnNetworkLoss} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnNetworkLoss: event.target.checked }))} /> Comparar com outros PCs da mesma rede para diferenciar queda local/rede</label>
-              <label>
-                Tolerância sem heartbeat
-                <input type="number" min={3} max={240} value={policy.offlineGraceMinutes} onChange={(event) => setPolicy((current) => ({ ...current, offlineGraceMinutes: Number(event.target.value) || 10 }))} />
-              </label>
-            </div>
-            <div className="ai-capability-card">
-              <div>
-                <span>IA híbrida</span>
-                <strong>{aiModeLabel}</strong>
-                <p>{aiCapabilitySummary}</p>
-                {aiCapability?.blockers?.length ? <em>Bloqueios locais: {aiCapability.blockers.join(", ")}</em> : null}
+        <section className="setup-view premium-onboarding">
+          <div className="onboarding-shell">
+            <aside className="onboarding-rail">
+              <div className="product-lockup">
+                <div className="brand-mark xl">S</div>
+                <div>
+                  <strong>Synapse Desktop</strong>
+                  <span>Enterprise Support Agent</span>
+                </div>
               </div>
-              {aiCapability?.supported ? (
-                <label className="check"><input type="checkbox" checked={allowLocalAi} onChange={(event) => setAllowLocalAi(event.target.checked)} /> Permitir componentes de IA local opcionais neste PC</label>
-              ) : (
-                <small>Este equipamento utilizará IA cloud. O chat continua funcionando com fallback humano se a cloud estiver indisponível.</small>
-              )}
-            </div>
-            <div className="component-list">
-              <span>Componentes incluídos</span>
-              <label><input type="checkbox" checked readOnly /> Suporte e chat</label>
-              <label><input type="checkbox" checked readOnly /> Sincronização segura</label>
-              <label><input type="checkbox" checked readOnly /> Inicialização com o Windows</label>
-              <label><input type="checkbox" checked readOnly /> Modo TI/Admin quando permitido</label>
+              <div className="onboarding-steps">
+                {onboardingSteps.map((item, index) => (
+                  <div key={item.step} className={index <= 4 ? "active" : ""}>
+                    <b>{item.step}</b>
+                    <span>{item.title}</span>
+                    <em>{item.detail}</em>
+                  </div>
+                ))}
+              </div>
+              <div className="environment-card">
+                <span>Detecção local</span>
+                <strong>{aiCapability?.supported ? "Pronto para IA local opcional" : "IA cloud otimizada"}</strong>
+                <p>{aiCapabilitySummary}</p>
+              </div>
+            </aside>
+            <div className="onboarding-content">
+              <div className="onboarding-hero">
+                <span className="eyebrow">Primeira execução</span>
+                <h1>Configure o Synapse como um aplicativo corporativo real.</h1>
+                <p>Conecte este computador, defina criticidade, habilite IA quando o hardware permitir e deixe o suporte pronto para chat, anexos, heartbeat e update.</p>
+              </div>
+              <div className="setup-matrix">
+                <section className="setup-panel primary-panel">
+                  <div className="panel-title">
+                    <span>Pareamento</span>
+                    <strong>Conectar ao tenant</strong>
+                  </div>
+                  <div className="setup-grid">
+                    <label>
+                      Código de pareamento
+                      <input value={pairCode} onChange={(event) => setPairCode(event.target.value.toUpperCase())} onKeyDown={(event) => { if (event.key === "Enter") pairDevice(); }} placeholder="SYNC-XXXX-XXXX" />
+                    </label>
+                    <label>
+                      Servidor Synapse
+                      <input value={serverUrl} onChange={(event) => setServerUrl(event.target.value)} />
+                    </label>
+                  </div>
+                  <button className="primary large" disabled={busy} onClick={pairDevice}>{busy ? "Conectando..." : "Conectar Synapse"}</button>
+                </section>
+                <section className="setup-panel">
+                  <div className="panel-title">
+                    <span>Tipo de uso</span>
+                    <strong>Monitoramento 24x7</strong>
+                  </div>
+                  <label className="check"><input type="checkbox" checked={policy.isCritical24x7} onChange={(event) => setPolicy((current) => ({ ...current, isCritical24x7: event.target.checked, notifyOnOffline: event.target.checked || current.notifyOnOffline }))} /> Servidor ou máquina que deve ficar ligada 24 horas</label>
+                  <label className="check"><input type="checkbox" checked={policy.notifyOnOffline} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnOffline: event.target.checked }))} /> Avisar TI se parar de enviar heartbeat</label>
+                  <label className="check"><input type="checkbox" checked={policy.notifyOnNetworkLoss} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnNetworkLoss: event.target.checked }))} /> Comparar com outros PCs da mesma rede</label>
+                  <label>Tolerância sem heartbeat<input type="number" min={3} max={240} value={policy.offlineGraceMinutes} onChange={(event) => setPolicy((current) => ({ ...current, offlineGraceMinutes: Number(event.target.value) || 10 }))} /></label>
+                </section>
+                <section className="setup-panel">
+                  <div className="panel-title">
+                    <span>IA híbrida</span>
+                    <strong>{aiModeLabel}</strong>
+                  </div>
+                  <p>{aiCapabilitySummary}</p>
+                  {aiCapability?.blockers?.length ? <em>Cloud assumirá por: {aiCapability.blockers.join(", ")}</em> : null}
+                  {aiCapability?.supported ? (
+                    <label className="check"><input type="checkbox" checked={allowLocalAi} onChange={(event) => setAllowLocalAi(event.target.checked)} /> Permitir componentes de IA local opcionais neste PC</label>
+                  ) : (
+                    <small>Este equipamento utilizará IA cloud otimizada. O chat sempre mantém fallback humano.</small>
+                  )}
+                </section>
+                <section className="setup-panel included">
+                  <div className="panel-title">
+                    <span>Finalização</span>
+                    <strong>Incluído no agente</strong>
+                  </div>
+                  <div className="feature-pills">
+                    <span>Chat</span><span>Anexos</span><span>Heartbeat</span><span>Update</span><span>TI/Admin</span><span>Auditoria</span>
+                  </div>
+                </section>
+              </div>
             </div>
           </div>
         </section>
       ) : !isAuthenticated ? (
-        <section className="setup-view">
-          <div className="setup-card login-card">
-            <div className="eyebrow">Login obrigatório</div>
-            <h1>Entrar para definir a tela e os dados</h1>
-            <p>O computador já está pareado. Agora entre com usuário e senha para o Synapse liberar automaticamente a experiência correta: usuário comum, TI/Admin ou master_admin.</p>
-            <div className="setup-grid">
-              <label>
-                E-mail
-                <input value={loginEmail} onChange={(event) => setLoginEmail(event.target.value)} placeholder="usuario@empresa.com" />
-              </label>
-              <label>
-                Senha
-                <input type="password" value={loginPassword} onChange={(event) => setLoginPassword(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") loginUser(); }} />
-              </label>
-            </div>
-            <div className="policy-box">
-              <span>Monitoramento 24x7 deste PC</span>
-              <label className="check"><input type="checkbox" checked={policy.isCritical24x7} onChange={(event) => setPolicy((current) => ({ ...current, isCritical24x7: event.target.checked, notifyOnOffline: event.target.checked || current.notifyOnOffline }))} /> Este PC é servidor/máquina crítica e deve ficar ligado</label>
-              <label className="check"><input type="checkbox" checked={policy.notifyOnOffline} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnOffline: event.target.checked }))} /> Notificar se desligar ou parar heartbeat</label>
-              <label className="check"><input type="checkbox" checked={policy.notifyOnNetworkLoss} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnNetworkLoss: event.target.checked }))} /> Avaliar se outros dispositivos da mesma rede continuam online</label>
-            </div>
-            <div className="ai-capability-card compact">
-              <div>
-                <span>IA deste computador</span>
-                <strong>{aiModeLabel}</strong>
-                <p>{aiCapabilitySummary}</p>
+        <section className="setup-view login-stage">
+          <div className="login-shell">
+            <div className="login-story">
+              <span className="eyebrow">Perfil e permissões</span>
+              <h1>Entre para carregar a experiência correta.</h1>
+              <p>Usuário comum vê suporte conversacional. TI/Admin ganha cockpit técnico. master_admin recebe controles avançados.</p>
+              <div className="permission-lanes">
+                <div><strong>Usuário</strong><span>Chat, chamados, anexos, histórico.</span></div>
+                <div><strong>TI/Admin</strong><span>Diagnóstico, heartbeat, update, IA e ações.</span></div>
+                <div><strong>master_admin</strong><span>Operação avançada e tenant awareness.</span></div>
               </div>
-              {aiCapability?.supported && (
-                <label className="check"><input type="checkbox" checked={allowLocalAi} onChange={(event) => setAllowLocalAi(event.target.checked)} /> Permitir IA local opcional</label>
-              )}
             </div>
-            <div className="modal-actions">
-              <button onClick={clearLink}>Trocar pareamento</button>
-              <button className="primary" disabled={busy} onClick={loginUser}>{busy ? "Entrando..." : "Entrar no Synapse"}</button>
+            <div className="login-card premium-login-card">
+              <div className="panel-title">
+                <span>Login obrigatório</span>
+                <strong>Synapse Desktop</strong>
+              </div>
+              <label>E-mail<input value={loginEmail} onChange={(event) => setLoginEmail(event.target.value)} placeholder="usuario@empresa.com" /></label>
+              <label>Senha<input type="password" value={loginPassword} onChange={(event) => setLoginPassword(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") loginUser(); }} /></label>
+              <div className="login-meta">
+                <span>{policy.isCritical24x7 ? "Máquina crítica 24x7" : "Máquina padrão"}</span>
+                <span>{aiModeLabel}</span>
+              </div>
+              <div className="modal-actions">
+                <button onClick={clearLink}>Trocar pareamento</button>
+                <button className="primary" disabled={busy} onClick={loginUser}>{busy ? "Entrando..." : "Entrar no Synapse"}</button>
+              </div>
             </div>
           </div>
         </section>
       ) : (
-        <main className="workspace">
+        <main className={`workspace ${canSeeTechnical ? "ops-workspace" : "support-workspace"}`}>
+          <aside className="nav-rail">
+            <div className="rail-section">
+              {navItems.map((item, index) => (
+                <button
+                  key={item}
+                  className={index === 0 ? "active" : ""}
+                  onClick={() => {
+                    if (item.includes("Chamado")) {
+                      setSelectedTicketId(null);
+                      setComposer("");
+                    } else if (item === "Histórico") setHistoryOpen(true);
+                    else if (item === "FAQ") setFaqOpen(true);
+                    else if (item === "Diagnóstico" || item === "Cockpit") setDiagnosticsOpen(true);
+                    else if (item === "Atualizações") {
+                      setUpdateOpen(true);
+                      checkForUpdates(false);
+                    } else if (item === "IA") setAiOpen(true);
+                    else if (item === "Notificações") setNotificationsOpen(true);
+                    else if (item === "Configurações") setSettingsOpen(true);
+                  }}
+                >
+                  <span>{item.slice(0, 1)}</span>{item}
+                </button>
+              ))}
+            </div>
+            <div className="rail-footer">
+              <div className="avatar small">{(config.user_name || device?.username || "S").slice(0, 1).toUpperCase()}</div>
+              <div><strong>{config.user_name || "Synapse"}</strong><span>{modeLabel}</span></div>
+            </div>
+          </aside>
+          <section className="desktop-main">
+            <div className="overview-bar">
+              <div>
+                <span className="eyebrow">{canSeeTechnical ? "Cockpit técnico" : "Central de atendimento"}</span>
+                <h2>{canSeeTechnical ? "Operação do endpoint em tempo real" : "Suporte conversacional Synapse"}</h2>
+              </div>
+              <button className="primary compact" onClick={() => { setSelectedTicketId(null); setComposer(""); }}>{canSeeTechnical ? "Novo incidente" : "Abrir chamado"}</button>
+            </div>
+            <div className="cockpit-stats">
+              {cockpitStats.map((item) => (
+                <div key={item.label}>
+                  <span>{item.label}</span>
+                  <strong>{item.value}</strong>
+                  <em>{item.detail}</em>
+                </div>
+              ))}
+            </div>
+            <div className="workspace-grid">
           <aside className="sidebar">
             <div className="profile-card">
               <div className="avatar">{(config.user_name || device?.username || "S").slice(0, 1).toUpperCase()}</div>
@@ -1139,6 +1255,8 @@ function App() {
               </div>
             )}
           </aside>
+            </div>
+          </section>
         </main>
       )}
 
@@ -1266,6 +1384,20 @@ function App() {
               </button>
             ))}
           </div>
+        </Modal>
+      )}
+
+      {faqOpen && (
+        <Modal title="Ajuda rápida Synapse" onClose={() => setFaqOpen(false)} wide>
+          <div className="command-grid">
+            <button onClick={() => { setSelectedTicketId(null); setComposer("Meu sistema não abre. Preciso de ajuda."); setFaqOpen(false); }}>Sistema não abre<span>Prepara a conversa</span></button>
+            <button onClick={() => { setSelectedTicketId(null); setComposer("Minha internet ou VPN caiu. Preciso de suporte."); setFaqOpen(false); }}>Internet ou VPN<span>Abre contexto de rede</span></button>
+            <button onClick={() => { setSelectedTicketId(null); setComposer("Minha impressora não está funcionando."); setFaqOpen(false); }}>Impressora<span>Problema recorrente</span></button>
+            <button onClick={() => { setSelectedTicketId(null); setComposer("Preciso solicitar acesso ou reset de senha."); setFaqOpen(false); }}>Acesso e senha<span>Solicitação comum</span></button>
+            <button onClick={() => { setAiOpen(true); setFaqOpen(false); }}>Perguntar para IA<span>Sem fechar o chat</span></button>
+            <button onClick={() => { setNotificationsOpen(true); setFaqOpen(false); }}>Ver notificações<span>Status e avisos</span></button>
+          </div>
+          <p className="modal-copy">Escolha um atalho ou apenas digite no chat. Enter envia, Shift+Enter quebra linha, Ctrl+V cola prints e arquivos podem ser arrastados para anexar.</p>
         </Modal>
       )}
 
