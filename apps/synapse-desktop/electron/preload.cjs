@@ -23,4 +23,9 @@ contextBridge.exposeInMainWorld("synapse", {
     ipcRenderer.on("synapse:menu-action", handler);
     return () => ipcRenderer.removeListener("synapse:menu-action", handler);
   },
+  onUpdateProgress: (callback) => {
+    const handler = (_event, progress) => callback(progress);
+    ipcRenderer.on("synapse:update-progress", handler);
+    return () => ipcRenderer.removeListener("synapse:update-progress", handler);
+  },
 });

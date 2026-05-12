@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
-import type { AgentConfig, AgentProfile, AiCapability, AttachmentDraft, DeviceInfo, Message, Ticket, UpdateInfo } from "./types";
+import type { AgentConfig, AgentProfile, AiCapability, AttachmentDraft, DeviceInfo, Message, Ticket, UpdateInfo, UpdateProgress } from "./types";
 import { formatDateTimeBR } from "./timezone";
 
 const DEFAULT_SERVER = "https://synapse-backend-ds2026.azurewebsites.net";
@@ -68,6 +68,32 @@ const compareVersions = (left: string, right: string) => {
   return 0;
 };
 
+const inferCategory = (text: string) => {
+  const value = text.toLowerCase();
+  if (/(vpn|senha|login|acesso|permiss)/.test(value)) return "acesso";
+  if (/(internet|rede|wi-?fi|conex|ping|dns)/.test(value)) return "rede";
+  if (/(email|outlook|caixa|smtp|imap)/.test(value)) return "email";
+  if (/(impress|toner|scanner|papel)/.test(value)) return "impressora";
+  if (/(notebook|pc|monitor|teclado|mouse|hd|ssd|mem[oó]ria|hardware)/.test(value)) return "hardware";
+  if (/(sistema|erro|trav|app|software|totvs|sefaz)/.test(value)) return "software";
+  return "outro";
+};
+
+const inferPriority = (text: string) => {
+  const value = text.toLowerCase();
+  if (/(parou|fora|indispon[ií]vel|sem faturar|sefaz|produção|crit|urgente|servidor)/.test(value)) return "critica";
+  if (/(lento|travando|impactando|vários|todos|fila)/.test(value)) return "alta";
+  if (/(erro|falha|não abre|nao abre|não consigo|nao consigo)/.test(value)) return "media";
+  return "baixa";
+};
+
+const priorityLabel = (priority?: string) => ({
+  baixa: "Baixa",
+  media: "Média",
+  alta: "Alta",
+  critica: "Crítica",
+}[priority || ""] || priority || "Média");
+
 const defaultPolicy = {
   isCritical24x7: false,
   notifyOnOffline: false,
@@ -123,15 +149,25 @@ function App() {
   const [updateOpen, setUpdateOpen] = useState(false);
   const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
   const [updateBusy, setUpdateBusy] = useState(false);
+  const [updateProgress, setUpdateProgress] = useState<UpdateProgress | null>(null);
   const [policyOpen, setPolicyOpen] = useState(false);
+  const [diagnosticsOpen, setDiagnosticsOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [aiOpen, setAiOpen] = useState(false);
+  const [commandOpen, setCommandOpen] = useState(false);
   const [policy, setPolicy] = useState(defaultPolicy);
   const [autoLaunch, setAutoLaunch] = useState(false);
   const [workerRunning, setWorkerRunning] = useState(false);
   const [allowLocalAi, setAllowLocalAi] = useState(false);
+  const [lastSyncAt, setLastSyncAt] = useState<string | null>(null);
   const lastMessageRef = useRef<number | null>(null);
 
   const isPaired = Boolean(config.token);
   const isTiMode = config.agent_mode === "ti" && Boolean(config.user_is_ti);
+  const userRole = String(config.user_role || "").toLowerCase();
+  const isMasterAdmin = userRole === "master_admin";
+  const canSeeTechnical = isTiMode || isMasterAdmin;
+  const modeLabel = isMasterAdmin ? "Modo master_admin" : isTiMode ? "Modo TI/Admin" : "Modo usuário comum";
   const isAuthenticated = Boolean(config.auth_session_active && config.user_email);
   const availableVersion = updateInfo?.latestVersion || updateInfo?.version || "";
   const releaseNotes = updateInfo?.changelog?.length ? updateInfo.changelog : updateInfo?.releaseNotes || [];
@@ -195,10 +231,10 @@ function App() {
       latest: tickets[0]?.updatedAt || tickets[0]?.createdAt || profile?.ultimoContato,
     };
   }, [profile?.ultimoContato, tickets]);
-  const quickStarters = isTiMode
+  const quickStarters = canSeeTechnical
     ? ["Abrir chamado vinculado a este PC", "Registrar incidente preventivo", "Solicitar acesso remoto"]
     : ["Meu sistema não abre", "Minha internet caiu", "Meu notebook está lento"];
-  const contextCards = isTiMode
+  const contextCards = canSeeTechnical
     ? [
         { label: "Saúde", value: `${deviceHealth.label} · ${deviceHealth.score}`, detail: deviceHealth.summary },
         { label: "Heartbeat", value: profile?.online ? "Online" : "Aguardando", detail: formatDateTimeBR(profile?.ultimoContato) },
@@ -215,6 +251,92 @@ function App() {
   const aiCapabilitySummary = aiCapability
     ? `${aiCapability.score}/100 · ${aiCapability.recommendation}`
     : "Verificando capacidade de IA...";
+  const statusText = isPaired && !isAuthenticated ? "Login necessário" : canSeeTechnical
+    ? profile?.online ? "Conectado" : isPaired ? "Aguardando heartbeat" : "Não pareado"
+    : profile?.online ? "Conectado ao suporte" : isPaired ? "Sincronizando suporte" : "Não conectado";
+  const selectedText = cleanTicketText([
+    selectedTicket?.titulo,
+    selectedTicket?.descricao,
+    composer,
+  ].filter(Boolean).join("\n"));
+  const aiInsights = useMemo(() => {
+    const source = selectedText || "Selecione um chamado ou escreva a solicitação para gerar a triagem.";
+    const suggestedCategory = inferCategory(source);
+    const suggestedPriority = inferPriority(source);
+    const provider = allowLocalAi && aiCapability?.supported
+      ? "cloud configurada > local opcional > humano"
+      : "cloud configurada > humano";
+    return {
+      provider,
+      summary: selectedText ? firstLineTitle(source) : "Aguardando contexto da conversa.",
+      category: suggestedCategory,
+      priority: suggestedPriority,
+      confidence: selectedText.length > 80 ? "Alta" : selectedText.length > 24 ? "Média" : "Baixa",
+      probableCause: selectedText
+        ? ({
+            acesso: "credencial, permissão ou autenticação bloqueando o fluxo.",
+            rede: "conectividade local, DNS, gateway ou instabilidade de rota.",
+            email: "perfil, autenticação, caixa ou serviço de e-mail indisponível.",
+            impressora: "fila, driver, conexão ou suprimento precisando intervenção.",
+            hardware: "recurso físico, performance ou componente degradado.",
+            software: "aplicação, atualização, integração ou dependência com falha.",
+            outro: "solicitação geral ainda precisa de classificação pela TI.",
+          } as Record<string, string>)[suggestedCategory]
+        : "Sem causa provável enquanto não houver texto ou chamado selecionado.",
+      userSteps: suggestedCategory === "rede"
+        ? "Confirme se outros sistemas também perderam conexão e anexe um print do erro."
+        : suggestedCategory === "acesso"
+          ? "Informe o sistema afetado e o horário em que o acesso falhou."
+          : "Descreva o impacto, desde quando ocorre e anexe evidências se houver.",
+      tiSteps: selectedText
+        ? "Validar histórico, associar ativo, revisar eventos recentes e responder no mesmo chamado."
+        : "Selecione um chamado para correlacionar mensagens, anexos e telemetria.",
+    };
+  }, [aiCapability?.supported, allowLocalAi, selectedText]);
+  const notificationItems = useMemo(() => [
+    {
+      title: statusText,
+      detail: profile?.ultimoContato ? `Última sincronização ${formatDateTimeBR(profile.ultimoContato)}` : "Aguardando primeira sincronização",
+      tone: profile?.online ? "good" : "warn",
+    },
+    hasUpdate ? {
+      title: `Atualização ${availableVersion} disponível`,
+      detail: releaseNotes[0] || "Instalador oficial pronto para baixar.",
+      tone: "good",
+    } : {
+      title: "Agente atualizado",
+      detail: `Versão instalada ${appVersion}`,
+      tone: "neutral",
+    },
+    ticketInsights.active ? {
+      title: `${ticketInsights.active} chamado(s) em acompanhamento`,
+      detail: ticketInsights.latest ? `Última movimentação ${formatDateTimeBR(ticketInsights.latest)}` : "Histórico pronto",
+      tone: "neutral",
+    } : {
+      title: "Nenhum chamado ativo",
+      detail: "O chat abre um chamado quando precisar.",
+      tone: "neutral",
+    },
+    canSeeTechnical && deviceHealth.level !== "healthy" ? {
+      title: `Saúde ${deviceHealth.label}`,
+      detail: deviceHealth.summary,
+      tone: deviceHealth.level === "critical" ? "bad" : "warn",
+    } : null,
+  ].filter(Boolean) as { title: string; detail: string; tone: string }[], [
+    appVersion,
+    availableVersion,
+    canSeeTechnical,
+    deviceHealth.label,
+    deviceHealth.level,
+    deviceHealth.summary,
+    hasUpdate,
+    profile?.online,
+    profile?.ultimoContato,
+    releaseNotes,
+    statusText,
+    ticketInsights.active,
+    ticketInsights.latest,
+  ]);
 
   const notify = useCallback((message: string) => {
     setToast(message);
@@ -336,6 +458,7 @@ function App() {
       setProfile(nextProfile);
       setTickets(Array.isArray(nextTickets) ? nextTickets : []);
       setWorkerRunning(worker.running);
+      setLastSyncAt(new Date().toISOString());
       if (selectedTicketId === undefined && Array.isArray(nextTickets) && nextTickets[0]?.id) {
         setSelectedTicketId(nextTickets[0].id);
       }
@@ -383,6 +506,45 @@ function App() {
     });
     return off;
   }, [appVersion, loadBase, notify, refreshData]);
+
+  useEffect(() => window.synapse.onUpdateProgress(setUpdateProgress), []);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isEditable = Boolean(target && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)));
+      if (event.key === "Escape") {
+        setCommandOpen(false);
+        setAiOpen(false);
+        setDiagnosticsOpen(false);
+        setNotificationsOpen(false);
+        setUpdateOpen(false);
+        setHistoryOpen(false);
+        setPolicyOpen(false);
+        setSettingsOpen(false);
+        setLoginOpen(false);
+        return;
+      }
+      if (!(event.ctrlKey || event.metaKey)) return;
+      const key = event.key.toLowerCase();
+      if (key === "k") {
+        event.preventDefault();
+        setCommandOpen(true);
+      } else if (!isEditable && key === "n" && isAuthenticated) {
+        event.preventDefault();
+        setSelectedTicketId(null);
+        setComposer("");
+      } else if (!isEditable && key === "r" && isAuthenticated) {
+        event.preventDefault();
+        refreshData(false);
+      } else if (!isEditable && key === ",") {
+        event.preventDefault();
+        setSettingsOpen(true);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isAuthenticated, refreshData]);
 
   useEffect(() => {
     checkForUpdates(true);
@@ -496,15 +658,17 @@ function App() {
         body: JSON.stringify({ email: loginEmail, password: loginPassword, deviceId: config.device_id, token: config.token }),
       });
       if (!result?.user?.email) throw new Error("Login inválido.");
+      const role = String(result.user.role || "").toLowerCase();
+      const technicalRole = Boolean(result.user.isTiManager || ["master_admin", "admin", "ti", "tecnico", "technician", "support"].includes(role));
       const next = await window.synapse.saveConfig({
         user_id: Number(result.user.id || 0) || undefined,
         user_name: result.user.name,
         user_email: result.user.email,
         user_role: result.user.role,
-        user_is_ti: Boolean(result.user.isTiManager),
+        user_is_ti: technicalRole,
         auth_session_active: true,
         last_login_at: new Date().toISOString(),
-        agent_mode: result.user.isTiManager ? "ti" : "simple",
+        agent_mode: technicalRole ? "ti" : "simple",
       });
       setConfig(next);
       setLoginOpen(false);
@@ -515,7 +679,7 @@ function App() {
         body: JSON.stringify(policy),
       }).catch(() => undefined);
       await refreshData(true);
-      notify(result.user.isTiManager ? "Modo TI/Admin ativado." : "Modo usuário comum ativado.");
+      notify(technicalRole ? "Modo TI/Admin ativado." : "Modo usuário comum ativado.");
     } catch (error) {
       notify((error as Error).message || "Falha ao autenticar.");
     } finally {
@@ -549,14 +713,19 @@ function App() {
     try {
       let ticket = selectedTicket;
       const cleanMessage = cleanTicketText(composer);
+      const ticketDescription = cleanMessage.length >= 5
+        ? cleanMessage
+        : cleanMessage
+          ? `${cleanMessage} - solicitação registrada pelo Synapse.`
+          : "Anexo enviado pelo agente Synapse.";
       if (!ticket) {
         ticket = await api("/api/agent/tickets/open", {
           method: "POST",
           body: JSON.stringify({
-            titulo: firstLineTitle(cleanMessage),
-            descricao: cleanMessage || "Anexo enviado pelo agente Synapse.",
-            categoria: isTiMode ? category : "outro",
-            prioridade: isTiMode ? priority : "media",
+            titulo: firstLineTitle(cleanMessage || "Solicitação via Synapse"),
+            descricao: ticketDescription,
+            categoria: canSeeTechnical ? category : inferCategory(cleanMessage || ticketDescription),
+            prioridade: canSeeTechnical ? priority : inferPriority(cleanMessage || ticketDescription),
           }),
         });
         setSelectedTicketId(ticket.id);
@@ -615,28 +784,34 @@ function App() {
     notify("Diagnóstico copiado.");
   };
 
-  const statusText = isPaired && !isAuthenticated ? "Login necessário" : isTiMode
-    ? profile?.online ? "Conectado" : isPaired ? "Aguardando heartbeat" : "Não pareado"
-    : profile?.online ? "Conectado ao suporte" : isPaired ? "Sincronizando suporte" : "Não conectado";
-
   return (
     <div className="app-shell" onPaste={handlePaste} onDragOver={(event) => event.preventDefault()} onDrop={handleDrop}>
       <header className="titlebar">
         <div className="brand">
           <div className="brand-mark">S</div>
           <div>
-            <strong>Synapse para Windows</strong>
-            <span>Suporte, chamados, atualização e monitoramento</span>
+            <strong>Synapse Desktop</strong>
+            <span>{modeLabel} · v{appVersion}</span>
           </div>
         </div>
         <nav className="title-actions">
-          <button onClick={() => refreshData(false)} disabled={!isAuthenticated}>Atualizar</button>
-          <button onClick={() => { setSelectedTicketId(null); setComposer(""); }} disabled={!isAuthenticated}>Chamado</button>
-          <button onClick={() => setHistoryOpen(true)} disabled={!isAuthenticated}>Histórico</button>
+          <button className="command-button" onClick={() => setCommandOpen(true)}>Comando <kbd>Ctrl K</kbd></button>
+          {isAuthenticated && (
+            <>
+              <button onClick={() => refreshData(false)}>Atualizar</button>
+              <button onClick={() => { setSelectedTicketId(null); setComposer(""); }}>Chamado</button>
+              <button onClick={() => setHistoryOpen(true)}>Histórico</button>
+              <button onClick={() => setAiOpen(true)}>Triagem IA</button>
+              {canSeeTechnical && <button onClick={() => setDiagnosticsOpen(true)}>Diagnóstico</button>}
+              <button onClick={() => setNotificationsOpen(true)}>
+                Notificações <span className="button-count">{notificationItems.length}</span>
+              </button>
+            </>
+          )}
           <button className={hasUpdate ? "update-attention" : ""} onClick={() => { setUpdateOpen(true); checkForUpdates(false); }}>
             {hasUpdate ? `Atualização ${availableVersion}` : "Atualizações"}
           </button>
-          <button onClick={() => setPolicyOpen(true)} disabled={!isAuthenticated}>24x7</button>
+          {isAuthenticated && <button onClick={() => setPolicyOpen(true)}>24x7</button>}
           <button onClick={() => window.synapse.openExternal("https://synapse-seven-nu.vercel.app")}>Web</button>
           <button onClick={() => setSettingsOpen(true)}>Config</button>
         </nav>
@@ -660,7 +835,7 @@ function App() {
             <div className="setup-grid">
               <label>
                 Código de pareamento
-                <input value={pairCode} onChange={(event) => setPairCode(event.target.value.toUpperCase())} placeholder="SYNC-XXXX-XXXX" />
+                <input value={pairCode} onChange={(event) => setPairCode(event.target.value.toUpperCase())} onKeyDown={(event) => { if (event.key === "Enter") pairDevice(); }} placeholder="SYNC-XXXX-XXXX" />
               </label>
               <label>
                 Servidor Synapse
@@ -745,7 +920,7 @@ function App() {
               <div className="avatar">{(config.user_name || device?.username || "S").slice(0, 1).toUpperCase()}</div>
               <div>
                 <strong>{config.user_name || profile?.usuario_nome || "Usuário Synapse"}</strong>
-                <span>{isTiMode ? "Modo TI/Admin" : "Modo usuário comum"}</span>
+                <span>{modeLabel}</span>
               </div>
             </div>
             <div className="side-metrics">
@@ -762,6 +937,18 @@ function App() {
                 <strong>{ticketInsights.total}</strong>
               </div>
             </div>
+            {canSeeTechnical ? (
+              <div className="ops-strip">
+                <div><span>Health</span><strong className={deviceHealth.level}>{deviceHealth.score}</strong></div>
+                <div><span>Worker</span><strong>{workerRunning ? "Ativo" : "Standby"}</strong></div>
+                <div><span>Sync</span><strong>{lastSyncAt ? formatDateTimeBR(lastSyncAt) : "Aguardando"}</strong></div>
+              </div>
+            ) : (
+              <div className="ops-strip support">
+                <div><span>Canal</span><strong>Suporte</strong></div>
+                <div><span>SLA</span><strong>{ticketInsights.active ? "Acomp." : "Pronto"}</strong></div>
+              </div>
+            )}
             <button className="new-ticket" onClick={() => { setSelectedTicketId(null); setComposer(""); }}>
               Abrir chamado
             </button>
@@ -790,7 +977,9 @@ function App() {
               </div>
               <div className="status-actions">
                 {selectedTicket?.status && <span className={`ticket-status ${selectedTicket.status}`}>{STATUS_LABELS[selectedTicket.status] || selectedTicket.status}</span>}
-                {isTiMode && selectedTicket && (
+                <button className="ghost-action" onClick={() => setAiOpen(true)}>IA</button>
+                {canSeeTechnical && <button className="ghost-action" onClick={() => setDiagnosticsOpen(true)}>Cockpit</button>}
+                {canSeeTechnical && selectedTicket && (
                   <select value={selectedTicket.status || "aberto"} onChange={(event) => updateTicketStatus(event.target.value)}>
                     {Object.entries(STATUS_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
                   </select>
@@ -840,7 +1029,7 @@ function App() {
             </div>
 
             <footer className="composer">
-              {!selectedTicket && isTiMode && (
+              {!selectedTicket && canSeeTechnical && (
                 <div className="composer-options">
                   <select value={category} onChange={(event) => setCategory(event.target.value)}>
                     {CATEGORIES.map((item) => <option key={item} value={item}>{item}</option>)}
@@ -873,21 +1062,26 @@ function App() {
                   onChange={(event) => setComposer(event.target.value)}
                   placeholder={selectedTicket ? "Responder ao chamado..." : "Descreva o problema para abrir um chamado..."}
                   onKeyDown={(event) => {
-                    if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) sendComposer();
+                    if (event.key !== "Enter") return;
+                    if (event.shiftKey) return;
+                    if (event.ctrlKey || event.metaKey || !event.nativeEvent.isComposing) {
+                      event.preventDefault();
+                      sendComposer();
+                    }
                   }}
                 />
                 <button className="primary" disabled={busy} onClick={sendComposer}>{busy ? "Enviando..." : selectedTicket ? "Enviar" : "Abrir chamado"}</button>
               </div>
-              <small>Ctrl+V cola prints. Arraste arquivos para anexar. Ctrl+Enter envia.</small>
+              <small>Enter envia. Shift+Enter quebra linha. Ctrl+V cola prints. Arraste arquivos para anexar.</small>
             </footer>
           </section>
 
           <aside className="inspector">
             <div className="card">
-              <span className="eyebrow">{isTiMode ? "Este computador" : "Atendimento"}</span>
-              <h3>{isTiMode ? (profile?.hostname || device?.hostname) : "Central de suporte"}</h3>
-              <p>{isTiMode ? (profile?.so || device?.os) : "Seu chat, chamados, anexos e histórico ficam aqui."}</p>
-              {isTiMode ? (
+              <span className="eyebrow">{canSeeTechnical ? "Este computador" : "Atendimento"}</span>
+              <h3>{canSeeTechnical ? (profile?.hostname || device?.hostname) : "Central de suporte"}</h3>
+              <p>{canSeeTechnical ? (profile?.so || device?.os) : "Seu chat, chamados, anexos e histórico ficam aqui."}</p>
+              {canSeeTechnical ? (
                 <dl>
                   <div><dt>IP</dt><dd>{profile?.ip || device?.ip || "-"}</dd></div>
                   <div><dt>Usuário</dt><dd>{profile?.usuario_nome || config.user_name || device?.username || "-"}</dd></div>
@@ -907,11 +1101,15 @@ function App() {
               <div className="action-grid">
                 <button onClick={() => { setSelectedTicketId(null); setComposer(""); }}>Chamado</button>
                 <button onClick={() => setHistoryOpen(true)}>Histórico</button>
+                <button onClick={() => setAiOpen(true)}>Triagem IA</button>
+                <button onClick={() => setNotificationsOpen(true)}>Notificações</button>
                 <button onClick={() => { setUpdateOpen(true); checkForUpdates(false); }}>Update</button>
                 <button onClick={() => setPolicyOpen(true)}>24x7</button>
+                {canSeeTechnical && <button onClick={() => setDiagnosticsOpen(true)}>Diagnóstico</button>}
+                {canSeeTechnical && <button onClick={copyDiagnostics}>Copiar estado</button>}
               </div>
             </div>
-            {isTiMode ? (
+            {canSeeTechnical ? (
               <div className="card technical">
                 <span className="eyebrow">Área TI/Admin</span>
                 <h3>Dados técnicos</h3>
@@ -942,6 +1140,94 @@ function App() {
             )}
           </aside>
         </main>
+      )}
+
+      {commandOpen && (
+        <Modal title="Comando Synapse" onClose={() => setCommandOpen(false)} wide>
+          <div className="command-grid">
+            <button onClick={() => { setSelectedTicketId(null); setComposer(""); setCommandOpen(false); }}>Novo chamado<span>Ctrl+N</span></button>
+            <button onClick={() => { refreshData(false); setCommandOpen(false); }}>Sincronizar agora<span>Ctrl+R</span></button>
+            <button onClick={() => { setAiOpen(true); setCommandOpen(false); }}>Abrir triagem IA<span>Contexto</span></button>
+            <button onClick={() => { setNotificationsOpen(true); setCommandOpen(false); }}>Central de notificações<span>Status</span></button>
+            <button onClick={() => { setUpdateOpen(true); checkForUpdates(false); setCommandOpen(false); }}>Atualizações<span>Versão {appVersion}</span></button>
+            <button onClick={() => { setSettingsOpen(true); setCommandOpen(false); }}>Configurações<span>Ctrl+,</span></button>
+            {canSeeTechnical && <button onClick={() => { setDiagnosticsOpen(true); setCommandOpen(false); }}>Cockpit técnico<span>Diagnóstico</span></button>}
+            {canSeeTechnical && <button onClick={() => { copyDiagnostics(); setCommandOpen(false); }}>Copiar diagnóstico<span>JSON seguro</span></button>}
+          </div>
+        </Modal>
+      )}
+
+      {notificationsOpen && (
+        <Modal title="Central de notificações" onClose={() => setNotificationsOpen(false)} wide>
+          <div className="notification-list">
+            {notificationItems.map((item) => (
+              <div key={`${item.title}-${item.detail}`} className={`notification-item ${item.tone}`}>
+                <span />
+                <div>
+                  <strong>{item.title}</strong>
+                  <p>{item.detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Modal>
+      )}
+
+      {aiOpen && (
+        <Modal title="Triagem IA no contexto do chamado" onClose={() => setAiOpen(false)} wide>
+          <div className="ai-panel">
+            <section>
+              <span className="eyebrow">Provider transparente</span>
+              <h3>{aiInsights.provider}</h3>
+              <p>O chat permanece ativo. Se cloud/local não estiver disponível, a triagem vira apoio humano sem bloquear o atendimento.</p>
+            </section>
+            <div className="ai-grid">
+              <Metric label="Resumo" value={aiInsights.summary} />
+              <Metric label="Categoria sugerida" value={aiInsights.category} />
+              <Metric label="Prioridade sugerida" value={priorityLabel(aiInsights.priority)} />
+              <Metric label="Confiança" value={aiInsights.confidence} />
+            </div>
+            <div className="ai-cards">
+              <div><strong>Causa provável</strong><p>{aiInsights.probableCause}</p></div>
+              <div><strong>Passos para usuário</strong><p>{aiInsights.userSteps}</p></div>
+              <div><strong>Passos para TI</strong><p>{aiInsights.tiSteps}</p></div>
+              <div><strong>Fontes</strong><p>{selectedTicket ? "Conversa, histórico do chamado e contexto local permitido." : "Aguardando chamado/conversa para citar fontes reais."}</p></div>
+            </div>
+            <div className="modal-actions">
+              <button onClick={() => setComposer((current) => current || aiInsights.userSteps)}>Usar orientação</button>
+              {canSeeTechnical && <button onClick={() => { setCategory(aiInsights.category); setPriority(aiInsights.priority); }}>Aplicar categoria/prioridade</button>}
+              <button className="primary" onClick={() => setAiOpen(false)}>Voltar ao chat</button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {diagnosticsOpen && canSeeTechnical && (
+        <Modal title="Cockpit técnico e diagnóstico" onClose={() => setDiagnosticsOpen(false)} wide>
+          <div className="diagnostics-grid">
+            <div className="diag-card"><span>API</span><strong>{config.server_url || DEFAULT_SERVER}</strong><em>{lastSyncAt ? `sync ${formatDateTimeBR(lastSyncAt)}` : "aguardando sync"}</em></div>
+            <div className="diag-card"><span>Heartbeat</span><strong>{profile?.online ? "Online" : "Sem heartbeat"}</strong><em>{formatDateTimeBR(profile?.ultimoContato)}</em></div>
+            <div className="diag-card"><span>Worker</span><strong>{workerRunning ? "Ativo" : "Aguardando"}</strong><em>coleta e envio em segundo plano</em></div>
+            <div className="diag-card"><span>Updater</span><strong>{hasUpdate ? `Novo ${availableVersion}` : "Atual"}</strong><em>instalado {appVersion}</em></div>
+            <div className="diag-card"><span>IA local</span><strong>{aiCapability?.supported ? "Compatível" : "Cloud"}</strong><em>{aiCapabilitySummary}</em></div>
+            <div className="diag-card"><span>Saúde</span><strong>{deviceHealth.label} {deviceHealth.score}</strong><em>{deviceHealth.summary}</em></div>
+          </div>
+          <div className="diagnostics-table">
+            <Metric label="Hostname" value={profile?.hostname || device?.hostname || "Não coletado"} mono />
+            <Metric label="IP" value={profile?.ip || device?.ip || "Não coletado"} mono />
+            <Metric label="Sistema" value={profile?.so || device?.os || "Não coletado"} />
+            <Metric label="CPU" value={metric?.cpuUso != null ? `${metric.cpuUso}%` : "Não coletado"} />
+            <Metric label="RAM" value={metric?.ramUsoPct != null ? `${metric.ramUsoPct}%` : "Não coletado"} />
+            <Metric label="Disco" value={metric?.discoUsoPct != null ? `${metric.discoUsoPct}%` : "Não coletado"} />
+            <Metric label="AnyDesk" value={profile?.anydeskId || metric?.anydeskId || "Não coletado"} mono />
+            <Metric label="Política 24x7" value={policy.isCritical24x7 ? "Crítico monitorado" : "Padrão"} />
+          </div>
+          <div className="modal-actions">
+            <button onClick={copyDiagnostics}>Copiar diagnóstico</button>
+            <button onClick={() => { setUpdateOpen(true); checkForUpdates(false); }}>Ver updater</button>
+            <button className="primary" onClick={() => refreshData(false)}>Sincronizar</button>
+          </div>
+        </Modal>
       )}
 
       {settingsOpen && (
@@ -986,7 +1272,7 @@ function App() {
       {loginOpen && (
         <Modal title="Entrar no Synapse" onClose={() => setLoginOpen(false)}>
           <label>E-mail<input value={loginEmail} onChange={(event) => setLoginEmail(event.target.value)} /></label>
-          <label>Senha<input type="password" value={loginPassword} onChange={(event) => setLoginPassword(event.target.value)} /></label>
+          <label>Senha<input type="password" value={loginPassword} onChange={(event) => setLoginPassword(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") loginUser(); }} /></label>
           <div className="modal-actions">
             <button onClick={() => setLoginOpen(false)}>Cancelar</button>
             <button className="primary" disabled={busy} onClick={loginUser}>Entrar</button>
@@ -1019,6 +1305,22 @@ function App() {
             {(updateInfo?.releaseDate || updateInfo?.publishedAt) && <p>Publicado em: {formatDateTimeBR(updateInfo.releaseDate || updateInfo.publishedAt)}</p>}
             {updateInfo?.sha256 && <p className="mono">SHA256: {updateInfo.sha256}</p>}
             {updateInfo?.sizeBytes ? <p>Tamanho: {fileSizeLabel(updateInfo.sizeBytes)}</p> : null}
+            {updateProgress && (
+              <div className="progress-shell">
+                <div><span style={{ width: `${Math.max(2, updateProgress.percent || 0)}%` }} /></div>
+                <small>
+                  {updateProgress.status === "downloading"
+                    ? `Baixando ${fileSizeLabel(updateProgress.receivedBytes)}${updateProgress.totalBytes ? ` de ${fileSizeLabel(updateProgress.totalBytes)}` : ""}`
+                    : updateProgress.status === "launching"
+                      ? "Abrindo instalador..."
+                      : updateProgress.status === "done"
+                        ? "Download concluído."
+                        : updateProgress.status === "error"
+                          ? updateProgress.error || "Falha no download."
+                          : "Preparando download..."}
+                </small>
+              </div>
+            )}
             {!hasUpdate && availableVersion && <p className="update-ok">Você já está na versão mais recente.</p>}
             {releaseNotes.length ? (
               <ul>{releaseNotes.map((note) => <li key={note}>{note}</li>)}</ul>
@@ -1037,6 +1339,7 @@ function App() {
                   return;
                 }
                 setUpdateBusy(true);
+                setUpdateProgress({ status: "starting", percent: 0 });
                 try {
                   await window.synapse.downloadUpdate(updateInfo.downloadUrl, availableVersion || appVersion);
                   notify("Instalador de atualização iniciado.");
@@ -1058,10 +1361,10 @@ function App() {
   );
 }
 
-function Modal({ title, children, onClose }: { title: string; children: React.ReactNode; onClose: () => void }) {
+function Modal({ title, children, onClose, wide }: { title: string; children: React.ReactNode; onClose: () => void; wide?: boolean }) {
   return (
     <div className="modal-backdrop">
-      <div className="modal">
+      <div className={`modal ${wide ? "wide" : ""}`}>
         <header><h2>{title}</h2><button onClick={onClose}>Fechar</button></header>
         <div className="modal-body">{children}</div>
       </div>

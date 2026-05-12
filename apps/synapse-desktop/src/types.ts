@@ -127,3 +127,12 @@ export type UpdateInfo = {
   mandatory?: boolean;
   publishedAt?: string;
 };
+
+export type UpdateProgress = {
+  status: "starting" | "downloading" | "launching" | "done" | "error";
+  receivedBytes?: number;
+  totalBytes?: number;
+  percent?: number;
+  path?: string;
+  error?: string;
+};

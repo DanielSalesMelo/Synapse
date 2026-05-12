@@ -1,4 +1,4 @@
-import type { AgentConfig, AiCapability, DeviceInfo } from "./types";
+import type { AgentConfig, AiCapability, DeviceInfo, UpdateProgress } from "./types";
 
 declare global {
   interface Window {
@@ -21,6 +21,7 @@ declare global {
       downloadUpdate: (url: string, version?: string) => Promise<{ path: string }>;
       quit: () => Promise<boolean>;
       onMenuAction: (callback: (action: string) => void) => () => void;
+      onUpdateProgress: (callback: (progress: UpdateProgress) => void) => () => void;
     };
   }
 }

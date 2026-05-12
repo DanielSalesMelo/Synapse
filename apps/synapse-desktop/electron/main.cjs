@@ -348,6 +348,23 @@ const createWindow = async () => {
       mainWindow.hide();
     }
   });
+  mainWindow.webContents.on("context-menu", (_event, params) => {
+    const template = [];
+    if (params.isEditable) {
+      template.push(
+        { label: "Recortar", role: "cut", enabled: Boolean(params.editFlags?.canCut) },
+        { label: "Copiar", role: "copy", enabled: Boolean(params.editFlags?.canCopy) },
+        { label: "Colar", role: "paste", enabled: Boolean(params.editFlags?.canPaste) },
+        { label: "Selecionar tudo", role: "selectAll", enabled: Boolean(params.editFlags?.canSelectAll) },
+      );
+    } else {
+      template.push(
+        { label: "Copiar", role: "copy", enabled: Boolean(params.selectionText) },
+        { label: "Selecionar tudo", role: "selectAll" },
+      );
+    }
+    Menu.buildFromTemplate(template).popup({ window: mainWindow });
+  });
   await mainWindow.loadURL(getRendererUrl());
 };
 
@@ -413,7 +430,7 @@ ipcMain.handle("synapse:quit", () => {
   return true;
 });
 
-const downloadFile = (url, targetPath, redirects = 0) => new Promise((resolve, reject) => {
+const downloadFile = (url, targetPath, redirects = 0, onProgress) => new Promise((resolve, reject) => {
   let parsed;
   try {
     parsed = new URL(String(url));
@@ -432,7 +449,7 @@ const downloadFile = (url, targetPath, redirects = 0) => new Promise((resolve, r
     if ([301, 302, 303, 307, 308].includes(status) && location && redirects < 5) {
       response.resume();
       const nextUrl = new URL(location, parsed).toString();
-      downloadFile(nextUrl, targetPath, redirects + 1).then(resolve).catch(reject);
+      downloadFile(nextUrl, targetPath, redirects + 1, onProgress).then(resolve).catch(reject);
       return;
     }
     if (status < 200 || status >= 300) {
@@ -442,17 +459,40 @@ const downloadFile = (url, targetPath, redirects = 0) => new Promise((resolve, r
     }
     fs.mkdirSync(path.dirname(targetPath), { recursive: true });
     const file = fs.createWriteStream(targetPath);
+    const totalBytes = Number(response.headers["content-length"] || 0) || undefined;
+    let receivedBytes = 0;
+    onProgress?.({ status: "downloading", receivedBytes, totalBytes, percent: totalBytes ? 0 : undefined });
+    response.on("data", (chunk) => {
+      receivedBytes += chunk.length;
+      onProgress?.({
+        status: "downloading",
+        receivedBytes,
+        totalBytes,
+        percent: totalBytes ? Math.min(99, Math.round((receivedBytes / totalBytes) * 100)) : undefined,
+      });
+    });
     response.pipe(file);
-    file.on("finish", () => file.close(() => resolve(targetPath)));
-    file.on("error", reject);
+    file.on("finish", () => file.close(() => {
+      onProgress?.({ status: "done", receivedBytes, totalBytes, percent: 100, path: targetPath });
+      resolve(targetPath);
+    }));
+    file.on("error", (error) => {
+      onProgress?.({ status: "error", error: error.message });
+      reject(error);
+    });
   });
-  request.on("error", reject);
+  request.on("error", (error) => {
+    onProgress?.({ status: "error", error: error.message });
+    reject(error);
+  });
 });
 
-ipcMain.handle("synapse:download-update", async (_event, url, version) => {
+ipcMain.handle("synapse:download-update", async (event, url, version) => {
   const safeVersion = String(version || APP_VERSION).replace(/[^0-9A-Za-z._-]/g, "");
   const targetPath = path.join(app.getPath("temp"), `SynapseSetup-${safeVersion || APP_VERSION}.exe`);
-  await downloadFile(url, targetPath);
+  event.sender.send("synapse:update-progress", { status: "starting", percent: 0 });
+  await downloadFile(url, targetPath, 0, (progress) => event.sender.send("synapse:update-progress", progress));
+  event.sender.send("synapse:update-progress", { status: "launching", percent: 100, path: targetPath });
   const openError = await shell.openPath(targetPath);
   if (openError) throw new Error(openError);
   return { path: targetPath };
