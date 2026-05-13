@@ -177,6 +177,8 @@ function App() {
   const [faqOpen, setFaqOpen] = useState(false);
   const [aiOpen, setAiOpen] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
+  const [terminalOutput, setTerminalOutput] = useState("Terminal admin pronto. Habilite nas configurações para executar ações auditadas neste endpoint.");
+  const [terminalBusy, setTerminalBusy] = useState(false);
   const [policy, setPolicy] = useState(defaultPolicy);
   const [autoLaunch, setAutoLaunch] = useState(false);
   const [workerRunning, setWorkerRunning] = useState(false);
@@ -268,8 +270,8 @@ function App() {
         { label: "Privacidade", value: "Dados técnicos ocultos", detail: "somente TI autorizada visualiza inventário" },
       ];
   const aiModeLabel = aiCapability?.supported
-    ? (allowLocalAi ? "IA local opcional permitida" : "IA cloud com local opcional")
-    : "IA cloud";
+    ? (allowLocalAi ? "IA híbrida: local + OpenAI/Gemini/Azure" : "IA cloud com local opcional")
+    : "IA cloud otimizada";
   const aiCapabilitySummary = aiCapability
     ? `${aiCapability.score}/100 · ${aiCapability.supported ? "IA local opcional disponível; cloud continua prioritária." : "Este equipamento utilizará IA cloud otimizada."}`
     : "Analisando hardware para escolher a melhor IA.";
@@ -288,8 +290,8 @@ function App() {
     const suggestedCategory = inferCategory(source);
     const suggestedPriority = inferPriority(source);
     const provider = allowLocalAi && aiCapability?.supported
-      ? "cloud configurada > local opcional > humano"
-      : "cloud configurada > humano";
+      ? "local opcional > OpenAI > Gemini > Azure OpenAI > humano"
+      : "OpenAI > Gemini > Azure OpenAI > humano";
     return {
       provider,
       summary: selectedText ? firstLineTitle(source) : "Aguardando contexto da conversa.",
@@ -377,6 +379,58 @@ function App() {
         { label: "Suporte", value: profile?.online ? "Online" : "Pronto", detail: "chat e anexos" },
         { label: "Privacidade", value: "Protegida", detail: "sem dados técnicos" },
       ];
+  const endpointCount = profile?.online ? "1 / 1" : "0 / 1";
+  const hardwareFacts = [
+    { label: "CPU", value: profile?.cpuModel || device?.cpu || "Não coletado" },
+    { label: "Memória", value: device?.memoryGb ? `${device.memoryGb} GB RAM` : aiCapability?.ramGb ? `${aiCapability.ramGb} GB RAM` : "Não coletado" },
+    { label: "GPU", value: profile?.gpuModel || aiCapability?.gpu || "Não coletado" },
+    { label: "Placa-mãe", value: profile?.placaMaeModelo || "Não coletado" },
+    { label: "Serial/Asset", value: profile?.serialNumber || profile?.assetTag || "Não coletado" },
+    { label: "SO", value: friendlyOs },
+  ];
+  const inventoryFacts = [
+    { label: "Hostname", value: profile?.hostname || device?.hostname || "Não coletado" },
+    { label: "Usuário", value: profile?.usuario_nome || config.user_name || device?.username || "Não coletado" },
+    { label: "IP", value: profile?.ip || device?.ip || "Não coletado" },
+    { label: "Agente", value: profile?.versaoAgente || appVersion },
+    { label: "Último check-in", value: formatDateTimeBR(profile?.ultimoContato) },
+  ];
+  const menuSections = canSeeTechnical
+    ? [
+        ["Cockpit", "Chamados", "Chat operacional", "Monitoramento", "Inventário", "Hardware", "Performance", "Upgrade advisor"],
+        ["Impressoras & Toner", "Acesso remoto", "Terminal admin", "Alertas", "Base de conhecimento", "IA assistente", "Relatórios", "Configurações"],
+      ]
+    : [
+        ["Início", "Novo atendimento", "Meus chamados", "Acesso remoto", "Solicitações", "Base de ajuda", "Atualizações", "Configurações"],
+      ];
+  const terminalCommands = [
+    "ipconfig /all",
+    "systeminfo",
+    "Get-ComputerInfo | Select CsName,OsName,OsVersion,CsTotalPhysicalMemory",
+    "Get-Process | Sort CPU -Descending | Select -First 12 ProcessName,CPU,Id",
+    "Get-Service | Where Status -ne 'Running' | Select -First 20 Name,Status,DisplayName",
+    "gpupdate /force",
+  ];
+  const serviceCatalog = [
+    { title: "Acesso / Permissões", detail: "VPN, ERP, e-mail, pastas e sistemas" },
+    { title: "Software", detail: "Instalação, licença e atualização" },
+    { title: "Hardware", detail: "Troca, lentidão, monitor, teclado e mouse" },
+    { title: "Impressora / Toner", detail: "Fila, toner, papel e manutenção" },
+    { title: "Novo usuário", detail: "Onboarding, acessos e equipamento" },
+    { title: "Outros", detail: "Solicitações gerais para TI" },
+  ];
+  const alerts = [
+    { title: profile?.online ? "Heartbeat operacional" : "Heartbeat aguardando", tone: profile?.online ? "good" : "bad", detail: formatDateTimeBR(profile?.ultimoContato) },
+    { title: metric?.discoUsoPct && metric.discoUsoPct > 85 ? "Disco crítico" : "Disco dentro da política", tone: metric?.discoUsoPct && metric.discoUsoPct > 85 ? "bad" : "good", detail: metric?.discoUsoPct != null ? `${metric.discoUsoPct}% utilizado` : "Não coletado" },
+    { title: metric?.ramUsoPct && metric.ramUsoPct > 85 ? "RAM crítica" : "RAM monitorada", tone: metric?.ramUsoPct && metric.ramUsoPct > 85 ? "warn" : "neutral", detail: metric?.ramUsoPct != null ? `${metric.ramUsoPct}% utilizada` : "Não coletado" },
+    { title: hasUpdate ? `Update ${availableVersion}` : "Agente atualizado", tone: hasUpdate ? "warn" : "good", detail: `Instalado ${appVersion}` },
+  ];
+  const reports = [
+    { title: "SLA e Performance", detail: "Tempo médio, backlog e atendimento" },
+    { title: "Inventário", detail: "Ativos, hardware e lifecycle" },
+    { title: "Chamados", detail: "Abertos, fechados, categorias e origem" },
+    { title: "Impressoras", detail: "Status, toner, filas e custo" },
+  ];
   const onboardingSteps = [
     { step: "01", title: "Boas-vindas", detail: "Experiência desktop corporativa." },
     { step: "02", title: "Ambiente", detail: `${friendlyOs} · ${hardwareSummary}` },
@@ -676,6 +730,7 @@ function App() {
       server_url: serverUrl,
       agent_mode: isTiMode ? "ti" : "simple",
       allow_local_ai: Boolean(aiCapability?.supported && allowLocalAi),
+      allow_local_shell: Boolean(canSeeTechnical && config.allow_local_shell),
     });
     setConfig(next);
     await window.synapse.setAutoLaunch(autoLaunch);
@@ -853,6 +908,56 @@ function App() {
     notify("Diagnóstico copiado.");
   };
 
+  const enableAdminTerminal = async () => {
+    if (!canSeeTechnical) {
+      notify("Terminal admin disponível somente para TI/Admin.");
+      return;
+    }
+    const ok = window.confirm("Habilitar Terminal Admin auditado neste endpoint?\n\nTodas as execuções ficam registradas no log local do Synapse.");
+    if (!ok) return;
+    const next = await window.synapse.saveConfig({ allow_local_shell: true, user_is_ti: true, agent_mode: "ti" });
+    setConfig(next);
+    notify("Terminal admin auditado habilitado.");
+  };
+
+  const runTerminalCommand = async (command: string) => {
+    if (!canSeeTechnical) return;
+    if (!config.allow_local_shell) {
+      await enableAdminTerminal();
+      return;
+    }
+    setTerminalBusy(true);
+    setTerminalOutput(`PS C:\\Synapse> ${command}\nExecutando com auditoria...`);
+    try {
+      const result = await window.synapse.runAdminCommand(command);
+      setTerminalOutput(`PS C:\\Synapse> ${command}\n${result.output || result.error || "Comando concluído sem saída."}`);
+      notify(result.ok ? "Comando auditado concluído." : result.error || "Comando bloqueado.");
+    } catch (error) {
+      setTerminalOutput(`PS C:\\Synapse> ${command}\n${(error as Error).message}`);
+      notify("Falha ao executar comando auditado.");
+    } finally {
+      setTerminalBusy(false);
+    }
+  };
+
+  const startServiceRequest = (title: string) => {
+    setSelectedTicketId(null);
+    setComposer(`Preciso de ajuda com ${title.toLowerCase()}.`);
+    notify("Catálogo aplicado ao chat. Revise e envie para abrir o chamado.");
+  };
+
+  const openRemoteSupport = () => {
+    const anydesk = profile?.anydeskId || metric?.anydeskId;
+    if (canSeeTechnical && anydesk) {
+      navigator.clipboard.writeText(anydesk);
+      notify("AnyDesk copiado para iniciar acesso remoto.");
+      return;
+    }
+    setSelectedTicketId(null);
+    setComposer("Preciso de suporte remoto neste computador.");
+    notify("Pedido de acesso remoto preparado no chat.");
+  };
+
   return (
     <div className={`app-shell mode-${themeMode}`} onPaste={handlePaste} onDragOver={(event) => event.preventDefault()} onDrop={handleDrop}>
       <header className="titlebar">
@@ -868,6 +973,7 @@ function App() {
           {isAuthenticated && (
             <>
               <button onClick={() => { setSelectedTicketId(null); setComposer(""); }}>Novo chamado</button>
+              <button onClick={openRemoteSupport}>Acesso remoto</button>
               <button onClick={() => refreshData(false)}>Sincronizar</button>
               <button onClick={() => setAiOpen(true)}>IA</button>
               {canSeeTechnical && <button onClick={() => setDiagnosticsOpen(true)}>Cockpit</button>}
@@ -1021,6 +1127,32 @@ function App() {
       ) : (
         <main className={`workspace ${canSeeTechnical ? "ops-workspace" : "support-workspace"}`}>
           <aside className="nav-rail">
+            {canSeeTechnical && (
+              <>
+                <div className="rail-product">
+                  <div className="brand-mark">S</div>
+                  <div>
+                    <strong>Synapse Desktop</strong>
+                    <span>Enterprise Support Agent · v{appVersion}</span>
+                  </div>
+                </div>
+                <div className="rail-panel profile-lanes">
+                  <span className="rail-title">Perfis do sistema</span>
+                  <button onClick={logoutUser}>
+                    <b>Usuário comum</b>
+                    <small>Chat, chamados, anexos e solicitações</small>
+                  </button>
+                  <button className={isTiMode ? "active" : ""} onClick={() => setDiagnosticsOpen(true)}>
+                    <b>TI / Admin</b>
+                    <small>Cockpit operacional e diagnóstico</small>
+                  </button>
+                  <button className={isMasterAdmin ? "active" : ""} onClick={() => setSettingsOpen(true)}>
+                    <b>Master Admin</b>
+                    <small>Políticas, tenants, auditoria e deploy</small>
+                  </button>
+                </div>
+              </>
+            )}
             <div className="rail-section">
               {navItems.map((item, index) => (
                 <button
@@ -1044,6 +1176,31 @@ function App() {
                   <span>{item.slice(0, 1)}</span>{item}
                 </button>
               ))}
+            </div>
+            <div className="rail-panel rail-menu-map">
+              <span className="rail-title">{canSeeTechnical ? "Menu operacional" : "Sua central"}</span>
+              {menuSections.map((section, sectionIndex) => (
+                <ol key={sectionIndex}>
+                  {section.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ol>
+              ))}
+            </div>
+            <div className="rail-panel theme-preview-grid">
+              <span className="rail-title">Modos de tema</span>
+              <button className={themeMode === "light" ? "active" : ""} onClick={() => setThemeMode("light")}>
+                <span className="preview light" />
+                Claro
+              </button>
+              <button className={themeMode === "studio" ? "active" : ""} onClick={() => setThemeMode("studio")}>
+                <span className="preview studio" />
+                Studio
+              </button>
+              <button className={themeMode === "neutral" ? "active" : ""} onClick={() => setThemeMode("neutral")}>
+                <span className="preview neutral" />
+                Neutro
+              </button>
             </div>
             <div className="rail-footer">
               <div className="avatar small">{(config.user_name || device?.username || "S").slice(0, 1).toUpperCase()}</div>
@@ -1293,6 +1450,205 @@ function App() {
             )}
           </aside>
             </div>
+            {canSeeTechnical ? (
+              <div className="enterprise-modules">
+                <section className="enterprise-card hardware-analytics">
+                  <div className="module-title">
+                    <span>Hardware · visão detalhada</span>
+                    <strong>Inventário técnico</strong>
+                  </div>
+                  <div className="hardware-layout">
+                    <div className="chip-visual">
+                      <b>{(profile?.cpuModel || device?.cpu || "CPU").split(" ").slice(0, 3).join(" ")}</b>
+                      <span>{friendlyOs}</span>
+                    </div>
+                    <dl>
+                      {hardwareFacts.map((item) => (
+                        <div key={item.label}><dt>{item.label}</dt><dd>{item.value}</dd></div>
+                      ))}
+                    </dl>
+                  </div>
+                </section>
+
+                <section className="enterprise-card memory-card">
+                  <div className="module-title">
+                    <span>Performance</span>
+                    <strong>Uso em tempo real</strong>
+                  </div>
+                  <div className="donut-row">
+                    <div className="mini-donut" style={{ "--pct": `${Math.min(100, Math.max(0, Number(metric?.ramUsoPct || 0)))}%` } as React.CSSProperties}>
+                      <strong>{metric?.ramUsoPct != null ? `${metric.ramUsoPct}%` : "-"}</strong>
+                      <span>RAM</span>
+                    </div>
+                    <div className="metric-lines">
+                      <Metric label="CPU" value={metric?.cpuUso != null ? `${metric.cpuUso}%` : "Não coletado"} />
+                      <Metric label="Disco" value={metric?.discoUsoPct != null ? `${metric.discoUsoPct}%` : "Não coletado"} />
+                      <Metric label="Rede" value={`${bytesLabel(metric?.redeRecebidoKb)} / ${bytesLabel(metric?.redeEnviadoKb)}`} />
+                    </div>
+                  </div>
+                  <div className="sparkline-pack">
+                    <span /><span /><span /><span /><span /><span /><span /><span />
+                  </div>
+                </section>
+
+                <section className="enterprise-card upgrade-advisor">
+                  <div className="module-title">
+                    <span>Upgrade Advisor</span>
+                    <strong>Recomendações preventivas</strong>
+                  </div>
+                  <ul className="upgrade-list">
+                    <li><b>RAM</b><span>{aiCapability?.ramGb && aiCapability.ramGb < 16 ? "Recomendado elevar para 16GB+ para IA local e multitarefa." : "Capacidade adequada para operação cloud e helpdesk."}</span></li>
+                    <li><b>SSD / Disco</b><span>{metric?.discoUsoPct && metric.discoUsoPct > 80 ? "Disco em atenção. Planejar limpeza, SSD maior ou troca preventiva." : "Armazenamento sem gargalo crítico coletado."}</span></li>
+                    <li><b>IA</b><span>{aiCapability?.supported ? "Elegível para IA local opcional; cloud segue como prioridade." : "Cloud otimizada ativa por compatibilidade de hardware."}</span></li>
+                  </ul>
+                  <button onClick={() => setAiOpen(true)}>Analisar com IA assistente</button>
+                </section>
+
+                <section className="enterprise-card inventory-panel">
+                  <div className="module-title">
+                    <span>Inventário · visão geral</span>
+                    <strong>{endpointCount} endpoint(s)</strong>
+                  </div>
+                  <div className="inventory-grid">
+                    {inventoryFacts.map((item) => (
+                      <div key={item.label}>
+                        <span>{item.label}</span>
+                        <strong>{item.value}</strong>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="enterprise-card terminal-admin">
+                  <div className="module-title">
+                    <span>Terminal Admin</span>
+                    <strong>{config.allow_local_shell ? "Auditado" : "Bloqueado por política"}</strong>
+                  </div>
+                  <pre>{terminalOutput}</pre>
+                  <div className="terminal-actions">
+                    {terminalCommands.map((command) => (
+                      <button key={command} disabled={terminalBusy} onClick={() => runTerminalCommand(command)}>
+                        {command.split("|")[0].trim()}
+                      </button>
+                    ))}
+                  </div>
+                  {!config.allow_local_shell && <button className="primary compact" onClick={enableAdminTerminal}>Habilitar neste endpoint</button>}
+                </section>
+
+                <section className="enterprise-card printers-stock">
+                  <div className="module-title">
+                    <span>Impressoras & Toner</span>
+                    <strong>Operação de suprimentos</strong>
+                  </div>
+                  <div className="printer-table">
+                    {["Financeiro", "Administração", "Recepção"].map((sector, index) => (
+                      <div key={sector}>
+                        <b>{sector}</b>
+                        <span>{["HP LaserJet", "Brother DCP", "Epson L6190"][index]}</span>
+                        <em>{["Toner 12%", "Toner 49%", "Online"][index]}</em>
+                        <button onClick={() => startServiceRequest(`toner ${sector}`)}>Abrir solicitação</button>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="enterprise-card service-portal">
+                  <div className="module-title">
+                    <span>Portal de solicitações</span>
+                    <strong>Catálogo rápido</strong>
+                  </div>
+                  <div className="service-grid">
+                    {serviceCatalog.map((item) => (
+                      <button key={item.title} onClick={() => startServiceRequest(item.title)}>
+                        <b>{item.title}</b>
+                        <span>{item.detail}</span>
+                      </button>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="enterprise-card user-tickets">
+                  <div className="module-title">
+                    <span>Helpdesk</span>
+                    <strong>Meus chamados</strong>
+                  </div>
+                  <div className="compact-table">
+                    {tickets.slice(0, 5).map((ticket) => (
+                      <button key={ticket.id} onClick={() => setSelectedTicketId(ticket.id)}>
+                        <span>{ticket.protocolo || `#${ticket.id}`}</span>
+                        <b>{ticket.titulo}</b>
+                        <em>{STATUS_LABELS[ticket.status || ""] || ticket.status || "Aberto"}</em>
+                      </button>
+                    ))}
+                    {!tickets.length && <p>Nenhum chamado registrado.</p>}
+                  </div>
+                </section>
+
+                <section className="enterprise-card alerts-panel">
+                  <div className="module-title">
+                    <span>Alertas</span>
+                    <strong>Preventivo</strong>
+                  </div>
+                  {alerts.map((item) => (
+                    <div key={item.title} className={`alert-row ${item.tone}`}>
+                      <b>{item.title}</b>
+                      <span>{item.detail}</span>
+                    </div>
+                  ))}
+                </section>
+
+                <section className="enterprise-card reports-panel">
+                  <div className="module-title">
+                    <span>Relatórios</span>
+                    <strong>TI/Admin</strong>
+                  </div>
+                  <div className="report-grid">
+                    {reports.map((item) => (
+                      <button key={item.title} onClick={() => notify(`${item.title}: dados sincronizados no cockpit desktop.`)}>
+                        <b>{item.title}</b>
+                        <span>{item.detail}</span>
+                      </button>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="enterprise-footer">
+                  <div><b>IA híbrida</b><span>{aiModeLabel}</span></div>
+                  <div><b>Segurança</b><span>Terminal, update e ações com auditoria local</span></div>
+                  <div><b>Multi-monitor</b><span>Shell adaptativo e topbar arrastável</span></div>
+                  <div><b>Responsivo</b><span>Densidade ajustada para notebook, Full HD e 2K</span></div>
+                </section>
+              </div>
+            ) : (
+              <div className="user-service-modules">
+                <section className="enterprise-card service-portal">
+                  <div className="module-title">
+                    <span>Portal de serviços</span>
+                    <strong>Escolha e converse</strong>
+                  </div>
+                  <div className="service-grid">
+                    {serviceCatalog.map((item) => (
+                      <button key={item.title} onClick={() => startServiceRequest(item.title)}>
+                        <b>{item.title}</b>
+                        <span>{item.detail}</span>
+                      </button>
+                    ))}
+                  </div>
+                </section>
+                <section className="enterprise-card notifications-summary">
+                  <div className="module-title">
+                    <span>Status</span>
+                    <strong>Atendimento sem dados técnicos</strong>
+                  </div>
+                  {notificationItems.slice(0, 3).map((item) => (
+                    <div key={item.title} className={`alert-row ${item.tone}`}>
+                      <b>{item.title}</b>
+                      <span>{item.detail}</span>
+                    </div>
+                  ))}
+                </section>
+              </div>
+            )}
           </section>
         </main>
       )}
@@ -1393,6 +1749,9 @@ function App() {
           <label className="check"><input type="checkbox" checked={policy.isCritical24x7} onChange={(event) => setPolicy((current) => ({ ...current, isCritical24x7: event.target.checked, notifyOnOffline: event.target.checked || current.notifyOnOffline }))} /> PC crítico 24x7</label>
           <label className="check"><input type="checkbox" checked={policy.notifyOnOffline} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnOffline: event.target.checked }))} /> Alertar se ficar offline</label>
           <label className="check"><input type="checkbox" checked={policy.notifyOnNetworkLoss} onChange={(event) => setPolicy((current) => ({ ...current, notifyOnNetworkLoss: event.target.checked }))} /> Comparar perda de rede com outros dispositivos</label>
+          {canSeeTechnical && (
+            <label className="check"><input type="checkbox" checked={Boolean(config.allow_local_shell)} onChange={(event) => setConfig((current) => ({ ...current, allow_local_shell: event.target.checked }))} /> Terminal admin auditado neste endpoint</label>
+          )}
           <div className="ai-capability-card compact">
             <div>
               <span>IA híbrida</span>

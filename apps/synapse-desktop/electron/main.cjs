@@ -108,6 +108,19 @@ const writeJson = (filePath, data) => {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
 };
 
+const appendLocalAudit = (entry) => {
+  try {
+    ensureAgentDir();
+    fs.appendFileSync(path.join(AGENT_DIR, "desktop-audit.log"), `${JSON.stringify({
+      timezone: SYNAPSE_TIME_ZONE,
+      at: new Date().toISOString(),
+      ...entry,
+    })}\n`, "utf-8");
+  } catch (error) {
+    console.warn("[synapse] Falha ao registrar auditoria local.", error);
+  }
+};
+
 const defaultConfig = () => ({
   server_url: DEFAULT_SERVER,
   collect_interval: 60,
@@ -301,12 +314,14 @@ const createTray = () => {
 
 const createWindow = async () => {
   const workArea = screen.getPrimaryDisplay().workAreaSize;
-  const initialWidth = Math.min(1180, Math.max(900, workArea.width - 64));
-  const initialHeight = Math.min(740, Math.max(600, workArea.height - 48));
+  const requestedWidth = Number(process.env.SYNAPSE_WINDOW_WIDTH || 0);
+  const requestedHeight = Number(process.env.SYNAPSE_WINDOW_HEIGHT || 0);
+  const initialWidth = requestedWidth || Math.min(workArea.width - 32, Math.max(1120, Math.floor(workArea.width * 0.92)));
+  const initialHeight = requestedHeight || Math.min(workArea.height - 32, Math.max(680, Math.floor(workArea.height * 0.9)));
   mainWindow = new BrowserWindow({
     width: initialWidth,
     height: initialHeight,
-    minWidth: 760,
+    minWidth: 900,
     minHeight: 560,
     center: true,
     title: "Synapse para Windows",
@@ -336,6 +351,27 @@ const createWindow = async () => {
       mainWindow.removeMenu();
     }
     mainWindow.show();
+    if (process.env.SYNAPSE_CAPTURE_PATH) {
+      const captureDelay = Number(process.env.SYNAPSE_CAPTURE_DELAY_MS || 1800);
+      setTimeout(async () => {
+        try {
+          const image = await mainWindow.webContents.capturePage();
+          fs.mkdirSync(path.dirname(process.env.SYNAPSE_CAPTURE_PATH), { recursive: true });
+          fs.writeFileSync(process.env.SYNAPSE_CAPTURE_PATH, image.toPNG());
+          const captureConfig = readConfig();
+          fs.writeFileSync(`${process.env.SYNAPSE_CAPTURE_PATH}.json`, JSON.stringify({
+            agentDir: AGENT_DIR,
+            config: { ...captureConfig, token: captureConfig.token ? "[oculto]" : "" },
+            size: mainWindow.getBounds(),
+          }, null, 2), "utf-8");
+        } catch (error) {
+          console.warn("[synapse] Falha ao capturar runtime.", error);
+        } finally {
+          app.isQuitting = true;
+          app.quit();
+        }
+      }, captureDelay);
+    }
   });
   mainWindow.on("focus", () => {
     mainWindow.setAutoHideMenuBar(true);
@@ -423,6 +459,77 @@ ipcMain.handle("synapse:window-toggle-maximize", () => {
 ipcMain.handle("synapse:minimize-to-tray", () => {
   mainWindow?.hide();
   return true;
+});
+ipcMain.handle("synapse:run-admin-command", async (_event, rawCommand) => {
+  const config = readConfig();
+  const command = String(rawCommand || "").trim();
+  const auditedAt = new Date().toISOString();
+  const allowed = [
+    "ipconfig /all",
+    "systeminfo",
+    "Get-ComputerInfo | Select CsName,OsName,OsVersion,CsTotalPhysicalMemory",
+    "Get-Process | Sort CPU -Descending | Select -First 12 ProcessName,CPU,Id",
+    "Get-Service | Where Status -ne 'Running' | Select -First 20 Name,Status,DisplayName",
+    "gpupdate /force",
+    "sfc /scannow",
+    "DISM /Online /Cleanup-Image /ScanHealth",
+    "netsh wlan show interfaces",
+  ];
+  const baseAudit = {
+    action: "desktop.admin_command",
+    userEmail: config.user_email || null,
+    userRole: config.user_role || null,
+    deviceId: config.device_id || null,
+    command,
+  };
+
+  if (!config.user_is_ti || !config.allow_local_shell) {
+    appendLocalAudit({ ...baseAudit, status: "blocked", reason: "rbac_or_policy" });
+    return {
+      ok: false,
+      command,
+      auditedAt,
+      error: "Terminal admin bloqueado. Habilite nas configurações e use uma conta TI/Admin.",
+    };
+  }
+
+  if (!allowed.includes(command)) {
+    appendLocalAudit({ ...baseAudit, status: "blocked", reason: "command_not_allowlisted" });
+    return {
+      ok: false,
+      command,
+      auditedAt,
+      error: "Comando fora da lista segura desta versão. Use uma ação rápida auditada.",
+    };
+  }
+
+  return await new Promise((resolve) => {
+    appendLocalAudit({ ...baseAudit, status: "started" });
+    const child = execFile("powershell", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", command], {
+      ...hiddenExecOptions,
+      timeout: 45000,
+      maxBuffer: 1024 * 1024,
+    }, (error, stdout, stderr) => {
+      const output = String(stdout || stderr || "").slice(0, 16000);
+      appendLocalAudit({
+        ...baseAudit,
+        status: error ? "failed" : "completed",
+        exitCode: error?.code ?? 0,
+        outputPreview: output.slice(0, 800),
+      });
+      resolve({
+        ok: !error,
+        command,
+        output,
+        auditedAt,
+        error: error ? String(error.message || stderr || "Falha ao executar comando.") : undefined,
+      });
+    });
+    child.on("error", (error) => {
+      appendLocalAudit({ ...baseAudit, status: "failed", error: error.message });
+      resolve({ ok: false, command, auditedAt, error: error.message });
+    });
+  });
 });
 ipcMain.handle("synapse:quit", () => {
   app.isQuitting = true;

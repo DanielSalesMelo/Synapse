@@ -18,6 +18,7 @@ declare global {
       windowMinimize: () => Promise<boolean>;
       windowToggleMaximize: () => Promise<boolean>;
       minimizeToTray: () => Promise<boolean>;
+      runAdminCommand: (command: string) => Promise<{ ok: boolean; command: string; output?: string; error?: string; auditedAt?: string }>;
       downloadUpdate: (url: string, version?: string) => Promise<{ path: string }>;
       quit: () => Promise<boolean>;
       onMenuAction: (callback: (action: string) => void) => () => void;

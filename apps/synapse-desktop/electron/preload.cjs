@@ -16,6 +16,7 @@ contextBridge.exposeInMainWorld("synapse", {
   windowMinimize: () => ipcRenderer.invoke("synapse:window-minimize"),
   windowToggleMaximize: () => ipcRenderer.invoke("synapse:window-toggle-maximize"),
   minimizeToTray: () => ipcRenderer.invoke("synapse:minimize-to-tray"),
+  runAdminCommand: (command) => ipcRenderer.invoke("synapse:run-admin-command", command),
   downloadUpdate: (url, version) => ipcRenderer.invoke("synapse:download-update", url, version),
   quit: () => ipcRenderer.invoke("synapse:quit"),
   onMenuAction: (callback) => {

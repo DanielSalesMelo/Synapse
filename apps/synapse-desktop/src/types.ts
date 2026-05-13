@@ -11,6 +11,7 @@ export type AgentConfig = {
   auth_session_active?: boolean;
   last_login_at?: string;
   agent_mode?: "simple" | "ti";
+  allow_local_shell?: boolean;
   collect_interval?: number;
   send_interval?: number;
   allow_local_ai?: boolean;
